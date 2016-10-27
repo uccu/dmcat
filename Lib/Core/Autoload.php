@@ -14,13 +14,13 @@ class Autoload{
         }elseif(!$e)
             return $_imports[$key] = false;
 		else{
-            $path = str_ireplace($path,BASE_ROOT,$path);
+            $path = str_ireplace(BASE_ROOT,'',$path);
             throw new Exception('file lost: '.$path);
         }
 	}
 	public static function load($class){
 
-        return self::import(BASE_ROOT.strpos($class, '\\')?'':'Lib/Base/'.str_replace('\\','/',$class).'.php',true);
+        return self::import(BASE_ROOT.(strpos($class, '\\')?'':'Lib/Base/'.str_replace('\\','/',$class)).'.php',true);
         
     }
 }
