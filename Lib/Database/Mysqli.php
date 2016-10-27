@@ -1,8 +1,8 @@
 <?php
-namespace Lib\database\Mysql;
+namespace Lib\Database;
+use Lib\Core\Autoload;
 
-
-class Mysql
+class Mysqli
 {
 	private $mysqli;
 	private $config;
@@ -10,8 +10,9 @@ class Mysql
 	public $prefix;
 	public $database;
 	function __construct(){
-		$this->_init_config();
-		$this->mysql();
+
+		$this->init_config();
+		$this->init();
 	}
 	private function mysql(){
 		$this->mysqli = mysqli_init();
@@ -22,7 +23,22 @@ class Mysql
 		$this->select_db($this->config['db']);
 		$this->set_charset($this->config['charset']);
 	}
-	
+
+
+	private function init(){
+		$this->mysqli = mysqli_init();
+		return $this;
+	}
+
+
+	private function init_config(){
+
+		$name = basename( __CLASS__);
+		$this->config = Autoload::conf($name);
+		return $this;
+
+	}
+
 	private function _init_config(){
 		require PLAY_ROOT.'/source/config/mysql.php';
 		$this->prefix = $config['prefix']?$config['prefix']:'';
@@ -66,7 +82,7 @@ class Mysql
 	function query($sql){
 		$this->results = $this->mysqli->query($sql);
 		if(!$this->results)throw new \Exception($this->mysqli->error);
-		
+
 		return $this->results;
 	}
 	function multi_query($sql){
@@ -94,14 +110,14 @@ class Mysql
 		return $this->results->data_seek($row);
 	}
 
-	
-	
 
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 }
 
 
