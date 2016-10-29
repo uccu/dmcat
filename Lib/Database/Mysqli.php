@@ -1,6 +1,7 @@
 <?php
 namespace Lib\Database;
 use Lib\Core\Autoload;
+use Lib\Core\Exc as E;
 
 class Mysqli
 {
@@ -26,7 +27,13 @@ class Mysqli
 
 
 	private function init(){
+
+		if(!function_exists('mysqli_init'))
+			E::throw('Mysqli Not Open');
+		
 		$this->mysqli = mysqli_init();
+
+		
 		return $this;
 	}
 
@@ -35,6 +42,9 @@ class Mysqli
 
 		$name = basename( __CLASS__);
 		$this->config = Autoload::conf($name);
+		foreach($this->config as $k=>&$v)
+			$this->$k = &$v;
+		
 		return $this;
 
 	}

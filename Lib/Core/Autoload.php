@@ -1,6 +1,6 @@
 <?php
 namespace Lib\Core;
-use Exception;
+use Lib\Core\Exc as E;
 
 class Autoload{
 
@@ -13,7 +13,8 @@ class Autoload{
 
 		if(is_file($path)){
 
-			require $path;return self::$_imports[$path] = true;
+			require_once $path;
+			return self::$_imports[$path] = true;
 
         }elseif($force)
 
@@ -22,7 +23,7 @@ class Autoload{
 		else{
 
             //$path = str_ireplace(BASE_ROOT,'',$path);
-            throw new Exception('file lost: '.$path);
+            E::throw('file lost: '.$path);
 
         }
 	}
@@ -38,7 +39,7 @@ class Autoload{
 		if(isset( self::$_tables[$class] ))
 			if($table = self::$_tables[$class])return $table;
 		$z = self::load($class);
-		var_dump($z);
+
 		self::$_tables[$class] = new $class();
 
 	}
@@ -47,7 +48,7 @@ class Autoload{
 
 		$path = CONFIG_ROOT.$name.'.conf';
 		$file = fopen($path, "r");
-		if(!$file)throw new Exception('config lost: '.$name);
+		if(!$file)E::throw('config lost: '.$name);
 		
 
 		$config = (object)array();
@@ -64,7 +65,7 @@ class Autoload{
 
 		}
 
-		var_dump($config);
+		//var_dump($config);
 
 		fclose($file);
 		return $config;
