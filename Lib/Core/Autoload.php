@@ -23,7 +23,7 @@ class Autoload{
 		else{
 
             //$path = str_ireplace(BASE_ROOT,'',$path);
-            E::throw('file lost: '.$path);
+            E::throw('file lost: '.$path,1);
 
         }
 	}

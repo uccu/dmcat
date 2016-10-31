@@ -2,7 +2,7 @@
 
 use Lib\Core\Exc;
 use Lib\Core\Autoload;
-use Config;
+
 
 
 error_reporting(-1);
@@ -15,7 +15,7 @@ define('BASE_ROOT', substr(__DIR__, 0, -8));
 define('LIB_ROOT', BASE_ROOT.'Lib/');
 define('CONFIG_ROOT', BASE_ROOT.'config/');
 define('VENDOR_ROOT', BASE_ROOT.'vendor/');
-define('REQUEST_PATH',$_SERVER['REDIRECT_URL']);
+
 
 
 
@@ -33,6 +33,9 @@ set_error_handler(array(Exc::class,'handleError'));
 register_shutdown_function(array(Exc::class, 'handleShutdown'));
 
 
+
+
+define('REQUEST_PATH',$_SERVER['REDIRECT_URL']);
 
 //composer依赖的自动加载
 require_once VENDOR_ROOT.'autoload.php';

@@ -1,6 +1,7 @@
 <?php
 
 use Lib\Core\Exc as E;
+use Lib\Core\Autoload;
 
 class Config{
 
