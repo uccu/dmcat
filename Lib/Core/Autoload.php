@@ -58,7 +58,7 @@ class Autoload{
 			$line = trim( preg_replace('/#.*$/','',$line) );
 			if(!$line)continue;
 			if(!preg_match('#^[a-z_]#i',$line))continue;
-			if(!preg_match('#^([a-z_][a-z_0-9]*)[ \t]*=[ \t]*(.+)$#i',$line,$match))continue;
+			if(!preg_match('#^([a-z_][a-z_0-9]*)[ \t]*=[ \t]*(.*)$#i',$line,$match))continue;
 
 			list(,$key,$value) = $match;
 			$config->{strtoupper($key)} = $value;

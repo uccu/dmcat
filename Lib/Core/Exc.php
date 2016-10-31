@@ -8,9 +8,9 @@ class Exc extends E{
 
 	
 
-	final public static function handleException($e){
+	final public static function handleException($e,$line=0){
 		
-		return self::handle($e->getCode(),$e->getMessage(),$e->getFile(),$e->getLine(),$e->getTrace(),'BASE',0);
+		return self::handle($e->getCode(),$e->getMessage(),$e->getFile(),$e->getLine(),$e->getTrace(),'BASE',$line);
 		
 	}
 
@@ -19,8 +19,8 @@ class Exc extends E{
 		
 
 		if(!is_null($c)){
-			$file = $trace[0]['file'];
-			$line = $trace[0]['line'];
+			$file = $trace[$c]['file'];
+			$line = $trace[$c]['line'];
 		}
 
 		$file = str_ireplace(array(BASE_ROOT,'.php'),'',$file);
@@ -40,6 +40,8 @@ class Exc extends E{
 		switch($errno){
 			case 8:
 				if(stripos($errstr,'Undefined index')===0)return null;
+				if(stripos($errstr,'Undefined property')===0)return null;
+
 				break;
 			default:
 				break;
@@ -67,11 +69,11 @@ class Exc extends E{
 
 	}
 
-	final public static function throw($m){
+	final public static function throw($m,$line=0){
 
 		$e = new self($m);
 
-		self::handleException($e);
+		self::handleException($e,$line);
 
 	}
 }

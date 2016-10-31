@@ -14,15 +14,77 @@ class Mysqli
 
 		$this->init_config();
 		$this->init();
+		
+		$this->init_timeout();
+		$this->connect();
+		$this->set_charset();
+
+
 	}
 	private function mysql(){
-		$this->mysqli = mysqli_init();
-		if (!$this->mysqli)die('mysqli_init failed');
+		
 		if (!$this->mysqli->options(MYSQLI_INIT_COMMAND, 'SET AUTOCOMMIT = 1'))die('Setting MYSQLI_INIT_COMMAND failed');
 		if (!$this->mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, 5))die('Setting MYSQLI_OPT_CONNECT_TIMEOUT failed');
 		if (!$this->mysqli->real_connect($this->config['host'],$this->config['user'],$this->config['password']))die('Connect Error ('.mysqli_connect_errno().')'.mysqli_connect_error());
 		$this->select_db($this->config['db']);
 		$this->set_charset($this->config['charset']);
+	}
+
+
+	function autocommit(bool $bool = true){
+
+		return $this->mysqli->autocommit($bool);
+
+	}
+
+
+
+	function set_charset($charset=null){
+
+		if(is_null($charset))$charset = $this->config->CHARSET;
+
+		if(!$charset)$charset = 'utf8';
+
+		$action = $this->mysqli->set_charset($charset);
+
+		if(!$action)
+			E::throw('MYSQLI_INIT_COMMAND Failed');
+
+		return $this;
+
+	}
+
+
+	private function connect(){
+
+		if(!$this->config->DATABASE)E::throw('Database Not Selected');
+
+		$action = $this->mysqli->real_connect($this->config->HOST,$this->config->USER,$this->config->PASSWORD,$this->config->DATABASE);
+
+		if(!$action){
+			$error = '数据库连接失败';
+			E::throw($error);
+		}
+		
+		$auto = $this->config->AUTOCOMMIT;
+
+		$auto = is_null($auto) ? 1 : ( $auto ? 1 : 0);
+
+		$this->init_command('SET AUTOCOMMIT = '.$auto);
+
+		return $this;
+
+	}
+
+	function select_db ($db = null){
+
+		if(is_null($db))$db = $this->config->DATABASE;
+
+		if(!$db)E::throw('Database Not Selected');
+
+		$this->mysqli->select_db ($db);
+
+		return $this;
 	}
 
 
@@ -37,46 +99,49 @@ class Mysqli
 		return $this;
 	}
 
+	private function init_command($command){
+
+
+		$action = $this->mysqli->options(MYSQLI_INIT_COMMAND, $command);
+
+		if(!$action)
+			E::throw('MYSQLI_INIT_COMMAND Failed');
+
+		return $this;
+	}
+
+
+	private function init_timeout($time = 5){
+
+
+		$action = $this->mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, $time);
+
+		if(!$action)
+			E::throw('MYSQLI_OPT_CONNECT_TIMEOUT Failed');
+
+		return $this;
+	}
+
 
 	private function init_config(){
 
 		$name = basename( __CLASS__);
 		$this->config = Autoload::conf($name);
-		foreach($this->config as $k=>&$v)
-			$this->$k = &$v;
 		
 		return $this;
 
 	}
 
-	private function _init_config(){
-		require PLAY_ROOT.'/source/config/mysql.php';
-		$this->prefix = $config['prefix']?$config['prefix']:'';
-		$this->config = $config;
-		if(file_exists(PLUGIN_ROOT.'/'.PLUGIN_NAME.'/config/mysql.php')){
-			require PLUGIN_ROOT.PLUGIN_NAME.'/config/mysql.php';
-			$this->prefix = $config['prefix']?$config['prefix']:$this->prefix;
-			$this->config = array_merge($this->config,$config);
-		}
-		$this->prefix = $config['prefix']?$config['prefix']:'';
-		$this->config = $config;
-	}
-	function autocommit($bool = true){
-		return $this->mysqli->autocommit($bool);
-	}
+
+	
 	function commit(){
 		return $this->mysqli->commit();
 	}
 	function rollback(){
 		return $this->mysqli->rollback();
 	}
-	function select_db ($db){
-		$this->database = $db;
-		return $this->mysqli->select_db ($db);
-	}
-	function set_charset($charset='utf8'){
-		return $this->mysqli->set_charset($charset);
-	}
+	
+	
 	function fetch_array($resulttype=MYSQLI_ASSOC){
 		if(!$this->results)return false;
 		return $this->results->fetch_array($resulttype);
@@ -102,7 +167,6 @@ class Mysqli
 	}
 	function insert_id(){
 		if(($id = $this->mysqli->insert_id) >= 0){
-            //var_dump($id);
             return $id;
         }
 		$this->query("SELECT last_insert_id()");

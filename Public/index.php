@@ -9,7 +9,7 @@ use Lib\Core\Config;
 
 $config = new Config;
 
-//echo $config->CONFIG_ALLOW_SET;
+// echo $config->CONFIG_ALLOW_SET;
 
 
-//$config->CONFIG_ALLOW_SET = 1;
+// $config->CONFIG_ALLOW_SET = 1;

@@ -13,7 +13,7 @@ class Config{
 	}
 
 	public function __get($key){
-		if(!isset($this->list[$key]))E::throw($key.' NO VALUE');
+		if(!isset($this->list[$key]))E::throw($key.' NO VALUE',1);
 
 		return $this->list[$key];
 	}
@@ -29,7 +29,7 @@ class Config{
 
 	public function __set($key,$value){
 		if(!$this->set)
-			E::throw('NOT ALLOWED TO SET');
+			E::throw('NOT ALLOWED TO SET',1);
 	}
 	
 
