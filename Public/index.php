@@ -9,7 +9,8 @@ use Lib\Core\Config;
 
 $config = new Config;
 
-// echo $config->CONFIG_ALLOW_SET;
 
 
-// $config->CONFIG_ALLOW_SET = 1;
+//$_SERVER['REDIRECT_URL']; //请求地址
+
+

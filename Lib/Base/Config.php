@@ -1,5 +1,5 @@
 <?php
-namespace Lib\Core;
+
 use Lib\Core\Exc as E;
 
 class Config{
