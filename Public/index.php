@@ -5,12 +5,13 @@ require_once substr(__DIR__, 0, -6).'Lib/Core/Entrance.php';
 
 
 
+// Route::app(1,2);
 
+// var_dump(REQUEST_PATH);
 
-$config = new Config;
+//echo REQUEST_PATH;
 
+//var_dump(Config::get('CONFIG_ALLOW_SET'));
 
-
-//$_SERVER['REDIRECT_URL']; //请求地址
 
 

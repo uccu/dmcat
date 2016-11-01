@@ -1,10 +1,7 @@
 <?php
 
-namespace Lib\Core;
-use Exception as E;
 
-
-class Exc extends E{
+class E extends Exception{
 
 	
 
@@ -41,13 +38,14 @@ class Exc extends E{
 			case 8:
 				if(stripos($errstr,'Undefined index')===0)return null;
 				if(stripos($errstr,'Undefined property')===0)return null;
+				if(stripos($errstr,'Undefined offset')===0)return null;
 
 				break;
 			default:
 				break;
 		}
 
-		$ex = new Exc($errstr);
+		$ex = new self($errstr);
 
 		return self::handle($errno,$errstr,$errfile,$errline,$ex->getTrace(),'ERROR');
 
@@ -56,7 +54,7 @@ class Exc extends E{
 	final public static function handleShutdown(){
 		if($error = error_get_last() && $error['type']){
 
-			$ex = new Exc($errstr);
+			$ex = new self($errstr);
 
 			return self::handle($error['type'],$error['message'],$error['file'],$error['line'],$ex->getTrace(),'SHUTDOWN');
 		}

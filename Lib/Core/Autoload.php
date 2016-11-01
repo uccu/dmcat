@@ -1,6 +1,6 @@
 <?php
 namespace Lib\Core;
-use Lib\Core\Exc as E;
+use E;
 
 class Autoload{
 
@@ -22,7 +22,7 @@ class Autoload{
 
 		else{
 
-            //$path = str_ireplace(BASE_ROOT,'',$path);
+            $path = str_ireplace(BASE_ROOT,'',$path);
             E::throw('file lost: '.$path,1);
 
         }
@@ -41,6 +41,8 @@ class Autoload{
 		$z = self::load($class);
 
 		self::$_tables[$class] = new $class();
+
+		return self::$_tables[$class];
 
 	}
 
@@ -61,7 +63,17 @@ class Autoload{
 			if(!preg_match('#^([a-z_][a-z_0-9]*)[ \t]*=[ \t]*(.*)$#i',$line,$match))continue;
 
 			list(,$key,$value) = $match;
-			$config->{strtoupper($key)} = $value;
+			$key = strtoupper($key);
+			if(!is_null($config->$key)){
+				if(is_array($config->$key))$config->$key[] = $value;
+				else{
+					$config->$key = array($config->$key);
+					$config->$key[] = $value;
+				}
+			}else{
+				$config->$key = $value;
+			}
+			
 
 		}
 

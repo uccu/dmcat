@@ -1,7 +1,6 @@
 <?php
 namespace Lib\Database;
-use Lib\Core\Autoload;
-use Lib\Core\Exc as E;
+use E;
 
 class Mysqli
 {
@@ -119,7 +118,7 @@ class Mysqli
 	private function init_config(){
 
 		$name = basename( __CLASS__);
-		$this->config = Autoload::conf($name);
+		$this->config = conf($name);
 		
 		return $this;
 
