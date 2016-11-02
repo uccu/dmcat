@@ -27,18 +27,25 @@ class Autoload{
 
         }
 	}
-	public static function load($class){
+	public static function load($class,$force = false){
 		
-		;
-        return self::import( BASE_ROOT.(strpos($class, '\\')?'':'Lib/Base/').str_replace('\\','/',$class).'.php',false);
+		
+        return self::import( BASE_ROOT.(strpos($class, '\\')?'':'Lib/Base/').str_replace('\\','/',$class).'.php',$force);
         
     }
 
 	public static function table($class,$force = false){
 
+		$class = str_replace('/','\\',$class);
+
 		if(isset( self::$_tables[$class] ))
-			if($table = self::$_tables[$class])return $table;
-		$z = self::load($class);
+			return self::$_tables[$class];
+		$z = self::load($class,$force);
+
+		if(!$z){
+			self::$_tables[$class] = false;
+			return false;
+		}
 
 		self::$_tables[$class] = new $class();
 
