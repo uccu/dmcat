@@ -2,29 +2,34 @@
 
 namespace Lib\Model;
 
+use Lib\Tool\Sql;
 
-class Container{
+class Container implements Sql{
 
 
 
     function __construct($tableName = null){
 
-        if(!$tableName)
-
-
-
-
-        if(Config::get('MODEL_CACHE')){
-
-            
-        }
 
 
     }
 
 
 
+    function find($id){
 
+
+
+
+
+
+
+
+
+
+
+
+    }
     
 
 

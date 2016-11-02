@@ -16,6 +16,9 @@ define('LIB_ROOT', BASE_ROOT.'Lib/');
 define('CONFIG_ROOT', BASE_ROOT.'config/');
 define('VENDOR_ROOT', BASE_ROOT.'vendor/');
 
+define('OPTION_OFF',0);
+define('OPTION_ON',1);
+define('OPTION_DEBUG',2);
 
 
 
