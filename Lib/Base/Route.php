@@ -33,7 +33,7 @@ Class Route{
 
     public static function parse(){
 
-        $route = Config::get('ROUTE');
+        $route = conf('Route')->ROUTE;
         if(!$route)return;
 
         if(!is_array($route))$route = array($route);

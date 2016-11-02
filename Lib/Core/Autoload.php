@@ -50,10 +50,10 @@ class Autoload{
 
 		$path = CONFIG_ROOT.$name.'.conf';
 		$file = fopen($path, "r");
-		if(!$file)E::throw('config lost: '.$name);
-		
 
 		$config = (object)array();
+		if(!$file)return $config;
+		
 		while(!feof($file)) {
 
 			$line = fgets($file);
@@ -73,17 +73,25 @@ class Autoload{
 			}else{
 				$config->$key = $value;
 			}
-			
 
 		}
-
-		//var_dump($config);
 
 		fclose($file);
 		return $config;
 
 	}
 
+	
+
+	public static function extension_check(){
+
+		$conf = self::conf('Extension');
+		foreach($conf->EXT as $e){
+			if(!extension_loaded($e))
+				E::throw($e.' Extension Not Loaded');
+		}
+
+	}
 
 
 }

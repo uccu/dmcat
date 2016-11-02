@@ -34,16 +34,43 @@ register_shutdown_function(array(E::class, 'handleShutdown'));
 
 
 
+
+//验证PHP扩展
+
+Autoload::extension_check();
+
+
+
+
+//加载全局函数库
+
 require_once LIB_ROOT.'Function/Core.php';
-define('REQUEST_PATH',$_SERVER['REDIRECT_URL']?substr($_SERVER['REDIRECT_URL'],1):'');
+
+//定义请求路径
+
+define('REQUEST_PATH',$_SERVER['PATH_INFO']?substr($_SERVER['PATH_INFO'],1):($_SERVER['REDIRECT_URL']?substr($_SERVER['REDIRECT_URL'],1):''));
 
 //composer依赖的自动加载
 
 require_once VENDOR_ROOT.'autoload.php';
 
 
+//进行压缩处理，在这之前不允许输入任何字符，所以要注意不要使用 UTF-8 with BOM的编码
 
+if(Config::get('OB_GZHANDLER')){
+    ob_start('ob_gzhandler');
+}
+
+
+
+//处理请求路由
 Route::parse();
+
+//输出内容
+if(Config::get('OB_GZHANDLER')){
+    ob_end_flush();
+}
+
 
 
 

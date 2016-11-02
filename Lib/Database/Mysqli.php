@@ -82,12 +82,8 @@ class Mysqli
 
 	private function init(){
 
-		if(!function_exists('mysqli_init'))
-			E::throw('Mysqli Not Open');
-		
 		$this->mysqli = mysqli_init();
 
-		
 		return $this;
 	}
 
