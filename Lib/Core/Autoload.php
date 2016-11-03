@@ -106,6 +106,16 @@ class Autoload{
 	}
 
 
+	public static function field($class){
+
+
+
+
+
+
+	}
+
+
 }
 
 

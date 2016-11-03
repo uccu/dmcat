@@ -88,35 +88,26 @@ class Using{
 	}
 
 
-    function quote_field($field ,Model $model =null){
+    function quote_field($field ){
 		
 		if(!is_string($field))E::throw('Undefined Field\'s Name');
 
         $fields = explode('.',$field);
 
-        if(count($fields)>1){
-            if($model){
-
-                $model->{$fields[0]}->table;
-
-            }
-
-        }
-
-
-
         foreach($fields as &$v)$v  = '`' . str_replace('`', '', $v) . '`';
 
         $field = implode('.',$fields);
-
-
-		//if($as)$field .= ' AS `'.$as.'` ';
 		
 		return $field;
 
 	}
 
+    function quote($field){
+		
+		
+		return $field;
 
+	}
     
 
 

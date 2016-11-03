@@ -10,7 +10,9 @@ class BaseModel{
 
     const BLOCK = ' ';
 
-    public   $table;
+    public      $table;
+
+    public      $rawTable;
 
     protected   $field;
 
@@ -47,7 +49,10 @@ class BaseModel{
 
         $this->tool = table('Lib/Model/Using');
 
+    
         if($tableName)$this->table = $tableName;
+
+        $this->rawTable = $this->table;
 
         if($mb->PREFIX){
             
@@ -57,6 +62,20 @@ class BaseModel{
 
         $this->table = $this->tool->quote_table($this->table);
 
+        $this->_COLUMNS();
+
+        if(is_string($this->field))$this->field = array($this->field);
+
+
+        if(!$this->primary)$this->primary = $this->field[0];
+        
+        
+
+    }
+
+
+    private function _COLUMNS(){
+
         if(!$this->field){
 
             $this->field = $this->tool->fetch_all('SHOW FULL COLUMNS FROM '.$this->table);
@@ -65,12 +84,7 @@ class BaseModel{
 
         }
 
-        if(is_string($this->field))$this->field = array($this->field);
-
-
-        if(!$this->primary)$this->primary = $this->field[0];
-        
-        
+        return $this;
 
     }
 
@@ -84,7 +98,12 @@ class BaseModel{
 
         $sql .= $this->select.' FROM '.$this->table;
 
-        
+        if($this->on){
+
+            $sql .= $this->on;
+
+
+        }
 
         if($this->where){
 
@@ -129,8 +148,15 @@ class BaseModel{
     function find($id = 0){
 
         $this->limit = 1;
-        
 
+        if($id){
+
+            $field = new Field($this->primary,$this);
+            $this->where =  $field->fullName.' = '.$this->tool->quote($id);
+
+        }
+        
+        return $this->get(0);
 
     }
 
@@ -249,6 +275,44 @@ class BaseModel{
     function __toString(){
 
         return (string)$this->sql;
+
+    }
+
+
+
+    function hasField($field){
+
+        $this->_COLUMNS();
+
+        return in_array($field,$this->field) ? true : false;
+       
+    }
+
+
+
+
+
+    protected function join($class,$forign = null,$key = null,$join = 'INNER'){
+         
+        $c = table($class);
+
+        if(!$this->forign[$class]){
+
+            if(!$forign)$forign = $this->rawTable.'_id';
+
+            if(!$key)$key = $this->primary;
+
+            $forign = new Field($forign,$c);
+
+            $key = new Field($key,$this);
+
+            $this->forign[$class] = ' '.$join.' JOIN '.$c->table.' ON '.$key->funllName.' = '.$forign->fullName;
+
+            $this->on .= $this->forign[$class];
+
+        }
+
+        return $c;
 
     }
 

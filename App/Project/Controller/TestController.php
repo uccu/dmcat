@@ -8,6 +8,7 @@ use AJAX;
 
 
 use App\Project\Model\UserModel as User;
+use App\Project\Model\LessionModel as Lession;
 
 class TestController extends Controller{
 
@@ -22,12 +23,12 @@ class TestController extends Controller{
         //$e = $u->query('insert into `user` set name ="123"');
 
 
-        $var = new User;
+        $var = new Lession;
         
 
-        $var->select('id','user2.ww')->page(3,10)->get();
+        $var->select('id','user.id')->page(3,10)->find(1);
        
-      
+        
     }
 
 

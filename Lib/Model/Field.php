@@ -1,7 +1,7 @@
 <?php
 
 namespace Lib\Model;
-
+use E;
 
 class Field{
 
@@ -29,11 +29,15 @@ class Field{
         if($count==1){
             $this->tables[] = $model->table;
             $this->table = $model->table;
-            $this->name = $this->tool->quote_field( end($fields) );
+            $field = end($fields);
+            if(!$model->hasField($field))E::throw('Field `'.$field.'` Not Defined',2);
+            $this->name = $this->tool->quote_field( $field );
         }else{
             //设置字段名字
             $this->tables[] = $model->table;
-            $this->name = $this->tool->quote_field(end($fields));
+            $field = end($fields);
+            if(!$model->hasField($field))E::throw('Field `'.$field.'` Not Defined',2);
+            $this->name = $this->tool->quote_field($field);
 
             //设置表名
             $m = $model->{prev($fields)}();
