@@ -306,7 +306,9 @@ class BaseModel{
 
             $key = new Field($key,$this);
 
-            $this->forign[$class] = ' '.$join.' JOIN '.$c->table.' ON '.$key->funllName.' = '.$forign->fullName;
+            //var_dump($key);
+
+            $this->forign[$class] = ' '.$join.' JOIN '.$c->table.' ON '.$key->fullName.' = '.$forign->fullName;
 
             $this->on .= $this->forign[$class];
 

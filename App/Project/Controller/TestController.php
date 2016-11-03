@@ -26,7 +26,7 @@ class TestController extends Controller{
         $var = new Lession;
         
 
-        $var->select('id','user.id')->page(3,10)->find(1);
+        $var->select('id','user.id')->find(1);
        
         
     }
