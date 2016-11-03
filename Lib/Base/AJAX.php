@@ -3,9 +3,11 @@
 
 class AJAX{
 
+
+    //暂时没有什么用
     static $type = 'JSON';
 
-
+    //输出口
     private static function outPut($code ,$data ,$message ,$url){
 
         $content = (object)array();
@@ -30,7 +32,7 @@ class AJAX{
 
     }
 
-
+    //成功
     static function success(array $data ,$code = 200 ,$url = ''){
 
         $url = !$url && is_string($code) ? $code : $url;
@@ -45,7 +47,7 @@ class AJAX{
         
     }
 
-
+    //错误/失败
     static function error(string $message ,$code = 400 ,$url = ''){
 
         $url = !$url && is_string($code) ? $code : $url;
@@ -60,7 +62,7 @@ class AJAX{
  
     }
 
-
+    //自定义错误码
     static function  code(){
 
 

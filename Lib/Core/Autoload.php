@@ -6,9 +6,11 @@ class Autoload{
 
 	private static $_imports = array();
 	private static $_tables  = array();
+	private static $_configs  = array();
 
 	public static function import($path,$force = true){
 
+		
 		if(isset(self::$_imports[$path]))return true;
 
 		if(is_file($path)){
@@ -55,6 +57,8 @@ class Autoload{
 
 	public static function conf($name){
 
+		if(isset(self::$_configs[$name]))return self::$_configs[$name];
+
 		$path = CONFIG_ROOT.$name.'.conf';
 		$file = fopen($path, "r");
 
@@ -84,6 +88,7 @@ class Autoload{
 		}
 
 		fclose($file);
+		self::$_configs[$name] = $config;
 		return $config;
 
 	}

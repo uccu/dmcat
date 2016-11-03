@@ -2,15 +2,15 @@
 
 namespace Lib\Model;
 
-use Lib\Tool\Sql;
-
-class Container implements Sql{
 
 
+class Container{
 
-    function __construct($tableName = null){
 
 
+    function __construct($model){
+        
+        echo $model;
 
     }
 

@@ -5,7 +5,7 @@ class E extends Exception{
 
 	
 
-	final public static function handleException($e,$line=0){
+	final public static function handleException($e,$line=null){
 		
 		return self::handle($e->getCode(),$e->getMessage(),$e->getFile(),$e->getLine(),$e->getTrace(),'BASE',$line);
 		
@@ -25,11 +25,13 @@ class E extends Exception{
 
 		$str =  "$base EXCEPTION : [$code][$message] FILE [$file] LINE [$line]";
 		
+		$type = Config::get('EXCEPTION_OUTPUT_TYPE');
 
-		echo $str;
+		if(is_null($type) || $type == 'string')echo $str;
+			
+		else AJAX::error($str ,999 );
 		
-		
-		die();
+		exit();
 	}
 
 	final public static function handleError($errno, $errstr, $errfile, $errline){
@@ -52,9 +54,10 @@ class E extends Exception{
 	}
 
 	final public static function handleShutdown(){
-		if($error = error_get_last() && $error['type']){
+		$error = error_get_last();
+		if($error && $error['type']){
 
-			$ex = new self($errstr);
+			$ex = new self($error['message']);
 
 			return self::handle($error['type'],$error['message'],$error['file'],$error['line'],$ex->getTrace(),'SHUTDOWN');
 		}

@@ -1,8 +1,8 @@
 <?php
 
+use Lib\Core\Autoload;
 
-
-class Config{
+class Config {
 
 	private $list = array();
 	private $init = false;
@@ -13,12 +13,18 @@ class Config{
 		
 	}
 
+	public static function obj(){
+        static $object;
+		if(empty($object)) $object = new self();
+		
+		return $object;
+
+    }
+
 	public static function get($v){
-		static $object;
-		if(empty($object)) {
-			$object = new self();
-		}
-		return $object->$v;
+		
+		return self::obj()->$v;
+
 	}
 
 	public function __get($key){
@@ -30,7 +36,7 @@ class Config{
 
 	private function init_config(){
 		$name = basename( __CLASS__);
-		$config = conf($name);
+		$config = Autoload::conf($name);
 		foreach($config as $k=>$v)$this->list[$k] = $v;
 		$this->init = true;
 		if(!$this->CONFIG_ALLOW_SET)$this->set = false;

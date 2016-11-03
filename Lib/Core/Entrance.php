@@ -5,7 +5,7 @@ use Lib\Core\Autoload;
 
 
 
-error_reporting(-1);
+error_reporting(0);
 
 //定义常量
 define('TIME_NOW', time());
@@ -13,8 +13,9 @@ define('TIME_TODAY', strtotime(date('Y-m-d',TIME_NOW)));
 define('TIME_YESTERDAY', TIME_TODAY-3600*24);
 define('BASE_ROOT', substr(__DIR__, 0, -8));
 define('LIB_ROOT', BASE_ROOT.'Lib/');
-define('CONFIG_ROOT', BASE_ROOT.'config/');
+define('CONFIG_ROOT', BASE_ROOT.'Config/');
 define('VENDOR_ROOT', BASE_ROOT.'vendor/');
+define('PUBLIC_ROOT', BASE_ROOT.'Public/');
 
 define('OPTION_OFF',0);
 define('OPTION_ON',1);
