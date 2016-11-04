@@ -9,10 +9,19 @@ class LessionModel extends Model{
     public $table = 'lession';
 
 
-    public function user(){
+    protected $field = ['id','name','uid'];
+
+    public function u(){
 
         return $this->join(UserModel::class,'id','uid');
         
+    }
+
+
+    public function Tteacher(){
+
+        return $this->join(UserModel::class,'id','uid');
+
     }
 
 }

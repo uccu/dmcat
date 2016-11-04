@@ -48,7 +48,7 @@ class Using{
 
 
     function fetch_all($sql, $keyfield = '') {
-        
+        echo 1;
         if(isset($this->sqls[$sql]))return $this->sqls[$sql];
 
 		$data = array();
