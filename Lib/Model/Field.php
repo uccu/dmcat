@@ -31,6 +31,7 @@ class Field{
             $this->fullTable = $model->asRawTable ? $model->table.' AS '.$model->asRawTable : $model->table;
             $this->table = $model->asRawTable ? $model->asRawTable : $model->table;
             $field = end($fields);
+            $this->model = $model;
             if(!$model->hasField($field))E::throw('Field `'.$field.'` Not Defined',2);
             $this->name = $this->tool->quote_field( $field );
         }else{
@@ -45,10 +46,9 @@ class Field{
             }
 
             $field = end($fields);
-            
+            $this->model = $model;
             $this->fullTable = $model->asRawTable ? $model->table.' AS '.$model->asRawTable : $model->table;
             $this->table = $model->asRawTable ? $model->asRawTable : $model->table;
-
             if(!$model->hasField($field))E::throw('Field `'.$field.'` Not Defined',2);
             $this->name = $this->tool->quote_field( $field );
 

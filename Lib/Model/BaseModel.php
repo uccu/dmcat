@@ -29,7 +29,7 @@ class BaseModel{
     public      $sql;
 
     private     $link;
-    function __construct($tableName = null){
+    public function __construct($tableName = null){
 
         $mb = conf('Mysqli');
 
@@ -74,7 +74,7 @@ class BaseModel{
 
     }
     
-    function get(){
+    public function get(){
 
         $this->importJoin();
 
@@ -131,7 +131,7 @@ class BaseModel{
 
 
     }
-    function find($id = 0){
+    public function find($id = 0){
 
         $this->limit = 1;
 
@@ -146,21 +146,30 @@ class BaseModel{
         return $this->get(0);
 
     }
+    //___________________
     function save(){
         $this->cmd = 'UPDATE';
 
     }
+    //___________________
     function add(){
 
 
         $this->cmd = 'INSERT INTO';
     }
+    //___________________
     function replace(){
 
 
         $this->cmd = 'REPLACE INTO';
     }
-    function select(){
+    //___________________
+    function where($q = null){
+
+        return is_callable($q);
+
+    }
+    public function select(){
 
         $container = func_get_args();
 
@@ -184,27 +193,33 @@ class BaseModel{
         return $this;
 
     }
-    function selectExcept(){
+    public function selectExcept(){
 
-        1;
+        $container = func_get_args();
 
+        foreach($container as $field){
+
+            unset($this->$field[$field]);
+        }
+
+        return $this;
 
     }
-    function offset($i = null){
+    public function offset($i = null){
         if(!$i)return $this;
         $i = floor($i);
         if($i<0)$i = 0;
         $this->offset = $i;
         return $this;
     }
-    function limit($i = null){
+    public function limit($i = null){
         if(!$i)return $this;
         $i = floor($i);
         if($i<1)$i = 1;
         $this->limit = $i;
         return $this;
     }
-    function page($page = 1,$count = null){
+    public function page($page = 1,$count = null){
         
         $this->limit($count);
         
@@ -221,16 +236,79 @@ class BaseModel{
 
         return $this;
     }
-    function order($field,$order){
-        1;   
+    public function order(){
+
+        $container = func_get_args();
+
+        $count = count($container);
+
+        if(!$count)return $this;
+
+        if($count === 2){
+
+            if(!$desc)$desc = '';
+            $desc = strtoupper($container[1]);
+
+            if(!$desc || $desc === 'ASC'){
+
+                $count = 1;
+
+            }else{
+
+                $field = reset($container);
+
+                if(!$field)return $this;
+
+                $field = new Field($field ,$this);
+
+                $this->order = $field->fullName.' DESC';
+
+                return $this;
+
+            }
+
+        }
+
+        if($count === 1){
+
+            $field = reset($container);
+
+            if(!$field)return $this;
+
+            list($field,$desc) = explode(' ',$field);
+
+            $field = new Field($field ,$this);
+
+            $this->order = $field->fullName.' '. (!$desc || strtoupper($container[1]) ==='ASC' ?'ASC':'DESC');
+
+            return $this;
+        }
+
+        $orders = array();
+
+        foreach($container as $field){
+
+            list($field,$desc) = explode(' ',$field);
+
+            $field = new Field($field ,$this);
+
+            $orders[] = $field->fullName.' '. (!$desc || strtoupper($container[1]) ==='ASC' ?'ASC':'DESC');
+
+        }
+
+        $this->order = implode(', ' ,$orders);
+
+        return $this;
+
+        
 
     }
-    function __toString(){
+    public function __toString(){
 
         return (string)$this->sql;
 
     }
-    function hasField($field){
+    public function hasField($field){
 
         $this->_COLUMNS();
 
@@ -279,7 +357,7 @@ class BaseModel{
     }
 
 
-    function __get($arg){
+    public function __get($arg){
 
         if(method_exists($this,$arg)){
 
@@ -304,7 +382,7 @@ class BaseModel{
 
 
 
-    function __call($method,$arg){
+    public function __call($method,$arg){
 
 
         $method  = lcfirst(preg_replace('#^import#','',$method));

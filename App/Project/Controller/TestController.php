@@ -26,9 +26,11 @@ class TestController extends Controller{
         $var = new Lession;
         
 
-        $var->select('id','id')->find(1);
+        //$var->select('id','id')->find(1);
        
-        
+        $g = $var->where(function(){});
+
+        var_dump($g);
     }
 
 
