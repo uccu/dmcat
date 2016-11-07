@@ -14,24 +14,31 @@ class TestController extends Controller{
 
 
     function __construct(){
-
+        echo microtime().'<br>';
         
-        
-        $u = table('Lib/Model/Using');
 
 
+        echo microtime().'<br>';
         //$e = $u->query('insert into `user` set name ="123"');
 
 
-        $var = new Lession;
-        
+        $var = Lession::new();
+        echo microtime().'<br>';
 
         //$var->select('id','id')->find(1);
-       
-        $g = $var->where(function(){});
 
-        var_dump($g);
+
+       
+        $g = $var->select('user.*','uid2','count')->where('user.id = 2')->get();
+
+
+        echo '<br>';
+        echo microtime().'<br>';
+
+        //var_dump($g);
     }
+
+
 
 
 

@@ -9,9 +9,9 @@ class LessionModel extends Model{
     public $table = 'lession';
 
 
-    protected $field = ['id','name','uid'];
+    protected $field = ['id','name','uid','uid'=>'uid2','COUNT(*)'=>'count'];
 
-    public function u(){
+    public function user(){
 
         return $this->join(UserModel::class,'id','uid');
         

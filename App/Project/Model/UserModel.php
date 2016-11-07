@@ -12,7 +12,7 @@ class UserModel extends Model{
     protected $field = ['id','name'];
 
 
-    public function l(){
+    public function lession2(){
 
         return $this->join(LessionModel::class,'uid','id');
         

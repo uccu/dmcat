@@ -164,11 +164,23 @@ class BaseModel{
         $this->cmd = 'REPLACE INTO';
     }
     //___________________
-    function where($q = null){
+    function where($sql = null , $data = null){
 
-        return is_callable($q);
+        if(is_string($sql)){
+            $container = func_get_args();
+            array_shift($container);
+            $this->where = ($this->where?' AND (':'') .$this->tool->format($sql,$container,$this) . ($this->where?' )':'');
+        }else{
+
+
+        }
+
+        return $this;
 
     }
+
+    
+
     public function select(){
 
         $container = func_get_args();
@@ -183,7 +195,7 @@ class BaseModel{
 
                 $field = new Field($j,$this);
 
-                $fields[] = $field->fullName;
+                $fields[] = $field->asName;
             }
             
         }
@@ -310,9 +322,12 @@ class BaseModel{
     }
     public function hasField($field){
 
-        $this->_COLUMNS();
+        return $field=='*' || in_array($field,$this->field) ? true : false;
+       
+    }
+    public function getKeyField($field){
 
-        return in_array($field,$this->field) ? true : false;
+        return array_search($field,$this->field);
        
     }
 
@@ -394,6 +409,12 @@ class BaseModel{
         $this->join[$method] = $this->$method();
 
 
+
+    }
+
+    public static function new(){
+
+        return clone table(static::class);
 
     }
 
