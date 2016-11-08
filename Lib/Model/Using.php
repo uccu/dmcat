@@ -12,11 +12,20 @@ class Using{
     function __construct(){
 
 
-        $this->mb = table('Lib/Database/Mysqli');
+        
 
         $model_null = Config::get('MODEL_NULL');
 
         $this->model_null = is_null($model_null) || $model_null ? true :false;
+
+    }
+
+    function __get($name){
+
+        if($name='mb'){
+            return $this->mb = table('Lib/Database/Mysqli');
+        }
+        return null;
 
     }
 
@@ -47,8 +56,8 @@ class Using{
 
 
 
-    function fetch_all($sql, $keyfield = '') {
-        echo 1;
+    function fetch_all($sql, $keyfield = '',$model = null) {
+
         if(isset($this->sqls[$sql]))return $this->sqls[$sql];
 
 		$data = array();
@@ -63,8 +72,8 @@ class Using{
                 }
             }
 
-			if ($keyfield && isset($row[$keyfield]))$data[$row[$keyfield]] = $row;
-			else $data[] = $row;
+			if ($keyfield && isset($row[$keyfield]))$data[$row[$keyfield]] = new Record($row,$model);
+			else $data[] = new Record($row,$model);
 
 		}
 
@@ -125,18 +134,10 @@ class Using{
     function format($hql = '', $arg = array() ,Model $model ,$checkField = true) {
 
         $sql = preg_replace_callback('#([ =\-,\+\(]|^)([a-z\*][a-zA-Z0-9_\.]*)#',function($m) use ($model,$checkField){
-            
-
             if(substr_count($m[2],'.')==0 && $checkField && !$model->hasField($m[2]))return $m[0];
-            
             $field = new Field($m[2],$model,$checkField);
-
             return $m[1].$field->fullName;
-
-                
-
         },$hql);
-
 		$count = substr_count($sql, '%');
 
 		if (!$count) {

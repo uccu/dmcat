@@ -7,7 +7,7 @@ use Model;
 class LessionModel extends Model{
 
     public $table = 'lession';
-
+    protected $updateSafe = false;
 
     protected $field = ['id','name','uid','uid'=>'uid2','COUNT(*)'=>'count'];
 

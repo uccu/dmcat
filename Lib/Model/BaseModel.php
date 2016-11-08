@@ -10,54 +10,74 @@ class BaseModel{
 
     const BLOCK = ' ';
 
-    public      $table;
-    public      $rawTable;
-    public      $asRawTable;
-    public      $join;
-    protected   $field;
-    protected   $primary;
-    private     $cmd;
-    private     $select;
-    private     $on;
-    private     $where;
-    private     $group;
-    private     $order;
-    private     $offset;
-    private     $limit;
-    private     $set;
-    private     $tool;
-    public      $sql;
+    public      $table;     //表名
 
-    private     $link;
+    public      $rawTable;  //设定的别名
+
+    public      $asRawTable;//表sql内全名
+
+    public      $join;   //所有关联的表的信息
+
+    public      $primary;//主键
+
+    protected   $field;  //允许使用的字段
+
+    protected   $updateSafe = true;//UPDATE 是否允许没有WHERE条件
+
+
+
+
+    private     $cmd;   //sql类型
+
+    private     $select;//筛选
+
+    private     $on;    //join规则
+
+    private     $where; //条件
+
+    private     $group; //按组分
+
+    private     $order; //排序规则
+
+    private     $offset;//开始位置
+
+    private     $limit; //限制数量
+
+    private     $set;   //SET内容
+
+    private     $tool;  //Using工具
+
+    private     $query; //使用HQL不包括select和from
+
+
+
+
+
+    public      $sql;   //输出的sql语句
+
+    public      $link;   //与上一个表的关联信息
+
     public function __construct($tableName = null){
 
         $mb = conf('Mysqli');
 
         $this->tool = table('Lib/Model/Using');
 
-    
         if($tableName)$this->table = $tableName;
 
         $this->rawTable = $this->table;
 
-        if($mb->PREFIX){
-            
-            $this->table = $mb->PREFIX.$this->table;
-
-        }
+        if($mb->PREFIX)$this->table = $mb->PREFIX.$this->table;
 
         $this->table = $this->tool->quote_table($this->table);
 
         $this->asRawTable = $this->tool->quote_table($this->rawTable);
-
+        
         $this->_COLUMNS();
 
         if(is_string($this->field))$this->field = array($this->field);
 
-
         if(!$this->primary)$this->primary = $this->field[0];
-        
-        
 
     }
     private function _COLUMNS(){
@@ -73,8 +93,16 @@ class BaseModel{
         return $this;
 
     }
-    
-    public function get(){
+    public function group($n){
+
+        $field = new Field($n,$this);
+
+        $this->group = $field->fullName;
+
+        return $this;
+
+    }
+    public function get($key = null){
 
         $this->importJoin();
 
@@ -86,49 +114,25 @@ class BaseModel{
 
         $sql .= $this->select.' FROM '.($this->join && $this->asRawTable!=$this->table?$this->asRawTable.' AS '.$this->table :$this->table);
 
-        if($this->on){
+        if($this->on)$sql .= $this->on;
 
-            $sql .= $this->on;
+        if(!$this->query){
 
+            if($this->where)$sql .= ' WHERE '.$this->where;
 
-        }
+            if($this->group)$sql .= ' GROUP BY '.$this->group;
 
-        if($this->where){
+            if($this->order)$sql .= ' ORDER BY '.$this->order;
 
-            $sql .= ' WHERE '.$this->where;
-        }
+            if($this->limit)$sql .= ' LIMIT '.$this->limit;
 
+            if($this->offset)$sql .= ' OFFSET '.$this->offset;
 
-        if($this->group){
-
-
-            $sql .= ' GROUP BY '.$this->group;
-        }
-
-        if($this->order){
-
-
-            $sql .= ' ORDER BY '.$this->order;
-        }
-
-        
-
-        if($this->limit){
-
-
-            $sql .= ' LIMIT '.$this->limit;
-        }
-
-        if($this->offset){
-
-
-            $sql .= ' OFFSET '.$this->offset;
-        }
+        }else $sql .= ' '.$this->query;
 
         $this->sql = $sql;
 
-        return new Container($this);
-
+        return new Container($this,$key);
 
     }
     public function find($id = 0){
@@ -142,45 +146,134 @@ class BaseModel{
             $this->where =  $field->fullName.' = '.$this->tool->quote($id);
 
         }
-        
+
         return $this->get(0);
 
     }
-    //___________________
-    function save(){
+    public function save($id = null){
+
+        $this->importJoin();
+
         $this->cmd = 'UPDATE';
 
+        $sql = $this->cmd;
+
+        $sql .= ' '.($this->join && $this->asRawTable!=$this->table
+
+                ? $this->asRawTable.' AS '.$this->table :$this->table);
+
+        if($this->on)$sql .= $this->on;
+
+        if(!$this->query){
+
+            if(!$this->set)E::throw('Not Set Any Data');
+
+            $sql .= ' SET '.$this->set;
+
+            if(!is_null($id)){
+
+                $field = new Field($this->primary,$this);
+
+                $this->where =  $field->fullName.' = '.$this->tool->quote($id);
+
+            }
+            if($this->updateSafe && !$this->where)E::throw('WHERE Is Empty');
+
+            elseif($this->where)$sql .= ' WHERE '.$this->where;
+
+            $this->sql = $sql;
+
+        }else $sql .= ' '.$this->query;
+        
+        $this->sql = $sql;
+
+        return new Container($this);
+
     }
-    //___________________
-    function add(){
+    public function add($replace = false){
 
+        $this->importJoin();
 
-        $this->cmd = 'INSERT INTO';
+        $this->cmd = $replace?'REPLACE INTO ':'INSERT INTO ';
+
+        $sql = $this->cmd;
+
+        if($this->join)E::throw('Cant Use INSERT or REPLACE With JOIN');
+
+        $sql .= $this->table;
+
+        if(!$this->query){
+
+            if(!$this->set)E::throw('Not Set Any Data');
+
+            $sql .= ' SET '.$this->set;
+
+            $this->sql = $sql;
+
+        }else $sql .= ' '.$this->query;
+        
+        $this->sql = $sql;
+
+        return new Container($this);
+
     }
-    //___________________
-    function replace(){
-
-
-        $this->cmd = 'REPLACE INTO';
-    }
-    //___________________
-    function where($sql = null , $data = null){
+    public function where($sql = null , $data = null){
 
         if(is_string($sql)){
-            $container = func_get_args();
-            array_shift($container);
-            $this->where = ($this->where?' AND (':'') .$this->tool->format($sql,$container,$this) . ($this->where?' )':'');
-        }else{
 
+            $container = func_get_args();
+
+            array_shift($container);
+
+            $this->where .= ($this->where?' AND (':'') .$this->tool->format($sql,$container,$this) . ($this->where?' )':'');
+
+        }elseif(is_array($sql)){
+
+            foreach($sql as $k=>$v){
+
+                if(is_array($v))call_user_func_array(array($this,'where'),$v);
+
+                elseif(is_string($v))call_user_func_array(array($this,'where'),array('%F = %n',$k,$v));
+                
+            }
 
         }
 
         return $this;
 
     }
+    public function set($sql = null ){
 
-    
+        if(is_string($sql)){
 
+            $container = func_get_args();
+
+            array_shift($container);
+
+            $this->set .= ($this->set?' ,':'') .$this->tool->format($sql,$container,$this) ;
+
+        }elseif(is_array($sql) || is_object($sql) ){
+
+            foreach($sql as $k=>$v){
+
+                if(is_array($v))call_user_func_array(array($this,'set'),$v);
+
+                elseif(!is_object($v))call_user_func_array(array($this,'set'),array('%F = %n',$k,$v));
+
+            }
+
+        }
+
+        return $this;
+
+    }
+    public function query($sql=null,$s = array()){
+
+        if($sql)$this->query = $this->tool->format($sql,$s,$this);
+
+        return $this;
+
+    }
     public function select(){
 
         $container = func_get_args();
@@ -205,6 +298,7 @@ class BaseModel{
         return $this;
 
     }
+    //!----
     public function selectExcept(){
 
         $container = func_get_args();
@@ -218,18 +312,30 @@ class BaseModel{
 
     }
     public function offset($i = null){
+
         if(!$i)return $this;
+
         $i = floor($i);
+
         if($i<0)$i = 0;
+
         $this->offset = $i;
+
         return $this;
+
     }
     public function limit($i = null){
+
         if(!$i)return $this;
+
         $i = floor($i);
+
         if($i<1)$i = 1;
+
         $this->limit = $i;
+
         return $this;
+
     }
     public function page($page = 1,$count = null){
         
@@ -240,13 +346,17 @@ class BaseModel{
         if($count){
 
             $page = floor($page);
+
             if($page<1)$page = 1;
+
             $offset = ($page-1)*$count;
+
             $this->offset($offset);
 
         }
 
         return $this;
+
     }
     public function order(){
 
@@ -258,24 +368,13 @@ class BaseModel{
 
         if($count === 2){
 
-            if(!$desc)$desc = '';
+            if(!$container[1])$container[1] = '';
+
             $desc = strtoupper($container[1]);
 
             if(!$desc || $desc === 'ASC'){
 
                 $count = 1;
-
-            }else{
-
-                $field = reset($container);
-
-                if(!$field)return $this;
-
-                $field = new Field($field ,$this);
-
-                $this->order = $field->fullName.' DESC';
-
-                return $this;
 
             }
 
@@ -312,8 +411,6 @@ class BaseModel{
 
         return $this;
 
-        
-
     }
     public function __toString(){
 
@@ -330,7 +427,6 @@ class BaseModel{
         return array_search($field,$this->field);
        
     }
-
     public function importJoin(){
         
         if($this->join){
@@ -356,7 +452,6 @@ class BaseModel{
 
         return '';
     }
-
     protected function join($class,$forign = null,$key = null,$join = 'INNER'){
  
         $c = clone table($class);
@@ -370,8 +465,6 @@ class BaseModel{
         return $c;
 
     }
-
-
     public function __get($arg){
 
         if(method_exists($this,$arg)){
@@ -381,6 +474,7 @@ class BaseModel{
             if($o instanceof BaseModel && $o != $this){
 
                 $o->rawTable = $arg;
+
                 $o->asRawTable = $this->tool->quote_table( $arg );
 
                 $this->join[] = $arg;
@@ -390,33 +484,26 @@ class BaseModel{
             }
 
         }
+
         return null;
 
     }
-
-
-
-
     public function __call($method,$arg){
-
 
         $method  = lcfirst(preg_replace('#^import#','',$method));
 
-        if(!method_exists($this,$method)){
-            E::throw('Method '.$method.' Not Found');
-        }
+        if(!method_exists($this,$method))E::throw('Method '.$method.' Not Found');
 
         $this->join[$method] = $this->$method();
 
-
-
     }
-
     public static function new(){
 
         return clone table(static::class);
 
     }
+
+
 
 
 }
