@@ -24,9 +24,11 @@ Class Route{
     }
 
 
-    public static function get(){
-
-        return self::$list;
+    public static function get($n = null){
+        if(!$n)
+            return self::$list;
+        else 
+            return self::$list[$n];
     }
     
 
@@ -43,6 +45,7 @@ Class Route{
 
             preg_match('#(controller|regexp|app|302) +(.*?)(?= +(.*)|$)#',$r,$m);
 
+            $folder = Request::folder();
 
             if($m[1] == 'controller' || $m[1] == 'app'){
                 if(!$m[3]){
@@ -51,8 +54,10 @@ Class Route{
                 }
                 $arr = $m[2] ? explode('/',$m[2]) : array();
                 $in = true;$on = 0;
+                
                 foreach($arr as $k=>$v){
-                    if($v!=Request::folder()[$k]){
+                    
+                    if($v!=$folder[$k]){
                         $in = false;
                     }
                     $on++;
@@ -61,26 +66,26 @@ Class Route{
                 if($in){
                     if($m[1] == 'app'){
                         $app = $m[3];
-                        $controller = Request::folder()[$on];
+                        $controller = $folder[$on];
                         if(!$controller){
                             E::throw('Controller Not Exist');
                         }
                         $controller = table($m[3].'\\'.$controller);
-                        $method = Request::folder()[$on+1];
+                        $method = $folder[$on+1];
                     }else{
                         $controller = table($m[3]);
-                        $method = Request::folder()[$on];
+                        $method = $folder[$on];
                     }
                     
                     if(!$method){
-                        
+                        return;
                     }
                     elseif(!method_exists($controller,$method)){
                         E::throw('Method Not Exist');
                     }else{
 
-                        ($controller->$method)();
-
+                        $controller->$method();
+                        return;
                     }
                     continue;
                 }
@@ -105,7 +110,7 @@ Class Route{
                 }
             }
         }
-        //header('Location: 404.html');
+        header('Location: 404.html');
 
     }
 }

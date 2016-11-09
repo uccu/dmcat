@@ -39,7 +39,7 @@ class Container{
 
     function find($value,$key = null){
 
-        if(!$key)return $this->data[$value] ? $this->data[$value] : array();
+        if(!$key)return $this->data[$value] ? $this->data[$value] : null;
 
         foreach($this->data as $v){
 

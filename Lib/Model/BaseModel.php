@@ -147,7 +147,7 @@ class BaseModel{
 
         }
 
-        return $this->get(0);
+        return $this->get()->find(0);
 
     }
     public function save($id = null){

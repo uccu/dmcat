@@ -15,24 +15,35 @@ class TestController extends Controller{
 
     function __construct(){
 
+        // $var = Lession::new();
 
+        // $g = $var->where('%F = %d AND %F = %n','id','1','name','1')->order('id desc')->get('id');
 
-        $var = Lession::new();
+        // $r = $g->find(1);
 
-       
-        $g = $var->get();
-
-        $r = $g->find(0)->save();
-
-        echo $g;
+        //echo $g;
 
 
     }
 
 
 
+    function main(){
+
+        
+        
+        call_user_func_array(array($this,'getLessionById'),['id'=>2]);
+
+    }
 
 
+    function getLessionById($name = null,$id = null){
+
+        var_dump(func_get_args());
+
+        echo Lession::new()->find($id);
+
+    }
 
 
 
