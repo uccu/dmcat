@@ -84,7 +84,42 @@ Class Route{
                         E::throw('Method Not Exist');
                     }else{
 
-                        $controller->$method();
+                        $get = Request::get();
+
+                        $controllerReflection = new ReflectionClass($controller);
+
+                        $actionReflection = $controllerReflection->getMethod($method);
+
+                        $paramReflectionList = $actionReflection->getParameters();
+
+                        $params = array();
+
+                        foreach ($paramReflectionList as $paramReflection) {
+                            if($paramReflection->hasType()){
+                                $class = sprintf($paramReflection->getType());
+                                if(method_exists($class,'obj')){
+                                    $params[] = $class::obj();
+                                    continue;
+                                }elseif(method_exists($class,'new')){
+                                    $params[] = $class::new();
+                                    continue;
+                                }
+                            }
+                            if (isset($get[$paramReflection->getName()])) {
+                                $params[] = $get[$paramReflection->getName()];
+                                continue;
+                            }
+                            if ($paramReflection->isDefaultValueAvailable()) {
+                                $params[] = $paramReflection->getDefaultValue();
+                                continue;
+                            }
+                            
+                            
+                            $params[] = null;
+                        }
+
+                        call_user_func_array(array($controller,$method),$params);
+
                         return;
                     }
                     continue;

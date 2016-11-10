@@ -35,6 +35,21 @@ class Request{
 
     }
 
+    public static function get(){
+
+        return self::obj()->get;
+    }
+
+    public function __get($name){
+
+        if($name == 'get'){
+            $this->get = $_GET;
+            return $this->get;
+        }
+        return null;
+
+    }
+
     
 
 
