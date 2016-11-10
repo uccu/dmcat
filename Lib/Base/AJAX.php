@@ -48,7 +48,7 @@ class AJAX{
     }
 
     //错误/失败
-    static function error(string $message ,$code = 400 ,$url = ''){
+    static function error($message ,$code = 400 ,$url = ''){
 
         $url = !$url && is_string($code) ? $code : $url;
 

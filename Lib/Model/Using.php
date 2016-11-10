@@ -29,6 +29,16 @@ class Using{
 
     }
 
+    function commit(){
+		return $this->mb->commit();
+	}
+	function rollback(){
+		return $this->mb->rollback();
+	}
+    function start(){
+		return $this->mb->start();
+	}
+
     function query($sql){
 
         $ret = $this->mb->query($sql);
@@ -88,7 +98,7 @@ class Using{
 
     function quote_table($tableName){
         
-		if(!is_string($tableName))E::throw('Undefined Table\'s Name');
+		if(!is_string($tableName))E::throwEx('Undefined Table\'s Name');
 
 		$str = $this->quote_field($tableName);
 		
@@ -99,7 +109,7 @@ class Using{
 
     function quote_field($field ){
 		
-		if(!is_string($field))E::throw('Undefined Field\'s Name');
+		if(!is_string($field))E::throwEx('Undefined Field\'s Name');
 
         $fields = explode('.',$field);
 
@@ -143,7 +153,7 @@ class Using{
 		if (!$count) {
 			return $sql;
 		} elseif ($count > count($arg)) {
-			E::throw('Sql Needs '.$count.' Args' );
+			E::throwEx('Sql Needs '.$count.' Args' );
 		}
 
 		$len = strlen($sql);

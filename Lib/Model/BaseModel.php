@@ -166,7 +166,7 @@ class BaseModel{
 
         if(!$this->query){
 
-            if(!$this->set)E::throw('Not Set Any Data');
+            if(!$this->set)E::throwEx('Not Set Any Data');
 
             $sql .= ' SET '.$this->set;
 
@@ -177,7 +177,7 @@ class BaseModel{
                 $this->where =  $field->fullName.' = '.$this->tool->quote($id);
 
             }
-            if($this->updateSafe && !$this->where)E::throw('WHERE Is Empty');
+            if($this->updateSafe && !$this->where)E::throwEx('WHERE Is Empty');
 
             elseif($this->where)$sql .= ' WHERE '.$this->where;
 
@@ -198,13 +198,13 @@ class BaseModel{
 
         $sql = $this->cmd;
 
-        if($this->join)E::throw('Cant Use INSERT or REPLACE With JOIN');
+        if($this->join)E::throwEx('Cant Use INSERT or REPLACE With JOIN');
 
         $sql .= $this->table;
 
         if(!$this->query){
 
-            if(!$this->set)E::throw('Not Set Any Data');
+            if(!$this->set)E::throwEx('Not Set Any Data');
 
             $sql .= ' SET '.$this->set;
 
@@ -492,14 +492,15 @@ class BaseModel{
 
         $method  = lcfirst(preg_replace('#^import#','',$method));
 
-        if(!method_exists($this,$method))E::throw('Method '.$method.' Not Found');
+        if(!method_exists($this,$method))E::throwEx('Method '.$method.' Not Found');
 
         $this->join[$method] = $this->$method();
 
     }
-    public static function new(){
+    public static function news(){
 
-        return clone table(static::class);
+
+        return clone table(get_called_class());
 
     }
 

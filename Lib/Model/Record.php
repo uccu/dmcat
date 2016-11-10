@@ -30,7 +30,7 @@ class Record{
 
     // function __set($k,$v){
 
-    //     //E::throw('No Field');
+    //     //E::throwEx('No Field');
     // }
 
     function __toString(){
@@ -41,7 +41,7 @@ class Record{
 
     function save(){
 
-        if(!$this->_model)E::throw('Model Lost');
+        if(!$this->_model)E::throwEx('Model Lost');
 
         $modelName = get_class( $this->_model );
 

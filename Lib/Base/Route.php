@@ -68,7 +68,7 @@ Class Route{
                         $app = $m[3];
                         $controller = $folder[$on];
                         if(!$controller){
-                            E::throw('Controller Not Exist');
+                            E::throwEx('Controller Not Exist');
                         }
                         $controller = table($m[3].'\\'.$controller);
                         $method = $folder[$on+1];
@@ -81,7 +81,7 @@ Class Route{
                         return;
                     }
                     elseif(!method_exists($controller,$method)){
-                        E::throw('Method Not Exist');
+                        E::throwEx('Method Not Exist');
                     }else{
 
                         $get = Request::get();
@@ -95,13 +95,14 @@ Class Route{
                         $params = array();
 
                         foreach ($paramReflectionList as $paramReflection) {
-                            if($paramReflection->hasType()){
-                                $class = sprintf($paramReflection->getType());
+
+                            if($class = $paramReflection->getClass()){
+                                $class = $class->name;
                                 if(method_exists($class,'obj')){
                                     $params[] = $class::obj();
                                     continue;
-                                }elseif(method_exists($class,'new')){
-                                    $params[] = $class::new();
+                                }elseif(method_exists($class,'news')){
+                                    $params[] = $class::news();
                                     continue;
                                 }
                             }

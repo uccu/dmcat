@@ -23,7 +23,7 @@ class Mysqli
 	
 
 
-	function autocommit(bool $bool = true){
+	function autocommit($bool = true){
 
 		return $this->mysqli->autocommit($bool);
 
@@ -40,7 +40,7 @@ class Mysqli
 		$action = $this->mysqli->set_charset($charset);
 
 		if(!$action)
-			E::throw('MYSQLI_INIT_COMMAND Failed');
+			E::throwEx('MYSQLI_INIT_COMMAND Failed');
 
 		return $this;
 
@@ -49,13 +49,13 @@ class Mysqli
 
 	private function connect(){
 
-		if(!$this->config->DATABASE)E::throw('Database Not Selected');
+		if(!$this->config->DATABASE)E::throwEx('Database Not Selected');
 
 		$action = $this->mysqli->real_connect($this->config->HOST,$this->config->USER,$this->config->PASSWORD,$this->config->DATABASE);
 
 		if(!$action){
 			$error = '数据库连接失败';
-			E::throw($error);
+			E::throwEx($error);
 		}
 		
 		$auto = $this->config->AUTOCOMMIT;
@@ -72,7 +72,7 @@ class Mysqli
 
 		if(is_null($db))$db = $this->config->DATABASE;
 
-		if(!$db)E::throw('Database Not Selected');
+		if(!$db)E::throwEx('Database Not Selected');
 
 		$this->mysqli->select_db ($db);
 
@@ -93,7 +93,7 @@ class Mysqli
 		$action = $this->mysqli->options(MYSQLI_INIT_COMMAND, $command);
 
 		if(!$action)
-			E::throw('MYSQLI_INIT_COMMAND Failed');
+			E::throwEx('MYSQLI_INIT_COMMAND Failed');
 
 		return $this;
 	}
@@ -105,7 +105,7 @@ class Mysqli
 		$action = $this->mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, $time);
 
 		if(!$action)
-			E::throw('MYSQLI_OPT_CONNECT_TIMEOUT Failed');
+			E::throwEx('MYSQLI_OPT_CONNECT_TIMEOUT Failed');
 
 		return $this;
 	}
@@ -128,6 +128,13 @@ class Mysqli
 	function rollback(){
 		return $this->mysqli->rollback();
 	}
+	function start(){
+		if(method_exists($this->mysqli,'begin_transaction')){
+			return $this->mysqli->begin_transaction();
+		}
+		
+		return $this->query("START TRANSACTION");
+	}
 	
 	
 	function fetch_array($resulttype=MYSQLI_ASSOC){
@@ -144,13 +151,13 @@ class Mysqli
 	}
 	function query($sql){
 		$this->results = $this->mysqli->query($sql);
-		if(!$this->results)E::throw($this->mysqli->error);
+		if(!$this->results)E::throwEx($this->mysqli->error);
 
 		return $this->results;
 	}
 	function multi_query($sql){
 		$this->results = $this->mysqli->multi_query($sql);
-		if(!$this->results)E::throw($this->mysqli->error);
+		if(!$this->results)E::throwEx($this->mysqli->error);
 		return $this->results;
 	}
 	function insert_id(){

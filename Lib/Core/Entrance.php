@@ -5,7 +5,7 @@ use Lib\Core\Autoload;
 
 
 
-error_reporting(0);
+//error_reporting(0);
 
 //定义常量
 define('TIME_NOW', time());
@@ -26,15 +26,15 @@ define('OPTION_DEBUG',2);
 //主自动加载
 
 require_once LIB_ROOT.'Core/Autoload.php';
-spl_autoload_register( array(Autoload::class, 'load'));
+spl_autoload_register( array('Lib\\Core\\Autoload', 'load'));
 
 
 
 //错误机制
 
-set_exception_handler(array(E::class,'handleException'));
-set_error_handler(array(E::class,'handleError'));
-register_shutdown_function(array(E::class, 'handleShutdown'));
+set_exception_handler(array('E','handleException'));
+set_error_handler(array('E','handleError'));
+register_shutdown_function(array('E', 'handleShutdown'));
 
 
 

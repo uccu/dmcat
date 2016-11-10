@@ -25,7 +25,7 @@ class Autoload{
 		else{
 
             $path = str_ireplace(BASE_ROOT,'',$path);
-            E::throw('file lost: '.$path,1);
+            E::throwEx('file lost: '.$path,1);
 
         }
 	}
@@ -75,12 +75,11 @@ class Autoload{
 
 			list(,$key,$value) = $match;
 			$key = strtoupper($key);
-			if(!is_null($config->$key)){
-				if(is_array($config->$key))$config->$key[] = $value;
-				else{
-					$config->$key = array($config->$key);
-					$config->$key[] = $value;
-				}
+			if(!empty($config->$key)){
+				$con = &$config->$key;
+				if(!is_array($con))$con = array($con);
+				$con[] = $value;
+				
 			}else{
 				$config->$key = $value;
 			}
@@ -98,9 +97,10 @@ class Autoload{
 	public static function extension_check(){
 
 		$conf = self::conf('Extension');
+		if(!is_array($conf->EXT))$conf->EXT = array($conf->EXT);
 		foreach($conf->EXT as $e){
 			if(!extension_loaded($e))
-				E::throw($e.' Extension Not Loaded');
+				E::throwEx($e.' Extension Not Loaded');
 		}
 
 	}

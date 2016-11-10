@@ -26,9 +26,9 @@ class TestController extends Controller{
 
     function main(Request $request ,Lession $lession ,$baka = 1){
 
-        var_dump( $request );
+        // var_dump( $request );
 
-        var_dump( $lession );
+        // var_dump( $lession );
         
  
     }
@@ -36,9 +36,10 @@ class TestController extends Controller{
 
     function getLessionById($name = null,$id = null){
 
-        var_dump(func_get_args());
+        //var_dump(func_get_args());
+        echo '123';
 
-        echo Lession::new()->find($id);
+        echo Lession::news()->find($id);
 
     }
 

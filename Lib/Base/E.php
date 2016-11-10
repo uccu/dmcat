@@ -38,10 +38,10 @@ class E extends Exception{
 
 		switch($errno){
 			case 8:
-				if(stripos($errstr,'Undefined index')===0)return null;
-				if(stripos($errstr,'Undefined property')===0)return null;
-				if(stripos($errstr,'Undefined offset')===0)return null;
-
+				// if(stripos($errstr,'Undefined index')===0)return null;
+				// if(stripos($errstr,'Undefined property')===0)return null;
+				// if(stripos($errstr,'Undefined offset')===0)return null;
+				return null;
 				break;
 			default:
 				break;
@@ -64,13 +64,9 @@ class E extends Exception{
 	}
 
 
-	final public static function new($m){
+	
 
-		return new self($m);
-
-	}
-
-	final public static function throw($m,$line=0){
+	final public static function throwEx($m,$line=0){
 
 		$e = new self($m);
 

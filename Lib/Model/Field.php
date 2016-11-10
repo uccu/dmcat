@@ -17,7 +17,7 @@ class Field{
     function __construct($field,$model,$checkField = true){
         
         //必须字符串类型
-        if(!is_string($field))E::throw('Undefined Field\'s Name',1);
+        if(!is_string($field))E::throwEx('Undefined Field\'s Name',1);
 
         //加载工具库
         $this->tool = table('Lib/Model/Using');
@@ -41,7 +41,7 @@ class Field{
         $this->model = $model;
         $this->fullTable = $model->asRawTable && $model->asRawTable!=$model->table ? $model->table.' '.$model->asRawTable : $model->table;
         $this->table = $model->asRawTable ? $model->asRawTable : $model->table;
-        if($checkField && $field != '*' && !$model->hasField($field))E::throw('Field `'.$field.'` Not Defined',2);
+        if($checkField && $field != '*' && !$model->hasField($field))E::throwEx('Field `'.$field.'` Not Defined',2);
 
         
         
