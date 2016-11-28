@@ -37,7 +37,7 @@ class TestController extends Controller{
     function getLessionById($name = null,$id = null){
 
         //var_dump(func_get_args());
-        echo '123';
+        //echo '123';
 
         echo Lession::news()->find($id);
 

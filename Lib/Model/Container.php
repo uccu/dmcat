@@ -47,7 +47,7 @@ class Container{
 
         }
 
-        return array();
+        return null;
 
     }
     
