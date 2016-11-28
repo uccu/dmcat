@@ -36,22 +36,22 @@ class Autoload{
         
     }
 
-	public static function table($class,$force = false){
+	public static function table($class,$force = false,$pp = null){
 
 		$class = str_replace('/','\\',$class);
 
-		if(isset( self::$_tables[$class] ))
-			return self::$_tables[$class];
+		if(isset( self::$_tables[$class.':'.$pp] ))
+			return self::$_tables[$class.':'.$pp];
 		$z = self::load($class,$force);
 
 		if(!$z){
-			self::$_tables[$class] = false;
+			self::$_tables[$class.':'.$pp] = false;
 			return false;
 		}
 
-		self::$_tables[$class] = new $class();
+		self::$_tables[$class.':'.$pp] = new $class($pp);
 
-		return self::$_tables[$class];
+		return self::$_tables[$class.':'.$pp];
 
 	}
 

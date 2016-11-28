@@ -10,6 +10,7 @@ use Request;
 
 use App\Project\Model\UserModel as User;
 use App\Project\Model\LessionModel as Lession;
+use Model;
 
 class TestController extends Controller{
 
@@ -33,10 +34,10 @@ class TestController extends Controller{
  
     }
 
-    function ec(User $user){
+    function ec(Model $user){
 
-        echo $user->where([['%F=%d','id',1]])->get();
-        echo $user->sql;
+        echo $user->where([['%F=%d','id',1]])->get('id')->find(1);
+
 
     }
 

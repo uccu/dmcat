@@ -17,7 +17,7 @@ function import($path){
 }
 
 
-function table($class){
+function table($class,$pp=null){
 
-    return Autoload::table($class);
+    return Autoload::table($class,false,$pp);
 }

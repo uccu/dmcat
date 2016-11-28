@@ -97,16 +97,23 @@ Class Route{
                         $params = array();
 
                         foreach ($paramReflectionList as $paramReflection) {
-
+                            $name = $paramReflection->getName();
                             if($class = $paramReflection->getClass()){
                                 $class = $class->name;
                                 if(method_exists($class,'getInstance')){
+
+                                    if($class=='Model'){
+                                        $params[] = $class::getInstance($name);
+                                        continue;
+
+                                    }
+
                                     $params[] = $class::getInstance();
                                     continue;
                                 }
                             }
-                            if (isset($get[$paramReflection->getName()])) {
-                                $params[] = $get[$paramReflection->getName()];
+                            if (isset($get[$name])) {
+                                $params[] = $get[$name];
                                 continue;
                             }
                             if ($paramReflection->isDefaultValueAvailable()) {

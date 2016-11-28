@@ -87,8 +87,10 @@ class BaseModel{
 
             $this->field = $this->tool->fetch_all('SHOW FULL COLUMNS FROM '.$this->table);
 
-            foreach($this->field as &$v)$v = reset($v);
 
+            foreach($this->field as &$v)$v = $v->Field;
+
+            
         }
 
         return $this;
@@ -500,6 +502,12 @@ class BaseModel{
     }
     public static function getInstance(){
 
+        if($name = func_get_args()){
+            $name = $name[0];
+            return clone table(get_called_class(),$name);
+
+
+        }
 
         return clone table(get_called_class());
 
