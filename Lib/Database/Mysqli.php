@@ -1,8 +1,9 @@
 <?php
 namespace Lib\Database;
 use E;
+use Lib\Sharp\SingleInstance;
 
-class Mysqli
+class Mysqli implements SingleInstance
 {
 	private $mysqli;
 	private $config;
@@ -113,7 +114,7 @@ class Mysqli
 
 	private function init_config(){
 
-		$name = basename( __CLASS__);
+		$name = basename( str_replace('\\','/',__CLASS__) );
 		$this->config = conf($name);
 		
 		return $this;
@@ -179,7 +180,11 @@ class Mysqli
 		return $this->results->data_seek($row);
 	}
 
-
+	public static function getInstance(){
+        static $object;
+		if(empty($object))$object = new self();
+		return $object;
+    }
 
 
 

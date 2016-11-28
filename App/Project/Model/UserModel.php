@@ -9,7 +9,7 @@ class UserModel extends Model{
 
 
 
-    protected $field = array('id','name');
+    protected $field = array('id','nickname');
 
 
     public function lession2(){

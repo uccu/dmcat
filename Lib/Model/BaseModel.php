@@ -5,6 +5,7 @@ use E;
 
 use Config;
 use Lib\Model\Container;
+use Lib\Model\Using;
 
 class BaseModel{
 
@@ -61,7 +62,7 @@ class BaseModel{
 
         $mb = conf('Mysqli');
 
-        $this->tool = table('Lib/Model/Using');
+        $this->tool = Using::getInstance();
 
         if($tableName)$this->table = $tableName;
 
@@ -497,7 +498,7 @@ class BaseModel{
         $this->join[$method] = $this->$method();
 
     }
-    public static function news(){
+    public static function getInstance(){
 
 
         return clone table(get_called_class());

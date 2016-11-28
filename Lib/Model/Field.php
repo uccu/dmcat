@@ -3,6 +3,8 @@
 namespace Lib\Model;
 use E;
 
+use Lib\Model\Using;
+
 class Field{
 
 
@@ -20,7 +22,7 @@ class Field{
         if(!is_string($field))E::throwEx('Undefined Field\'s Name',1);
 
         //加载工具库
-        $this->tool = table('Lib/Model/Using');
+        $this->tool = Using::getInstance();
 
         
         $fields = explode('.',$field);

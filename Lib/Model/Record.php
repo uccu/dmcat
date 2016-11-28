@@ -3,17 +3,17 @@
 namespace Lib\Model;
 use E;
 use Model;
+use Lib\Model\Using;
+
 class Record{
 
-    private $_tool;
+
     private $_null;
     private $_model;
 
     function __construct(array $data,$key = null){
-        
-        $this->_tool = table('Lib/Model/Using');
 
-        $this->_null = $this->_tool->model_null;
+        $this->_null = Using::getInstance()->model_null;
 
         if($key instanceof Model)$this->_model = $key;
 

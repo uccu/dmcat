@@ -1,21 +1,22 @@
 <?php
 
+use Lib\Model\Using;
 
 class DB{
 
     static function start(){
 
-        return table('Lib/Model/Using')->start();
+        return Using::getInstance()->start();
     }
 
     static function commit(){
 
-        return table('Lib/Model/Using')->commit();
+        return Using::getInstance()->commit();
     }
 
     static function rollback(){
 
-        return table('Lib/Model/Using')->rollback();
+        return Using::getInstance()->rollback();
     }
 
     

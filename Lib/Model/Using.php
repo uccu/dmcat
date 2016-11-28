@@ -5,30 +5,26 @@ use Config;
 use E;
 use Model;
 
-class Using{
+use Lib\Sharp\SingleInstance;
+use Lib\Database\Mysqli;
 
+class Using implements SingleInstance{
     private $sqls = array();
-
     function __construct(){
-
-
-        
 
         $model_null = Config::get('MODEL_NULL');
 
         $this->model_null = is_null($model_null) || $model_null ? true :false;
 
     }
-
     function __get($name){
 
-        if($name='mb'){
-            return $this->mb = table('Lib/Database/Mysqli');
+        if($name=='mb'){
+            return $this->mb = Mysqli::getInstance();
         }
         return null;
 
     }
-
     function commit(){
 		return $this->mb->commit();
 	}
@@ -38,7 +34,6 @@ class Using{
     function start(){
 		return $this->mb->start();
 	}
-
     function query($sql){
 
         $ret = $this->mb->query($sql);
@@ -63,9 +58,6 @@ class Using{
 
 
     }
-
-
-
     function fetch_all($sql, $keyfield = '',$model = null) {
 
         if(isset($this->sqls[$sql]))return $this->sqls[$sql];
@@ -94,8 +86,6 @@ class Using{
 		return $data;
 
 	}
-
-
     function quote_table($tableName){
         
 		if(!is_string($tableName))E::throwEx('Undefined Table\'s Name');
@@ -105,8 +95,6 @@ class Using{
 		return $str;
 		
 	}
-
-
     function quote_field($field ){
 		
 		if(!is_string($field))E::throwEx('Undefined Field\'s Name');
@@ -120,7 +108,6 @@ class Using{
 		return $field;
 
 	}
-
     function quote($str){
 		
         if (is_string($str))return '\'' . addcslashes($str, "\n\r\\'\"\032") . '\'';
@@ -140,7 +127,6 @@ class Using{
 		return '\'\'';
 
 	}
-    
     function format($hql = '', $arg = array() ,Model $model ,$checkField = true) {
 
         $sql = preg_replace_callback('#([ =\-,\+\(]|^)([a-z\*][a-zA-Z0-9_\.]*)#',function($m) use ($model,$checkField){
@@ -212,6 +198,11 @@ class Using{
 		return $ret;
 	}
 
+    public static function getInstance(){
+        static $object;
+		if(empty($object))$object = new self();
+		return $object;
+    }
 
 
 

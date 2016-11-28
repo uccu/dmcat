@@ -1,50 +1,46 @@
 <?php
 
+use Lib\Sharp\SingleInstance;
 
-class Request{
+class Request implements SingleInstance{
 
     function __construct(){
-        if(!REQUEST_PATH)$this->folder = array();
-        else $this->folder = explode('/',REQUEST_PATH);
-        self::$path = REQUEST_PATH;
+        $this->flesh_path();
     }
 
-    public static $path;
+    public $path;
 
-    public static function obj(){
+    public static function getInstance(){
         static $object;
-		if(empty($object)) {
-			$object = new self();
-		}
+		if(empty($object))$object = new self();
 		return $object;
-
-    }
-
-    public static function folder(){
-
-        return self::obj()->folder;
-
     }
 
 
-    public static function flesh_path($request = REQUEST_PATH){
 
-        if(!$request) self::obj()->folder = array();
-        else  self::obj()->folder = explode('/',$request);
-        self::$path = REQUEST_PATH;
+    public function flesh_path($request = REQUEST_PATH){
+
+        $this->folder = $request ? explode('/',$request) : array();
+        $this->path = REQUEST_PATH;
 
     }
 
-    public static function get(){
 
-        return self::obj()->get;
-    }
 
     public function __get($name){
 
         if($name == 'get'){
-            $this->get = $_GET;
-            return $this->get;
+            
+            return $this->$name = $_GET;
+
+        }elseif($name == 'post'){
+
+            return $this->$name = $_POST;
+
+        }elseif($name == 'file'){
+
+            return $this->$name = $_FILE;
+
         }
         return null;
 

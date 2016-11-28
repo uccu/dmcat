@@ -16,7 +16,7 @@ class TestController extends Controller{
 
     function __construct(){
 
-        // $get = Request::get();
+        // $get = Request->get;
 
         // var_dump($get);
 
@@ -33,13 +33,20 @@ class TestController extends Controller{
  
     }
 
+    function ec(User $user){
+
+        echo $user->where([['%F=%d','id',1]])->get();
+        echo $user->sql;
+
+    }
+
 
     function getLessionById($name = null,$id = null){
 
         //var_dump(func_get_args());
         //echo '123';
 
-        echo Lession::news()->find($id);
+        echo Lession::getInstance()->where('id=%d',1)->get();
 
     }
 

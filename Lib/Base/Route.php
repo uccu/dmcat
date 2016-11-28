@@ -45,7 +45,9 @@ Class Route{
 
             preg_match('#(controller|regexp|app|302) +(.*?)(?= +(.*)|$)#',$r,$m);
 
-            $folder = Request::folder();
+            $request = Request::getInstance();
+
+            $folder = $request->folder;
 
             if($m[1] == 'controller' || $m[1] == 'app'){
                 if(!$m[3]){
@@ -84,7 +86,7 @@ Class Route{
                         E::throwEx('Method Not Exist');
                     }else{
 
-                        $get = Request::get();
+                        $get = $request->get;
 
                         $controllerReflection = new ReflectionClass($controller);
 
@@ -98,11 +100,8 @@ Class Route{
 
                             if($class = $paramReflection->getClass()){
                                 $class = $class->name;
-                                if(method_exists($class,'obj')){
-                                    $params[] = $class::obj();
-                                    continue;
-                                }elseif(method_exists($class,'news')){
-                                    $params[] = $class::news();
+                                if(method_exists($class,'getInstance')){
+                                    $params[] = $class::getInstance();
                                     continue;
                                 }
                             }
@@ -131,17 +130,17 @@ Class Route{
 
                 if($m[2] && $m[3]){
                     $newPath = preg_replace('/'.$m[2].'/',$m[3],REQUEST_PATH);
-                    Request::flesh_path($newPath);
+                    $request->flesh_path($newPath);
                     continue;
                 }
                 
 
             }elseif($m[1] == '302'){
-                if(!$m[3] && Request::$path==''){
+                if(!$m[3] && $request->path==''){
                     header('Location: '.$m[2]);return;
                 }
                     
-                elseif(Request::$path==$m[2]){
+                elseif($request->path==$m[2]){
                     header('Location: '.$m[3]);return;
                 }
             }

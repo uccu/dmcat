@@ -1,8 +1,11 @@
 <?php
 
 use Lib\Core\Autoload;
+use Lib\Sharp\SingleInstance;
 
-class Config {
+
+
+class Config implements SingleInstance{
 
 	private $list = array();
 	private $init = false;
@@ -13,17 +16,15 @@ class Config {
 		
 	}
 
-	public static function obj(){
+	public static function getInstance(){
         static $object;
 		if(empty($object)) $object = new self();
-		
 		return $object;
-
     }
 
 	public static function get($v){
 		
-		return self::obj()->$v;
+		return self::getInstance()->$v;
 
 	}
 
@@ -35,7 +36,7 @@ class Config {
 	}
 
 	private function init_config(){
-		$name = basename( __CLASS__);
+		$name = basename( str_replace('\\','/',__CLASS__) );
 		$config = Autoload::conf($name);
 		foreach($config as $k=>$v)$this->list[$k] = $v;
 		$this->init = true;

@@ -2,6 +2,7 @@
 
 namespace Lib\Model;
 
+use Lib\Model\Using;
 
 class Container{
 
@@ -11,7 +12,7 @@ class Container{
 
     function __construct($model,$key = null){
         
-        $this->tool = table('Lib/Model/Using');
+        $this->tool = Using::getInstance();
 
         $cmd = trim(strtoupper(substr($model->sql, 0, strpos($model->sql, ' '))));
 
