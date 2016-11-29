@@ -114,8 +114,8 @@ class Mysqli implements SingleInstance
 
 	private function init_config(){
 
-		$name = basename( str_replace('\\','/',__CLASS__) );
-		$this->config = conf($name);
+
+		$this->config = conf('Mysqli');
 		
 		return $this;
 

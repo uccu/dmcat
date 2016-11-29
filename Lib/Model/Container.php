@@ -3,12 +3,15 @@
 namespace Lib\Model;
 
 use Lib\Model\Using;
+use ArrayAccess;
 
-class Container{
+class Container implements ArrayAccess{
 
     private $tool;
 
     private $data;
+
+    private $status;
 
     function __construct($model,$key = null){
         
@@ -20,16 +23,46 @@ class Container{
 
             $this->status = $this->tool->query($model->sql);
 
-            $this->data = array();
+            //$this->data = array();
 
         } else{
 
             $this->data = $this->tool->fetch_all($model->sql,$key,$model);
 
+            foreach($this->data as $k=>$v){
+
+                $this->$k = $v;
+            }
+
             $this->status = $this->data ? count($this->data) : 0;
 
         }
         
+    }
+    function offsetExists ($offset){
+
+        return isset($this->data[$offset]);
+
+    }
+    function offsetGet ($offset) {
+
+        return $this->data[$offset];
+    }
+
+    function offsetSet ($offset, $value) {
+
+        return $this->data[$offset] = $value;
+    }
+
+    function offsetUnset ($offset) {
+
+        unset($this->data[$offset]);
+    }
+
+
+    function getStatus(){
+
+        return $this->status;
     }
 
     function __toString(){
@@ -50,6 +83,11 @@ class Container{
 
         return null;
 
+    }
+
+    function get_field($field = null){
+
+        
     }
     
 

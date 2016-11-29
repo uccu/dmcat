@@ -36,8 +36,13 @@ class TestController extends Controller{
 
     function ec(Model $user){
 
-        echo $user->where([['%F=%d','id',1]])->get('id')->find(1);
+        $z = $user->where([['%F=%d','id',1]])->get();
+        
+        echo $z;
+        
+       
 
+        
 
     }
 

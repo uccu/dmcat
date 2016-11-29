@@ -50,7 +50,7 @@ class BaseModel{
 
     private     $query; //使用HQL不包括select和from
 
-
+    private     $distinct;
 
 
 
@@ -105,6 +105,12 @@ class BaseModel{
         return $this;
 
     }
+
+    public function distinct($distinct = true){
+
+        $this->distinct = $distinct;
+
+    }
     public function get($key = null){
 
         $this->importJoin();
@@ -112,6 +118,8 @@ class BaseModel{
         $this->cmd = 'SELECT ';
 
         $sql = $this->cmd;
+
+        if($this->distinct)$sql .= 'DISTINCT ';
 
         if(!$this->select)$this->select = '*';
 
@@ -136,6 +144,21 @@ class BaseModel{
         $this->sql = $sql;
 
         return new Container($this,$key);
+
+    }
+    public function get_field($field = null,$key = null , $distinct = null){
+
+        if($distinct)$this->distinct($distinct);
+
+        $contain = $this->select($field,$key)->get($key);
+
+        foreach($contain as &$v){
+            
+            $v = $v->$field;
+        }
+
+        return $contain;
+
 
     }
     public function find($id = 0){
@@ -284,6 +307,8 @@ class BaseModel{
         $fields = array();
 
         foreach($container as $v){
+
+            if(is_null($v))continue;
 
             if(is_string($v))$v = array($v);
 

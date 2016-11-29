@@ -36,8 +36,7 @@ class Config implements SingleInstance{
 	}
 
 	private function init_config(){
-		$name = basename( str_replace('\\','/',__CLASS__) );
-		$config = Autoload::conf($name);
+		$config = Autoload::conf('Config');
 		foreach($config as $k=>$v)$this->list[$k] = $v;
 		$this->init = true;
 		if(!$this->CONFIG_ALLOW_SET)$this->set = false;
