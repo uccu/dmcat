@@ -1,7 +1,19 @@
 {
+    "name": "uccu/dmcat",
+    "description": "A PHP Framework",
+    "keywords": ["dmcat"],
+    "homepage": "https://github.com/uccu/dmcat",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "pzcat",
+            "email": "cat@4moe.com"
+        }
+    ],
     "require": {
         "monolog/monolog": "1.22.*",
-        
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "mthaml/mthaml": "^1.8",
+        "cebe/markdown": "^1.1"
     }
 }

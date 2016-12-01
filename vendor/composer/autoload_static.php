@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
 {
     public static $prefixLengthsPsr4 = array (
+        'c' => 
+        array (
+            'cebe\\markdown\\' => 14,
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
@@ -18,6 +22,10 @@ class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
     );
 
     public static $prefixDirsPsr4 = array (
+        'cebe\\markdown\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cebe/markdown',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -28,11 +36,22 @@ class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'M' => 
+        array (
+            'MtHaml\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/mthaml/mthaml/lib',
+            ),
+        ),
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit8d7825f02b2489450e864082afca3a7c::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit8d7825f02b2489450e864082afca3a7c::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit8d7825f02b2489450e864082afca3a7c::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }
