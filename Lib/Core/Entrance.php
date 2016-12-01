@@ -16,6 +16,8 @@ define('LIB_ROOT', BASE_ROOT.'Lib/');
 define('CONFIG_ROOT', BASE_ROOT.'Config/');
 define('VENDOR_ROOT', BASE_ROOT.'vendor/');
 define('PUBLIC_ROOT', BASE_ROOT.'Public/');
+define('VIEW_ROOT', BASE_ROOT.'View/');
+define('STORAGE_ROOT', BASE_ROOT.'Storage/');
 
 define('OPTION_OFF',0);
 define('OPTION_ON',1);

@@ -12,6 +12,12 @@ use App\Project\Model\UserModel as User;
 use App\Project\Model\LessionModel as Lession;
 use Model;
 
+
+
+
+use View;
+
+
 class TestController extends Controller{
 
 
@@ -56,7 +62,12 @@ class TestController extends Controller{
 
     }
 
+    function haml(){
 
+        View::render('my');
+
+
+    }
 
 
 
