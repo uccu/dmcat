@@ -123,7 +123,7 @@ class BaseModel{
 
         if(!$this->select)$this->select = '*';
 
-        $sql .= $this->select.' FROM '.($this->join && $this->asRawTable!=$this->table?$this->asRawTable.' AS '.$this->table :$this->table);
+        $sql .= $this->select.' FROM '.($this->join || $this->asRawTable!=$this->table?$this->table.' AS '. $this->asRawTable:$this->table);
 
         if($this->on)$sql .= $this->on;
 
