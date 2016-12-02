@@ -184,9 +184,9 @@ class BaseModel{
 
         $sql = $this->cmd;
 
-        $sql .= ' '.($this->join && $this->asRawTable!=$this->table
+        $sql .= ' '.($this->join || $this->asRawTable!=$this->table
 
-                ? $this->asRawTable.' AS '.$this->table :$this->table);
+                ? $this->table.' AS '.$this->asRawTable :$this->table);
 
         if($this->on)$sql .= $this->on;
 
