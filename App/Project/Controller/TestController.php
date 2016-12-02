@@ -64,7 +64,7 @@ class TestController extends Controller{
 
     function haml(){
 
-        View::render('my');
+        View::hamlReader('Test/my','App');
 
 
     }

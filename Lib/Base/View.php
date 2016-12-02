@@ -8,11 +8,11 @@ use MtHaml\Support\Twig\Extension;
 class View{
 
     
-    public static function render($name){
+    public static function hamlReader($name,$dir = ''){
 
         $mt = new Environment('twig', ['enable_escaper' => false]);
 
-        $fs = new Twig_Loader_Filesystem(VIEW_ROOT.'Twig');
+        $fs = new Twig_Loader_Filesystem(VIEW_ROOT.$dir);
 
         $loader = new Loader($mt, $fs);
 
@@ -28,7 +28,7 @@ class View{
 
         $twig->addExtension(new Extension());
 
-        echo $twig->render($name.".twig");
+        echo $twig->render($name.".haml");
 
     }
 
