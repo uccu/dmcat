@@ -37,6 +37,10 @@ class Request implements SingleInstance{
 
             return $this->$name = $_POST;
 
+        }elseif($name == 'request'){
+
+            return $this->$name = $_REQUEST;
+            
         }elseif($name == 'file'){
 
             return $this->$name = $_FILE;
