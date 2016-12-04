@@ -15,6 +15,7 @@
         "php": ">=5.4.0",
         "mthaml/mthaml": "^1.8",
         "cebe/markdown": "^1.1",
-        "twig/twig": "1.26.1"
+        "twig/twig": "1.26.1",
+        "brite-verify/brite-api": "^0.0.2"
     }
 }

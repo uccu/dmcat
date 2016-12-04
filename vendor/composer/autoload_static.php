@@ -6,6 +6,11 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
 {
+    public static $files = array (
+        '1898779ad1559796352e18a0e653723e' => __DIR__ . '/..' . '/brite-verify/brite-api/BriteAPIClient.php',
+        'dfbb985f0e402435f6f3082f1236eb74' => __DIR__ . '/..' . '/brite-verify/brite-api/BriteAPIContact.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'c' => 
         array (

@@ -1,0 +1,5 @@
+*.swp
+.DS_Store
+*.esproj/
+.idea/
+config.json
