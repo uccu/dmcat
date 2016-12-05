@@ -11,7 +11,7 @@ class Middleware implements SingleInstance{
 
 	public static function getInstance(){
         static $object;
-		if(empty($object)) $object = new self();
+		if(empty($object)) $object = table(get_called_class());
 		return $object;
     }
 
