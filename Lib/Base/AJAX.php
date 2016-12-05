@@ -10,15 +10,15 @@ class AJAX{
     //输出口
     private static function outPut($code ,$data ,$message ,$url){
 
-        $content = (object)array();
+        $content = new stdClass;
 
         $content->data = (object)$data;
 
-        $content->code = (int)$code;
+        $content->code = floor($code);
 
-        $content->url = (string)$url;
+        $content->url = $url.'';
 
-        $content->message = (string)$message;
+        $content->message = $message.'';
 
         $content = json_encode($content);
 
