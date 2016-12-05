@@ -152,7 +152,7 @@ class Mysqli implements SingleInstance
 	}
 	function query($sql){
 		$this->results = $this->mysqli->query($sql);
-		if(!$this->results)E::throwEx($this->mysqli->error);
+		if(!$this->results)E::throwEx($this->mysqli->error.':'.$sql);
 
 		return $this->results;
 	}
