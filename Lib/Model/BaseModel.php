@@ -226,12 +226,13 @@ class BaseModel{
 
         if($this->join)E::throwEx('Cant Use INSERT or REPLACE With JOIN');
 
-        $sql .= $this->asRawTable!=$this->table?$this->table.' AS '. $this->asRawTable:$this->table;
+        $sql .= $this->table;
 
         if(!$this->query){
 
             if(!$this->set)E::throwEx('Not Set Any Data');
 
+            $this->set = preg_repalce('# [a-z`]\.#i',' ',$this->set);
             $sql .= ' SET '.$this->set;
 
             $this->sql = $sql;
