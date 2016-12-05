@@ -19,15 +19,11 @@ class Response implements SingleInstance{
 
     function cookie($name,$value=null,$expire='',$path='/'){
 
-        if($value!==null){
-            
-            if(!is_int($expire))return strlen($_COOKIE[$name])?$_COOKIE[$name]:$value;
 
-            return setcookie($name,$value,$expire?$expire+time():0,$path,$domain);
-        }else{
-            
-            return $_COOKIE[$name];
-        }
+        if(!is_int($expire))return strlen($_COOKIE[$name])?$_COOKIE[$name]:$value;
+
+        return setcookie($name,$value,$expire?$expire+time():0,$path,$domain);
+
     }
     
 

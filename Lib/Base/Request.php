@@ -50,6 +50,44 @@ class Request implements SingleInstance{
 
     }
 
+    function post($name){
+
+        return $_POST[$name];
+        
+    }
+
+    function get($name){
+
+        return $_GET[$name];
+        
+    }
+
+    function request($name){
+
+        return $_REQUEST[$name];
+        
+    }
+
+    function file($name){
+
+        return $_FILES[$name];
+        
+    }
+
+    function cookie($name,$value=null){
+
+        if($value!==null){
+            
+            return strlen($_COOKIE[$name])?$_COOKIE[$name]:$value;
+
+        }else{
+
+            return $_COOKIE[$name];
+
+        }
+        
+    }
+
     
 
 
