@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Resource\Controller;
+namespace App\Resource\Tool;
 
 use Config;
 

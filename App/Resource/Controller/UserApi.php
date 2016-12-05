@@ -2,20 +2,17 @@
 
 namespace App\Resource\Controller;
 
+use App\Resource\Tool\Func;
+use App\Resource\Middleware\Token;
 use Controller;
-
 use AJAX;
-
 use Request;
 use Response;
-
-
-use View;
-
 use Model;
-
 use Config;
 use stdClass;
+
+
 
 class UserApi extends Controller{
 
@@ -87,7 +84,14 @@ class UserApi extends Controller{
         }
 
         $user = Model::getInstance('user');
-
+        if($user->where(['nickname'=>$info->nickname])->find()){
+            AJAX::error('昵称已存在');
+        }
+        $user = Model::getInstance('user');
+        if($user->where(['email'=>$info->email])->find()){
+            AJAX::error('邮箱已存在');
+        }
+        $user = Model::getInstance('user');
         $info->id = $user->set($info)->add();
 
         if(!$info->id){
@@ -129,9 +133,9 @@ class UserApi extends Controller{
 
     }
 
-    function test(){
+    function me(Token $token){
 
-        echo Func::aes_encode('123');
+        echo $token->id;
 
     }
 
