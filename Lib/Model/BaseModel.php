@@ -232,7 +232,7 @@ class BaseModel{
 
             if(!$this->set)E::throwEx('Not Set Any Data');
 
-            $this->set = preg_repalce('# [a-z`]\.#i',' ',$this->set);
+            $this->set = preg_replace('# [a-z`]\.#i',' ',$this->set);
             $sql .= ' SET '.$this->set;
 
             $this->sql = $sql;
