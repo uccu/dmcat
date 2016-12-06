@@ -152,7 +152,7 @@ Class Route{
                 }
             }
         }
-        header('Location: 404.html');
+        header('Location: /404.html');
 
     }
 }
