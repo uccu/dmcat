@@ -23,7 +23,7 @@ class Container implements ArrayAccess{
 
             $this->status = $this->tool->query($model->sql);
 
-            //$this->data = array();
+            $this->data = array();
 
         } else{
 
@@ -89,7 +89,10 @@ class Container implements ArrayAccess{
 
         
     }
-    
+    function toArray(){
+
+        return $this->data;
+    }
 
 
 
