@@ -7,7 +7,7 @@ use Controller;
 use AJAX;
 
 use Request;
-
+use stdClass;
 
 class Api extends Controller{
 
@@ -18,7 +18,15 @@ class Api extends Controller{
 
     }
 
-    function add(){
+    function add(Request $request){
+
+        $info = new stdClass;
+
+        $token = $request->request('token');
+
+        $info->name     = $request->request('name');
+        $info->outlink  = $request->download('outlink');
+        $info->hash     = $request->download('hash');
 
 
 
