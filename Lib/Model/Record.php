@@ -45,7 +45,9 @@ class Record{
 
         $modelName = get_class( $this->_model );
 
-        $model = clone table($modelName);
+        if($modelName=='Model'){
+            $model = clone table($modelName,$this->_model->rawTable);
+        }else $model = clone table($modelName);
 
         //var_dump($this->{$model->primary});
         return $model->set($this)->save($this->{$model->primary});
