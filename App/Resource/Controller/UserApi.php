@@ -125,6 +125,13 @@ class UserApi extends Controller{
 
     function look($id = 0,Model $user){
 
+        $user2 = clone $user;
+
+        $u = $user2->find($id);
+
+        $u->type = 2;
+
+        $u->save();
 
         $data['info'] = $user->where('id=%d',$id)->find();
 

@@ -34,7 +34,7 @@ class Func{
 
         $o = '';
         for($i=0;$i<$count;$i++){
-            $o .= $s?$rand[rand(0,61)]:$rand2[rand(0,35)];
+            $o .= $s?$rand2[rand(0,35)]:$rand[rand(0,61)];
         }
         return $o;
 
