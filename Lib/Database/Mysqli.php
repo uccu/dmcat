@@ -52,18 +52,18 @@ class Mysqli implements SingleInstance
 
 		if(!$this->config->DATABASE)E::throwEx('Database Not Selected');
 
+		$auto = $this->config->AUTOCOMMIT;
+
+		$auto = is_null($auto) ? 1 : ( $auto ? 1 : 0);
+
+		$this->init_command('SET AUTOCOMMIT = '.$auto);
+
 		$action = $this->mysqli->real_connect($this->config->HOST,$this->config->USER,$this->config->PASSWORD,$this->config->DATABASE);
 
 		if(!$action){
 			$error = '数据库连接失败';
 			E::throwEx($error);
 		}
-		
-		$auto = $this->config->AUTOCOMMIT;
-
-		$auto = is_null($auto) ? 1 : ( $auto ? 1 : 0);
-
-		$this->init_command('SET AUTOCOMMIT = '.$auto);
 
 		return $this;
 
