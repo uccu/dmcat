@@ -11,6 +11,8 @@ use stdClass;
 
 use App\Resource\Model\ResourceModel as Resource;
 
+use App\Resource\Tool\Format;
+
 class Api extends Controller{
 
 
@@ -20,7 +22,7 @@ class Api extends Controller{
 
     }
 
-    function add(Request $request,Resource $resource){
+    function add(Request $request,Resource $resource,Format $format){
 
         $info = new stdClass;
 
@@ -36,7 +38,7 @@ class Api extends Controller{
 
         if(!$id)AJAX::error('资源上传失败');
 
-        $this->formatResource($id,$info->name);
+        $format->init($id,$info->name);
 
 
 
@@ -51,6 +53,40 @@ class Api extends Controller{
 
 
     }
+
+
+    private function ImageResolution(){
+
+
+
+
+    }
+
+    private function MovingPictureExpertsGroup($name){
+
+        $array = [
+            'MPEG','MPG','DAT',
+            'AVI',
+            'MOV',
+            'ASF',
+            'WMV',
+            'NAVI',
+            '3GP',
+            'REAL VIDEO',
+            'MKV',
+            'FLV',
+            'F4V',
+            'RMVB',
+            'WebM',
+            'HDDVD',
+   
+            ];
+
+
+
+
+    }
+
 
     function delete(){
         
