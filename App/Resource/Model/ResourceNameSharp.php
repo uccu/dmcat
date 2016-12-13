@@ -2,6 +2,7 @@
 
 namespace App\Resource\Model;
 
+use fengqi\Hanzi\Hanzi;
 
 class ResourceNameSharp{
 
@@ -11,11 +12,7 @@ class ResourceNameSharp{
 
     public $fName;
 
-    public $f2Name;
-
-    public $f3name;
-
-    public $number;
+    public $number = 0;
 
     public $tag = [];
 
@@ -29,19 +26,8 @@ class ResourceNameSharp{
 
     }
 
-  
-    function init($name){
 
-        $name = trim( $name );
-
-        $this->rawName = $name;
-
-        $pattern = ['# ?({|【|「|\[) ?#','# ?(}|】|」|\]) ?#'];
-
-        $name = preg_replace($pattern,['[',']'],$name);
-
-
-
+    function singleByte(&$name){
 
         $pattern = array( 
 
@@ -65,68 +51,149 @@ class ResourceNameSharp{
 
         $name = str_replace( $pattern, $replace, $name );
 
-        $this->name = $name;
+    }
 
-
-        $name = preg_replace_callback('#\[(\d{2,3})\]#',function($r){
-
-            $this->number = $r[1];
-            $this->otherNumber[] = $r[1];
+    function getRawNumber(&$name){
+        
+        $name = preg_replace_callback('/#(\d{2,3})/',function($r){
+            $this->otherNumber[] = $this->number = $r[1];
             return '';
         },$name);
 
-        if($this->otherNumber)array_pop($this->otherNumber);
+        $name = preg_replace_callback('/- ?(\d{2,3})/',function($r){
+            $this->otherNumber[] = $this->number = $r[1];
+            return '';
+        },$name);
 
+        $name = preg_replace_callback('/第(\d{2,3})(集|话)/',function($r){
+            $this->otherNumber[] = $this->number = $r[1];
+            return '';
+        },$name);
+
+        $name = preg_replace_callback('#\[(\d{2,3})\]#',function($r){
+            $this->otherNumber[] = $this->number = $r[1];
+            return '';
+        },$name);
+        if($this->otherNumber)array_pop($this->otherNumber);
         
+    }
+
+    function getTag(&$name){
+
         $array = [
 
-            '720p','360p','1080p','\d{4}x1080','\d{3,4}x\d{3}',
+            '720p','360p','1080p','\d{4}x1080','\d{3,4}x\d{3}','\b(19|20)\d{2}\b',
 
-            '(繁|简)(体|體)?','\b(GB|BIG5)\b','( |^)CH(T|S)( |$)','(内|外)(嵌|挂)(版)?','(^| )[^ ]+版',
+            '(繁|简)(体|體)?','(GB|BIG5)\b','CH(T|S)\b','(内|外)(嵌|挂)(版)?',
 
-            'MP4','MKV','IOS','RMVB',
+            'MP4\b','MKV\b','IOS\b','RMVB\b',
 
-            '(^| )(10|1|4|7|一|四|七|十)月(新番)?( |$)',
+            '(10|1|4|7|一|四|七|十)月(新番)?',
 
-            'OVA','OAD','MOVIE',
+            'OVA','OAD','MOVIE','HDTV',
 
-            'h264','x264','10bit','8bit','ACC','AC3','FLAC','HEVC',
+            'h264\b','x26\d\b','10-?bit\b','8-?bit\b','ACC\b','AC3\b','FLAC\b','HEVC\b','Main10p\b','VFR\b',
             
-            'BD(RIP)?','DVD(RIP)?','网盘'
+            'BD(RIP)?\b','DVD(RIP)?\b','网盘','第\d+(季|部|卷|章)',
+
+            '320K',
         ];
 
-        $tag = &$this->tag;
 
-        foreach($array as $a)$name = mb_ereg_replace_callback($a,function($matches) use ( &$tag ){
-            $tag[] = trim($matches[0]);
-            return ' ';
+        foreach($array as $a)$name = mb_ereg_replace_callback($a,function($matches){
+            $this->tag[] = trim($matches[0]);
+            return '|';
 
         },$name,'i');
 
-        $pattern = ['+','_','/','&','★','!','~'];
+        $pattern = ['_'];
         $name = str_replace($pattern,' ',$name);
-        $name = preg_replace('#\(.*?\)#',' ',$name);
-        $name = preg_replace('# ?\[ *?\] ?#',' ',$name);
+        $pattern = ['+','&',' x ',' × '];
+        $name = str_replace($pattern,'|',$name);
+        $pattern = ['★'];
+        $name = str_replace($pattern,'',$name);
+        $name = preg_replace('# *\[ *?\] *|\(.*?\)#',' ',$name);
         $name = preg_replace('# +#',' ',$name);
+        $name = preg_replace('#\|+#','|',$name);
         $name = trim( $name );
 
-        $name = str_replace('[',']',$name);
+    }
 
-        $array = explode(']',$name);
+    function multibyteUnicodeNameOfResource(&$name){
 
-        foreach($array as $k=>$v){
+        $name = trim($name);
 
-            if(!$v){
-                unset($array[$k]);
+        if(!$name)return;
+
+        $pieces = explode(' ',$name);
+
+
+        foreach($pieces as $p){
+
+            if( preg_match('#[^0-9a-z!-]#i',$p)){
+
+                if(strlen($p)>1)$this->nameArray[] = trim($p);
+
+                $name = str_ireplace($p,'',$name);
+
+            }
+
+        }
+
+        $name = preg_replace('# +#',' ',$name);
+
+        $name = trim( $name );
+
+        
+    }
+  
+    function init($name){
+
+
+        //未加工的名字
+        $name = trim( $name );
+        $this->rawName = $name;
+
+
+        //优化名字
+        $this->singleByte($name);
+        $pattern = ['# *({|【|「|\[) *#','# *(}|】|」|\]) *#'];
+        $name = preg_replace($pattern,'|',$name);
+        if(substr_count($name,'.')>2)$name = str_replace('.',' ',$name);
+        $name = Hanzi::turn($name, true);
+        $this->name = $name;
+
+
+        $this->getRawNumber($name);
+
+        $this->getTag($name);
+
+        $name = str_replace([']','[','/','\\','~',':'],'|',$name);
+
+        $array = explode('|',$name);
+
+        
+
+
+        foreach($array as $k=>&$v){
+
+            $this->multibyteUnicodeNameOfResource($v);
+
+            if(!$v)unset($array[$k]);
+            
+        }
+
+        $this->nameArray = array_merge( $this->nameArray,$array );
+
+        if(!$this->number)foreach($this->nameArray as $k=>$p){
+
+            if(is_numeric($p) && strlen($p)<5){
+                $this->number = $p;
+                unset($this->nameArray[$k]);
             }
         }
 
         
-        
-
-        $this->nameArray = $array;
-
-
 
     }
 

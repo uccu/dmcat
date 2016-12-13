@@ -24,7 +24,7 @@ class TestController extends Controller{
     function __construct(){
        
        
-        $z = new RNS('[桜都字幕组] [无畏魔女/Brave Witches][09][GB][720P]');
+        $z = new RNS('【西農YUI漢化組】★十月新番【Stella no Mahou 斯特拉的魔法】第11話 BIG5繁體 720P MP4');
 
         var_dump($z);
     }
