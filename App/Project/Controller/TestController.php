@@ -11,7 +11,7 @@ use Request;
 use App\Project\Model\UserModel as User;
 use App\Project\Model\LessionModel as Lession;
 use Model;
-
+use App\Resource\Model\ResourceNameSharp as RNS;
 
 
 
@@ -22,11 +22,11 @@ class TestController extends Controller{
 
 
     function __construct(){
+       
+       
+        $z = new RNS('[桜都字幕组] [无畏魔女/Brave Witches][09][GB][720P]');
 
-        // $get = Request->get;
-
-        // var_dump($get);
-
+        var_dump($z);
     }
 
 
