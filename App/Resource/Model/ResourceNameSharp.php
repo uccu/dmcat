@@ -3,6 +3,8 @@
 namespace App\Resource\Model;
 
 use fengqi\Hanzi\Hanzi;
+use App\Resource\Model\SubtitleModel as Subtitle;
+use App\Resource\Model\ThemeModel as Theme;
 
 class ResourceNameSharp{
 
@@ -16,9 +18,13 @@ class ResourceNameSharp{
 
     public $tag = [];
 
+    public $subtitle;
+
     public $otherNumber = [];
 
     public $nameArray = [];
+
+    public $theme = [];
 
     function __construct($name){
 
@@ -185,11 +191,32 @@ class ResourceNameSharp{
 
         $this->nameArray = array_merge( $this->nameArray,$array );
 
-        if(!$this->number)foreach($this->nameArray as $k=>$p){
+        $subtitle = Subtitle::getInstance();
 
-            if(is_numeric($p) && strlen($p)<5){
+        foreach($this->nameArray as $k=>$p){
+
+            if(!$this->number && is_numeric($p) && strlen($p)<5){
                 $this->number = $p;
                 unset($this->nameArray[$k]);
+            }elseif(!$this->subtitle){
+                $subtitle = Subtitle::getInstance();
+                if($subtitle->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p)->find()){
+                    $this->subtitle = $p;
+                    unset($this->nameArray[$k]);
+                }
+                
+            }else{
+                $theme = Theme::getInstance();
+                $p2 = str_replace(' ','',$p);
+                if(mb_strlen($p2)<4)for($i=0;$i<4-mb_strlen($p2);$i++){
+                    $p2 = '_'.$p2;
+                }
+                if(0===strnatcasecmp($p2,'another'))$p2 = '_'.$p2;
+                if($t = $theme->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p2)->order('level DESC')->find()){
+                    $this->theme[$t->id][] = $p;
+                    unset($this->nameArray[$k]);
+                }
+                
             }
         }
 
