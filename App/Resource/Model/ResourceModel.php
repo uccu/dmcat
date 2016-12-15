@@ -2,8 +2,6 @@
 
 namespace App\Resource\Model;
 use Model;
-use App\Resource\Model\SiteResourceModel as SiteLink;
-
 
 class ResourceModel extends Model{
 
@@ -17,7 +15,19 @@ class ResourceModel extends Model{
 
     public function sitelink(){
 
-        return $this->join(SiteLink::class);
+        return $this->join(SiteResourceModel::class);
+        
+    }
+
+    public function theme(){
+
+        return $this->join(ThemeModel::class,'id','theme_id');
+        
+    }
+
+    public function user(){
+
+        return $this->join(UserModel::class,'id','user_id');
         
     }
 

@@ -25,9 +25,9 @@ class TestController extends Controller{
        
         //var_dump(strnatcasecmp('abc','ABC'));
        
-        $z = new RNS('【西農YUI漢化組】★十月新番【Stella no Mahou 斯特拉的魔法】第11話 BIG5繁體 720P MP4');
+        $data['info'] = new RNS('龙珠 第100集');
 
-        var_dump($z);
+        AJAX::success($data);
     }
 
 

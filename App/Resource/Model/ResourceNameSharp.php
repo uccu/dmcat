@@ -12,8 +12,6 @@ class ResourceNameSharp{
 
     public $name;
 
-    public $fName;
-
     public $number = 0;
 
     public $tag = [];
@@ -134,17 +132,19 @@ class ResourceNameSharp{
         $pieces = explode(' ',$name);
 
 
-        foreach($pieces as $p){
-
+        foreach($pieces as $k=>$p){
+            
             if( preg_match('#[^0-9a-z!-]#i',$p)){
 
                 if(strlen($p)>1)$this->nameArray[] = trim($p);
 
-                $name = str_ireplace($p,'',$name);
+                unset($pieces[$k]);
 
-            }
+            }elseif(strlen($p)<2)unset($pieces[$k]);
 
         }
+
+        $name = implode(' ',$pieces);
 
         $name = preg_replace('# +#',' ',$name);
 
@@ -165,6 +165,7 @@ class ResourceNameSharp{
         $this->singleByte($name);
         $pattern = ['# *({|【|「|\[) *#','# *(}|】|」|\]) *#'];
         $name = preg_replace($pattern,'|',$name);
+        $name = str_replace('_',' ',$name);
         if(substr_count($name,'.')>2)$name = str_replace('.',' ',$name);
         $name = Hanzi::turn($name, true);
         $this->name = $name;
@@ -174,7 +175,7 @@ class ResourceNameSharp{
 
         $this->getTag($name);
 
-        $name = str_replace([']','[','/','\\','~',':'],'|',$name);
+        $name = str_replace(['/','\\','~',':'],'|',$name);
 
         $array = explode('|',$name);
 
@@ -198,25 +199,29 @@ class ResourceNameSharp{
             if(!$this->number && is_numeric($p) && strlen($p)<5){
                 $this->number = $p;
                 unset($this->nameArray[$k]);
-            }elseif(!$this->subtitle){
-                $subtitle = Subtitle::getInstance();
-                if($subtitle->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p)->find()){
-                    $this->subtitle = $p;
-                    unset($this->nameArray[$k]);
-                }
-                
             }else{
-                $theme = Theme::getInstance();
-                $p2 = str_replace(' ','',$p);
-                if(mb_strlen($p2)<4)for($i=0;$i<4-mb_strlen($p2);$i++){
-                    $p2 = '_'.$p2;
+                // if(!$this->subtitle){
+                //     $subtitle = Subtitle::getInstance();
+                //     if($subtitle->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p)->find()){
+                //         $this->subtitle = $t;
+                //         unset($this->nameArray[$k]);
+                //     }
+                    
+                // }
+                if(1){
+                    $theme = Theme::getInstance();
+                    $p2 = str_replace(' ','',$p);
+                    if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
+                        $p2 = '_'.$p2;
+                    }
+                    if(0===strnatcasecmp($p2,'another'))$p2 = '_'.$p2;
+                    if($t = $theme->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p2)->order('level DESC')->find()){
+                        $this->theme[$t->id][] = $t;
+                        unset($this->nameArray[$k]);
+                    }
+                    //echo $theme->sql;
+                    
                 }
-                if(0===strnatcasecmp($p2,'another'))$p2 = '_'.$p2;
-                if($t = $theme->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p2)->order('level DESC')->find()){
-                    $this->theme[$t->id][] = $p;
-                    unset($this->nameArray[$k]);
-                }
-                
             }
         }
 
