@@ -315,9 +315,13 @@ class BaseModel{
 
             foreach($v as $j){
 
+                list($j,$as) = explode('>',$j);
+
                 $field = new Field($j,$this);
 
-                $fields[] = $field->asName;
+                if($as)$fields[] = $field->fullName .' AS '. $this->tool->quote_field( $as );
+
+                else $fields[] = $field->asName;
             }
             
         }
