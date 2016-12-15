@@ -401,11 +401,16 @@ class BaseModel{
 
         if($count === 2){
 
-            if(!$container[1])$container[1] = '';
+            if(!$container[1])$container[1] = 'ASC';
 
             $desc = strtoupper($container[1]);
 
-            if(!$desc || $desc === 'ASC'){
+            if($desc==='RAW'){
+
+                $this->order = $container[0];return $this;
+
+            return $this;
+            }elseif(!$desc || $desc === 'ASC'){
 
                 $count = 1;
 
