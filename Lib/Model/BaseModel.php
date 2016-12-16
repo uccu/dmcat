@@ -140,6 +140,36 @@ class BaseModel{
         return new Container($this,$key);
 
     }
+    public function remove($id = null){
+
+        $this->importJoin();
+
+        $sql = 'DELETE FROM ';
+
+        if($this->join)E::throwEx('Cant Use INSERT or REPLACE With JOIN');
+
+        $sql .= $this->table;
+
+        if(!is_null($id)){
+
+            $field = new Field($this->primary,$this);
+
+            $this->where =  $field->fullName.' = '.$this->tool->quote($id);
+
+            $sql .= ' WHERE '.$this->where;
+
+        }elseif(!$this->query){
+
+            if($this->where)$sql .= ' WHERE '.$this->where;
+
+
+        }else $sql .= ' '.$this->query;
+
+        $this->sql = $sql;
+
+        return new Container($this);
+
+    }
     public function get_field($field = null,$key = null , $distinct = null){
 
         if($distinct)$this->distinct($distinct);
@@ -155,11 +185,11 @@ class BaseModel{
 
 
     }
-    public function find($id = 0){
+    public function find($id = null){
 
         $this->limit = 1;
 
-        if($id){
+        if(!is_null($id)){
 
             $field = new Field($this->primary,$this);
 
