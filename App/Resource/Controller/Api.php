@@ -45,7 +45,7 @@ class Api extends Controller{
 
             if($rns == $theme->last_number+1){
 
-                $theme->last_number++;
+                $theme->last_number += 1;
                 $theme->change_time = TIME_NOW;
                 $theme->save();
             }
