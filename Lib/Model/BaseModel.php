@@ -9,53 +9,28 @@ use Lib\Model\Using;
 
 class BaseModel{
 
-    const BLOCK = ' ';
-
     public      $table;     //表名
-
     public      $rawTable;  //设定的别名
-
     public      $asRawTable;//表sql内全名
-
     public      $join;   //所有关联的表的信息
-
     public      $primary;//主键
 
     protected   $field;  //允许使用的字段
-
     protected   $updateSafe = true;//UPDATE 是否允许没有WHERE条件
 
-
-
-
-    private     $cmd;   //sql类型
-
     private     $select;//筛选
-
     private     $on;    //join规则
-
     private     $where; //条件
-
     private     $group; //按组分
-
     private     $order; //排序规则
-
     private     $offset;//开始位置
-
     private     $limit; //限制数量
-
     private     $set;   //SET内容
-
     private     $tool;  //Using工具
-
     private     $query; //使用HQL不包括select和from
-
     private     $distinct;
 
-
-
     public      $sql;   //输出的sql语句
-
     public      $link;   //与上一个表的关联信息
 
     public function __construct($tableName = null){
@@ -96,6 +71,27 @@ class BaseModel{
         return $this;
 
     }
+    public function clean(){
+
+        $this->join     = null;
+
+        $this->select   = null;
+        $this->on       = null;
+        $this->where    = null;
+        $this->group    = null;
+        $this->order    = null;
+        $this->offset   = null;
+        $this->limit    = null;
+        $this->set      = null;
+        $this->tool     = null;
+        $this->query    = null;
+        $this->distinct = null;
+
+        $this->link     = null;
+
+        return $this;
+    }
+
     public function group($n){
 
         $field = new Field($n,$this);
@@ -115,9 +111,7 @@ class BaseModel{
 
         $this->importJoin();
 
-        $this->cmd = 'SELECT ';
-
-        $sql = $this->cmd;
+        $sql = 'SELECT ';
 
         if($this->distinct)$sql .= 'DISTINCT ';
 
@@ -180,9 +174,7 @@ class BaseModel{
 
         $this->importJoin();
 
-        $this->cmd = 'UPDATE';
-
-        $sql = $this->cmd;
+        $sql = 'UPDATE';
 
         $sql .= ' '.($this->join || $this->asRawTable!=$this->table
 
@@ -220,9 +212,7 @@ class BaseModel{
 
         $this->importJoin();
 
-        $this->cmd = $replace?'REPLACE INTO ':'INSERT INTO ';
-
-        $sql = $this->cmd;
+        $sql = $replace?'REPLACE INTO ':'INSERT INTO ';
 
         if($this->join)E::throwEx('Cant Use INSERT or REPLACE With JOIN');
 
