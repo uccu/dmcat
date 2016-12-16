@@ -14,6 +14,8 @@ class Container implements ArrayAccess{
     private $status;
 
     function __construct($model,$key = null){
+
+        $model->clean();
         
         $this->tool = Using::getInstance();
 
