@@ -83,7 +83,6 @@ class BaseModel{
         $this->offset   = null;
         $this->limit    = null;
         $this->set      = null;
-        $this->tool     = null;
         $this->query    = null;
         $this->distinct = null;
 
