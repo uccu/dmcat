@@ -28,6 +28,9 @@ class TestController extends Controller{
         // $data['info'] = new RNS('龙珠 第100集');
 
         // AJAX::success($data);
+
+        
+        
     }
 
 
@@ -72,6 +75,10 @@ class TestController extends Controller{
 
     function curl(Cache $cache){
 
+        global $argc;
+        global $argv;
+        if(!$argc)AJAX::error('请在本地运行');
+        
         ignore_user_abort();
         set_time_limit(600);
 
@@ -87,7 +94,7 @@ class TestController extends Controller{
         if($json)$json = json_decode($json,true);
         else return;
 
-        $json = $json['item'];
+        $json = $json['item'];$array = [];
         $lastDataId = $cache->cget('last_data_id');
         foreach($json as $k=>$v)if($v['data_id']>$lastDataId)$array[$v['data_id']] = $v;
 
@@ -96,8 +103,8 @@ class TestController extends Controller{
         foreach($array as $k=>$data){
             $request = [];
             $request['name'] = $data['title'];
-            $request['hash'] = $data['hash'];
-            $request['outlink'] = 'https://share.acgnx.se/show-'.$data['hash'].'.html';
+            $request['hash'] = $data['hash_id'];
+            $request['outlink'] = 'https://share.acgnx.se/show-'.$data['hash_id'].'.html';
             $request['token'] = 'S3Q3FFfvq3r35V3';
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, "http://d.baka/api/add");
@@ -107,13 +114,16 @@ class TestController extends Controller{
 		    curl_setopt($ch, CURLOPT_POST, 1);
 		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
             //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            echo $json = curl_exec($ch);
+            $json = curl_exec($ch);
+
+            echo $json;
             curl_close($ch);
 
             $cache->csave('last_data_id',$data['data_id']);
             if($k+1!=$length){
                 $rand = rand(0,floor(600/$length));
-                sleep($rand);
+                // sleep($rand);
+                //die();
             }
         }
         

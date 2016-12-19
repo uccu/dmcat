@@ -17,12 +17,12 @@ class CacheModel extends Model{
 
     function cadd($name ,$content,$replace = false){
         
-        return $this->clean()->data(['name'=>$name,'content'=>$content])->add($replace);
+        return $this->clean()->set(['name'=>$name,'content'=>$content])->add($replace);
     }
     function csave($name ,$content){
         $this->clean();
-        if(is_numeric($name))return $this->data(['content'=>$content])->save($name);
-        else return $this->where(['name'=>$name])->data(['content'=>$content])->save();
+        if(is_numeric($name))return $this->set(['content'=>$content])->save($name);
+        else return $this->where(['name'=>$name])->set(['content'=>$content])->save();
     }
     function cremove($name){
 

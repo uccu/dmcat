@@ -40,7 +40,7 @@ class ResourceNameSharp{
             'Ｕ' , 'Ｖ' , 'Ｗ' , 'Ｘ' , 'Ｙ' , 'Ｚ' , 'ａ' , 'ｂ' , 'ｃ' , 'ｄ' , 'ｅ' , 'ｆ' , 'ｇ' , 'ｈ' , 'ｉ' , 
             'ｊ' , 'ｋ' , 'ｌ' , 'ｍ' , 'ｎ' , 'ｏ' , 'ｐ' , 'ｑ' , 'ｒ' , 'ｓ' , 'ｔ' , 'ｕ' , 'ｖ' , 'ｗ' , 'ｘ' , 
             'ｙ' , 'ｚ' , '－' , '　' , '：' , '．' , '，' , '／' , '％' , '＃' , '！' , '＠' , '＆' , '（' , '）' ,
-            '＜' , '＞' , '＂' , '＇' , '？' , '［' , '］' , '｛' , '｝' , '＼' , '｜' , '＋' , '＝' , '＿' , '＾' , '￥' , '￣' , '｀'
+            '＜' , '＞' , '＂' , '＇' , '？' , '［' , '］' , '｛' , '｝' , '＼' , '｜' , '＋' , '＝' , '＿' , '＾' , '￥' , '￣' , '｀','&amp;'
         );
  
         $replace = array(
@@ -50,7 +50,7 @@ class ResourceNameSharp{
             'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 
             'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 
             'y', 'z', '-', ' ', ':','.', ',', '/', '%', ' #','!', '@', '&', '(', ')',
-            '<', '>', '"', '\'','?','[', ']', '{', '}', '\\','|', '+', '=', '_', '^','￥','~', '`'
+            '<', '>', '"', '\'','?','[', ']', '{', '}', '\\','|', '+', '=', '_', '^','￥','~', '`','&'
         );
 
         $name = str_replace( $pattern, $replace, $name );
@@ -74,7 +74,7 @@ class ResourceNameSharp{
             return '';
         },$name);
 
-        $name = preg_replace_callback('#\[(\d{2,3})\]#',function($r){
+        $name = preg_replace_callback('#\[(\d{2,3})(end|final)?\]#',function($r){
             $this->otherNumber[] = $this->number = $r[1];
             return '';
         },$name);
@@ -114,7 +114,7 @@ class ResourceNameSharp{
         $name = str_replace($pattern,' ',$name);
         $pattern = ['+','&',' x ',' × '];
         $name = str_replace($pattern,'|',$name);
-        $pattern = ['★'];
+        $pattern = ['★',];
         $name = str_replace($pattern,'',$name);
         $name = preg_replace('# *\[ *?\] *|\(.*?\)#',' ',$name);
         $name = preg_replace('# +#',' ',$name);
@@ -216,7 +216,7 @@ class ResourceNameSharp{
                     }
                     if(0===strnatcasecmp($p2,'another'))$p2 = '_'.$p2;
                     if($t = $theme->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p2)->order('level DESC')->find()){
-                        $this->theme[$t->id][] = $t;
+                        $this->theme[$t->id] = $t;
                         unset($this->nameArray[$k]);
                     }
                     //echo $theme->sql;

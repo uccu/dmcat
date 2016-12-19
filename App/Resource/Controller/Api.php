@@ -43,13 +43,15 @@ class Api extends Controller{
 
         foreach($rns->theme as $themeid=>$theme){
 
+            
+
             if($rns == $theme->last_number+1){
 
                 $theme->last_number += 1;
                 $theme->change_time = TIME_NOW;
                 $theme->save();
             }
-            $info->theme_id = $theme_id;break;
+            $info->theme_id = $theme->id;break;
         }
 
         //获取插入的资源ID
