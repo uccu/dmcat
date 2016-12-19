@@ -56,7 +56,8 @@ require_once LIB_ROOT.'Function/Core.php';
 
 //定义请求路径
 
-define('REQUEST_PATH',$_SERVER['PATH_INFO']?substr($_SERVER['PATH_INFO'],1):($_SERVER['REDIRECT_URL']?substr($_SERVER['REDIRECT_URL'],1):''));
+if(!$argc)define('REQUEST_PATH',$_SERVER['PATH_INFO']?substr($_SERVER['PATH_INFO'],1):($_SERVER['REDIRECT_URL']?substr($_SERVER['REDIRECT_URL'],1):''));
+else define('REQUEST_PATH',$argv[0]);
 
 //composer依赖的自动加载
 
