@@ -10,6 +10,7 @@ use Lib\Core\Autoload;
 //定义常量
 define('TIME_NOW', time());
 define('TIME_TODAY', strtotime(date('Y-m-d',TIME_NOW)));
+define('DATE_TODAY', date('Ymd'));
 define('TIME_YESTERDAY', TIME_TODAY-3600*24);
 define('BASE_ROOT', substr(__DIR__, 0, -8));
 define('LIB_ROOT', BASE_ROOT.'Lib/');
@@ -18,6 +19,7 @@ define('VENDOR_ROOT', BASE_ROOT.'vendor/');
 define('PUBLIC_ROOT', BASE_ROOT.'Public/');
 define('VIEW_ROOT', BASE_ROOT.'View/');
 define('STORAGE_ROOT', BASE_ROOT.'Storage/');
+define('LOG_ROOT', BASE_ROOT.'Log/');
 
 define('OPTION_OFF',0);
 define('OPTION_ON',1);
