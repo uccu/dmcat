@@ -1,5 +1,7 @@
 <?php
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class E extends Exception{
 
@@ -26,6 +28,26 @@ class E extends Exception{
 		$str =  "$base EXCEPTION : [$code][$message] FILE [$file] LINE [$line]";
 		
 		$type = Config::get('EXCEPTION_OUTPUT_TYPE');
+
+		
+
+		// create a log channel
+		$log = new Logger($base);
+		$log->pushHandler(new StreamHandler(LOG_ROOT.DATE_TODAY.'.log', Logger::WARNING));
+
+		// add records to the log
+		$log->addError($str);
+		foreach($trace as $k=>$c){
+			$file = $c['file'];
+			$line = $c['line'];
+			$file = str_ireplace(array(BASE_ROOT,'.php'),'',$file);
+			$file = str_ireplace('/','\\',$file);
+			$str2 =  "EXCEPTION FILE [$file] LINE [$line]";
+			$log->addWarning($str2,[$k]);
+		}
+
+
+
 
 		if(is_null($type) || $type == 'string')echo $str;
 			
