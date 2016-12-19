@@ -33,15 +33,17 @@ class AJAX{
     }
 
     //成功
-    static function success(array $data ,$code = 200 ,$url = ''){
+    static function success($data = null,$code = 200 ,$url = ''){
 
         $url = !$url && is_string($code) ? $code : $url;
 
         $code = is_int($code) ? $code : 200;
 
-        if(!$data)$data = array();
+        if(!$data || is_string($data)){
+            $data = array();
+            $message = $data ? $data : '';
+        }
 
-        $message = '';
 
         self::outPut($code ,$data ,$message ,$url);
         
