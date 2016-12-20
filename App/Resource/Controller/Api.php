@@ -33,11 +33,13 @@ class Api extends Controller{
         if($token)$user_id = $userModel->where(['token'=>$token])->find()->id;
         else $user_id = $login->id;
 
-        $info->name     = $request->request('name');
-        $info->outlink  = $request->request('outlink');
-        $info->hash     = $request->request('hash');
-        $info->ctime    = TIME_NOW;
-        $info->user_id  = $user_id;
+        $info->name         = $request->request('name');
+        $info->outlink      = $request->request('outlink');
+        $info->hash         = $request->request('hash');
+        $additional         = $request->request('additional');
+        if($additional)$info->additional  = $additional;
+        $info->ctime        = TIME_NOW;
+        $info->user_id      = $user_id;
 
         $rns = new RNS($info->name);
 

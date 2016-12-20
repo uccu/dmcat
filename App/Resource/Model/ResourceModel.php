@@ -10,7 +10,7 @@ class ResourceModel extends Model{
     protected $field = ['id','theme_id','subtitle_id',
     'name','content','resource_type_id','download','down_type_id',
     'hash','base32','md5','size','password','visible','show_times',
-    'down_times','level','ctime','outlink','user_id'];
+    'down_times','level','ctime','outlink','user_id','additional'];
 
 
     public function sitelink(){

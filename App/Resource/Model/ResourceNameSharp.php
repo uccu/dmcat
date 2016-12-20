@@ -24,7 +24,7 @@ class ResourceNameSharp{
 
     public $theme = [];
 
-    function __construct($name){
+    function __construct(&$name){
 
         $this->init($name);
 
@@ -153,8 +153,8 @@ class ResourceNameSharp{
         
     }
   
-    function init($name){
-
+    function init(&$name2){
+        $name = $name2;
 
         //未加工的名字
         $name = trim( $name );
@@ -163,6 +163,8 @@ class ResourceNameSharp{
 
         //优化名字
         $this->singleByte($name);
+
+        $name2 = $name;
         $pattern = ['# *({|【|「|\[) *#','# *(}|】|」|\]) *#'];
         $name = preg_replace($pattern,'|',$name);
         $name = str_replace('_',' ',$name);

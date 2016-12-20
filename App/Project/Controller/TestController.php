@@ -123,7 +123,7 @@ class TestController extends Controller{
             if($k+1!=$length){
                 $rand = rand(0,floor(600/$length));
                 // sleep($rand);
-                //die();
+                die();
             }
         }
         
