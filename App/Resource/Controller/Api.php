@@ -11,7 +11,8 @@ use stdClass;
 use App\Resource\Middleware\Token;
 use App\Resource\Model\ResourceModel as Resource;
 use App\Resource\Model\UserModel as User;
-use App\Resource\Tool\Format;
+use App\Resource\Model\SiteModel as Site;
+use App\Resource\Model\SiteResourceModel as SiteResource;
 use App\Resource\Model\ResourceNameSharp as RNS;
 
 class Api extends Controller{
@@ -23,16 +24,21 @@ class Api extends Controller{
 
     }
 
-    function add(Request $request,Resource $resource,Format $format,User $userModel,Token $login){
+    function add(Request $request,Resource $resource,Site $siteModel,Token $login,SiteResource $siteResourceModel){
 
         $info = new stdClass;
-
+        $data = [];
         $token = $request->request('token');
         if(!$token && !$login->id)AJAX::error('未登录');
         
-        if($token)$user_id = $userModel->where(['token'=>$token])->find()->id;
-        else $user_id = $login->id;
+        if($token){
+            $user_id = 0;
+            $site_id = $siteModel->where(['token'=>$token])->find()->id;
 
+        }else{
+            $user_id = $login->id;
+            $site_id = 0;
+        }
         $info->name         = $request->request('name');
         $info->outlink      = $request->request('outlink');
         $info->hash         = $request->request('hash');
@@ -41,27 +47,42 @@ class Api extends Controller{
         $info->ctime        = TIME_NOW;
         $info->user_id      = $user_id;
 
-        $rns = new RNS($info->name);
+        if($resourceId = $resource->where(['hash'=>$info->hash])->find()->id){
 
-        foreach($rns->theme as $themeid=>$theme){
+            $data['new_resource'] = 0;
+        }else{
+            $data['new_resource'] = 1;
+            $rns = new RNS($info->name);
+            $data['theme_id'] = 0;
+            $data['new_number'] = 0;
+            foreach($rns->theme as $themeid=>$theme){
 
-            
+                if($rns->number == $theme->last_number+1){
 
-            if($rns == $theme->last_number+1){
-
-                $theme->last_number += 1;
-                $theme->change_time = TIME_NOW;
-                $theme->save();
+                    $theme->last_number += 1;
+                    $theme->change_time = TIME_NOW;
+                    $theme->save();
+                    $data['new_number'] = 1;
+                }
+                $data['theme_id'] = $theme->id;
+                $info->theme_id = $theme->id;break;
             }
-            $info->theme_id = $theme->id;break;
+
+            //获取插入的资源ID
+            $resourceId = $resource->set($info)->add()->getStatus();
+
         }
 
-        //获取插入的资源ID
-        $id = $resource->set($info)->add()->getStatus();
 
-        if(!$id)AJAX::error('资源上传失败');
+        
 
-        AJAX::success();
+        $data['resource_id'] = $resourceId;
+
+        $siteResourceId = $siteResourceModel->set(['site_id'=>$site_id,'resource_id'=>$resourceId])->add(true)->getStatus();
+
+        if(!$resourceId)AJAX::error('资源上传失败');
+
+        AJAX::success($data);
 
     }
 

@@ -98,7 +98,7 @@ class ResourceNameSharp{
 
             'h264\b','x26\d\b','10-?bit\b','8-?bit\b','ACC\b','AC3\b','FLAC\b','HEVC\b','Main10p\b','VFR\b',
             
-            'BD(RIP)?\b','DVD(RIP)?\b','网盘','第\d+(季|部|卷|章)',
+            'BD(RIP)?\b','DVD(RIP)?\b','网盘','第.{1,2}(季|部|卷|章)',
 
             '320K',
         ];
@@ -211,15 +211,20 @@ class ResourceNameSharp{
                     
                 // }
                 if(1){
+                    if(preg_match('#字幕组$#',$p))continue;
+                    $p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十)$#','',$p);
+                    if(!$p2)continue;
                     $theme = Theme::getInstance();
-                    $p2 = str_replace(' ','',$p);
+                    $p2 = str_replace(' ','',$p2);
                     if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
                         $p2 = '_'.$p2;
                     }
                     if(0===strnatcasecmp($p2,'another'))$p2 = '_'.$p2;
+                    
                     if($t = $theme->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p2)->order('level DESC')->find()){
                         $this->theme[$t->id] = $t;
                         unset($this->nameArray[$k]);
+                        
                     }
                     //echo $theme->sql;
                     

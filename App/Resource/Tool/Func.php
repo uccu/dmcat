@@ -60,4 +60,33 @@ class Func{
 
 
 
+    static public function time_calculate( $time ){
+
+        if($time>TIME_TODAY){
+
+            $second = $time % 60 ;
+
+            $time_r = ( $time - $second ) / 60 ;
+            $minute = $time_r % 60 ;
+            if(!$time_r)return $second.'秒前';
+
+            $time_r = ( $time - $minute ) / 60 ;
+            $hour = $time_r % 24 ;
+            if(!$time_r)return $minute.'分'.($second?($second<10?'0':'').$second.'秒':'').'前';
+            else return $hour.'时'.($minute?($minute<10?'0':'').$minute.'分':'').'前';
+        
+        }elseif($time>TIME_YESTERDAY){
+
+            return '昨日'.date('H时i分');
+
+        }else{
+
+            return date('Y-m-d');
+            
+        }
+
+
+
+    }  
+
 }
