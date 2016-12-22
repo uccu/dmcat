@@ -114,7 +114,10 @@ class BaseModel{
 
         if($this->distinct)$sql .= 'DISTINCT ';
 
-        if(!$this->select)$this->select = '*';
+        if(!$this->select){
+            
+            $this->select($this->field);
+        }
 
         $sql .= $this->select.' FROM '.($this->join || $this->asRawTable!=$this->table?$this->table.' AS '. $this->asRawTable:$this->table);
 
