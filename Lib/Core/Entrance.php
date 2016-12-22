@@ -64,6 +64,9 @@ else define('REQUEST_PATH',$argv[1]);
 
 require_once VENDOR_ROOT.'autoload.php';
 
+//设置时区
+date_default_timezone_set(Config::get('TIMEZONE'));
+
 
 //进行压缩处理，在这之前不允许输入任何字符，所以要注意不要使用 UTF-8 with BOM的编码
 
