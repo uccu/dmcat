@@ -432,8 +432,8 @@ class BaseModel{
                 $this->order = $container[0];return $this;
 
             return $this;
-            }elseif(!$desc || $desc === 'ASC'){
-
+            }elseif($desc === 'DESC' || $desc === 'ASC' || is_numeric($desc) || is_bool($desc)){
+                if($desc && $desc !== 'ASC')$container[0] .= ' DESC';
                 $count = 1;
 
             }
@@ -457,9 +457,15 @@ class BaseModel{
 
         $orders = array();
 
-        foreach($container as $field){
+        foreach($container as $k=>$field){
 
-            list($field,$desc) = explode(' ',$field);
+            if(is_numeric($k))list($field,$desc) = explode(' ',$field);
+            else{
+                
+                $desc = $field;
+                $field = $k;
+            }
+            
 
             $field = new Field($field ,$this);
 
