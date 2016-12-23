@@ -3,12 +3,35 @@
 use MtHaml\Environment;
 use MtHaml\Support\Twig\Loader;
 use MtHaml\Support\Twig\Extension;
+use Lib\Sharp\SingleInstance;
+
+class View implements SingleInstance{
+
+    private $data = [];
+
+    function construct(){
+
+        
+
+    }
+
+    public static function getInstance(){
+        static $object;
+		if(empty($object))$object = new self();
+		return $object;
+    }
+
+    public static function addData($data = []){
+
+        $obj = self::getInstance();
+
+        $obj->data = array_merge($obj->data,$data);
 
 
-class View{
+    }
 
-    
-    public static function hamlReader($name,$dir = ''){
+
+    public static function hamlReader($name,$dir = '',$data = []){
 
         $mt = new Environment('twig', ['enable_escaper' => false]);
 
@@ -28,7 +51,11 @@ class View{
 
         $twig->addExtension(new Extension());
 
-        echo $twig->render($name.".haml");
+        $obj = self::getInstance();
+
+        $obj->data = array_merge($obj->data,$data);
+
+        echo $twig->render($name.".haml",$obj->data);
 
     }
 
