@@ -64,6 +64,8 @@ class TestController extends Controller{
 
     function haml(){
 
+        View::addData(['g'=>['title'=>'zz','keywords'=>'baka']]);
+
         View::hamlReader('Test/my','App');
 
 
