@@ -1,0 +1,32 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+  %title #{g.title}
+  %meta(name="keywords" content="#{g.keywords}")
+  %meta(name="description" content="#{g.description}")
+
+
+- block body
+  #example
+    = g.title
+    <br>
+    今日<br>
+    - for theme in today
+      theme name : #{theme.name} | #{theme.date}<br>
+    <br>
+    这星期<br>
+    - for day in this_week
+      - for theme in day
+        theme name : #{theme.name} | #{theme.date}<br>
+    <br>
+    上星期<br>
+    - for day in last_week
+      - for theme in day
+        theme name : #{theme.name} | #{theme.date}<br>
+    <br>
+
+
+
+  

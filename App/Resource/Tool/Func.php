@@ -77,7 +77,7 @@ class Func{
         
         }elseif($time>TIME_YESTERDAY){
 
-            return '昨日'.date('H时i分');
+            return '昨日'.date('H时i分',$time);
 
         }else{
 

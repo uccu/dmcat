@@ -27,16 +27,22 @@ class ThemeController extends Controller{
 
         if($season)$condition['season'] = $season;
 
-        $data['list'] = $themeModel->where($condition)->page($page,$limit)->order('ctime',$desc?1:0)->get();
+        $data['list'] = $themeModel->where($condition)->page($page,$limit)->order('ctime',$desc?1:0)->get()->toArray();
 
-        AJAX::success($data);
+        $gdata['g']['title'] = '主题列表';
+
+        //AJAX::success($data);
+
+        View::addData($gdata);
+
+        View::hamlReader('Theme/all','Resource',$data);
 
     }
 
     function week(ThemeModel $themeModel){
 
         
-        $all = $themeModel->where('%F > %d','change_time',TIME_NOW-3600*24*7*2)->order('change_time')->get();
+        $all = $themeModel->where('%F > %d','change_time',TIME_NOW-3600*24*7*2)->order('change_time')->get()->toArray();
 
         $today = $last_week = $this_week = [];
 
@@ -66,7 +72,17 @@ class ThemeController extends Controller{
         $data['this_week'] = $this_week;
         $data['last_week'] = $last_week;
 
-        AJAX::success($data);
+        $data['test'] = '1';
+
+        //var_dump($this_week);
+
+        $gdata['g']['title'] = '节目单';
+
+        //AJAX::success($data);
+
+        View::addData($gdata);
+
+        View::hamlReader('Theme/week','Resource',$data);
 
 
 
