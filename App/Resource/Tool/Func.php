@@ -81,7 +81,7 @@ class Func{
 
         }else{
 
-            return date('Y-m-d');
+            return date('Y-m-d',$time);
             
         }
 

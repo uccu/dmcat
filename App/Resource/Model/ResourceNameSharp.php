@@ -58,6 +58,11 @@ class ResourceNameSharp{
     }
 
     function getRawNumber(&$name){
+
+        $name = preg_replace_callback('/#(\d{2,3}-\d{2,3})(完|end)?/i',function($r){
+            $this->otherNumber[] = $this->number = $r[1];
+            return '';
+        },$name);
         
         $name = preg_replace_callback('/#(\d{2,3})/',function($r){
             $this->otherNumber[] = $this->number = $r[1];
@@ -86,9 +91,9 @@ class ResourceNameSharp{
 
         $array = [
 
-            '720p','360p','1080p','\d{4}x1080','\d{3,4}x\d{3}','\b(19|20)\d{2}\b',
+            '720p','360p','1080p','480p','\d{4}x1080','\d{3,4}x\d{3}','\b(19|20)\d{2}\b',
 
-            '(繁|简)(体|體)?','(GB|BIG5)\b','CH(T|S)\b','(内|外)(嵌|挂)(版)?',
+            '(繁|简)(体|體)?','(GB|BIG5)\b','CH(T|S)\b','(内|外)(嵌|挂)(版)?','中日双语','字幕(文件)?\b',
 
             'MP4\b','MKV\b','IOS\b','RMVB\b',
 
@@ -96,11 +101,11 @@ class ResourceNameSharp{
 
             'OVA','OAD','MOVIE','HDTV',
 
-            'h264\b','x26\d\b','10-?bit\b','8-?bit\b','ACC\b','AC3\b','FLAC\b','HEVC\b','Main10p\b','VFR\b',
+            'h264\b','x26\d\b','10-?bit\b','8-?bit\b','ACC\b','AC3\b','FLAC\b','HEVC\b','Main10p\b','VFR\b','Web(Rip)?\b',
             
-            'BD(RIP)?\b','DVD(RIP)?\b','网盘','第.{1,2}(季|部|卷|章)',
+            'BD-?(RIP|BOX)?\b','DVD(RIP)?\b','网盘','第.{1,2}(季|部|卷|章)',
 
-            '320K',
+            '320K','v\d\b','PSV\b','pc\b'
         ];
 
 
@@ -112,7 +117,7 @@ class ResourceNameSharp{
 
         $pattern = ['_'];
         $name = str_replace($pattern,' ',$name);
-        $pattern = ['+','&',' x ',' × '];
+        $pattern = ['+','&',' x ',' × ','附'];
         $name = str_replace($pattern,'|',$name);
         $pattern = ['★',];
         $name = str_replace($pattern,'',$name);
@@ -167,7 +172,7 @@ class ResourceNameSharp{
         $name2 = $name;
         $pattern = ['# *({|【|「|\[) *#','# *(}|】|」|\]) *#'];
         $name = preg_replace($pattern,'|',$name);
-        $name = str_replace('_',' ',$name);
+        $name = str_replace(['_'],' ',$name);
         if(substr_count($name,'.')>2)$name = str_replace('.',' ',$name);
         $name = Hanzi::turn($name, true);
         $this->name = $name;
@@ -211,7 +216,11 @@ class ResourceNameSharp{
                     
                 // }
                 if(1){
-                    if(preg_match('#字幕组$#',$p))continue;
+                    if(preg_match('#(字幕组|sub)$#i',$p)){
+                        $this->tag[] = $this->nameArray[$k];
+                        unset($this->nameArray[$k]);
+                        continue;
+                    }
                     $p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十)$#','',$p);
                     if(!$p2)continue;
                     $theme = Theme::getInstance();

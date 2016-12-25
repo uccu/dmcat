@@ -90,11 +90,16 @@ class TestController extends Controller{
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         $json = curl_exec($ch);
         curl_close($ch);
 
         if($json)$json = json_decode($json,true);
-        else return;
+        else{
+            echo 'error';
+            return;
+        };
 
         $json = $json['item'];$array = [];
         $lastDataId = $cache->cget('last_data_id');
@@ -107,9 +112,10 @@ class TestController extends Controller{
             $request['name'] = $data['title'];
             $request['hash'] = $data['hash_id'];
             $request['outlink'] = 'https://share.acgnx.se/show-'.$data['hash_id'].'.html';
+            $request['additional'] = $data['data_id'];
             $request['token'] = '860F3ABB7EB7E30FAD15EEEF6BA6A07D3386AB8A';
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "http://d.baka/api/add");
+            curl_setopt($ch, CURLOPT_URL, "http://c.baka/api/add");
             curl_setopt($ch, CURLOPT_HEADER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
@@ -124,8 +130,8 @@ class TestController extends Controller{
             $cache->csave('last_data_id',$data['data_id']);
             if($k+1!=$length){
                 $rand = rand(0,floor(600/$length));
-                // sleep($rand);
-                die();
+                sleep($rand);
+                // die();
             }
         }
         
@@ -144,8 +150,8 @@ class TestController extends Controller{
 
         $json = '{
             "data_id": 469350,
-            "hash_id": "b4d5edb3d024e382ae1e5b56b81b0db5cfcf8031",
-            "title": "斯特拉的魔法 01",
+            "hash_id": "b4dsedb3d024e382ae3e5b56b81b0db5cfcf8031",
+            "title": "[c.c动漫][10月新番][时间飞船24][Time Bokan 24][12][GB][720P][MP4][网盘]",
             "sort_id": 1,
             "sort_name": "動畫",
             "timestamp": 1482336120,
@@ -159,9 +165,10 @@ class TestController extends Controller{
         $request['name'] = $data['title'];
         $request['hash'] = $data['hash_id'];
         $request['outlink'] = 'https://share.acgnx.se/show-'.$data['hash_id'].'.html';
+        $request['additional'] = $data['data_id'];
         $request['token'] = '860F3ABB7EB7E30FAD15EEEF6BA6A07D3386AB8A';
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://d.baka/api/add");
+        curl_setopt($ch, CURLOPT_URL, "http://c.baka/api/add");
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);

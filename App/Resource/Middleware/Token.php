@@ -29,7 +29,7 @@ class Token extends Middleware{
 
         if(!$hash||!$id||!$time||$time+2600*24<TIME_NOW){
 
-            Response::getInstance()->cookie('user_token','',-3600);echo '1';
+            Response::getInstance()->cookie('user_token','',-3600);
             return;
         }
 
@@ -38,7 +38,7 @@ class Token extends Middleware{
 
         if(!$info){
 
-            Response::getInstance()->cookie('user_token','',-3600);echo '2';
+            Response::getInstance()->cookie('user_token','',-3600);
             return;
         }
 
@@ -48,7 +48,7 @@ class Token extends Middleware{
             $this->id = $info->id;
             return;
         }
-        Response::getInstance()->cookie('user_token','',-3600);echo '3';
+        Response::getInstance()->cookie('user_token','',-3600);
 
     }
 

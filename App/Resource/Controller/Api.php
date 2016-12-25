@@ -55,6 +55,10 @@ class Api extends Controller{
             $rns = new RNS($info->name);
             $data['theme_id'] = 0;
             $data['new_number'] = 0;
+
+            $info->tags = implode(',',$rns->tag);
+            $info->unftags = implode(',',$rns->nameArray);
+            //echo $rns->number;
             foreach($rns->theme as $themeid=>$theme){
 
                 if($rns->number == $theme->last_number+1){
