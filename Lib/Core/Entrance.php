@@ -42,6 +42,9 @@ register_shutdown_function(array('E', 'handleShutdown'));
 
 
 
+//composer依赖的自动加载
+
+require_once VENDOR_ROOT.'autoload.php';
 
 //验证PHP扩展
 
@@ -60,9 +63,6 @@ if(!$argc)define('REQUEST_PATH',$_SERVER['PATH_INFO']?substr($_SERVER['PATH_INFO
 else define('REQUEST_PATH',$argv[1]);
 
 
-//composer依赖的自动加载
-
-require_once VENDOR_ROOT.'autoload.php';
 
 //设置时区
 date_default_timezone_set(Config::get('TIMEZONE'));
