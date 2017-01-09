@@ -33,7 +33,10 @@ class E extends Exception{
 
 		// create a log channel
 		$log = new Logger($base);
-		$log->pushHandler(new StreamHandler(LOG_ROOT.DATE_TODAY.'.log', Logger::WARNING));
+		if(is_writable(LOG_ROOT.DATE_TODAY.'.log')){
+			$log->pushHandler(new StreamHandler(LOG_ROOT.DATE_TODAY.'.log', Logger::WARNING));
+		}
+		
 
 		// add records to the log
 		$log->addError($str);
