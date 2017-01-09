@@ -150,7 +150,7 @@ class TestController extends Controller{
 
         $json = '{
             "data_id": 469350,
-            "hash_id": "b4dsedb3d024e382ae3e5b56b81b0db5cfcf8031",
+            "hash_id": "b4dsedb3d024e382ae3e5b56b81b0db5cfcf8032",
             "title": "[c.c动漫][10月新番][时间飞船24][Time Bokan 24][12][GB][720P][MP4][网盘]",
             "sort_id": 1,
             "sort_name": "動畫",
@@ -181,6 +181,12 @@ class TestController extends Controller{
         
         
 
+    }
+
+    function pull(){
+
+        system("cd ..;git pull");
+        
     }
 
 
