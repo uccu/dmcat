@@ -115,7 +115,7 @@ class TestController extends Controller{
             $request['additional'] = $data['data_id'];
             $request['token'] = '860F3ABB7EB7E30FAD15EEEF6BA6A07D3386AB8A';
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "http://c.baka/api/add");
+            curl_setopt($ch, CURLOPT_URL, "http://h.4moe.com/api/add");
             curl_setopt($ch, CURLOPT_HEADER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
@@ -185,7 +185,7 @@ class TestController extends Controller{
 
     function pull(){
 
-        system("cd ..;git pull");
+        system("cd ".BASE_ROOT." && git pull");
         
     }
 
