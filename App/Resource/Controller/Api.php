@@ -40,7 +40,7 @@ class Api extends Controller{
             $site_id = 0;
         }
         $info->name         = $request->request('name');
-        $info->outlink      = $request->request('outlink');
+        
         $info->hash         = $request->request('hash');
         $additional         = $request->request('additional');
         if($additional)$info->additional  = $additional;
@@ -86,8 +86,9 @@ class Api extends Controller{
         
 
         $data['resource_id'] = $resourceId;
+        $outlink = $request->request('outlink');
 
-        $siteResourceId = $siteResourceModel->set(['site_id'=>$site_id,'resource_id'=>$resourceId])->add(true)->getStatus();
+        $siteResourceId = $siteResourceModel->set(['site_id'=>$site_id,'resource_id'=>$resourceId,'outlink'=>$outlink])->add(true)->getStatus();
 
         if(!$resourceId)AJAX::error('资源上传失败');
 

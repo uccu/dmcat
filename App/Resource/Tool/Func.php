@@ -91,13 +91,13 @@ class Func{
      *      当小于1h时      xx分xx秒前
      *      当小于1d时      xx时xx分前
      *      昨日           昨日xx时xx分
-     *      其他           xx-xx-xx
+     *      其他           xxxx-xx-xx
      *
      */
 
     static public function time_calculate( $time ){
 
-        if($time>TIME_TODAY){
+        if($time>=TIME_TODAY){
 
             $time = TIME_NOW - $time;
 
@@ -111,7 +111,7 @@ class Func{
 
             return $hour.'时'.($minute?($minute<10?'0':'').$minute.'分':'').'前';
         
-        }elseif($time>TIME_YESTERDAY){
+        }elseif($time>=TIME_YESTERDAY){
 
             return '昨日'.date('H时i分',$time);
 
