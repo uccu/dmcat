@@ -66,7 +66,12 @@ class Api extends Controller{
                     $theme->last_number += 1;
                     $theme->change_time = TIME_NOW;
                     $theme->save();
+
+                    $resource->set(['new_number'=>0])->where('%F=%d','theme_id',$themeid)->save();
+                    $info->new_number = 1;
                     $data['new_number'] = 1;
+                }elseif($rns->number == $theme->last_number){
+                    $info->new_number = 1;
                 }
                 $data['theme_id'] = $theme->id;
                 $info->theme_id = $theme->id;break;

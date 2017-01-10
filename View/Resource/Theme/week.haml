@@ -13,17 +13,17 @@
 
     今日<br>
     - for theme in today
-      theme name : #{theme.name} | #{theme.date}<br>
+      theme name : #{theme.name} | #{theme.date} | #{theme.last_number}<br>
     <br>
     这星期<br>
     - for day in this_week
       - for theme in day
-        theme name : #{theme.name} | #{theme.date}<br>
+        theme name : #{theme.name} | #{theme.date} | #{theme.last_number}<br>
     <br>
     上星期<br>
     - for day in last_week
       - for theme in day
-        theme name : #{theme.name} | #{theme.date}<br>
+        theme name : #{theme.name} | #{theme.date} | #{theme.last_number}<br>
     <br>
 
 
