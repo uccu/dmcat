@@ -20,6 +20,9 @@ class E extends Exception{
 		if(!is_null($c)){
 			$file = $trace[$c]['file'];
 			$line = $trace[$c]['line'];
+		}else{
+			$trace[0]['file'] = $file;
+			$trace[0]['line'] = $line;
 		}
 
 		$file = str_ireplace(array(BASE_ROOT,'.php'),'',$file);
