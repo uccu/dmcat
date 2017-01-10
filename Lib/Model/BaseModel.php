@@ -327,6 +327,25 @@ class BaseModel{
 
         $container = func_get_args();
 
+        if(strtoupper($container[1]) === 'RAW'){
+
+            if(!$container[0]){
+
+            }elseif(is_string($container[0])){
+
+                $this->select = $container[0];return $this;
+
+            }elseif(is_array($container[0])){
+
+                $container = $container[0];
+                $sql = $container[0];
+                array_shift($container);
+                $this->select = $this->tool->format($sql,$container,$this);return $this;
+                
+            }
+
+        }
+
         $fields = array();
 
         foreach($container as $v){
@@ -360,7 +379,7 @@ class BaseModel{
 
         foreach($container as $field){
 
-            unset($this->$field[$field]);
+            unset($this->field[$field]);
         }
 
         return $this;
