@@ -17,7 +17,7 @@
     %br
     - for theme in today
       #{theme.name} | #{theme.date} | #{theme.last_number} | 
-      %a(href="/lists/theme?id=#{theme.id}&new_number=1" target="_blank")
+      %a(href="/lists/new_number?id=#{theme.id}&new_number=1" target="_blank")
         查看
       %br
     %br
