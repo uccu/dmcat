@@ -99,16 +99,17 @@ class Func{
 
         if($time>TIME_TODAY){
 
+            $time = TIME_NOW - $time;
+
             $second = $time % 60 ;
+            $time = ( $time - $second ) / 60 ;
+            if(!$time)return $second.'秒前';
 
-            $time_r = ( $time - $second ) / 60 ;
-            $minute = $time_r % 60 ;
-            if(!$time_r)return $second.'秒前';
+            $minute = $time % 60 ;
+            $hour = ( $time - $minute ) / 60 ;
+            if(!$hour)return $minute.'分'.($second?($second<10?'0':'').$second.'秒':'').'前';
 
-            $time_r = ( $time - $minute ) / 60 ;
-            $hour = $time_r % 24 ;
-            if(!$time_r)return $minute.'分'.($second?($second<10?'0':'').$second.'秒':'').'前';
-            else return $hour.'时'.($minute?($minute<10?'0':'').$minute.'分':'').'前';
+            return $hour.'时'.($minute?($minute<10?'0':'').$minute.'分':'').'前';
         
         }elseif($time>TIME_YESTERDAY){
 
