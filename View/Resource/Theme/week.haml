@@ -23,8 +23,9 @@
     %br
     这星期
     %br
-    - for day in this_week
-      *
+    - for key,day in this_week
+      = key
+      %br
       - for theme in day
         #{theme.name} | #{theme.date} | #{theme.last_number}
         %a(href="/lists/new_number?id=#{theme.id}" target="_blank")
@@ -32,7 +33,9 @@
         %br
     %br
     上星期<br>
-    - for day in last_week
+    - for key,day in last_week
+      = key
+      %br
       - for theme in day
         #{theme.name} | #{theme.date} | #{theme.last_number}
         %a(href="/lists/new_number?id=#{theme.id}" target="_blank")
