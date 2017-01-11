@@ -102,9 +102,40 @@ class Api extends Controller{
 
     }
 
-    function update(){
+    function flesh(Request $request,Resource $resource){
+
+        $id = $request->request('id');
+
+        $r = $resource->find($id);
+
+        $rns = new RNS($info->name);
+
+        $info = new stdClass;
+        $info->tags = implode(',',$rns->tag);
+        $info->unftags = implode(',',$rns->nameArray);
+        
+ 
+        foreach($rns->theme as $themeid=>$theme){
+
+            if($rns->number == $theme->last_number+1){
+
+                $theme->last_number += 1;
+                $theme->change_time = TIME_NOW;
+                $theme->save();
+                $resource->set(['new_number'=>0])->where('%F=%d','theme_id',$themeid)->save();
+                $info->new_number = 1;
+
+            }elseif($rns->number == $theme->last_number){
+                $info->new_number = 1;
+            }
+
+            $info->theme_id = $theme->id;break;
+        }
 
 
+        $data['affect'] = $resource->set($info)->save($id)->getStatus();
+
+        AJAX::success($data);
 
     }
 
