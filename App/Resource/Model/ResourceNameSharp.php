@@ -221,7 +221,7 @@ class ResourceNameSharp{
                     if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
                         $p2 = '_'.$p2;
                     }
-                    if(match('#^another$#i',$p2))$p2 = '_'.$p2;
+                    if(preg_match('#^another$#i',$p2))$p2 = '_'.$p2;
                     
                     if($t = $theme->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p2)->order('level DESC')->find()){
                         $this->theme[$t->id] = $t;
