@@ -216,8 +216,11 @@ class ResourceNameSharp{
                 }
                 if(1){
                 
-                    //$p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十)$#','',$p);
-                    //if(!$p2)continue;
+                    $p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十)$#','',$p);
+                    if(!$p2){
+                        unset($this->nameArray[$k]);
+                        continue;
+                    }
                     $theme = Theme::getInstance();
                     $p2 = str_replace(' ','',$p2);
                     if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
