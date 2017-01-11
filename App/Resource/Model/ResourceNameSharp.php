@@ -168,7 +168,7 @@ class ResourceNameSharp{
         $name2 = $name;
 
         $name = preg_replace('# *({|【|「|\[|}|】|」|\]|\+|&| x |附|/|\\|~|:) *#','|',$name);
-        $name = preg_replace(['#\(.*?\)#','_'],' ',$name);
+        $name = preg_replace(['#\(.*?\)|_#'],' ',$name);
 
         $name = str_replace('★','',$name);
         if(substr_count($name,'.')>2)$name = str_replace('.',' ',$name);

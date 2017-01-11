@@ -106,7 +106,11 @@ class Api extends Controller{
 
         $id = $request->request('id');
 
+        if(!$id)AJAX::error('ID错误');
+
         $r = $resource->find($id);
+
+        if(!$r)AJAX::error('未找到资源');
 
         $rns = new RNS($info->name);
 
