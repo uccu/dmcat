@@ -119,7 +119,8 @@ class ResourceNameSharp{
 
         
         $name = preg_replace('# +#',' ',$name);
-        $name = preg_replace('#(\|| )+#','|',$name);
+        $name = preg_replace('# *\| *#','|',$name);
+        $name = preg_replace('#\|+#','|',$name);
         $name = trim( $name );
 
     }
@@ -175,7 +176,8 @@ class ResourceNameSharp{
         $name = Hanzi::turn($name, true);
 
         $name = preg_replace('# +#',' ',$name);
-        $name = preg_replace('#(\|| )+#','|',$name);
+        $name = preg_replace('# *\| *#','|',$name);
+        $name = preg_replace('#\|+#','|',$name);
         $name = trim( $name );
         $this->name = $name;
 
