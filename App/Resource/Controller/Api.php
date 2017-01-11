@@ -112,7 +112,7 @@ class Api extends Controller{
 
         if(!$r)AJAX::error('未找到资源');
 
-        $rns = new RNS($info->name);
+        $rns = new RNS($r->name);
 
         $info = new stdClass;
         $info->tags = implode(',',$rns->tag);
