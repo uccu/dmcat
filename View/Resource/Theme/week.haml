@@ -17,16 +17,17 @@
     %br
     - for theme in today
       #{theme.name} | #{theme.date} | #{theme.last_number} | 
-      %a(href="/lists/new_number?id=#{theme.id}&new_number=1" target="_blank")
+      %a(href="/lists/new_number?id=#{theme.id}" target="_blank")
         查看
       %br
     %br
     这星期
     %br
     - for day in this_week
+      *
       - for theme in day
         #{theme.name} | #{theme.date} | #{theme.last_number}
-        %a(href="/lists/theme?id="+theme.id+"&new_number=1")
+        %a(href="/lists/new_number?id=#{theme.id}" target="_blank")
           查看
         %br
     %br
@@ -34,7 +35,7 @@
     - for day in last_week
       - for theme in day
         #{theme.name} | #{theme.date} | #{theme.last_number}
-        %a(href="/lists/theme?id="+theme.id+"&new_number=1")
+        %a(href="/lists/new_number?id=#{theme.id}" target="_blank")
           查看
         %br
     %br

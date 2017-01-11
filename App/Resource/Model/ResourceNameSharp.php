@@ -40,7 +40,7 @@ class ResourceNameSharp{
             'Ｕ' , 'Ｖ' , 'Ｗ' , 'Ｘ' , 'Ｙ' , 'Ｚ' , 'ａ' , 'ｂ' , 'ｃ' , 'ｄ' , 'ｅ' , 'ｆ' , 'ｇ' , 'ｈ' , 'ｉ' , 
             'ｊ' , 'ｋ' , 'ｌ' , 'ｍ' , 'ｎ' , 'ｏ' , 'ｐ' , 'ｑ' , 'ｒ' , 'ｓ' , 'ｔ' , 'ｕ' , 'ｖ' , 'ｗ' , 'ｘ' , 
             'ｙ' , 'ｚ' , '－' , '　' , '：' , '．' , '，' , '／' , '％' , '＃' , '！' , '＠' , '＆' , '（' , '）' ,
-            '＜' , '＞' , '＂' , '＇' , '？' , '［' , '］' , '｛' , '｝' , '＼' , '｜' , '＋' , '＝' , '＿' , '＾' , '￥' , '￣' , '｀','&amp;'
+            '＜' , '＞' , '＂' , '＇' , '？' , '［' , '］' , '｛' , '｝' , '＼' , '｜' , '＋' , '＝' , '＿' , '＾' , '￥' , '￣' , '｀','&amp;','×'
         );
  
         $replace = array(
@@ -50,7 +50,7 @@ class ResourceNameSharp{
             'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 
             'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 
             'y', 'z', '-', ' ', ':','.', ',', '/', '%', ' #','!', '@', '&', '(', ')',
-            '<', '>', '"', '\'','?','[', ']', '{', '}', '\\','|', '+', '=', '_', '^','￥','~', '`','&'
+            '<', '>', '"', '\'','?','[', ']', '{', '}', '\\','|', '+', '=', '_', '^','￥','~', '`','&','x'
         );
 
         $name = str_replace( $pattern, $replace, $name );
@@ -59,7 +59,7 @@ class ResourceNameSharp{
 
     function getRawNumber(&$name){
 
-        $name = preg_replace_callback('/#(\d{2,3}-\d{2,3})(完|end)?/i',function($r){
+        $name = preg_replace_callback('/(\d{2,3}-\d{2,3})(完|end)?/i',function($r){
             $this->otherNumber[] = $this->number = $r[1];
             return '';
         },$name);
@@ -79,7 +79,7 @@ class ResourceNameSharp{
             return '';
         },$name);
 
-        $name = preg_replace_callback('#\[(\d{2,3})(end|final)?\]#',function($r){
+        $name = preg_replace_callback('#\|(\d{2,3}) ?(end|final)?\|#',function($r){
             $this->otherNumber[] = $this->number = $r[1];
             return '';
         },$name);
@@ -103,9 +103,9 @@ class ResourceNameSharp{
 
             'h264\b','x26\d\b','10-?bit\b','8-?bit\b','ACC\b','AC3\b','FLAC\b','HEVC\b','Main10p\b','VFR\b','Web(Rip)?\b',
             
-            'BD-?(RIP|BOX)?\b','DVD(RIP)?\b','网盘','第.{1,2}(季|部|卷|章)',
+            'BD-?(RIP|BOX)?\b','DVD(RIP)?\b','TV(RIP)?\b','网盘','第.{1,2}(季|部|卷|章)',
 
-            '320K','v\d\b','PSV\b','pc\b'
+            '320K','v\d\b','s\d\b','PSV\b','pc\b'
         ];
 
 
@@ -115,15 +115,11 @@ class ResourceNameSharp{
 
         },$name,'i');
 
-        $pattern = ['_'];
-        $name = str_replace($pattern,' ',$name);
-        $pattern = ['+','&',' x ',' × ','附'];
-        $name = str_replace($pattern,'|',$name);
-        $pattern = ['★',];
-        $name = str_replace($pattern,'',$name);
-        $name = preg_replace('# *\[ *?\] *|\(.*?\)#',' ',$name);
+
+
+        
         $name = preg_replace('# +#',' ',$name);
-        $name = preg_replace('#\|+#','|',$name);
+        $name = preg_replace('#(\|| )+#','|',$name);
         $name = trim( $name );
 
     }
@@ -170,19 +166,23 @@ class ResourceNameSharp{
         $this->singleByte($name);
 
         $name2 = $name;
-        $pattern = ['# *({|【|「|\[) *#','# *(}|】|」|\]) *#'];
-        $name = preg_replace($pattern,'|',$name);
-        $name = str_replace(['_'],' ',$name);
+
+        $name = preg_replace('# *({|【|「|\[|}|】|」|\]|\+|&| x |附|/|\\|~|:) *#','|',$name);
+        $name = preg_replace(['#\(.*?\)#','_'],' ',$name);
+
+        $name = str_replace('★','',$name);
         if(substr_count($name,'.')>2)$name = str_replace('.',' ',$name);
         $name = Hanzi::turn($name, true);
+
+        $name = preg_replace('# +#',' ',$name);
+        $name = preg_replace('#(\|| )+#','|',$name);
+        $name = trim( $name );
         $this->name = $name;
 
 
         $this->getRawNumber($name);
 
         $this->getTag($name);
-
-        $name = str_replace(['/','\\','~',':'],'|',$name);
 
         $array = explode('|',$name);
 
@@ -207,28 +207,21 @@ class ResourceNameSharp{
                 $this->number = $p;
                 unset($this->nameArray[$k]);
             }else{
-                // if(!$this->subtitle){
-                //     $subtitle = Subtitle::getInstance();
-                //     if($subtitle->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p)->find()){
-                //         $this->subtitle = $t;
-                //         unset($this->nameArray[$k]);
-                //     }
-                    
-                // }
+                if(preg_match('#(字幕组|sub)$#i',$p)){
+                    $this->tag[] = $this->nameArray[$k];
+                    unset($this->nameArray[$k]);
+                    continue;
+                }
                 if(1){
-                    if(preg_match('#(字幕组|sub)$#i',$p)){
-                        $this->tag[] = $this->nameArray[$k];
-                        unset($this->nameArray[$k]);
-                        continue;
-                    }
-                    $p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十)$#','',$p);
-                    if(!$p2)continue;
+                
+                    //$p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十)$#','',$p);
+                    //if(!$p2)continue;
                     $theme = Theme::getInstance();
                     $p2 = str_replace(' ','',$p2);
                     if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
                         $p2 = '_'.$p2;
                     }
-                    if(0===strnatcasecmp($p2,'another'))$p2 = '_'.$p2;
+                    if(match('#^another$#i',$p2))$p2 = '_'.$p2;
                     
                     if($t = $theme->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p2)->order('level DESC')->find()){
                         $this->theme[$t->id] = $t;
