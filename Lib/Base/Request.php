@@ -50,13 +50,39 @@ class Request implements SingleInstance{
 
     }
 
+    private function muti($name,$way){
+
+        $name2 = [];
+
+        foreach($name as $k=>$v){
+
+            $g = $this->{$way}($v);
+            if(!is_null($g))$name2[$v] = $g;
+        }
+        return $name2;
+        
+
+    }
+
     function post($name){
+
+        if(is_array($name)){
+
+            return $this->muti($name,__FUNCTION__);
+        }
 
         return $_POST[$name];
         
     }
 
+    
+
     function get($name){
+
+        if(is_array($name)){
+
+            return $this->muti($name,__FUNCTION__);
+        }
 
         return $_GET[$name];
         
@@ -64,11 +90,21 @@ class Request implements SingleInstance{
 
     function request($name){
 
+        if(is_array($name)){
+
+            return $this->muti($name,__FUNCTION__);
+        }
+
         return $_REQUEST[$name];
         
     }
 
     function file($name){
+
+        if(is_array($name)){
+
+            return $this->muti($name,__FUNCTION__);
+        }
 
         return $_FILES[$name];
         
