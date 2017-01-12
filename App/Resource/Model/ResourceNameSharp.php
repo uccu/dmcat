@@ -222,7 +222,7 @@ class ResourceNameSharp{
                         continue;
                     }
                     $theme = Theme::getInstance();
-                    $p2 = str_replace(' ','',$p2);
+                    $p2 = str_replace([' ','.',';'],'',$p2);
                     if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
                         $p2 = '_'.$p2;
                     }
