@@ -8,10 +8,7 @@ use Lib\Core\Autoload;
 //error_reporting(0);
 
 //定义常量
-define('TIME_NOW', time());
-define('TIME_TODAY', strtotime(date('Y-m-d',TIME_NOW)));
-define('DATE_TODAY', date('Ymd'));
-define('TIME_YESTERDAY', TIME_TODAY-3600*24);
+
 define('BASE_ROOT', substr(__DIR__, 0, -8));
 define('LIB_ROOT', BASE_ROOT.'Lib/');
 define('CONFIG_ROOT', BASE_ROOT.'Config/');
@@ -66,6 +63,12 @@ else define('REQUEST_PATH',$argv[1]);
 
 //设置时区
 date_default_timezone_set(Config::get('TIMEZONE'));
+
+define('TIME_NOW', time());
+define('TIME_TODAY', strtotime(date('Y-m-d',TIME_NOW)));
+define('DATE_TODAY', date('Ymd'));
+define('TIME_YESTERDAY', TIME_TODAY-3600*24);
+
 
 
 //进行压缩处理，在这之前不允许输入任何字符，所以要注意不要使用 UTF-8 with BOM的编码
