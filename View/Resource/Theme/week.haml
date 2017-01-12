@@ -16,7 +16,7 @@
     今日
     %br
     - for theme in today
-      #{theme.name} | #{theme.date} | #{theme.last_number} | 
+      #{theme.name} | #{theme.date} | #{theme.last_number}（#{theme.number}）
       %a(href="/lists/new_number?id=#{theme.id}" target="_blank")
         查看
       %br
@@ -27,7 +27,7 @@
       = key
       %br
       - for theme in day
-        #{theme.name} | #{theme.date} | #{theme.last_number}
+        #{theme.name} | #{theme.date} | #{theme.last_number}（#{theme.number}）
         %a(href="/lists/new_number?id=#{theme.id}" target="_blank")
           查看
         %br
@@ -37,7 +37,7 @@
       = key
       %br
       - for theme in day
-        #{theme.name} | #{theme.date} | #{theme.last_number}
+        #{theme.name} | #{theme.date} | #{theme.last_number}（#{theme.number}）
         %a(href="/lists/new_number?id=#{theme.id}" target="_blank")
           查看
         %br

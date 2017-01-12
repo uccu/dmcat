@@ -42,7 +42,7 @@ class ThemeController extends Controller{
     function week(ThemeModel $themeModel){
 
         
-        $all = $themeModel->where('%F > %d','change_time',TIME_NOW-3600*24*7*2)->order('change_time')->get()->toArray();
+        $all = $themeModel->where('%F > %d','change_time',TIME_TODAY-3600*24*7*2)->order('change_time')->get()->toArray();
 
         $today = $last_week = $this_week = [];
 
@@ -52,12 +52,12 @@ class ThemeController extends Controller{
 
             $theme->date = Func::time_calculate($theme->change_time);
 
-            if($theme->change_time<TIME_NOW-3600*24*7){
+            if($theme->change_time<TIME_TODAY-3600*24*7){
 
                 $last_week[date('w',$theme->change_time)][] = $theme;
 
 
-            }elseif($theme->change_time<TIME_NOW-3600*24){
+            }elseif($theme->change_time<TIME_TODAY){
 
                 $this_week[date('w',$theme->change_time)][] = $theme;
             }else{

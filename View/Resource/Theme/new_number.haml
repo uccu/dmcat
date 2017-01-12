@@ -14,7 +14,9 @@
 
   #theme
     - for r in list
-      #{r.name} | #{r.outlink}
+      #{r.sname} : 
+      %a(href="#{r.outlink}")
+        =r.name
       %br
 
 

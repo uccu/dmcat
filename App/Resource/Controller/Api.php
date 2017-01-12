@@ -62,7 +62,7 @@ class Api extends Controller{
             foreach($rns->theme as $themeid=>$theme){
 
                 if($rns->number == $theme->last_number+1){
-
+                    $theme->number = 1;
                     $theme->last_number += 1;
                     $theme->change_time = TIME_NOW;
                     $theme->save();
@@ -72,6 +72,8 @@ class Api extends Controller{
                     $data['new_number'] = 1;
                 }elseif($rns->number == $theme->last_number){
                     $info->new_number = 1;
+                    $theme->number += 1;
+                    $theme->save();
                 }
                 $data['theme_id'] = $theme->id;
                 $info->theme_id = $theme->id;break;
@@ -122,7 +124,7 @@ class Api extends Controller{
         foreach($rns->theme as $themeid=>$theme){
 
             if($rns->number == $theme->last_number+1){
-
+                $theme->number = 1;
                 $theme->last_number += 1;
                 $theme->change_time = TIME_NOW;
                 $theme->save();
@@ -131,6 +133,10 @@ class Api extends Controller{
 
             }elseif($rns->number == $theme->last_number){
                 $info->new_number = 1;
+                if($theme->id != $r->theme_id){
+                    $theme->number += 1;
+                    $theme->save();
+                }
             }
 
             $info->theme_id = $theme->id;break;

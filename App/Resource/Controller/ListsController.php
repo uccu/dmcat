@@ -47,8 +47,8 @@ class ListsController extends Controller{
 
     function new_number(Resource $resourceModel,$asc = 0,$page = 1,$id = 0,Theme $themeModel){
 
-        $list = $resourceModel->select(['%F,GROUP_CONCAT(%F,%F) AS outlink','name','sitelink.site.name','sitelink.outlink'],'RAW')
-            ->where('theme_id=%d AND new_number=1 AND visible=1',$id)->group('id')->order('level DESC','ctime')->get();
+        $list = $resourceModel->select('sitelink.site.name>sname','sitelink.outlink','*')
+            ->where('theme_id=%d AND new_number=1 AND visible=1',$id)->order('level DESC','ctime')->get();
 
         $theme = $themeModel->find($id);
         $data['list'] = $list->toArray();
