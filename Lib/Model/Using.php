@@ -124,6 +124,8 @@ class Using implements SingleInstance{
 
 		if (is_bool($str))return $str ? '1' : '0';
 
+        if (is_null($str))return 'NULL';
+
 		return '\'\'';
 
 	}
