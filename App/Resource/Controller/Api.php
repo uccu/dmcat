@@ -109,46 +109,73 @@ class Api extends Controller{
     function flesh(Request $request,Resource $resource){
 
         $id = $request->request('id');
+        
 
         if(!$id)AJAX::error('ID错误');
 
-        $r = $resource->find($id);
+        if(stripos($id,'-')){
 
-        if(!$r)AJAX::error('未找到资源');
+            $ex = explode('-',$id);
+            if(is_numeric($ex[0]) && is_numeric($ex[1]) && $ex[1]>$ex[0]){
+                
+                while($ex[0]<=$ex[1]){
 
-        $rns = new RNS($r->name);
-
-        $info = new stdClass;
-        $info->tags = implode(',',$rns->tag);
-        $info->unftags = implode(',',$rns->nameArray);
-        
- 
-        foreach($rns->theme as $themeid=>$theme){
-
-            if($rns->number == $theme->last_number+1){
-                $theme->number = 1;
-                $theme->last_number += 1;
-                $theme->change_time = TIME_NOW;
-                $theme->visible = 1;
-                $theme->save();
-                $resource->set(['new_number'=>0])->where('%F=%d','theme_id',$themeid)->save();
-                $info->new_number = 1;
-
-            }elseif($rns->number == $theme->last_number){
-                $info->new_number = 1;
-                if($theme->id != $r->theme_id){
-                    $theme->number += 1;
-                    $theme->visible = 1;
-                    $theme->save();
+                    $ids[] = $ex[0];
+                    $ex[0]++;
                 }
+
             }
 
-            $info->theme_id = $theme->id;break;
+        }else{
+
+            $ids = explode(',',$id);
         }
+        
+        
+        
+        foreach($ids as $id){
+
+            $r = $resource->find($id);
+
+            if(!$r)continue;
+
+            $rns = new RNS($r->name);
+
+            $info = new stdClass;
+            $info->tags = implode(',',$rns->tag);
+            $info->unftags = implode(',',$rns->nameArray);
+            
+    
+            foreach($rns->theme as $themeid=>$theme){
+
+                if($rns->number == $theme->last_number+1){
+                    $theme->number = 1;
+                    $theme->last_number += 1;
+                    $theme->change_time = TIME_NOW;
+                    $theme->visible = 1;
+                    $theme->save();
+                    $resource->set(['new_number'=>0])->where('%F=%d','theme_id',$themeid)->save();
+                    $info->new_number = 1;
+
+                }elseif($rns->number == $theme->last_number){
+                    $info->new_number = 1;
+                    if($theme->id != $r->theme_id){
+                        $theme->number = 1+$resource->select('count(*) as count','RAW')->where('%F=%d AND new_number=1','theme_id',$themeid)->find()->count;
+                        $theme->visible = 1;
+                        $theme->save();
+                    }else{
+                        $theme->number = $resource->select('count(*) as count','RAW')->where('%F=%d AND new_number=1','theme_id',$themeid)->find()->count;
+                        $theme->visible = 1;
+                        $theme->save();
+                    }
+                }
+
+                $info->theme_id = $theme->id;break;
+            }
 
 
-        $data['affect'] = $resource->set($info)->save($id)->getStatus();
-
+            $data['affect'][$id] = $resource->set($info)->save($id)->getStatus();
+        }
         AJAX::success($data);
 
     }

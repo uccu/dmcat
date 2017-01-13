@@ -40,7 +40,9 @@ class ResourceNameSharp{
             'Ｕ' , 'Ｖ' , 'Ｗ' , 'Ｘ' , 'Ｙ' , 'Ｚ' , 'ａ' , 'ｂ' , 'ｃ' , 'ｄ' , 'ｅ' , 'ｆ' , 'ｇ' , 'ｈ' , 'ｉ' , 
             'ｊ' , 'ｋ' , 'ｌ' , 'ｍ' , 'ｎ' , 'ｏ' , 'ｐ' , 'ｑ' , 'ｒ' , 'ｓ' , 'ｔ' , 'ｕ' , 'ｖ' , 'ｗ' , 'ｘ' , 
             'ｙ' , 'ｚ' , '－' , '　' , '：' , '．' , '，' , '／' , '％' , '＃' , '！' , '＠' , '＆' , '（' , '）' ,
-            '＜' , '＞' , '＂' , '＇' , '？' , '［' , '］' , '｛' , '｝' , '＼' , '｜' , '＋' , '＝' , '＿' , '＾' , '￥' , '￣' , '｀','&amp;','×'
+            '＜' , '＞' , '＂' , '＇' , '？' , '［' , '］' , '｛' , '｝' , '＼' , '｜' , '＋' , '＝' , '＿' , '＾' ,
+            '￥' , '￣' ,'～', '｀','&amp;','×','・',
+            '偵探','團','女僕','復仇','為'
         );
  
         $replace = array(
@@ -50,7 +52,9 @@ class ResourceNameSharp{
             'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 
             'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 
             'y', 'z', '-', ' ', ':','.', ',', '/', '%', ' #','!', '@', '&', '(', ')',
-            '<', '>', '"', '\'','?','[', ']', '{', '}', '\\','|', '+', '=', '_', '^','￥','~', '`','&','x'
+            '<', '>', '"', '\'','?','[', ']', '{', '}', '\\','|', '+', '=', '_', '^',
+            '￥','~','~', '`','&','x','·',
+            '侦探','团','女仆','复仇','为'
         );
 
         $name = str_replace( $pattern, $replace, $name );
@@ -59,8 +63,8 @@ class ResourceNameSharp{
 
     function getRawNumber(&$name){
 
-        $name = preg_replace_callback('/(\d{2,3}-\d{2,3})(完|end)?/i',function($r){
-            $this->otherNumber[] = $this->number = $r[1];
+        $name = preg_replace_callback('/(第)?(\d{2,3}-\d{2,3})(完|end|集|话)?/i',function($r){
+            $this->otherNumber[] = $this->number = $r[2];
             return '';
         },$name);
         
@@ -74,14 +78,14 @@ class ResourceNameSharp{
             return '';
         },$name);
 
-        $name = preg_replace_callback('/第(\d{2,3})(集|话)/',function($r){
+        $name = preg_replace_callback('/第(\d{2,4})(集|话)/',function($r){
             $this->otherNumber[] = $this->number = $r[1];
             return '';
         },$name);
 
         $name = preg_replace_callback('#\|(\d{2,3}) ?(end|final)?\|#',function($r){
             $this->otherNumber[] = $this->number = $r[1];
-            return '';
+            return '|';
         },$name);
         if($this->otherNumber)array_pop($this->otherNumber);
         
@@ -91,15 +95,15 @@ class ResourceNameSharp{
 
         $array = [
 
-            '720p','360p','1080p','480p','\d{4}x1080','\d{3,4}x\d{3}','\b(19|20)\d{2}\b',
+            '(tv-)?720p','360p','1080p','480p','\d{4}x1080','\d{3,4}x\d{3}','\b(19|20)\d{2}\b',
 
             '(繁|简)(体|體|中|日)?','(GB|BIG5)\b','CH(T|S)\b','(内|外)(嵌|挂)(版)?','中日双语(版)?','字幕(文件)?\b','日文(版)?',
 
             'MP4\b','MKV\b','IOS\b','RMVB\b',
 
-            '(10|1|4|7|一|四|七|十)月(新番|泡面)?\b',
+            '(10|1|4|7|一|四|七|十)月(新番|泡面)?\b','剧场版',
 
-            'OVA','OAD','MOVIE','HDTV',
+            'OVA','OAD','(the )?MOVIE','HDTV',
 
             'h264\b','x26\d\b','10-?bit\b','8-?bit\b','HardSub','ACC\b','AAC\b','AC3\b','FLAC\b','HEVC\b','Main10p\b','VFR\b','Web(Rip)?\b',
             
@@ -169,7 +173,7 @@ class ResourceNameSharp{
         $name2 = $name;
 
         $name = preg_replace('# *({|【|「|\[|}|】|」|\]|\+|&| x |附|/|\\|~|:) *#','|',$name);
-        $name = preg_replace(['#\(.*?\)|_#'],' ',$name);
+        $name = preg_replace(['#\(.*?\)|_|~#'],' ',$name);
 
         $name = str_replace('★','',$name);
         if(substr_count($name,'.')>2)$name = str_replace('.',' ',$name);
@@ -181,10 +185,11 @@ class ResourceNameSharp{
         $name = trim( $name );
         $this->name = $name;
 
-
+        $this->getTag($name);
+        
         $this->getRawNumber($name);
 
-        $this->getTag($name);
+        
 
         $array = explode('|',$name);
 
@@ -205,6 +210,8 @@ class ResourceNameSharp{
 
         foreach($this->nameArray as $k=>$p){
 
+            if(!$p)continue;
+
             if(!$this->number && is_numeric($p) && strlen($p)<5){
                 $this->number = $p;
                 unset($this->nameArray[$k]);
@@ -222,7 +229,7 @@ class ResourceNameSharp{
                     continue;
                 }
                 
-                $p2 = str_replace([' ','.',';','·'],'',$p2);
+                $p2 = str_replace([' ','.',';','·','!'],'',$p2);
                 if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
                     $p2 = '_'.$p2;
                 }

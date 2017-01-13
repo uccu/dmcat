@@ -24,7 +24,7 @@ class InfoController extends Controller{
 
         if(!$id)AJAX::error('参数错误');
 
-        $data['info'] = $resource->select('*','theme.id>themeid')->order('id',$desc)->find($id);
+        $data['info'] = $resource->order('id',$desc)->find($id);
         
         AJAX::success($data);
 
