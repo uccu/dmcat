@@ -211,9 +211,9 @@ class ResourceNameSharp{
         foreach($this->nameArray as $k=>$p){
 
             if(!$p)continue;
-
-            if(!$this->number && is_numeric($p) && strlen($p)<5){
-                $this->number = $p;
+            //var_dump($p);
+            if(!$this->number && preg_match('#(\d+)$#',$p,$p2)){
+                $this->number = $p2[1];
                 unset($this->nameArray[$k]);
             }else{
                 if(preg_match('#(字幕组|sub)$#i',$p)){

@@ -58,7 +58,7 @@ class Api extends Controller{
 
             $info->tags = implode(',',$rns->tag);
             $info->unftags = implode(',',$rns->nameArray);
-            //echo $rns->number;
+            
             foreach($rns->theme as $themeid=>$theme){
 
                 if($rns->number == $theme->last_number+1){
@@ -144,7 +144,7 @@ class Api extends Controller{
             $info = new stdClass;
             $info->tags = implode(',',$rns->tag);
             $info->unftags = implode(',',$rns->nameArray);
-            
+            //echo $rns->number;die();
     
             foreach($rns->theme as $themeid=>$theme){
 
