@@ -40,7 +40,7 @@ class Api extends Controller{
             $site_id = 0;
         }
         $info->name         = $request->request('name');
-        
+        if(!$info->name)AJAX::error('没有名字');
         $info->hash         = $request->request('hash');
         $additional         = $request->request('additional');
         if($additional)$info->additional  = $additional;
