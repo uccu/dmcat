@@ -74,6 +74,95 @@ class TestController extends Controller{
 
 
     }
+    function img(){
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://i3.pixiv.net/c/1200x1200/img-master/img/2013/09/20/17/53/12/38631998_p0_master1200.jpg");
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
+        $headers = array();
+        $headers[] = 'Accept:image/webp,image/*,*/*;q=0.8';
+        $headers[] = 'Accept-Encoding:gzip, deflate, sdch, br';
+        $headers[] = 'Accept-Language:zh-CN,zh;q=0.8,en;q=0.6';
+        $headers[] = 'Connection:keep-alive';
+        $headers[] = 'Host:i3.pixiv.net';
+        $headers[] = 'Referer:http://www.pixiv.net/';
+        $headers[] = 'User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36';
+
+        
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        $z = curl_exec($ch);
+        //$a = curl_getinfo($ch);
+        
+        header('Content-type: image/jpeg');
+        
+        curl_close($ch);
+        echo $z;
+    }
+
+
+    function bili(Cache $cache){
+
+        global $argc;
+        global $argv;
+        if(!$argc)AJAX::error('请在shell运行');
+        
+        ignore_user_abort();
+        set_time_limit(600);
+
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'http://bangumi.bilibili.com/api/timeline_v2');
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        $json = curl_exec($ch);
+        curl_close($ch);
+
+        if($json)$json = json_decode($json);
+        else{
+            echo 'error';
+            return;
+        };
+
+        $json = $json->list;$array = [];
+        $lastDataId = $cache->cget('last_data_bili');
+        foreach($json as $k=>$v)if($v->lastupdate>$lastDataId && $v->new && $v->area=='日本'){
+            $array[$v->lastupdate] = $v;
+        }else break;
+        //var_dump($array);
+        ksort($array);
+        $length = count($array);
+        foreach($array as $k=>$data){
+            $request = [];
+            $request['name'] = '['.$data->title.']['.($data->bgmcount<10?'0':'').$data->bgmcount.']';
+
+            $request['outlink'] = 'http://bangumi.bilibili.com/anime/'.$data->season_id;
+            $request['additional'] = $data->lastupdate;
+            $request['token'] = '860F3ABBWEB7F30FAD15EEEF6BA6A07D3386AB8A';
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "http://h.4moe.com/api/add");
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
+		    curl_setopt($ch, CURLOPT_POST, 1);
+		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
+            //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $json = curl_exec($ch);
+
+            echo $json;
+            curl_close($ch);
+
+            $cache->csave('last_data_bili',$data->lastupdate);
+            
+        }
+
+        ;
+    }
 
     function curl(Cache $cache){
 

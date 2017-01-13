@@ -46,8 +46,8 @@ class Api extends Controller{
         if($additional)$info->additional  = $additional;
         $info->ctime        = TIME_NOW;
         $info->user_id      = $user_id;
-
-        if($resourceId = $resource->where(['hash'=>$info->hash])->find()->id){
+        if(!$info->hash)unset($info->hash);
+        if($info->hash && $resourceId = $resource->where(['hash'=>$info->hash])->find()->id){
 
             $data['new_resource'] = 0;
         }else{
