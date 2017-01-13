@@ -107,14 +107,14 @@ class TestController extends Controller{
 
         global $argc;
         global $argv;
-        if(!$argc)AJAX::error('请在shell运行');
+        //if(!$argc)AJAX::error('请在shell运行');
         
         ignore_user_abort();
         set_time_limit(600);
 
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'http://bangumi.bilibili.com/api/timeline_v2');
+        curl_setopt($ch, CURLOPT_URL, 'http://bangumi.bilibili.com/index/new/33.json');
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
@@ -122,19 +122,19 @@ class TestController extends Controller{
         // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         $json = curl_exec($ch);
         curl_close($ch);
-
+        echo $json;die();
         if($json)$json = json_decode($json);
         else{
             echo 'error';
             return;
         };
-
+        
         $json = $json->list;$array = [];
         $lastDataId = $cache->cget('last_data_bili_aid');
         foreach($json as $k=>$v)if($v->aid>$lastDataId){
             $array[$v->aid] = $v;
         }else break;
-        //var_dump($array);
+        
         ksort($array);
         $length = count($array);
         foreach($array as $k=>$data){
