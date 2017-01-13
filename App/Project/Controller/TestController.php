@@ -130,19 +130,19 @@ class TestController extends Controller{
         };
 
         $json = $json->list;$array = [];
-        $lastDataId = $cache->cget('last_data_bili');
-        foreach($json as $k=>$v)if($v->lastupdate>$lastDataId && $v->new && $v->area=='日本'){
-            $array[$v->lastupdate] = $v;
+        $lastDataId = $cache->cget('last_data_bili_aid');
+        foreach($json as $k=>$v)if($v->aid>$lastDataId){
+            $array[$v->aid] = $v;
         }else break;
         //var_dump($array);
         ksort($array);
         $length = count($array);
         foreach($array as $k=>$data){
             $request = [];
-            $request['name'] = '['.$data->title.']['.($data->bgmcount<10?'0':'').$data->bgmcount.']';
+            $request['name'] = $data->title;
 
-            $request['outlink'] = 'http://bangumi.bilibili.com/anime/'.$data->season_id;
-            $request['additional'] = $data->lastupdate;
+            $request['outlink'] = 'http://www.bilibili.com/video/av'.$data->aid;
+            $request['additional'] = $data->aid;
             $request['token'] = '860F3ABBWEB7F30FAD15EEEF6BA6A07D3386AB8A';
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, "http://h.4moe.com/api/add");
@@ -157,7 +157,7 @@ class TestController extends Controller{
             echo $json;
             curl_close($ch);
 
-            $cache->csave('last_data_bili',$data->lastupdate);
+            $cache->csave('last_data_bili',$data->aid);
             
         }
 
