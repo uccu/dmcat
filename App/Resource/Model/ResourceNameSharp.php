@@ -212,34 +212,39 @@ class ResourceNameSharp{
 
             if(!$p)continue;
             //var_dump($p);
-            if(!$this->number && preg_match('#(\d+)$#',$p,$p2)){
-                $this->number = $p2[1];
+            
+
+            if(!$this->number){
+                $p = preg_replace_callback('# *(\d+)$#',function($p2){
+                    $this->number = $p2[1];return '';
+                },$p);
+            }
+            if(!$p)continue;
+
+            if(preg_match('#(字幕组|sub)$#i',$p)){
+                $this->tag[] = $this->nameArray[$k];
                 unset($this->nameArray[$k]);
-            }else{
-                if(preg_match('#(字幕组|sub)$#i',$p)){
-                    $this->tag[] = $this->nameArray[$k];
-                    unset($this->nameArray[$k]);
-                    continue;
-                }
+                continue;
+            }
+            
+            
+            $p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十)$#','',$p);
+            if(!$p2){
+                unset($this->nameArray[$k]);
+                continue;
+            }
+            
+            $p2 = str_replace([' ','.',';','·','!'],'',$p2);
+            if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
+                $p2 = '_'.$p2;
+            }
+            if(preg_match('#^another$#i',$p2))$p2 = '_'.$p2;
                 
-                
-                $p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十)$#','',$p);
-                if(!$p2){
-                    unset($this->nameArray[$k]);
-                    continue;
-                }
-                
-                $p2 = str_replace([' ','.',';','·','!'],'',$p2);
-                if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
-                    $p2 = '_'.$p2;
-                }
-                if(preg_match('#^another$#i',$p2))$p2 = '_'.$p2;
-                    
-                $this->nameArray[$k] = $p2;
+            $this->nameArray[$k] = $p2;
 
                     
                 
-            }
+            
         }
         $theme = Theme::getInstance();
         if($this->nameArray && $t = $theme->where('MATCH( %F )AGAINST( %n )','matches',implode(' ',$this->nameArray))->order('level DESC')->find()){
