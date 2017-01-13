@@ -65,6 +65,7 @@ class Api extends Controller{
                     $theme->number = 1;
                     $theme->last_number += 1;
                     $theme->change_time = TIME_NOW;
+                    $theme->visible = 1;
                     $theme->save();
 
                     $resource->set(['new_number'=>0])->where('%F=%d','theme_id',$themeid)->save();
@@ -73,6 +74,7 @@ class Api extends Controller{
                 }elseif($rns->number == $theme->last_number){
                     $info->new_number = 1;
                     $theme->number += 1;
+                    $theme->visible = 1;
                     $theme->save();
                 }
                 $data['theme_id'] = $theme->id;
@@ -127,6 +129,7 @@ class Api extends Controller{
                 $theme->number = 1;
                 $theme->last_number += 1;
                 $theme->change_time = TIME_NOW;
+                $theme->visible = 1;
                 $theme->save();
                 $resource->set(['new_number'=>0])->where('%F=%d','theme_id',$themeid)->save();
                 $info->new_number = 1;
@@ -135,6 +138,7 @@ class Api extends Controller{
                 $info->new_number = 1;
                 if($theme->id != $r->theme_id){
                     $theme->number += 1;
+                    $theme->visible = 1;
                     $theme->save();
                 }
             }

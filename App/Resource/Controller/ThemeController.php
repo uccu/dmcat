@@ -42,7 +42,7 @@ class ThemeController extends Controller{
     function week(ThemeModel $themeModel){
 
         
-        $all = $themeModel->where('%F > %d','change_time',TIME_TODAY-3600*24*7*2)->order('change_time')->get()->toArray();
+        $all = $themeModel->where('%F > %d AND visible = 1','change_time',TIME_TODAY-3600*24*7*2)->order('change_time')->get()->toArray();
 
         $today = $last_week = $this_week = [];
 
@@ -91,7 +91,7 @@ class ThemeController extends Controller{
     function hour24(ThemeModel $themeModel){
 
 
-        $all = $themeModel->where('%F > %d','change_time',TIME_NOW-3600*24)->order('change_time')->get();
+        $all = $themeModel->where('%F > %d AND visible = 1','change_time',TIME_NOW-3600*24)->order('change_time')->get();
 
         $today = $yesterday = [];
 

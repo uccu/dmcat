@@ -93,15 +93,15 @@ class ResourceNameSharp{
 
             '720p','360p','1080p','480p','\d{4}x1080','\d{3,4}x\d{3}','\b(19|20)\d{2}\b',
 
-            '(繁|简)(体|體|中)?','(GB|BIG5)\b','CH(T|S)\b','(内|外)(嵌|挂)(版)?','中日双语','字幕(文件)?\b',
+            '(繁|简)(体|體|中|日)?','(GB|BIG5)\b','CH(T|S)\b','(内|外)(嵌|挂)(版)?','中日双语(版)?','字幕(文件)?\b','日文(版)?',
 
             'MP4\b','MKV\b','IOS\b','RMVB\b',
 
-            '(10|1|4|7|一|四|七|十)月(新番)?',
+            '(10|1|4|7|一|四|七|十)月(新番|泡面)?\b',
 
             'OVA','OAD','MOVIE','HDTV',
 
-            'h264\b','x26\d\b','10-?bit\b','8-?bit\b','ACC\b','AC3\b','FLAC\b','HEVC\b','Main10p\b','VFR\b','Web(Rip)?\b',
+            'h264\b','x26\d\b','10-?bit\b','8-?bit\b','HardSub','ACC\b','AAC\b','AC3\b','FLAC\b','HEVC\b','Main10p\b','VFR\b','Web(Rip)?\b',
             
             'BD-?(RIP|BOX)?\b','DVD(RIP)?\b','TV(RIP)?\b','网盘','第.{1,2}(季|部|卷|章)',
 
@@ -214,32 +214,32 @@ class ResourceNameSharp{
                     unset($this->nameArray[$k]);
                     continue;
                 }
-                if(1){
                 
-                    $p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十)$#','',$p);
-                    if(!$p2){
-                        unset($this->nameArray[$k]);
-                        continue;
-                    }
-                    $theme = Theme::getInstance();
-                    $p2 = str_replace([' ','.',';'],'',$p2);
-                    if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
-                        $p2 = '_'.$p2;
-                    }
-                    if(preg_match('#^another$#i',$p2))$p2 = '_'.$p2;
-                    
-                    if($t = $theme->where('MATCH( %F )AGAINST( %n IN BOOLEAN MODE)','matches',$p2)->order('level DESC')->find()){
-                        $this->theme[$t->id] = $t;
-                        unset($this->nameArray[$k]);
-                        
-                    }
-                    //echo $theme->sql;
-                    
+                
+                $p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十)$#','',$p);
+                if(!$p2){
+                    unset($this->nameArray[$k]);
+                    continue;
                 }
+                
+                $p2 = str_replace([' ','.',';','·'],'',$p2);
+                if(mb_strlen($p2)<4)for($i=mb_strlen($p2);$i<4;$i++){
+                    $p2 = '_'.$p2;
+                }
+                if(preg_match('#^another$#i',$p2))$p2 = '_'.$p2;
+                    
+                $this->nameArray[$k] = $p2;
+
+                    
+                
             }
         }
-
-        
+        $theme = Theme::getInstance();
+        if($this->nameArray && $t = $theme->where('MATCH( %F )AGAINST( %n )','matches',implode(' ',$this->nameArray))->order('level DESC')->find()){
+            $this->theme[$t->id] = $t;
+            
+            
+        }
 
     }
 

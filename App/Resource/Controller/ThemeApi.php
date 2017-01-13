@@ -8,7 +8,7 @@ use AJAX;
 use Request;
 use StdClass;
 use App\Resource\Model\ThemeModel as Theme;
-
+use App\Resource\Model\ResourceModel as Resource;
 
 class ThemeApi extends Controller{
 
@@ -46,7 +46,7 @@ class ThemeApi extends Controller{
 
     function update(){
 
-        $info = new stdClass;
+        
         $res = Request::getInstance();
         $id = $res->request('id');
         if(!$id)AJAX::error('没有ID');
@@ -61,6 +61,21 @@ class ThemeApi extends Controller{
         AJAX::success($data);
 
     }
+
+    function sort(){
+
+        $res = Request::getInstance();
+        $id = $res->request('id');
+        if(!$id)AJAX::error('没有ID');
+        $matches = Theme::getInstance()->select('matches')->find($id)->matches;
+        if(!$matches)AJAX::error('无匹配主题');
+        
+        $data['count'] = Resource::getInstance()->where('MATCH( %F )AGAINST( %n ) AND ISNULL(theme_id)','unftags',$matches)->set(['theme_id'=>$id])->save()->getStatus();
+        
+        AJAX::success($data);
+
+    }
+    
 
 
 
