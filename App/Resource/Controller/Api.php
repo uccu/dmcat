@@ -124,7 +124,7 @@ class Api extends Controller{
             $ids = explode(',',$id);
         }
 
-        $data['count'] = $resource->where('%F=%c','id',$ids)->remove()->getStatus();
+        $data['count'] = $resource->where('%N IN (%c)','id',$ids)->remove()->getStatus();
         $data['ids'] = $ids;
 
         AJAX::success($data);

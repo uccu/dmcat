@@ -247,10 +247,15 @@ class ResourceNameSharp{
             
         }
         $theme = Theme::getInstance();
-        if($this->nameArray && $t = $theme->where('MATCH( %F )AGAINST( %n )','matches',implode(' ',$this->nameArray))->order('level DESC')->find()){
+        $mat = implode(' ',$this->nameArray);
+        if($this->nameArray && $t = $theme->where('MATCH( %F )AGAINST( %n )','matches',$mat)->order('level DESC')->find()){
             $this->theme[$t->id] = $t;
             
             
+        }
+
+        if(preg_match('#预告#',$mat)){
+            if($this->number)$this->number -= 1;
         }
 
     }
