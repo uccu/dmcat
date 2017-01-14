@@ -100,10 +100,34 @@ class Api extends Controller{
 
     }
 
-    function delete(){
+    function delete(Request $request,Resource $resource){
+        $id = $request->request('id');
         
 
+        if(!$id)AJAX::error('ID错误');
 
+        if(stripos($id,'-')){
+
+            $ex = explode('-',$id);
+            if(is_numeric($ex[0]) && is_numeric($ex[1]) && $ex[1]>$ex[0]){
+                
+                while($ex[0]<=$ex[1]){
+
+                    $ids[] = $ex[0];
+                    $ex[0]++;
+                }
+
+            }
+
+        }else{
+
+            $ids = explode(',',$id);
+        }
+
+        $data['count'] = $resource->where('%F=%c','id',$ids)->remove()->getStatus();
+        $data['ids'] = $ids;
+
+        AJAX::success($data);
     }
 
     function flesh(Request $request,Resource $resource){
