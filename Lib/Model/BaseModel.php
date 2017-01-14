@@ -146,7 +146,7 @@ class BaseModel{
 
         $this->importJoin();
 
-        $sql = 'DELETE FROM ';
+        $sql = 'DELETE FROM '.($this->join || $this->asRawTable!=$this->table?$this->table.' AS '. $this->asRawTable:$this->table);
 
         if($this->join)E::throwEx('Cant Use INSERT or REPLACE With JOIN');
 
