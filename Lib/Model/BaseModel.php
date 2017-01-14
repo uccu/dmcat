@@ -150,7 +150,7 @@ class BaseModel{
 
         if($this->join)E::throwEx('Cant Use INSERT or REPLACE With JOIN');
 
-        $sql .= $this->join || $this->asRawTable!=$this->table?$this->table.' AS '. $this->asRawTable:$this->table;
+        $sql .= $this->table;
 
         if(!is_null($id)){
 
