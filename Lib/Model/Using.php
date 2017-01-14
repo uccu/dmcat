@@ -156,6 +156,10 @@ class Using implements SingleInstance{
                         $field = new Field($arg[$find],$model);
                         $ret .= $field->fullName;
                         break;
+                    case 'N':
+                        $field = new Field($arg[$find],$model);
+                        $ret .= $field->name;
+                        break;
                     case 's':
                         $ret .= $this->quote(serialize($arg[$find]));
                         break;
