@@ -228,7 +228,7 @@ class ResourceNameSharp{
             }
             
             
-            $p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十|I)(期)?| ?\dnd Season$#','',$p);
+            $p2 = preg_replace('#(\d+|一|二|三|四|五|伍|六|七|八|九|十|I)(期)?$| ?\dnd Season$#','',$p);
             if(!$p2){
                 unset($this->nameArray[$k]);
                 continue;
