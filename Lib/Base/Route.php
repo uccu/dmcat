@@ -86,7 +86,9 @@ Class Route{
                         E::throwEx('Method Not Exist');
                     }else{
 
-                        $get = $request->get;
+                        $type = Config::get('CONTROLLER_REQUEST');
+
+                        $get = $request->$type;
 
                         $controllerReflection = new ReflectionClass($controller);
 
