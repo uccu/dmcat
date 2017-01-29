@@ -156,14 +156,15 @@ class BaseModel{
 
             $field = new Field($this->primary,$this);
 
-            $this->where =  $field->fullName.' = '.$this->tool->quote($id);
+            $this->where =  $field->name.' = '.$this->tool->quote($id);
 
             $sql .= ' WHERE '.$this->where;
 
         }elseif(!$this->query){
 
+            $this->where = preg_replace('#`\w+`\.#',' ',$this->where); 
             if($this->where)$sql .= ' WHERE '.$this->where;
-
+            
 
         }else $sql .= ' '.$this->query;
 
