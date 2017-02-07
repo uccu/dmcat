@@ -56,7 +56,7 @@ require_once LIB_ROOT.'Function/Core.php';
 
 //定义请求路径
 
-if(!$argc)define('REQUEST_PATH',$_SERVER['PATH_INFO']?substr($_SERVER['PATH_INFO'],1):($_SERVER['REQUEST_URI']?preg_repalce('#\?.*$#','',substr($_SERVER['REQUEST_URI'],1)):''));
+if(!$argc)define('REQUEST_PATH',$_SERVER['PATH_INFO']?substr($_SERVER['PATH_INFO'],1):($_SERVER['REQUEST_URI']?preg_replace('#\?.*$#','',substr($_SERVER['REQUEST_URI'],1)):''));
 else define('REQUEST_PATH',$argv[1]);
 
 
