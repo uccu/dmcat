@@ -379,7 +379,9 @@ class BaseModel{
         $container = func_get_args();
 
         foreach($this->field as $k=>$f){
-            if(!is_null(array_search($f,$this->field)))unset($this->field[$k]);
+            if(array_search($f,$container) !== false){
+                unset($this->field[$k]);
+            }
         }
 
         return $this;
