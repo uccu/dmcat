@@ -283,7 +283,7 @@ class BaseModel{
 
                 if(is_array($v))call_user_func_array(array($this,'where'),$v);
 
-                elseif(is_string($v))call_user_func_array(array($this,'where'),array('%F = %n',$k,$v));
+                elseif(is_string($v) || is_float($v) || is_int($v))call_user_func_array(array($this,'where'),array('%F = %n',$k,$v));
                 
             }
 
