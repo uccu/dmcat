@@ -32,6 +32,7 @@ class BaseModel{
 
     public      $sql;   //输出的sql语句
     public      $link;   //与上一个表的关联信息
+    private     $join_cc_r_g_c = [];
 
     public function __construct($tableName = null){
 
@@ -85,7 +86,7 @@ class BaseModel{
         $this->set      = null;
         $this->query    = null;
         $this->distinct = null;
-
+        $this->join_cc_r_g_c = [];
         $this->link     = null;
 
         return $this;
@@ -156,14 +157,15 @@ class BaseModel{
 
             $field = new Field($this->primary,$this);
 
-            $this->where =  $field->fullName.' = '.$this->tool->quote($id);
+            $this->where =  $field->name.' = '.$this->tool->quote($id);
 
             $sql .= ' WHERE '.$this->where;
 
         }elseif(!$this->query){
 
+            $this->where = preg_replace('#`\w+`\.#',' ',$this->where); 
             if($this->where)$sql .= ' WHERE '.$this->where;
-
+            
 
         }else $sql .= ' '.$this->query;
 
@@ -282,7 +284,7 @@ class BaseModel{
 
                 if(is_array($v))call_user_func_array(array($this,'where'),$v);
 
-                elseif(is_string($v))call_user_func_array(array($this,'where'),array('%F = %n',$k,$v));
+                elseif(is_string($v) || is_float($v) || is_int($v))call_user_func_array(array($this,'where'),array('%F = %n',$k,$v));
                 
             }
 
@@ -377,9 +379,10 @@ class BaseModel{
 
         $container = func_get_args();
 
-        foreach($container as $field){
-
-            unset($this->field[$field]);
+        foreach($this->field as $k=>$f){
+            if(array_search($f,$container) !== false){
+                unset($this->field[$k]);
+            }
         }
 
         return $this;
@@ -552,6 +555,10 @@ class BaseModel{
     }
     public function __get($arg){
 
+        if($this->join_cc_r_g_c[$arg]){
+            return $this->join_cc_r_g_c[$arg];
+        }
+
         if(method_exists($this,$arg)){
 
             $o = $this->$arg();
@@ -564,7 +571,7 @@ class BaseModel{
 
                 $this->join[] = $arg;
 
-                return $this->$arg = $o;
+                return $this->join_cc_r_g_c[$arg] = $o;
 
             }
 
