@@ -32,6 +32,7 @@ class BaseModel{
 
     public      $sql;   //输出的sql语句
     public      $link;   //与上一个表的关联信息
+    private     $join_cc_r_g_c = [];
 
     public function __construct($tableName = null){
 
@@ -85,7 +86,7 @@ class BaseModel{
         $this->set      = null;
         $this->query    = null;
         $this->distinct = null;
-
+        $this->join_cc_r_g_c = [];
         $this->link     = null;
 
         return $this;
@@ -554,6 +555,10 @@ class BaseModel{
     }
     public function __get($arg){
 
+        if($this->join_cc_r_g_c[$arg]){
+            return $this->join_cc_r_g_c[$arg];
+        }
+
         if(method_exists($this,$arg)){
 
             $o = $this->$arg();
@@ -566,7 +571,7 @@ class BaseModel{
 
                 $this->join[] = $arg;
 
-                return $this->$arg = $o;
+                return $this->join_cc_r_g_c[$arg] = $o;
 
             }
 
