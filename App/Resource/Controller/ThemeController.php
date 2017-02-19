@@ -88,6 +88,36 @@ class ThemeController extends Controller{
 
     }
 
+
+    function week2(ThemeModel $themeModel){
+
+        $all = $themeModel->where('%F > %d AND visible = 1','change_time',TIME_TODAY-3600*24*7*2)->order('change_time','DESC')->get()->toArray();
+
+        $week = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六',];
+        $week2 = ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日',];
+
+
+
+        foreach($all as &$theme){
+            
+            $theme->date = Func::time_calculate($theme->change_time);
+
+            $theme->week = $week[date('w',$theme->change_time)].'/'.$week2[date('w',$theme->change_time)];
+
+
+        }
+
+        View::addData(['all'=>$all]);
+
+        
+
+        View::hamlReader('Theme/week2','Resource');
+
+
+
+
+    }
+
     function hour24(ThemeModel $themeModel){
 
 

@@ -1,0 +1,5 @@
+.theme_list{margin-top:60px}
+
+.theme_block:nth-child(even) {
+    background-color: antiquewhite;
+}
