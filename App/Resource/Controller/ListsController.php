@@ -79,6 +79,14 @@ class ListsController extends Controller{
 
         $theme = $themeModel->find($id);
         $data['list'] = $list->toArray();
+        foreach($data['list'] as &$theme){
+            
+            $theme->date = Func::time_calculate($theme->ctime);
+
+            $theme->week = $week[date('w',$theme->ctime)].'/'.$week2[date('w',$theme->ctime)];
+
+
+        }
 
         $gdata['g']['title'] = $theme->name;
         View::addData($gdata);
