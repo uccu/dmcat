@@ -12,6 +12,7 @@ use View;
 
 use App\Resource\Model\ResourceModel as Resource;
 use App\Resource\Model\ThemeModel as Theme;
+use App\Resource\Tool\Func;
 
 
 class ListsController extends Controller{
