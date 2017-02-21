@@ -71,6 +71,23 @@ class ListsController extends Controller{
 
     }
 
+
+    function new_number2(Resource $resourceModel,$id = 0,Theme $themeModel){
+
+        $list = $resourceModel->select('sitelink.site.name>sname','sitelink.outlink','*')
+            ->where('theme_id=%d AND new_number=1 AND visible=1',$id)->order('level DESC','ctime')->get();
+
+        $theme = $themeModel->find($id);
+        $data['list'] = $list->toArray();
+
+        $gdata['g']['title'] = $theme->name;
+        View::addData($gdata);
+        View::addData($data);
+
+        View::hamlReader('Theme/new_number2','Resource',$data);
+
+    }
+
     function subtitle(Resource $resource,$asc = 0,$page = 1,$id = 0){
 
         $list = $resource->where('subtitle_id=%d',$id)->where('visible=1')

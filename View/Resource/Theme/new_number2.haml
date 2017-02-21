@@ -3,7 +3,7 @@
 
 
 - block siteInfo
-  %title 4MOEの节目单
+  %title = g.title
   %meta(name="keywords" content="节目单,动漫,动画")
 
 
@@ -72,37 +72,32 @@
 
   .container.theme_list
     .row.theme_title.hidden-xs
+      .col-sm-1
+        %strong ID
+      .col-sm-2
+        %strong SITE
       .col-sm-4
-        %strong 名字
-      .col-sm-1
-        %strong 最新
-      .col-sm-1
-        %strong 资源
+        %strong NAME
       .col-sm-3.tr
         %strong 日期
       .col-sm-2
-        %strong 星期
-      .col-sm-1
         %strong
-    - for theme in all
+    - for r in list
       .row.theme_block.t
-        .col-sm-4
+        .col-sm-1
           %p
-            = theme.name
+            = r.id
         
-        .col-sm-1
-          %p
-            = theme.last_number
-        .col-sm-1
-          %p
-            = theme.number
-        .col-sm-3.tr
-          %p
-            = theme.date
         .col-sm-2
           %p
-            = theme.week
-        .col-sm-1
+            = r.sname
+        .col-sm-4
           %p
-            %a.t-bf(href="/lists/new_number?id=#{theme.id}" target="_blank")
+            = r.name
+        .col-sm-3.tr
+          %p
+            = r.date
+        .col-sm-2
+          %p
+            %a.t-bf(href="#{r.outlink}" target="_blank")
               查看
