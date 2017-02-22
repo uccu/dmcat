@@ -533,9 +533,9 @@ class BaseModel{
 
                 $this->on .= $m->importJoin();
 
-                return $this->on;
-
             }
+            
+            return $this->on;
         }
 
         return '';
