@@ -35,7 +35,7 @@ class Field{
 
                 $field = $fields[$i];
                 $model = $model->$field;
-
+                if(!$model)E::throwEx('Table Link`'.$field.'` Not Defined',2);
             }
 
         }
