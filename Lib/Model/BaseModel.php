@@ -278,7 +278,7 @@ class BaseModel{
 
             $this->where .= ($this->where?' AND (':'') .$this->tool->format($sql,$container,$this) . ($this->where?' )':'');
 
-        }elseif(is_array($sql)){
+        }elseif(is_array($sql) || is_object($sql) ){
 
             foreach($sql as $k=>$v){
 
