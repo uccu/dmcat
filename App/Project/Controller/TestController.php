@@ -7,7 +7,7 @@ use Controller;
 use AJAX;
 
 use Request;
-
+use stdClass;
 use App\Project\Model\UserModel as User;
 use App\Project\Model\LessionModel as Lession;
 use Model;
@@ -62,7 +62,7 @@ class TestController extends Controller{
         //ignore_user_abort();
         //set_time_limit(1);
 
-        echo date('w');
+        echo strtotime('Sun, 19 Mar 2017 00:17:33 +0800');
 
     }
 
@@ -74,6 +74,78 @@ class TestController extends Controller{
 
 
     }
+
+    private function zCurl($url,$postData = []){
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
+		if($postData){
+            curl_setopt($ch, CURLOPT_POST, 1);
+		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
+        }
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        $json = curl_exec($ch);
+        curl_close($ch);
+        return $json;
+        
+    }
+
+
+    private function push($title,$link = '',$hash = '',$additional = '',$token = ''){
+
+        if(!$title)return;
+
+        $request['name'] = $title;
+        $request['outlink'] = $link;
+        $request['hash'] = $hash;
+        $request['additional'] = $additional;
+        $request['token'] = $token;
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "http://c.baka/api/add");
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
+        $json = curl_exec($ch);
+
+        return $json;
+        curl_close($ch);
+
+
+    }
+
+    private function _typein_addzero($r,$e,$t=4){
+		$r=(string)$r;
+		$re=strlen($r);
+		for($i=0;$i<$t*$e-$re;$i++)$r='0'.$r;
+		return $r;
+	}
+    private function _hashtobase32($hash){
+        if(!preg_match('/^[a-z0-9]{40}$/i',$hash))return '';
+        $a='abcdefghijklmnopqrstuvwxyz234567';$p='';
+		for($i=0;$i<4;$i++)$p .= $this->_typein_addzero(base_convert(substr($hash,$i*10,10),16,2),10);
+		$base32='';
+		for($i=0;$i+5<=160;$i+=5)$base32.=$a[base_convert(substr($p,$i,5),2,10)];
+		return strtoupper($base32);
+    }
+    private function _base32tohash($base32){
+        if(!preg_match('/^[a-z2-7]{32}$/i',$base32))return '';
+        $a='abcdefghijklmnopqrstuvwxyz234567';
+		$str='';
+		for($i=0;$i<32;$i++)$str.=(string)($this->_typein_addzero(decbin(stripos($a,$base32[$i])),1,5));
+		$hash='';
+		for($i=0;$i+4<=40*4;$i+=4)$hash.=base_convert(substr($str,$i,4),2,16);
+		return $hash;
+    }
+
+
+
     function img(){
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://i3.pixiv.net/c/1200x1200/img-master/img/2013/09/20/17/53/12/38631998_p0_master1200.jpg");
@@ -100,6 +172,57 @@ class TestController extends Controller{
         
         curl_close($ch);
         echo $z;
+    }
+    
+    function dmhy(){
+
+        // header('content-type:text/xml; charset=utf-8');
+
+        $str = $this->zCurl('https://share.dmhy.org/topics/rss/sort_id/2/rss.xml');
+
+        // $str = file_get_contents(BASE_ROOT.'test.xml');
+
+        $objz = simplexml_load_string($str);
+
+        $it = [];
+
+        $cache = Cache::getInstance();
+        $lastPubdate = $cache->cget('last_data_dmhy_pubdate');
+
+        $count = count($objz->channel->item);
+
+        $k = 0;
+        foreach($objz->channel->item as $item){
+            if(!$item)break;
+            $obj = new stdClass();
+
+            $obj->title = $item->title.'';
+            $obj->link = $item->link.'';
+            $base32 = substr($item->enclosure->attributes()['url'].'',20,32);
+            $obj->hash = $this->_base32tohash($base32);
+            $obj->additional = strtotime($item->pubDate);
+            if($obj->additional <= $lastPubdate)break;
+            $it[$k] = $obj;
+            $k++;
+        }
+
+        $it = array_reverse($it);
+        echo $length = count($it);
+
+        foreach($it as $k=>$v){
+
+            echo $this->push($v->title,$v->link,$v->hash,$v->additional,'128A39B92199C8B774489D1E4732FEB36C4777A2');
+
+
+            $cache->csave('last_data_dmhy_pubdate',$v->additional);
+            
+            if($k+1!=$length){
+                $rand = rand(0,floor(600/$length));
+                sleep($rand);
+            }
+        }
+
+
     }
 
 
