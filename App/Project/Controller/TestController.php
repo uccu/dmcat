@@ -130,9 +130,9 @@ class TestController extends Controller{
         };
         
         $json = $json->list;$array = [];
-        $lastDataId = $cache->cget('last_data_bili_aid');
-        foreach($json as $k=>$v)if($v->aid>$lastDataId){
-            $array[$v->aid] = $v;
+        $lastDataPubdate = $cache->cget('last_data_bili_pubdate');
+        foreach($json as $k=>$v)if($v->pubdate>$lastDataPubdate){
+            $array[] = $v;
         }else break;
         
         ksort($array);
@@ -157,7 +157,7 @@ class TestController extends Controller{
             echo $json;
             curl_close($ch);
 
-            $cache->csave('last_data_bili_aid',$data->aid);
+            $cache->csave('last_data_bili_pubdate',$data->pubdate);
             if($k+1!=$length){
                 $rand = rand(0,floor(600/$length));
                 sleep($rand);
@@ -166,7 +166,7 @@ class TestController extends Controller{
             
         }
 
-        ;
+        
     }
 
     function curl(Cache $cache){
