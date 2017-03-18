@@ -49,7 +49,7 @@ class E extends Exception{
 			$log->addError($str);
 			foreach($trace as $k=>$c){
 				$file = $c['file'];
-				$line = $c['line'];
+				$line = isset($c['line']) ? $c['line'] : '';
 				$file = str_ireplace(array(BASE_ROOT,'.php'),'',$file);
 				$file = str_ireplace('/','\\',$file);
 				$str2 =  "EXCEPTION FILE [$file] LINE [$line]";

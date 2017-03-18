@@ -278,13 +278,15 @@ class BaseModel{
 
             $this->where .= ($this->where?' AND (':'') .$this->tool->format($sql,$container,$this) . ($this->where?' )':'');
 
-        }elseif(is_array($sql)){
+        }elseif(is_array($sql) || is_object($sql) ){
 
             foreach($sql as $k=>$v){
 
                 if(is_array($v))call_user_func_array(array($this,'where'),$v);
 
                 elseif(is_string($v) || is_float($v) || is_int($v))call_user_func_array(array($this,'where'),array('%F = %n',$k,$v));
+
+                elseif(is_null($v))call_user_func_array(array($this,'where'),array('%F IS NULL',$k));
                 
             }
 
