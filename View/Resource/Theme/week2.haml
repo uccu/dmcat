@@ -57,12 +57,12 @@
     .theme_block:hover p,.theme_block:hover a{
       color:white;
     }
-    .theme_block a:hover::before{
+    .theme_block a.t-bf:hover::before{
       opacity:1;
       left:-10px;
       color:white;
     }
-    .theme_block a:hover::after{
+    .theme_block a.t-bf:hover::after{
       opacity:1;
       left:10px;
       color:white;
@@ -71,38 +71,46 @@
     
 
   .container.theme_list
-    .row.theme_title.hidden-xs
-      .col-sm-4
+    .row.theme_title
+      .col-sm-4.hidden-xs
         %strong 名字
-      .col-sm-1
+      .col-xs-10.hidden-sm.hidden-md.hidden-lg.tc
+        %strong 名字
+      .col-sm-1.col-xs-2.tc
         %strong 最新
-      .col-sm-1
+      .col-sm-1.hidden-xs.tc
         %strong 资源
-      .col-sm-3.tr
+      .col-sm-3.tr.hidden-xs.hidden-sm
         %strong 日期
-      .col-sm-2
+      .col-sm-2.hidden-xs.hidden-sm
         %strong 星期
-      .col-sm-1
+      .col-sm-4.hidden-xs.hidden-md.hidden-lg.tc
+        %strong 星期
+      .col-sm-2.hidden-xs.col-md-1
         %strong
     - for theme in all
       .row.theme_block.t
-        .col-sm-4
+        .col-sm-4.col-xs-10
           %p
-            = theme.name
+            %a(href="/lists/new_number2?id=#{theme.id}")
+              = theme.name
         
-        .col-sm-1
+        .col-sm-1.col-xs-2.tc
           %p
             = theme.last_number
-        .col-sm-1
+        .col-sm-1.hidden-xs.tc
           %p
             = theme.number
-        .col-sm-3.tr
+        .col-sm-3.tr.hidden-xs.hidden-sm
           %p
             = theme.date
-        .col-sm-2
+        .col-md-2.hidden-xs.hidden-sm
           %p
             = theme.week
-        .col-sm-1
+        .col-sm-4.tc.hidden-xs.hidden-md.hidden-lg
           %p
-            %a.t-bf(href="/lists/new_number2?id=#{theme.id}" target="_blank")
+            = theme.week
+        .hidden-xs.col-sm-2.col-md-1
+          %p
+            %a.t-bf(href="/lists/new_number2?id=#{theme.id}")
               查看

@@ -57,12 +57,12 @@
     .theme_block:hover p,.theme_block:hover a{
       color:white;
     }
-    .theme_block a:hover::before{
+    .theme_block a.t-bf:hover::before{
       opacity:1;
       left:-10px;
       color:white;
     }
-    .theme_block a:hover::after{
+    .theme_block a.t-bf:hover::after{
       opacity:1;
       left:10px;
       color:white;
@@ -71,35 +71,39 @@
     
 
   .container.theme_list
-    .row.theme_title.hidden-xs
-      .col-sm-1
+    .row.theme_title
+      .col-sm-1.hidden-xs.tc
         %strong ID
-      .col-sm-2
+      .col-sm-1.col-xs-2.tc
         %strong SITE
-      .col-sm-4
+      .col-md-6.col-sm-8.hidden-xs.tc
         %strong NAME
-      .col-sm-3.tr
+      .col-xs-10.hidden-sm.hidden-md.hidden-lg.tc
+        %strong NAME
+      .col-md-3.col-sm-2.tc.hidden-xs
         %strong 日期
-      .col-sm-2
+      .col-sm-2.hidden-xs.hidden-sm
         %strong
     - for r in list
       .row.theme_block.t
-        .col-sm-1
+        .col-sm-1.hidden-xs.tc
           %p
             = r.id
-        
-        .col-sm-1
+        .col-sm-1.col-xs-2.tc
           %p
             = r.sname
-        .col-sm-6
+        .col-md-6.col-xs-10.col-sm-8
           %p
-            = r.name
-        .col-sm-3.tr
+            %a(href="#{r.outlink}")
+              = r.name
+        .col-md-3.tc.hidden-xs.hidden-sm
           %p
             = r.date
-            |
             = r.week
-        .col-sm-1
+        .col-sm-2.tc.hidden-xs.hidden-md.hidden-lg
           %p
-            %a.t-bf(href="#{r.outlink}" target="_blank")
+            = r.week
+        .col-sm-1.hidden-xs.hidden-sm
+          %p
+            %a.t-bf(href="#{r.outlink}")
               查看
