@@ -34,6 +34,7 @@ class Api extends Controller{
         if($token){
             $user_id = 0;
             $site_id = $siteModel->where(['token'=>$token])->find()->id;
+            if(!$site_id)AJAX::error('未知的站点！');
 
         }else{
             $user_id = $login->id;

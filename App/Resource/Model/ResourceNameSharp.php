@@ -78,7 +78,7 @@ class ResourceNameSharp{
             return '';
         },$name);
 
-        $name = preg_replace_callback('/第(\d{2,4})(集|话)/',function($r){
+        $name = preg_replace_callback('/(第)?(\d{2,4})(集|话)/',function($r){
             $this->otherNumber[] = $this->number = $r[1];
             return '';
         },$name);
