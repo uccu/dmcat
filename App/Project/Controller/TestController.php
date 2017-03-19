@@ -106,7 +106,7 @@ class TestController extends Controller{
         $request['token'] = $token;
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://c.baka/api/add");
+        curl_setopt($ch, CURLOPT_URL, "http://h.4moe.com/api/add");
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
