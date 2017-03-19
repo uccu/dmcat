@@ -173,7 +173,56 @@ class TestController extends Controller{
         curl_close($ch);
         echo $z;
     }
-    
+
+
+    function tucao(){
+
+        // header('content-type:text/xml; charset=utf-8');
+
+        $str = $this->zCurl('http://www.tucao.tv/play/r11/');
+
+        // $str = file_get_contents(BASE_ROOT.'test.xml');
+
+        $objz = simplexml_load_string($str);
+
+        $it = [];
+
+        $cache = Cache::getInstance();
+        $lastPubdate = $cache->cget('last_data_tucao_pubdate');
+
+        $count = count($objz->channel->item);
+
+        $k = 0;
+        foreach($objz->channel->item as $item){
+            if(!$item)break;
+            $obj = new stdClass();
+
+            $obj->title = $item->title.'';
+            $obj->link = $item->link.'';
+            $obj->additional = strtotime($item->pubDate);
+            if($obj->additional <= $lastPubdate)break;
+            $it[$k] = $obj;
+            $k++;
+        }
+
+        $it = array_reverse($it);
+        echo $length = count($it);
+
+        foreach($it as $k=>$v){
+
+            echo $this->push($v->title,$v->link,'',$v->additional,'71B27A6E921B7BFABA69040AA3F4A9A3B13E4759');
+
+
+            $cache->csave('last_data_tucao_pubdate',$v->additional);
+            
+            if($k+1!=$length){
+                $rand = rand(0,floor(600/$length));
+                sleep($rand);
+            }
+        }
+
+
+    }
     function dmhy(){
 
         // header('content-type:text/xml; charset=utf-8');
