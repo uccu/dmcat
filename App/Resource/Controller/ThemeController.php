@@ -31,11 +31,11 @@ class ThemeController extends Controller{
 
         $gdata['g']['title'] = '主题列表';
 
-        //AJAX::success($data);
+        AJAX::success($data);
 
-        View::addData($gdata);
+        // View::addData($gdata);
 
-        View::hamlReader('Theme/all','Resource',$data);
+        // View::hamlReader('Theme/all','Resource',$data);
 
     }
 
