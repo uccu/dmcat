@@ -101,6 +101,14 @@ class Api extends Controller{
 
     }
 
+    function sort($name){
+
+        $rns = new RNS($name);
+
+        echo json_encode($rns);
+
+    }
+
     function delete(Request $request,Resource $resource){
         $id = $request->request('id');
         
