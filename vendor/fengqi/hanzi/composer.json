@@ -1,0 +1,19 @@
+{
+    "name": "fengqi/hanzi",
+    "description": "获取汉字的拼音, 或者简繁体转换.",
+    "keywords": ["pinyin", "hanzi", "jianti", "fanti"],
+    "homepage": "https://github.com/fengqi/hanzi",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "fengqi",
+            "email": "lyf362345@gmail.com",
+            "homepage": "http://fengqi.me"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "fengqi\\Hanzi\\": "src"
+        }
+    }
+}
