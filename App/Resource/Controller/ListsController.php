@@ -34,11 +34,11 @@ class ListsController extends Controller{
 
     }
 
-    function null(Resource $resource,$asc = 0,$page = 1){
+    function null(Resource $resource,$asc = 0,$page = 1,$limit = 50){
 
         $list = $resource->where('ISNULL(theme_id) AND visible=1')
                 ->order('level DESC','ctime '.($asc?'ASC':'DESC'))
-                ->page($page,50)->get();
+                ->page($page,$limit)->get();
         $data['list'] = $list->toArray();
         AJAX::success($data);
 
@@ -159,6 +159,7 @@ class ListsController extends Controller{
 
         
     }
+    
 
 
 

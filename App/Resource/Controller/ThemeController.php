@@ -11,6 +11,7 @@ use Request;
 use View;
 use App\Resource\Model\ThemeModel;
 use App\Resource\Tool\Func;
+use fengqi\Hanzi\Hanzi;
 
 class ThemeController extends Controller{
 
@@ -29,13 +30,15 @@ class ThemeController extends Controller{
 
         $data['list'] = $themeModel->where($condition)->page($page,$limit)->order('ctime',$desc?1:0)->get()->toArray();
 
-        $gdata['g']['title'] = '主题列表';
+        $gdata['title'] = '主题列表';
 
-        AJAX::success($data);
 
-        // View::addData($gdata);
 
-        // View::hamlReader('Theme/all','Resource',$data);
+        // AJAX::success($data);
+
+        View::addData($gdata);
+
+        View::hamlReader('Theme/all','Resource',$data);
 
     }
 
