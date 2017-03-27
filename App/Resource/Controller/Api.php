@@ -131,10 +131,8 @@ class Api extends Controller{
         AJAX::success($data);
     }
 
-    function flesh(Request $request,Resource $resource){
+    function flesh($id = 0,Resource $resource){
 
-        $id = $request->request('id');
-        
 
         if(!$id)AJAX::error('ID错误');
 
