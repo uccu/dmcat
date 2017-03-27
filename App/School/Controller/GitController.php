@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Project\Controller;
+namespace App\School\Controller;
 
 
-use AJAX;
+
 use Controller;
-
 
 class GitController extends Controller{
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Project\Controller;
+namespace App\School\Controller;
 
 
 use AJAX;
