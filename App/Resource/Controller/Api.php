@@ -14,6 +14,7 @@ use App\Resource\Model\UserModel as User;
 use App\Resource\Model\SiteModel as Site;
 use App\Resource\Model\SiteResourceModel as SiteResource;
 use App\Resource\Model\ResourceNameSharp as RNS;
+use App\Resource\Model\ThemeModel;
 
 class Api extends Controller{
 
@@ -24,80 +25,95 @@ class Api extends Controller{
 
     }
 
-    function add(Request $request,Resource $resource,Site $siteModel,Token $login,SiteResource $siteResourceModel){
+    function add(ThemeModel $themeModel,Request $request,Resource $resourceModel,Site $siteModel,Token $login,SiteResource $siteResourceModel,$token = '',$name = '',$hash = '',$additional = '',$outlink = ''){
 
-        $info = new stdClass;
-        $data = [];
-        $token = $request->request('token');
+        
+        /** 验证登录 **/
         if(!$token && !$login->id)AJAX::error('未登录');
         
-        if($token){
-            $user_id = 0;
-            $site_id = $siteModel->where(['token'=>$token])->find()->id;
-            if(!$site_id)AJAX::error('未知的站点！');
+        $user_id = $site_id = 0;
+        if($token && !$site_id = $siteModel->findToken($token)->id)AJAX::error('未知的站点！');
+        else $user_id = $login->id;
+
+        /* 初始化 */
+        $info = new stdClass;
+        $data = [];
+
+        /* 名字必须存在 */
+        $info->name                     = $name;
+        !$info->name && AJAX::error('没有名字');
+
+        /* 其他数据 */
+        if($hash)$info->hash            = $hash;
+        if($additional)$info->additional= $additional;
+        $info->user_id                  = $user_id;
+        $info->ctime                    = TIME_NOW;
+
+        /* 判断是否有HASH存在 */
+        if($hash && $resource = $resourceModel->findHash($hash)){
+
+            $resourceId = $resource->id;
+
+            /* 获取主题 */
+            $themeId = $resource->theme_id;
+            $theme = $themeId ? $themeModel->find($themeId) : NULL;
+
+            /* 该资源的集数 */
+            $number = $resource->new_number;
 
         }else{
-            $user_id = $login->id;
-            $site_id = 0;
-        }
-        $info->name         = $request->request('name');
-        if(!$info->name)AJAX::error('没有名字');
-        $info->hash         = $request->request('hash');
-        $additional         = $request->request('additional');
-        if($additional)$info->additional  = $additional;
-        $info->ctime        = TIME_NOW;
-        $info->user_id      = $user_id;
-        if(!$info->hash)unset($info->hash);
-        if($info->hash && $resourceId = $resource->where(['hash'=>$info->hash])->find()->id){
 
-            $data['new_resource'] = 0;
-        }else{
-            $data['new_resource'] = 1;
+            /* 解析资源 */
             $rns = new RNS($info->name);
-            $data['theme_id'] = 0;
-            $data['new_number'] = 0;
 
+            /* 添加额外数据 */
             $info->tags = implode(',',$rns->tag);
             $info->unftags = implode(',',$rns->nameArray);
+
+            /* 获取主题 */
+            $theme = $rns->theme;
+            $themeId = $theme ? $theme->id : NULL;
             
-            foreach($rns->theme as $themeid=>$theme){
+            /* 添加新资源 */
+            $info->new_number = $rns->number; /* 该资源的集数 */
+            $themeId && $info->theme_id = $themeId; /* 该资源所属的主题 */
+            $resourceId = $resourceModel->set($info)->add()->getStatus();
 
-                if($rns->number == $theme->last_number+1){
-                    $theme->number = 1;
-                    $theme->last_number += 1;
-                    $theme->change_time = TIME_NOW;
-                    $theme->visible = 1;
-                    $theme->save();
+            !$resourceId && AJAX::error('资源上传失败');
 
-                    $resource->set(['new_number'=>0])->where('%F=%d','theme_id',$themeid)->save();
-                    $info->new_number = 1;
-                    $data['new_number'] = 1;
-                }elseif($rns->number == $theme->last_number){
-                    $info->new_number = 1;
-                    $theme->number += 1;
-                    $theme->visible = 1;
-                    $theme->save();
-                }
-                $data['theme_id'] = $theme->id;
-                $info->theme_id = $theme->id;break;
-            }
+            /* 该资源的集数 */
+            $number = $rns->number;
 
-            //获取插入的资源ID
-            $resourceId = $resource->set($info)->add()->getStatus();
 
         }
 
 
-        
+        /* 更新主题 */
+        if($theme){
 
-        $data['resource_id'] = $resourceId;
-        $outlink = $request->request('outlink');
+            if($number == $theme->last_number + 1){
 
-        $siteResourceId = $siteResourceModel->set(['site_id'=>$site_id,'resource_id'=>$resourceId,'outlink'=>$outlink])->add(true)->getStatus();
+                $theme->visible = 1;
+                $theme->last_number = $number;
+                $theme->number = 1;
+                $theme->change_time = TIME_NOW;
 
-        if(!$resourceId)AJAX::error('资源上传失败');
+            }elseif($number == $theme->last_number)$theme->number += 1;
 
-        AJAX::success($data);
+        }
+
+        /* 外链 */
+        if($outlink){
+
+            $link['site_id']        = $site_id;
+            $link['resource_id']    = $resourceId;
+            $link['outlink']        = $outlink;
+            $siteResourceId = $siteResourceModel->set($link)->add(true)->getStatus();
+
+        }
+
+
+        AJAX::success();
 
     }
 

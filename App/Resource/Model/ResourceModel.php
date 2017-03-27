@@ -25,6 +25,11 @@ class ResourceModel extends Model{
         
     }
 
+    public function findHash($hash){
+
+        return $this->where(['hash'=>$hash])->find();
+    }
+
     public function user(){
 
         return $this->join(UserModel::class,'id','user_id');

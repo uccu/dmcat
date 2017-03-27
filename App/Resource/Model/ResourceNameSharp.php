@@ -22,7 +22,7 @@ class ResourceNameSharp{
 
     public $nameArray = [];
 
-    public $theme = [];
+    public $theme = NULL;
 
     function __construct(&$name){
 
@@ -249,7 +249,7 @@ class ResourceNameSharp{
         $theme = Theme::getInstance();
         $mat = implode(' ',$this->nameArray);
         if($this->nameArray && $t = $theme->where('MATCH( %F )AGAINST( %n )','matches',$mat)->order('level DESC')->find()){
-            $this->theme[$t->id] = $t;
+            $this->theme = $t;
             
             
         }
