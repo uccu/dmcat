@@ -174,6 +174,56 @@ class TestController extends Controller{
         echo $z;
     }
 
+    function moe(){
+
+        // header('content-type:text/xml; charset=utf-8');
+
+        $str = $this->zCurl('https://bangumi.moe/rss/latest');
+
+        // $str = file_get_contents(BASE_ROOT.'test.xml');
+
+        $objz = simplexml_load_string($str);
+
+        $it = [];
+
+        $cache = Cache::getInstance();
+        $lastPubdate = $cache->cget('last_data_moe_pubdate');
+
+        $count = count($objz->channel->item);
+
+        $k = 0;
+        foreach($objz->channel->item as $item){
+            if(!$item)break;
+            $obj = new stdClass();
+
+            $obj->title = $item->title.'';
+            $obj->link = $item->link.'';
+            $obj->additional = str_replace('https://bangumi.moe/torrent/','',$obj->link);
+            $obj->time = strtotime($item->pubDate);
+            if($obj->time <= $lastPubdate)break;
+            $it[$k] = $obj;
+            $k++;
+        }
+
+        $it = array_reverse($it);
+        echo $length = count($it);
+
+        foreach($it as $k=>$v){
+
+            echo $this->push($v->title,$v->link,'',$v->additional,'7811ade5a1dfa34b4d18352070737cc02f191424');
+
+
+            $cache->csave('last_data_moe_pubdate',$v->time);
+            
+            if($k+1!=$length){
+                $rand = rand(0,floor(600/$length));
+                sleep($rand);
+            }
+        }
+
+
+    }
+
 
     function tucao(){
 

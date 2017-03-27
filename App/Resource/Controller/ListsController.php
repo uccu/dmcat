@@ -34,11 +34,11 @@ class ListsController extends Controller{
 
     }
 
-    function null(Resource $resource,$asc = 0,$page = 1){
+    function null(Resource $resource,$asc = 0,$page = 1,$limit = 50){
 
         $list = $resource->where('ISNULL(theme_id) AND visible=1')
                 ->order('level DESC','ctime '.($asc?'ASC':'DESC'))
-                ->page($page,50)->get();
+                ->page($page,$limit)->get();
         $data['list'] = $list->toArray();
         AJAX::success($data);
 
@@ -56,21 +56,7 @@ class ListsController extends Controller{
 
     }
 
-    function new_number(Resource $resourceModel,$asc = 0,$page = 1,$id = 0,Theme $themeModel){
-
-        $list = $resourceModel->select('sitelink.site.name>sname','sitelink.outlink','*')
-            ->where('theme_id=%d AND new_number=1 AND visible=1',$id)->order('level DESC','ctime')->get();
-
-        $theme = $themeModel->find($id);
-        $data['list'] = $list->toArray();
-
-        $gdata['g']['title'] = $theme->name;
-        View::addData($gdata);
-        View::addData($data);
-
-        View::hamlReader('Theme/new_number','Resource',$data);
-
-    }
+    
 
 
     function new_number2(Resource $resourceModel,$id = 0,Theme $themeModel){
@@ -173,6 +159,7 @@ class ListsController extends Controller{
 
         
     }
+    
 
 
 

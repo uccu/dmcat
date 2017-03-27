@@ -9,6 +9,7 @@ use Request;
 use StdClass;
 use App\Resource\Model\ThemeModel as Theme;
 use App\Resource\Model\ResourceModel as Resource;
+use fengqi\Hanzi\Hanzi;
 
 class ThemeApi extends Controller{
 
@@ -25,6 +26,10 @@ class ThemeApi extends Controller{
 
         $res = Request::getInstance();
         $info = $res->request(['name','tags','matches','level','season','number','last_number','content','visible']);
+        
+        !$info['name'] && AJAX::error('名字空');
+
+        $info['first'] = substr( Hanzi::pinyin($info['name'])['py'],0,1);
 
         $data['id'] = Theme::getInstance()->set($info)->add()->getStatus();
         

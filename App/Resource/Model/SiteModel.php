@@ -9,7 +9,11 @@ class SiteModel extends Model{
 
     protected $field = ['id','name','token'];
 
-   
+    public function findToken($token){
+
+        if(!$token)return NULL;
+        return $this->where(['token'=>$token])->find();
+    }
     
 
     

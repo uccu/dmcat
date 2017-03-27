@@ -11,6 +11,7 @@ use Request;
 use View;
 use App\Resource\Model\ThemeModel;
 use App\Resource\Tool\Func;
+use fengqi\Hanzi\Hanzi;
 
 class ThemeController extends Controller{
 
@@ -29,9 +30,11 @@ class ThemeController extends Controller{
 
         $data['list'] = $themeModel->where($condition)->page($page,$limit)->order('ctime',$desc?1:0)->get()->toArray();
 
-        $gdata['g']['title'] = '主题列表';
+        $gdata['title'] = '主题列表';
 
-        //AJAX::success($data);
+
+
+        // AJAX::success($data);
 
         View::addData($gdata);
 
@@ -39,54 +42,7 @@ class ThemeController extends Controller{
 
     }
 
-    function week(ThemeModel $themeModel){
-
-        
-        $all = $themeModel->where('%F > %d AND visible = 1','change_time',TIME_TODAY-3600*24*7*2)->order('change_time')->get()->toArray();
-
-        $today = $last_week = $this_week = [];
-
-
-
-        foreach($all as $theme){
-
-            $theme->date = Func::time_calculate($theme->change_time);
-
-            if($theme->change_time<TIME_TODAY-3600*24*7){
-
-                $last_week[date('w',$theme->change_time)][] = $theme;
-
-
-            }elseif($theme->change_time<TIME_TODAY){
-
-                $this_week[date('w',$theme->change_time)][] = $theme;
-            }else{
-
-                $today[] = $theme;
-            }
-
-            
-
-        }
-        $data['today'] = $today;
-        $data['this_week'] = $this_week;
-        $data['last_week'] = $last_week;
-
-        $data['test'] = '1';
-
-        //var_dump($this_week);
-
-        $gdata['g']['title'] = '节目单';
-
-        //AJAX::success($data);
-
-        View::addData($gdata);
-
-        View::hamlReader('Theme/week','Resource',$data);
-
-
-
-    }
+    
 
 
     function week2(ThemeModel $themeModel){
