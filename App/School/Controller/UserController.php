@@ -22,7 +22,7 @@ class UserController extends Controller{
     /* 通过用户ID判断用户是否存在 */
     function exist($id = 0){
 
-        $user = UserMode::getInstance()->find($id);
+        $user = UserModel::getInstance()->find($id);
         $outData['exist'] = $user ? true : false;
         AJAX::success($outData);
     }
