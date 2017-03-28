@@ -7,10 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
 {
     public static $prefixLengthsPsr4 = array (
-        'f' => 
-        array (
-            'fengqi\\Hanzi\\' => 13,
-        ),
         'c' => 
         array (
             'cebe\\markdown\\' => 14,
@@ -26,10 +22,6 @@ class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
     );
 
     public static $prefixDirsPsr4 = array (
-        'fengqi\\Hanzi\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/fengqi/hanzi/src',
-        ),
         'cebe\\markdown\\' => 
         array (
             0 => __DIR__ . '/..' . '/cebe/markdown',

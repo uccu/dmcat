@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2097135aa098c6c4cdacc9565be19d41",
-    "content-hash": "9350b0fbca618c5e09e17ba68a9d90a9",
+    "hash": "b41aeed8cfb21e14d3eb804879b34855",
+    "content-hash": "6ab28b0c9a5380b36533dc81f4f95116",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -66,47 +66,6 @@
                 "markdown-extra"
             ],
             "time": "2016-09-14 20:40:20"
-        },
-        {
-            "name": "fengqi/hanzi",
-            "version": "v0.1.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fengqi/hanzi.git",
-                "reference": "d5ace54ceb0310e37ee6d51c5d9ed049f0bcf0e0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fengqi/hanzi/zipball/d5ace54ceb0310e37ee6d51c5d9ed049f0bcf0e0",
-                "reference": "d5ace54ceb0310e37ee6d51c5d9ed049f0bcf0e0",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "fengqi\\Hanzi\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "fengqi",
-                    "email": "lyf362345@gmail.com",
-                    "homepage": "http://fengqi.me"
-                }
-            ],
-            "description": "获取汉字的拼音, 或者简繁体转换.",
-            "homepage": "https://github.com/fengqi/hanzi",
-            "keywords": [
-                "Pinyin",
-                "fanti",
-                "hanzi",
-                "jianti"
-            ],
-            "time": "2016-04-10 16:47:02"
         },
         {
             "name": "monolog/monolog",
