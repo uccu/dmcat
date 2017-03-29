@@ -15,9 +15,9 @@ class LoginController extends Controller{
         $this->L = L::getInstance();
 
         $array = [1];
-        echo $this->L->id;
+
         if($this->L->id && $this->L->userInfo->type){
-            header('Location:index');
+            header('Location:/admin/index');
         }
 
         View::hamlReader('login','Admin');

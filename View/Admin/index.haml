@@ -13,7 +13,7 @@
         %link(href="/css/style.min862f.css?v=4.1.0" rel="stylesheet")
 
     %body.fixed-sidebar.full-height-layout.gray-bg(style="overflow:hidden")
-        #wrapper
+        #wrapper(style="overflow:hidden")
             /左侧导航开始
             %nav.navbar-default.navbar-static-side(role="navigation")
                 .nav-close 
@@ -40,12 +40,12 @@
 
                                     %li.divider
                                     %li
-                                        %a(href="login") 安全退出
+                                        %a(href="/user/logout") 安全退出
 
                             .logo-element A+
 
                         %li
-                            %a(href="#")
+                            %a.J_menuItem(href="home/index")
                                 %i.fa.fa-home
                                 %span.nav-label 主页
                         %li
@@ -200,7 +200,7 @@
 
                     %nav.page-tabs.J_menuTabs
                         .page-tabs-content
-                            -# %a.active.J_menuTab(href="javascript:;" data-id="index") 首页
+                            %a.active.J_menuTab(href="javascript:;" data-id="home/index") 主页
 
                     %button.roll-nav.roll-right.J_tabRight
                         %i.fa.fa-forward
@@ -219,11 +219,11 @@
                             %li.J_tabCloseOther
                                 %a 关闭其他选项卡
 
-                    %a.roll-nav.roll-right.J_tabExit(href="login")
+                    %a.roll-nav.roll-right.J_tabExit(href="/user/logout")
                         %i.fa.fa-sign-out
                         退出
                 #content-main.row.J_mainContent
-                    %iframe.J_iframe(name="iframe0" width="100%" height="100%" src="home/test" frameborder="0" data-id="home/test" seamless)
+                    %iframe.J_iframe(name="iframe0" width="100%" height="100%" src="home/index" frameborder="0" data-id="home/index" seamless)
                 .footer
                     .pull-right
                         &copy; 2017

@@ -16,6 +16,7 @@ class UserController extends Controller{
     private $salt;
     private $L;
 
+
     function __construct(){
 
         $this->L = L::getInstance();
@@ -45,14 +46,14 @@ class UserController extends Controller{
     function logout(){
 
         Response::getInstance()->cookie('user_token','',-3600);
-        header('/admin/login');
+        header('Location:/admin/login');
     }
 
     function login($user_name = null,$password =null,UserModel $model,$cookie = null){
 
 
         //检查参数是否存在
-        (!$user_name || !password) && AJAX::error('参数不完整');
+        (!$user_name || !$password) && AJAX::error('参数不完整');
         
 
         

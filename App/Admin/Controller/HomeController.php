@@ -20,7 +20,10 @@ class HomeController extends Controller{
     }
 
 
-    
+    function index(){
+
+        View::hamlReader('test','Admin');
+    }
 
 
 }
