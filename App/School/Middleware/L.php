@@ -5,21 +5,26 @@ use Request;
 use App\School\Tool\Func;
 use Config;
 use Response;
-use \App\School\Model\ConfigModel;
-use \App\School\Model\UserModel;
-
+use App\School\Model\ConfigModel;
+use App\School\Model\UserModel;
 
 class L extends Middleware{
 
     private $request;
-
     public $config;
     public $user_token;
     public $userInfo;
     public $id;
+    public $i18n;
 
     function __construct(){
 
+        $this->request = Request::getInstance();
+
+        /* 导入国际化 */
+        $this->i18n = I18n::getInstance();
+        /* 设置语言 */
+        $this->i18n->setLanguage( $this->request->cookie('language','cn') );
 
         /*获取所有的参数*/
         $this->config = ConfigModel::getInstance()->get_field('value','name');
@@ -29,7 +34,7 @@ class L extends Middleware{
         $salt = $this->config->site_salt;
 
         
-        $this->request = Request::getInstance();
+        
 
         /*获取user_token*/
         $this->user_token = $this->request->request('user_token');

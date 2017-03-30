@@ -3,12 +3,12 @@
 namespace App\School\Controller;
 
 
-use AJAX;
 use Controller;
 use Response;
 use App\School\Model\UserModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
+use App\School\Tool\AJAX;
 
 class UserController extends Controller{
 
@@ -53,7 +53,7 @@ class UserController extends Controller{
 
 
         //检查参数是否存在
-        (!$user_name || !$password) && AJAX::error('参数不完整');
+        (!$user_name || !$password) && AJAX::error_i18n('param_error');
         
 
         
@@ -64,7 +64,7 @@ class UserController extends Controller{
 
         //找到对应用户名的账号
         $info = $model->where(['user_name'=>$user_name])->find();
-        !$info && AJAX::error('用户不存在');
+        !$info && AJAX::error_i18n('no_user_exist');
 
 
        /**
@@ -72,7 +72,7 @@ class UserController extends Controller{
         *  加密算法采用  sha1(网站干扰码+md5(密码)+用户干扰码)
         */
         $encryptedPassword = $this->encrypt_password($password,$info->salt);
-        if($encryptedPassword!=$info->password)AJAX::error('密码错误');
+        if($encryptedPassword!=$info->password)AJAX::error_i18n('wrong_pwd');
 
 
         //输出登录返回信息
