@@ -180,9 +180,9 @@ class BaseModel{
 
         $contain = $this->select($field,$key)->get($key);
 
-        foreach($contain as &$v){
+        foreach($contain as $k=>$v){
             
-            $v = $v->$field;
+            $contain[$k] = $v->$field;
         }
 
         return $contain;
