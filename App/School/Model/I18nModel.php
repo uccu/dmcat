@@ -12,8 +12,8 @@ class I18nModel extends Model{
     public function getter($type,$language){
 
         return $this->where(
-            ['type'=>$type,'language'=>$language]
-        )->get_field('content','name');
+            ['type'=>$type]
+        )->get_field($language,'name');
     }
 
     

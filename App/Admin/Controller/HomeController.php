@@ -16,13 +16,13 @@ class HomeController extends Controller{
 
     function test(){
 
-        View::hamlReader('test','Admin');
+        View::hamlReader('home','Admin');
     }
 
 
     function index(){
 
-        View::hamlReader('test','Admin');
+        View::hamlReader('home','Admin');
     }
 
 

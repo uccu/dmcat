@@ -9,7 +9,7 @@ class Ajax extends A{
     static function  error_i18n($name){
 
         self::error( L::getInstance()->i18n->errorMessage[$name] );
-
+        echo L::getInstance()->i18n->errorMessage;
 
         
     }

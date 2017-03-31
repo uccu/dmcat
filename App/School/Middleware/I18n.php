@@ -6,7 +6,7 @@ use App\School\Model\I18nModel;
 
 class I18n extends Middleware{
 
-    public $languge = 'cn';
+    public $language = 'cn';
 
     function setLanguage($l){
 
