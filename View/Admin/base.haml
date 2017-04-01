@@ -11,6 +11,8 @@
         %link(rel="shortcut icon" href="favicon.ico")
         %link(href="/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet")
         %link(href="/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet")
+        %link(href="/css/plugins/iCheck/custom.css" rel="stylesheet")
+        %link(href="/css/plugins/toastr/toastr.min.css" rel="stylesheet")
         %link(href="/css/animate.min.css" rel="stylesheet")
         %link(href="/css/style.min862f.css?v=4.1.0" rel="stylesheet")
         - block otherCss
@@ -22,10 +24,46 @@
         %script(src="/js/jquery.min.js?v=2.1.4")
         %script(src="/js/bootstrap.min.js?v=3.3.6")
         %script(src="/js/content.min.js?v=1.0.0")
+        %script(src="/js/plugins/toastr/toastr.min.js")
         %script(src="/js/plugins/iCheck/icheck.min.js")
         :javascript
-            $(document).ready(function(){$(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",})})
+            $(function(){
+                $('.historyGo').click(function(){
+                    history.go(-1);
+                })
+            })
+            function curl(url,data,func){
+                $.post(url,data,function(d){
+                    if(d.code != 200)toastr['error'](d.message);
+                    else{
+                        if(typeof func == 'function')func(d.data);
+                    }
+                },'json');
+            }
+            function curl_succ(message){
 
+                toastr['success'](message);
+            }
+            function curl_check(d){
+
+                toastr['warning']('You cannot roll back this operation. Click to Continue?','',{"onclick": d,"closeButton": true});
+                
+            }
+            function gotoNewTag(addr,name){
+                var d = window.top.$('.gotoTag a').text(name).attr('href',addr).click();
+            }
+            function close(){
+
+            }
+            function gotoTag(addr,close){
+                var e = window.top.$('iframe[data-id="'+addr+'"]');
+                var that = window.top.$('.J_menuTab.active i');
+                if(e.length)e[0].contentWindow.location.reload(true);
+                window.top.$('.J_menuItem[href="'+addr+'"]').click();
+                if(close){
+                    that.click();
+                }
+            }
         - block otherScript
             / block otherScript
         

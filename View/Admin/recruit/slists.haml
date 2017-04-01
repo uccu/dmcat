@@ -13,20 +13,19 @@
                                 %thead
                                     %tr
                                         %th 
-                                        %th 标题
-                                        %th.text-center 考试时间
-                                        %th.text-center 招考人数
-                                        %th.text-center 显示
+                                        %th.text-center 家长名字
+                                        %th.text-center 学生名字
+                                        %th.text-center 联系电话
+                                        %th.text-center 学生年龄
                                         %th.text-center 操作
                                 %tbody
                                     %tr.hidden
                                         %td.data-id
                                             -# %input.i-checks(type="checkbox" name="ids[]" value="0")
-                                        %td.data-title
-                                        %td.data-time.text-center
-                                        %td.data-number.text-center
-                                        %td.data-status.text-center
-                                            %input.i-checks(type="checkbox")
+                                        %td.data-parent_name.text-center
+                                        %td.data-student_name.text-center
+                                        %td.data-phone.text-center
+                                        %td.data-age.text-center
                                         %td.text-center
                                             %a.data-upd(href="info")
                                                 %i.fa.fa-pencil.text-navy
@@ -40,7 +39,7 @@
         $(function(){
             var getList = function(page){
                 page = page || 1;
-                curl('/recruit/lists',{page:page},function(d){
+                curl('/recruit/slists',{page:page},function(d){
 
                     var a = $('tr.data-block').remove();
                     for(var di in d.list){
@@ -48,20 +47,16 @@
                         var a = $('tr.hidden').clone();
                         a.removeClass('hidden').addClass('data-block');
                         // a.find('.data-id input').val(i.id);
-                        a.find('.data-title').text(i.title);
-                        a.find('.data-time').text(i.date+' '+i.time);
-                        a.find('.data-number').text(i.number);
-                        if(i.status === "1")a.find('.data-status input').attr('checked','checked');
-                        a.find('.data-status input').val(i.id);
+                        a.find('.data-parent_name').text(i.parent_name);
+                        a.find('.data-student_name').text(i.student_name);
+                        a.find('.data-phone').text(i.phone);
+                        a.find('.data-age').text(i.age);
                         a.find('.data-del').attr('data-id',i.id);
-                        a.find('.data-upd').attr('href','info?'+i.id)
+                        a.find('.data-upd').attr('href','sinfo?'+i.id)
                         $('tbody').append(a);
                         
                     }
-                    $('tr.data-block .i-checks').iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",})
-                    $('tr.data-block .data-status input').on('ifChanged',function(){
-                        change(this.value,this.checked?1:0)
-                    });
+                    
                     $('tr.data-block .data-del').on('click',function(){
                         var that = this;
                         curl_check(function(){
@@ -71,13 +66,10 @@
 
                 })
 
-            },change = function(id,status){
-                curl('/recruit/change',{id:id,status:status},function(d){
-                    curl_succ('success!');
-                });
             },del = function del(id){
-                curl('/recruit/del',{id:id},function(d){
+                curl('/recruit/sdel',{id:id},function(d){
                     curl_succ('success!');
+                    setTimeout("location.reload(true)",1000)
                 });
             }
             getList()

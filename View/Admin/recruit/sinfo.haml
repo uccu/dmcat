@@ -1,0 +1,71 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content.animated.fadeInRight
+        .row
+            .col-sm-12.col-md-7
+                .ibox.float-e-margins
+                    .ibox-content
+                        .row
+                            .col-sm-12.b-r
+                                %h3.m-t-none.m-b 报考学生信息
+                                
+                                %form.form-horizontal(role="form" method="post" onsubmit="return ef();")
+                                    .form-group
+                                        %label.col-sm-2.control-label 家长姓名*
+                                        .col-sm-4
+                                            %input.form-control(type="text" placeholder="" name="parent_name" required)
+                                    .form-group
+                                        %label.col-sm-2.control-label 家长英文名
+                                        .col-sm-4
+                                            %input.form-control(type="text" placeholder="" name="parent_name_en")
+                                    .form-group
+                                        %label.col-sm-2.control-label 学生姓名*
+                                        .col-sm-4
+                                            %input.form-control(type="text" placeholder="" name="student_name" required)
+                                    .form-group
+                                        %label.col-sm-2.control-label 学生英文名
+                                        .col-sm-4
+                                            %input.form-control(type="text" placeholder="" name="student_name_en")
+                                    .form-group
+                                        %label.col-sm-2.control-label 学生年龄*
+                                        .col-sm-2
+                                            %input.form-control(type="number" placeholder="" name="age" required)
+                                    .form-group
+                                        %label.col-sm-2.control-label 联系手机*
+                                        .col-sm-6
+                                            %input.form-control(type="text" placeholder="" name="phone" required)
+                                    .form-group
+                                        %label.col-sm-2.control-label 联系地址*
+                                        .col-sm-10
+                                            %input.form-control(type="text" placeholder="" name="address" required)
+                                    .form-group
+                                        %label.col-sm-2.control-label 
+                                        .col-sm-8
+                                            %button.btn.btn-sm.btn-primary.pull-left.m-t-n-xs(type="submit")
+                                                %strong 修 改
+                                        .col-sm-2
+                                            %a.btn.btn-sm.btn-danger.pull-right.m-t-n-xs(href="slists")
+                                                %strong 返 回
+
+    
+- block otherScript
+    :javascript
+        $(function(){
+            var id = location.href.match(/\d+$/)[0];
+            curl('/recruit/sget',{id:id},function(d){
+                for(var k in d.info){
+                    var v = d.info[k];
+                    $('[name="'+k+'"]').val(v);
+                }
+            });
+            window.ef = function(){
+                curl('/recruit/schange','id='+id+'&'+$('form').serialize(),function(d){
+                        curl_succ('success!');
+                });
+                return false;
+            }
+        });
+            

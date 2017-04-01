@@ -3,7 +3,6 @@
 
 - block body
 
-
     .wrapper.wrapper-content.animated.fadeInRight
         .row
             .col-sm-12.col-md-7
@@ -11,7 +10,7 @@
                     .ibox-content
                         .row
                             .col-sm-12.b-r
-                                %h3.m-t-none.m-b 发布招生考试信息
+                                %h3.m-t-none.m-b 修改招生考试信息
                                 
                                 %form.form-horizontal(role="form" method="post" onsubmit="return ef();")
                                     .form-group
@@ -33,25 +32,36 @@
                                     .form-group
                                         %label.col-sm-2.control-label 人数*
                                         .col-sm-2
-                                            %input.form-control(type="text" placeholder="" name="number" required)
+                                            %input.form-control(type="number" placeholder="" name="number" required)
                                     .form-group
                                         %label.col-sm-2.control-label 考试说明*
                                         .col-sm-10
                                             %textarea.form-control(name="comment" required rows="10" style="resize:vertical")
                                     .form-group
                                         %label.col-sm-2.control-label 
-                                        .col-sm-10
+                                        .col-sm-8
                                             %button.btn.btn-sm.btn-primary.pull-left.m-t-n-xs(type="submit")
-                                                %strong 发 布
-                                        
-                           
+                                                %strong 修 改
+                                        .col-sm-2
+                                            %a.btn.btn-sm.btn-danger.pull-right.m-t-n-xs(href="lists")
+                                                %strong 返 回
+
+    
 - block otherScript
     :javascript
-        var ef = function(){
-            curl('/recruit/add',$('form').serialize(),function(d){
-                
-                    gotoTag('recruit/lists',1);
-                
+        $(function(){
+            var id = location.href.match(/\d+$/)[0];
+            curl('/recruit/get',{id:id},function(d){
+                for(var k in d.info){
+                    var v = d.info[k];
+                    $('[name="'+k+'"]').val(v);
+                }
             });
-            return false;
-        }
+            window.ef = function(){
+                curl('/recruit/change','id='+id+'&'+$('form').serialize(),function(d){
+                        curl_succ('success!');
+                });
+                return false;
+            }
+        });
+            
