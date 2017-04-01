@@ -97,7 +97,7 @@ class Container implements ArrayAccess{
     }
     function toArray(){
 
-        return $this->data;
+        return $this->__data;
     }
 
 
