@@ -17,7 +17,7 @@ class BaseModel{
 
     protected   $field;  //允许使用的字段
     protected   $updateSafe = true;//UPDATE 是否允许没有WHERE条件
-
+    protected   $deleteSafe = true;//DELETE 是否允许没有WHERE条件
     private     $select;//筛选
     private     $on;    //join规则
     private     $where; //条件
@@ -166,6 +166,7 @@ class BaseModel{
             $this->where = preg_replace('#`\w+`\.#',' ',$this->where); 
             if($this->where)$sql .= ' WHERE '.$this->where;
             
+            if($this->deleteSafe && !$this->where)E::throwEx('WHERE Is Empty');
 
         }else $sql .= ' '.$this->query;
 
