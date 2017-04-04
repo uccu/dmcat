@@ -34,7 +34,7 @@ class RecruitController extends Controller{
     function add($name,$time,$address,$number,$comment,RecruitModel $model){
 
         $data = Request::getInstance()->post(['title','date','time','address','number','comment']);
-        count($data) != 5 && AJAX::error_i18n('param_error');
+        count($data) != 6 && AJAX::error_i18n('param_error');
 
         $data['create_user'] = $data['update_user'] = $this->L->id;
         $data['create_time'] = $data['update_time'] = TIME_NOW;
@@ -103,7 +103,7 @@ class RecruitController extends Controller{
 
 
     function slists($page = 1,$limit = 30,RecruitStudentsModel $model){
-        
+
         $pname = $this->L->i18n->language == 'cn' ? 'parent_name' : 'parent_name_en>parent_name';
         $sname = $this->L->i18n->language == 'cn' ? 'student_name' : 'student_name_en>student_name';
         $out['list'] = $model->page($page,$limit)->select('id',$sname,$pname,'phone','age','recruit_id','create_time')->get()->toArray();

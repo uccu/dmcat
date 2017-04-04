@@ -24,6 +24,15 @@ class UserController extends Controller{
 
     }
 
+    function language($l = 'cn'){
+
+        if(!is_string($l))$l = 'cn';
+        Response::getInstance()->cookie('language',$l,0);
+
+        AJAX::success();
+
+    }
+
 
     /* 通过用户ID判断用户是否存在 */
     function exist($id = 0){

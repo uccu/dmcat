@@ -10,7 +10,7 @@ class I18n extends Middleware{
 
     function setLanguage($l){
 
-        return $this->languge = $l;
+        return $this->language = $l;
     }
 
     
