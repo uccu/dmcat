@@ -22,19 +22,27 @@ class ThemeController extends Controller{
 
     }
 
-    function all($page = 1,$limit = 20,$season = null,$desc = 1,ThemeModel $themeModel){
+    function all($page = 1,$limit = 20,$season = null,$desc = 1,ThemeModel $themeModel,$search){
 
         $condition = [];
 
         if($season)$condition['season'] = $season;
 
-        $data['list'] = $themeModel->where($condition)->page($page,$limit)->order('ctime',$desc?1:0)->get()->toArray();
+        if($search){
+
+            $search = str_replace('%','',trim($search));
+            $condition['search'] = ['%F LIKE %n','name','%'.$search.'%'];
+        }
+        
+
+        $data['list'] = $themeModel
+                            ->where($condition)
+                            ->page($page,$limit)
+                            ->order('ctime',$desc?1:0)
+                            ->get()->toArray();
 
         $gdata['title'] = '主题列表';
 
-
-
-        // AJAX::success($data);
 
         View::addData($gdata);
 

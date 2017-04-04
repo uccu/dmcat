@@ -208,6 +208,7 @@ class ResourceNameSharp{
 
         $subtitle = Subtitle::getInstance();
 
+        // var_dump($this->nameArray);
         foreach($this->nameArray as $k=>$p){
 
             if(!$p)continue;
@@ -215,8 +216,10 @@ class ResourceNameSharp{
             
 
             if(!$this->number){
-                $p = preg_replace_callback('# *(\d+)$#',function($p2){
-                    $this->number = $p2[1];return '';
+                $p = preg_replace_callback('# *(\d+)$#',function($p2)use($k){
+                    $this->number = $p2[1];
+                    unset($this->nameArray[$k]);
+                    return '';
                 },$p);
             }
             if(!$p)continue;

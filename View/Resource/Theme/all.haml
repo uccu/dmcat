@@ -51,18 +51,21 @@
     #main
       .row
         - for theme in list
-          .col-sm-12.block
+          .col-sm-12.block(data-id="#{theme.id}")
             .col-sm-4
               %a.t.cp(data-toggle="tooltip" data-placement="right" title="") = theme.name
-            .col-sm-1.tc(data-toggle="tooltip" data-placement="right" title="#{theme.matches}")
-              %a.t.cp.matches MAT
+            .col-sm-1.tc.matches(data-toggle="tooltip" data-placement="right" title="#{theme.matches}")
+              %a.t.cp MAT
             .col-sm-1.tc(data-toggle="tooltip" data-placement="right" title="共#{theme.number}资源")
               %a.t.cp.last = theme.last_number
             .col-sm-1.tc
               - if theme.visible
-                %i.visible.dib.cp.t(enabled data-id="#{theme.id}")
+                %i.visible.dib.cp.t(enabled)
               - else
-                %i.visible.dib.cp.t(data-id="#{theme.id}")
+                %i.visible.dib.cp.t
+            .col-sm-1.tc
+              %a.t.cp.sort SO
+
               
   :javascript
     j(function () {
@@ -70,15 +73,42 @@
       j('i.visible').click(function(){
         var that = this;
         if(j(this).attr('enabled') === undefined){
-          j.post('/themeapi/update',{id:j(this).attr('data-id'),visible:1},function(){
+          j.post('/themeapi/update',{id:j(this).parent().parent().attr('data-id'),visible:1},function(){
             j(that).attr('enabled','');
           },'json')
         }else{
-          j.post('/themeapi/update',{id:j(this).attr('data-id'),visible:0},function(){
+          j.post('/themeapi/update',{id:j(this).parent().parent().attr('data-id'),visible:0},function(){
             j(that).removeAttr('enabled');
           },'json')
           
         }
+      });
+      j('a.sort').click(function(){
+        var m = j(this).parent().parent().find('.matches').attr('data-original-title');
+        j.post('/api/match',{match:m},function(d){
+          var id = d.data.list.sort().toString();
+
+          if(id){
+            
+            var c = confirm('重新筛选'+$id+'?');
+            if(c){
+
+              j.post('/api/flesh',{id:id},function(f){
+                var ids = d.data.affect;
+                var str = '';
+                for(var g in ids){
+                  
+                   str += g + ':' + (ids[g]?'成功!':'失败!') + '\n';
+                }
+                alert(str);
+              
+              },'json')
+
+            }
+
+          }else alert('没有筛选内容！');
+
+        },'json');
       })
     })
 

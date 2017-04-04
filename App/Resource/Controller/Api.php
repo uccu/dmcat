@@ -180,7 +180,7 @@ class Api extends Controller{
             $ids = explode(',',$id);
         }
         
-        
+
         
         foreach($ids as $id){
 
@@ -193,35 +193,32 @@ class Api extends Controller{
             $info = new stdClass;
             $info->tags = implode(',',$rns->tag);
             $info->unftags = implode(',',$rns->nameArray);
-            //echo $rns->number;die();
+            // echo $rns->number;die();
     
-            foreach($rns->theme as $themeid=>$theme){
-
+            if($rns->theme){
+                $theme = $rns->theme;
+                $info->new_number = $rns->number;
                 if($rns->number == $theme->last_number+1){
                     $theme->number = 1;
                     $theme->last_number += 1;
                     $theme->change_time = TIME_NOW;
                     $theme->visible = 1;
                     $theme->save();
-                    $resource->set(['new_number'=>0])->where('%F=%d','theme_id',$themeid)->save();
-                    $info->new_number = 1;
+                    
 
                 }elseif($rns->number == $theme->last_number){
-                    $info->new_number = 1;
-                    if($theme->id != $r->theme_id){
-                        $theme->number = 1+$resource->select('count(*) as count','RAW')->where('%F=%d AND new_number=1','theme_id',$themeid)->find()->count;
-                        $theme->visible = 1;
-                        $theme->save();
-                    }else{
-                        $theme->number = $resource->select('count(*) as count','RAW')->where('%F=%d AND new_number=1','theme_id',$themeid)->find()->count;
-                        $theme->visible = 1;
-                        $theme->save();
-                    }
+
+                    
+                    $theme->number = $resource->select('count(*) as count','RAW')->where(['theme_id'=>$theme->id,['new_number'=>$theme->last_number]])->find()->count;
+                    $theme->id != $r->theme_id && $theme->number += 1;
+                    $theme->visible = 1;
+                    $theme->save();
+                    
                 }
 
-                $info->theme_id = $theme->id;break;
+                $info->theme_id = $theme->id;
             }
-
+            
 
             $data['affect'][$id] = $resource->set($info)->save($id)->getStatus();
         }
@@ -229,6 +226,18 @@ class Api extends Controller{
 
     }
 
+    function match(Resource $resource,$match = ''){
 
+        $data['list'] = [];
+        if(!$match)AJAX::success($data);
+
+        $list = $resource
+                    ->where('MATCH(%F)AGAINST(%n)','unftags',$match)
+                    ->where(['theme_id'=>null])
+                    ->get_field('id');
+        $data['list'] = $list->toArray();
+        AJAX::success($data);
+
+    }
 
 }

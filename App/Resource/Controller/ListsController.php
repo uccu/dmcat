@@ -34,13 +34,34 @@ class ListsController extends Controller{
 
     }
 
-    function null(Resource $resource,$asc = 0,$page = 1,$limit = 50){
+    function null(Resource $resourceModel,Theme $themeModel,$unftags = 0){
+        
+        $name = $unftags ? 'unftags>name' : 'name';
+        $list = $resourceModel->select('sitelink.site.name>sname','sitelink.outlink',$name,'ctime','id')
+            ->where(['theme_id'=>null])->order('level DESC','ctime DESC')->get();
 
-        $list = $resource->where('ISNULL(theme_id) AND visible=1')
-                ->order('level DESC','ctime '.($asc?'ASC':'DESC'))
-                ->page($page,$limit)->get();
+
         $data['list'] = $list->toArray();
-        AJAX::success($data);
+
+        $week = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六',];
+        $week2 = ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日',];
+
+
+        foreach($data['list'] as &$s){
+            
+            $s->date = Func::time_calculate($s->ctime);
+
+            $wee = date('w',$s->ctime);
+            $s->week = $week[$wee].'/'.$week2[$wee];
+
+
+        }
+
+        $gdata['g']['title'] = 'NULL RESOURCE';
+        View::addData($gdata);
+        View::addData($data);
+
+        View::hamlReader('Theme/new_number2','Resource',$data);
 
     }
 
@@ -62,7 +83,7 @@ class ListsController extends Controller{
     function new_number2(Resource $resourceModel,$id = 0,Theme $themeModel){
 
         $list = $resourceModel->select('sitelink.site.name>sname','sitelink.outlink','*')
-            ->where('theme_id=%d AND new_number=1 AND visible=1',$id)->order('level DESC','ctime')->get();
+            ->where('theme_id=%d AND new_number=theme.last_number AND visible=1',$id)->order('level DESC','ctime')->get();
 
         $theme = $themeModel->find($id);
         $data['list'] = $list->toArray();
@@ -145,6 +166,8 @@ class ListsController extends Controller{
         AJAX::success($data);
 
     }
+
+    
 
     function date(Resource $resource,$asc = 0,$page = 1,$yesterday = 0){
 
