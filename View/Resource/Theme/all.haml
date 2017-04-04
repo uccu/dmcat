@@ -160,6 +160,7 @@
       });
       j('.addT').click(function(){
         j('#modal_new form [name="id"]').val('');
+        j('h4.modal-title').text('创建主题');
         j('#modal_new').modal();
       });
       j('#modal_new .save').click(function(){
@@ -174,6 +175,7 @@
       },'json')});
       j('a.name').click(function(){
         var id = j(this).parent().parent().attr('data-id');
+        j('h4.modal-title').text('修改主题');
         j('#modal_new .sk-spinner').removeClass('dn');
         j('#modal_new form').css('opacity',0);
         j('#modal_new').modal();

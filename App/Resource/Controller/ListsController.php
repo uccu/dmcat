@@ -34,11 +34,11 @@ class ListsController extends Controller{
 
     }
 
-    function null(Resource $resourceModel,Theme $themeModel,$unftags = 0){
+    function null(Resource $resourceModel,Theme $themeModel,$unftags = 0,$page = 1){
         
         $name = $unftags ? 'unftags>name' : 'name';
         $list = $resourceModel->select('sitelink.site.name>sname','sitelink.outlink',$name,'ctime','id')
-            ->where(['theme_id'=>null])->order('level DESC','ctime DESC')->get();
+            ->where(['theme_id'=>null])->order('level DESC','ctime DESC')->page($page,50)->get();
 
 
         $data['list'] = $list->toArray();
