@@ -90,11 +90,11 @@
 
           if(id){
             
-            var c = confirm('重新筛选'+$id+'?');
+            var c = confirm('重新筛选'+id+'?');
             if(c){
 
               j.post('/api/flesh',{id:id},function(f){
-                var ids = d.data.affect;
+                var ids = f.data.affect;
                 var str = '';
                 for(var g in ids){
                   
