@@ -87,7 +87,6 @@
       });
       j('a.sort').click(function(){
         var m = j(this).parent().parent().find('.matches').attr('data-original-title');
-        var theme = j(this).parent().parent().attr('data-id');
         j.post('/api/match',{match:m},function(d){
           var id = d.data.list.sort().toString();
           if(id){
@@ -101,6 +100,7 @@
         },'json');
       });
       j('a.sort2').click(function(){
+        var theme = j(this).parent().parent().attr('data-id');
         j.post('/themeapi/sort',{id:theme},function(q){
           if(q.code == 200){
             alert('成功！');location.reload(true)
