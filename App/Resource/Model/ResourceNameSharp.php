@@ -216,12 +216,15 @@ class ResourceNameSharp{
             
 
             if(!$this->number){
-                $p = preg_replace_callback('# *(\d+)(end)?$#i',function($p2)use($k){
+                $p = preg_replace_callback('# *(\d+)(end)?$#i',function($p2){
                     $this->number = $p2[1];
                     return '';
                 },$p);
             }
-            if(!$p)continue;
+            if(!$p){
+                unset($this->nameArray[$k]);
+                continue;
+            }
 
             if(preg_match('#(字幕组|sub)$#i',$p)){
                 $this->tag[] = $this->nameArray[$k];
