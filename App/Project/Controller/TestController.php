@@ -391,7 +391,7 @@ class TestController extends Controller{
         
     }
 
-    function curl(Cache $cache){
+    function acgnx(Cache $cache){
 
         global $argc;
         global $argv;
@@ -400,16 +400,8 @@ class TestController extends Controller{
         ignore_user_abort();
         set_time_limit(600);
 
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://open.acgnx.se/json-1-sort-1.json");
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        $json = curl_exec($ch);
-        curl_close($ch);
+        $json = $this->zCurl('https://open.acgnx.se/json-1-sort-1.json');
+        
 
         if($json)$json = json_decode($json,true);
         else{
@@ -424,30 +416,22 @@ class TestController extends Controller{
         ksort($array);
         $length = count($array);
         foreach($array as $k=>$data){
-            $request = [];
-            $request['name'] = $data['title'];
-            $request['hash'] = $data['hash_id'];
-            $request['outlink'] = 'https://share.acgnx.se/show-'.$data['hash_id'].'.html';
-            $request['additional'] = $data['data_id'];
-            $request['token'] = '860F3ABB7EB7E30FAD15EEEF6BA6A07D3386AB8A';
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "http://h.4moe.com/api/add");
-            curl_setopt($ch, CURLOPT_HEADER, false);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
-		    curl_setopt($ch, CURLOPT_POST, 1);
-		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
-            //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            $json = curl_exec($ch);
+            
 
-            echo $json;
-            curl_close($ch);
+            $json = $this->push(
+                $data['title'],
+                'https://share.acgnx.se/show-'.$data['hash_id'].'.html',
+                $data['hash_id'],
+                $data['data_id'],
+                '860F3ABB7EB7E30FAD15EEEF6BA6A07D3386AB8A'
+            );
+
 
             $cache->csave('last_data_id',$data['data_id']);
             if($k+1!=$length){
                 $rand = rand(0,floor(600/$length));
                 sleep($rand);
-                // die();
+
             }
         }
         
