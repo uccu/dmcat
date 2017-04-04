@@ -22,7 +22,7 @@ class ThemeController extends Controller{
 
     }
 
-    function all($page = 1,$limit = 20,$season = null,$desc = 1,ThemeModel $themeModel,$search){
+    function all($page = 1,$limit = 20,$season = null,$desc = 1,ThemeModel $themeModel,$search,$sort = 'id'){
 
         $condition = [];
 
@@ -38,7 +38,7 @@ class ThemeController extends Controller{
         $data['list'] = $themeModel
                             ->where($condition)
                             ->page($page,$limit)
-                            ->order('ctime',$desc?1:0)
+                            ->order($sort,$desc?1:0)
                             ->get()->toArray();
 
         $gdata['title'] = '主题列表';

@@ -26,13 +26,11 @@ class ThemeApi extends Controller{
 
         $res = Request::getInstance();
         $info = $res->request(['name','tags','matches','level','season','number','last_number','content','visible']);
-        
         !$info['name'] && AJAX::error('名字空');
-
+        $info['ctime'] = $info['change_time'] = TIME_NOW;
         $info['first'] = substr( Hanzi::pinyin($info['name'])['py'],0,1);
-
         $data['id'] = Theme::getInstance()->set($info)->add()->getStatus();
-        
+        if(!$data['id'])AJAX::error('创建失败！');
         AJAX::success($data);
     
     }
@@ -81,7 +79,13 @@ class ThemeApi extends Controller{
 
     }
     
+    function get($id){
 
+        $info = Theme::getInstance()->find($id);
+        !$info && AJAX::error('主题不存在！');
+
+        AJAX::success(['info'=>$info]);
+    }
 
 
 }

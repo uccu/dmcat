@@ -45,15 +45,13 @@
     
 
   #outting.container.pr
-
-
     #contain_back.pa
     #main
       .row
         - for theme in list
           .col-sm-12.block(data-id="#{theme.id}")
             .col-sm-4
-              %a.t.cp(data-toggle="tooltip" data-placement="right" title="") = theme.name
+              %a.t.cp.name(data-toggle="tooltip" data-placement="right" title="") = theme.name
             .col-sm-1.tc.matches(data-toggle="tooltip" data-placement="right" title="#{theme.matches}")
               %a.t.cp MAT
             .col-sm-1.tc(data-toggle="tooltip" data-placement="right" title="共#{theme.number}资源")
@@ -69,6 +67,58 @@
               %a.t.cp.sort2 RT
 
               
+  %button.btn.btn-primary.addT(type="button") 创建主题
+                            
+  
+  #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+    .modal-dialog
+      .modal-content.animated.fadeInDown
+        .modal-header
+          %button.close(type="button" data-dismiss="modal" aria-label="Close")
+            %span(aria-hidden="true") &times;
+            %span.sr-only Close
+          %h4.modal-title 创建主题
+          %small.font-bold 
+        .modal-body
+          .sk-spinner.sk-spinner-wave.dn.animated
+            .sk-rect1
+            .sk-rect2
+            .sk-rect3
+            .sk-rect4
+            .sk-rect5
+          %form.form-horizontal.animated(method="post")
+            .form-group
+              %label.col-sm-2.control-label 主题名字
+              .col-sm-10
+                %input.form-control(type="text" name="name")
+            .form-group
+              %label.col-sm-2.control-label 过滤标签
+              .col-sm-10
+                %input.form-control(type="text" name="matches")
+            .form-group
+              %label.col-sm-2.control-label 最新集数
+              .col-sm-4
+                %input.form-control(name="last_number" type="number" value=0)
+              %label.col-sm-2.control-label 资源数量
+              .col-sm-4
+                %input.form-control(type="text" name="number" type="number" value=0)
+            .form-group
+              %label.col-sm-2.control-label 所属月份
+              .col-sm-4
+                %input.form-control(type="text" name="season")
+              %label.col-sm-2.control-label 优先级
+              .col-sm-4
+                %input.form-control(type="text" name="level" type="number" value=0)
+            .form-group
+              %label.col-sm-2.control-label 显示
+              .col-sm-4
+                %input.form-control(type="text" name="visible" type="number" value=0)
+                %input.form-control(type="text" name="id" type="hidden" value=0)
+        .modal-footer
+          %button.btn.btn-default(type="button" data-dismiss="modal") Close
+          %button.btn.btn-primary.save(type="button") Save
+      
+  
   :javascript
     j(function () {
       j('[data-toggle="tooltip"]').tooltip();
@@ -107,7 +157,41 @@
           }
           else alert(q.message);
         },'json')
-      })
+      });
+      j('.addT').click(function(){
+        j('#modal_new form [name="id"]').val('');
+        j('#modal_new').modal();
+      });
+      j('#modal_new .save').click(function(){
+        var s = j('#modal_new form').serialize();
+        var id = j('#modal_new form [name="id"]').val();
+        var url = id ? '/themeapi/update' : '/themeapi/add';
+        j.post(url,s,function(q){
+          if(q.code == 200){
+            alert('成功！');location.reload(true)
+          }
+          else alert(q.message);
+      },'json')});
+      j('a.name').click(function(){
+        var id = j(this).parent().parent().attr('data-id');
+        j('#modal_new .sk-spinner').removeClass('dn');
+        j('#modal_new form').css('opacity',0);
+        j('#modal_new').modal();
+        j.post('/themeapi/get',{id:id},function(d){
+          if(d.code == 200){
+            
+            for(var g in d.data.info){
+
+              j('#modal_new form [name="'+g+'"]').val(d.data.info[g])
+
+            }
+            j('#modal_new .sk-spinner').addClass('fadeOutUp');
+            j('#modal_new form').addClass('fadeInUp');
+
+          }else alert(q.message);
+        },'json')
+
+      });
     })
 
   
