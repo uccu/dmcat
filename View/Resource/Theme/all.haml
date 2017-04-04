@@ -85,6 +85,7 @@
       });
       j('a.sort').click(function(){
         var m = j(this).parent().parent().find('.matches').attr('data-original-title');
+        var theme = j(this).parent().parent().attr('data-id');
         j.post('/api/match',{match:m},function(d){
           var id = d.data.list.sort().toString();
 
@@ -100,7 +101,12 @@
                   
                    str += g + ':' + (ids[g]?'成功!':'失败!') + '\n';
                 }
-                alert(str);
+
+                j.post('/themeapi/sort',{id:theme},function(q){
+                  if(q.code == 200)alert(str);
+                  else alert(q.message);
+                },'json')
+                
               
               },'json')
 

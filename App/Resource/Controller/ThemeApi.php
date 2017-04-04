@@ -67,16 +67,16 @@ class ThemeApi extends Controller{
 
     }
 
-    function sort(){
+    function sort($id){
 
-        $res = Request::getInstance();
-        $id = $res->request('id');
-        if(!$id)AJAX::error('没有ID');
-        $matches = Theme::getInstance()->select('matches')->find($id)->matches;
-        if(!$matches)AJAX::error('无匹配主题');
+        $theme = Theme::getInstance()->find($id);
+
+        if(!$theme)AJAX::error('主题不存在');
+
+        $data['number'] = $theme->number = Resource::getInstance()->select(['count(%F) as count','sitelink.id'],'RAW')->where(['theme_id'=>$theme->id,['new_number'=>$theme->last_number]])->find()->count;
         
-        $data['count'] = Resource::getInstance()->where('MATCH( %F )AGAINST( %n ) AND ISNULL(theme_id)','unftags',$matches)->set(['theme_id'=>$id])->save()->getStatus();
-        
+        $data['succ'] = $theme->save()->getStatus();
+
         AJAX::success($data);
 
     }

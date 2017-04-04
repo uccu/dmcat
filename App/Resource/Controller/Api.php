@@ -225,6 +225,7 @@ class Api extends Controller{
         AJAX::success($data);
 
     }
+    
 
     function match(Resource $resource,$match = ''){
 
