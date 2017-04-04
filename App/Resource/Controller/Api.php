@@ -201,7 +201,7 @@ class Api extends Controller{
                 if($rns->number == $theme->last_number+1){
                     $theme->number = 1;
                     $theme->last_number += 1;
-                    $theme->change_time = TIME_NOW;
+                    $theme->change_time = $r->ctime;
                     $theme->visible = 1;
                     $theme->save();
                     
@@ -209,8 +209,7 @@ class Api extends Controller{
                 }elseif($rns->number == $theme->last_number){
 
                     
-                    $theme->number = $resource->select('count(*) as count','RAW')->where(['theme_id'=>$theme->id,['new_number'=>$theme->last_number]])->find()->count;
-                    $theme->id != $r->theme_id && $theme->number += 1;
+                    
                     $theme->visible = 1;
                     $theme->save();
                     
