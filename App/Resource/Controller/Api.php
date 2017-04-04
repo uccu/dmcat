@@ -32,7 +32,9 @@ class Api extends Controller{
         if(!$token && !$login->id)AJAX::error('未登录');
         
         $user_id = $site_id = 0;
-        if($token && !$site_id = $siteModel->findToken($token)->id)AJAX::error('未知的站点！');
+        if($token){
+            if(!$site_id = $siteModel->findToken($token)->id)AJAX::error('未知的站点！');
+        }
         else $user_id = $login->id;
 
         /* 初始化 */
