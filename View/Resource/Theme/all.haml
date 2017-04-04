@@ -65,6 +65,8 @@
                 %i.visible.dib.cp.t
             .col-sm-1.tc
               %a.t.cp.sort SO
+            .col-sm-1.tc
+              %a.t.cp.sort2 RT
 
               
   :javascript
@@ -88,33 +90,23 @@
         var theme = j(this).parent().parent().attr('data-id');
         j.post('/api/match',{match:m},function(d){
           var id = d.data.list.sort().toString();
-
           if(id){
-            
             var c = confirm('重新筛选'+id+'?');
             if(c){
-
               j.post('/api/flesh',{id:id},function(f){
-                var ids = f.data.affect;
-                var str = '';
-                for(var g in ids){
-                  
-                   str += g + ':' + (ids[g]?'成功!':'失败!') + '\n';
-                }
-
-                j.post('/themeapi/sort',{id:theme},function(q){
-                  if(q.code == 200)alert(str);
-                  else alert(q.message);
-                },'json')
-                
-              
-              },'json')
-
-            }
-
-          }else alert('没有筛选内容！');
-
+                var ids = f.data.affect,str = '';
+                for(var g in ids)str += g + ':' + (ids[g]?'成功!':'失败!') + '\n';
+                alert(str)
+              },'json')}}else alert('没有筛选内容！');
         },'json');
+      });
+      j('a.sort2').click(function(){
+        j.post('/themeapi/sort',{id:theme},function(q){
+          if(q.code == 200){
+            alert('成功！');location.reload(true)
+          }
+          else alert(q.message);
+        },'json')
       })
     })
 

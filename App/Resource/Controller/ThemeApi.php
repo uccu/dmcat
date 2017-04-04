@@ -73,7 +73,7 @@ class ThemeApi extends Controller{
 
         if(!$theme)AJAX::error('主题不存在');
 
-        $data['number'] = $theme->number = Resource::getInstance()->select(['count(%F) as count','sitelink.id'],'RAW')->where(['theme_id'=>$theme->id,['new_number'=>$theme->last_number]])->find()->count;
+        $data['number'] = $theme->number = Resource::getInstance()->select(['count(%F) as count','sitelink.id'],'RAW')->where(['theme_id'=>$theme->id,'new_number'=>$theme->last_number])->find()->count;
         
         $data['succ'] = $theme->save()->getStatus();
 
