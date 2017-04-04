@@ -414,11 +414,12 @@ class TestController extends Controller{
         foreach($json as $k=>$v)if($v['data_id']>$lastDataId)$array[$v['data_id']] = $v;
 
         ksort($array);
-        $length = count($array);
+        echo $length = count($array);
+        echo ',';
         foreach($array as $k=>$data){
             
 
-            $json = $this->push(
+            echo $json = $this->push(
                 $data['title'],
                 'https://share.acgnx.se/show-'.$data['hash_id'].'.html',
                 $data['hash_id'],
