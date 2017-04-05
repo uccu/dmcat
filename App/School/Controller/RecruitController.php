@@ -51,7 +51,7 @@ class RecruitController extends Controller{
         $name = $this->L->i18n->language == 'cn' ? 'user.name' : 'user.name_en>name';
 
         $out['list'] = $model->page($page,$limit)->selectExcept('comment')->select('*',$name)->get()->toArray();
-        $out['count'] = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
         $out['page'] = $page;
         $out['limit'] = $limit;
         AJAX::success($out);
@@ -107,7 +107,7 @@ class RecruitController extends Controller{
         $pname = $this->L->i18n->language == 'cn' ? 'parent_name' : 'parent_name_en>parent_name';
         $sname = $this->L->i18n->language == 'cn' ? 'student_name' : 'student_name_en>student_name';
         $out['list'] = $model->page($page,$limit)->select('id',$sname,$pname,'phone','age','recruit_id','create_time')->get()->toArray();
-        $out['count'] = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
         $out['page'] = $page;
         $out['limit'] = $limit;
         AJAX::success($out);

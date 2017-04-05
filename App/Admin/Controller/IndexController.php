@@ -19,6 +19,11 @@ class IndexController extends Controller{
             header('Location:/user/logout');
         }
 
+        $lang = $this->L->i18n;
+        
+        View::addData(['lang'=>$lang]);
+        View::addData(['userInfo'=>$this->L->userInfo]);
+
         View::hamlReader('index','Admin');
     }
 

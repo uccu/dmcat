@@ -52,6 +52,25 @@
             function gotoNewTag(addr,name){
                 var d = window.top.$('.gotoTag a').text(name).attr('href',addr).click();
             }
+            function pagement(page,max,e){
+                var p = $('<div>').addClass('btn-group page');
+                var pa = [];
+                if(max<5)for(var i=1;i<=max;i++)pa.push(i);
+                else if(page<3)for(var i=1;i<=5;i++)pa.push(i);
+                else if(page+2>max)for(var i=max-4;i<=max;i++)pa.push(i);
+                else for(var i=page-2;i<=page+2;i++)pa.push(i);
+
+                $('<div>').addClass('btn btn-white').attr('type','button').append('<i class="fa fa-chevron-left"></i>').on('click',function(){e(1)}).appendTo(p);
+                for(r in pa){
+                    var q = pa[r];
+                    var j = $('<div>').addClass('btn btn-white').attr('data-id',q);
+                    if(q == page)j.addClass('active');
+                    j.text(q).on('click',function(){e($(this).attr('data-id'))}).appendTo(p);
+                }
+                $('<div>').addClass('btn btn-white').attr('type','button').append('<i class="fa fa-chevron-right"></i>').on('click',function(){e(max)}).appendTo(p);
+                return p;
+
+            }
             function close(){
 
             }

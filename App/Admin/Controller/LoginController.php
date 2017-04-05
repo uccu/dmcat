@@ -20,6 +20,12 @@ class LoginController extends Controller{
             header('Location:/admin/index');
         }
 
+        $lang = $this->L->i18n;
+
+        $lang->adminLogin;
+
+        View::addData(['lang'=>$lang]);
+
         View::hamlReader('login','Admin');
     }
 

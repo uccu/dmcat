@@ -7,13 +7,14 @@
         .row
             .col-sm-12
                 .ibox.float-e-margins
-                    .ibox-content
+                    .ibox-content.text-center
+                        -# 列表
                         .table-responsive(style="min-height: 500px;")
                             %table.table.table-striped
                                 %thead
                                     %tr
                                         %th 
-                                        %th 标题
+                                        %th.text-center 标题
                                         %th.text-center 考试时间
                                         %th.text-center 招考人数
                                         %th.text-center 显示
@@ -34,6 +35,10 @@
                                             %a.data-del(href="#")
                                                 %i.fa.fa-close.text-danger
                                                 删除
+
+                        -# 分页
+                        
+
 
 - block otherScript
     :javascript
@@ -67,7 +72,11 @@
                         curl_check(function(){
                             del($(that).attr('data-id'))
                         })
-                    })
+                    });
+                    $('.page').remove();
+                    pagement(d.page,parseInt( ( d.max - 1 )/d.limit ) + 1,function(p){
+                        getList(p);
+                    }).appendTo('.ibox-content')
 
                 })
 
@@ -79,7 +88,8 @@
                 curl('/recruit/del',{id:id},function(d){
                     curl_succ('success!');
                 });
-            }
+            };
+            
             getList()
         })
         

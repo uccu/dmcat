@@ -7,7 +7,7 @@
         .row
             .col-sm-12
                 .ibox.float-e-margins
-                    .ibox-content
+                    .ibox-content.text-center
                         .table-responsive(style="min-height: 500px;")
                             %table.table.table-striped
                                 %thead
@@ -62,7 +62,11 @@
                         curl_check(function(){
                             del($(that).attr('data-id'))
                         })
-                    })
+                    });
+                    $('.page').remove();
+                    pagement(d.page,parseInt( ( d.max - 1 )/d.limit ) + 1,function(p){
+                        getList(p);
+                    }).appendTo('.ibox-content')
 
                 })
 
