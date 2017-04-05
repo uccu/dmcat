@@ -240,4 +240,12 @@ class Api extends Controller{
 
     }
 
+    function clean($themeId = 0,Resource $resource){
+        
+        $resource->where(['theme_id'=>$themeId])->set(['theme_id'=>null])->save();
+
+        AJAX::success();
+
+    }
+
 }

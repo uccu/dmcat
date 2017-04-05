@@ -4,6 +4,9 @@ use MtHaml\Environment;
 use MtHaml\Support\Twig\Loader;
 use MtHaml\Support\Twig\Extension;
 use Lib\Sharp\SingleInstance;
+use MtHaml\Filter\Less\LeafoLess;
+use MtHaml\Filter\Markdown\CebeMarkdown;
+use MtHaml\Filter\Php;
 
 class View implements SingleInstance{
 
@@ -33,7 +36,16 @@ class View implements SingleInstance{
 
     public static function hamlReader($name,$dir = '',$data = []){
 
-        $mt = new Environment('twig', ['enable_escaper' => false]);
+        require(VENDOR_ROOT.'leafo/lessphp/lessc.inc.php');
+        $lessFilter = new LeafoLess(new lessc);
+        $markdownFilter = new CebeMarkdown(new \cebe\markdown\MarkdownExtra());
+        // $phpFilter = new Php;
+
+        $mt = new Environment('twig', ['enable_escaper' => false],[
+            'less'=>$lessFilter,
+            'markdown'=>$markdownFilter,
+            // 'mthaml_php'=>$phpFilter
+        ]);
 
         $fs = new Twig_Loader_Filesystem(VIEW_ROOT.$dir);
 
