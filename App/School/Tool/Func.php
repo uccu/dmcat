@@ -242,5 +242,12 @@ class Func{
     }
 
 
+    public static function curl($url,$data){
+
+
+
+    }
+
+
     
 }
