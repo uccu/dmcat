@@ -216,7 +216,7 @@ class ResourceNameSharp{
             
 
             if(!$this->number){
-                $p = preg_replace_callback('# *(\d+)(end)?$#i',function($p2){
+                $p = preg_replace_callback('# *(\d+)(end|完)?$#i',function($p2){
                     $this->number = $p2[1];
                     return '';
                 },$p);
