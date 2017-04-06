@@ -150,27 +150,31 @@ class RecruitController extends Controller{
 
     function view_exam_list(){
 
-
+        include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
     function view_exam_info(){
 
-        
+        include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
     function view_exam_submit(){
 
-        
+        include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
     function view_my_submit(){
 
-        
+        include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
+    }
+    function view_my_submit_none(){
+
+        include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
     function sumbit(){
 
-        
+        include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
 }

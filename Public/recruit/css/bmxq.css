@@ -1,0 +1,41 @@
+.xq-main{
+    width:6rem;
+    margin:auto;
+}
+h1{
+    width:100%;
+    height:0.8rem;
+    line-height: 0.8rem;
+    text-align: center;
+    font-size: 0.35rem;
+    color: #111112;
+}
+p{
+    font-size: 0.24rem;
+    color: #1b2b69;
+    line-height: 0.5rem;
+}
+p span{
+    color: #6f6f6f;
+}
+ul li{
+    color: #6f6f6f;
+    line-height:0.45rem;
+    font-size: 0.24rem;
+}
+p em {
+    color: red;
+    font-size: 0.3rem;
+}
+.xq-main a{
+    display: block;
+    width:100%;
+    height:0.6rem;
+    line-height: 0.6rem;
+    text-align: center;
+    color: #ffffff;
+    font-size: 0.3rem;
+    background: #1b2b69;
+    border-radius: 3px;
+    margin:0.3rem 0 0.2rem 0;
+}

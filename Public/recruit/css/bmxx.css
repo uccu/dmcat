@@ -1,0 +1,13 @@
+.xx-main{
+    width:100%;
+}
+
+.xx-main img{
+    display: block;
+    margin:3rem 2rem 1rem;
+}
+.xx-main p{
+    font-size: 0.3rem;
+    text-align: center;
+    width:100%;
+}
