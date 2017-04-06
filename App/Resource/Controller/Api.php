@@ -99,10 +99,15 @@ class Api extends Controller{
                 $theme->last_number = $number;
                 $theme->number = 1;
                 $theme->change_time = TIME_NOW;
-
-            }elseif($number == $theme->last_number)$theme->number += 1;
-
+                $theme->save();
+            }elseif($number == $theme->last_number){
+                $theme->number += 1;
+                $theme->save();
+            }
+            
         }
+
+        
 
         /* 外链 */
         if($outlink){
