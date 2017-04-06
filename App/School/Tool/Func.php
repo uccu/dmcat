@@ -242,8 +242,23 @@ class Func{
     }
 
 
-    public static function curl($url,$data){
+    public static function curl($url,$data = []){
 
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if($data){
+            curl_setopt($ch, CURLOPT_POST, 1);
+		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        }
+        
+        $z = curl_exec($ch);
+
+        return $json = json_decode($z);
 
 
     }

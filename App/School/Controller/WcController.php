@@ -2,7 +2,7 @@
 
 namespace App\School\Controller;
 
-
+use App\School\Tool\Func;
 use App\School\Middleware\L;
 use Controller;
 
@@ -33,9 +33,21 @@ class WcController extends Controller{
 
     }
 
-    function getCode(){
+    function getCode($code,$state){
 
-        var_dump($_REQUEST);
+        if(!$code)die('微信连接失败！');
+
+        $data['appid'] = $this->appid;
+        $data['secret'] = $this->app_secret;
+        $data['code'] = $code;
+        $data['grant_type'] = 'authorization_code';
+
+
+        $json = Func::curl('https://api.weixin.qq.com/sns/oauth2/access_token',$data);
+
+        if(!$json)die('微信解析失败！');
+
+        var_dump($json);
     }
 
 
