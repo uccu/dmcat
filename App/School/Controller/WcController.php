@@ -5,6 +5,7 @@ namespace App\School\Controller;
 use App\School\Tool\Func;
 use App\School\Middleware\L;
 use Controller;
+use Response;
 
 class WcController extends Controller{
 
