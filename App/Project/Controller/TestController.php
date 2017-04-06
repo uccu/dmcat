@@ -74,14 +74,7 @@ class TestController extends Controller{
 
     function t(){
 
-        if(strpos($_SERVER['HTTP_USER_AGENT'], 'iPhone')||strpos($_SERVER['HTTP_USER_AGENT'], 'iPad')){
-            header('Location:https://itunes.apple.com/cn/app/id1218738370');
-        }else if(strpos($_SERVER['HTTP_USER_AGENT'], 'Android')){
-            header('Location:http://a.app.qq.com/o/simple.jsp?pkgname=code.hanyu.com.inaxafsapp');
-
-        }else{
-
-        }
+        
 
 
     }

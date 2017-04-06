@@ -19,11 +19,13 @@ class RecruitController extends Controller{
 
         $this->L = L::getInstance();
 
-        !$this->L->id && AJAX::error_i18n('not_login');
+        
 
     }
 
     function get($id,RecruitModel $model){
+
+        !$this->L->id && AJAX::error_i18n('not_login');
 
         $recruit = $model->find($id);
         !$recruit && AJAX::error_i18n('no_data');
@@ -32,6 +34,8 @@ class RecruitController extends Controller{
     }
 
     function add($name,$time,$address,$number,$comment,RecruitModel $model){
+
+        !$this->L->id && AJAX::error_i18n('not_login');
 
         $data = Request::getInstance()->post(['title','date','time','address','number','comment']);
         count($data) != 6 && AJAX::error_i18n('param_error');
@@ -47,6 +51,8 @@ class RecruitController extends Controller{
     }
 
     function lists($page = 1,$limit = 30,RecruitModel $model){
+
+        !$this->L->id && AJAX::error_i18n('not_login');
         
         $name = $this->L->i18n->language == 'cn' ? 'user.name' : 'user.name_en>name';
 
@@ -59,6 +65,8 @@ class RecruitController extends Controller{
     }
 
     function change($id,$status = null,RecruitModel $model,$title,$number,$address,$comment,$date){
+
+        !$this->L->id && AJAX::error_i18n('not_login');
 
         $recruit = $model->find($id);
         !$recruit && AJAX::error_i18n('no_data');
@@ -81,6 +89,8 @@ class RecruitController extends Controller{
 
     function schange($id = 0,RecruitStudentsModel $model){
 
+        !$this->L->id && AJAX::error_i18n('not_login');
+
         $recruit = $model->find($id);
         !$recruit && AJAX::error_i18n('no_data');
 
@@ -96,6 +106,8 @@ class RecruitController extends Controller{
 
     function del($id = 0,RecruitModel $model){
 
+        !$this->L->id && AJAX::error_i18n('not_login');
+
         $recruit = $model->remove($id);
         AJAX::success();
 
@@ -103,6 +115,8 @@ class RecruitController extends Controller{
 
 
     function slists($page = 1,$limit = 30,RecruitStudentsModel $model){
+
+        !$this->L->id && AJAX::error_i18n('not_login');
 
         $pname = $this->L->i18n->language == 'cn' ? 'parent_name' : 'parent_name_en>parent_name';
         $sname = $this->L->i18n->language == 'cn' ? 'student_name' : 'student_name_en>student_name';
@@ -116,6 +130,8 @@ class RecruitController extends Controller{
 
     function sget($id,RecruitStudentsModel $model){
 
+        !$this->L->id && AJAX::error_i18n('not_login');
+
         $recruit = $model->find($id);
         !$recruit && AJAX::error_i18n('no_data');
 
@@ -125,9 +141,36 @@ class RecruitController extends Controller{
 
     function sdel($id = 0,RecruitStudentsModel $model){
 
+        !$this->L->id && AJAX::error_i18n('not_login');
+
         $recruit = $model->remove($id);
         AJAX::success();
 
+    }
+
+    function view_exam_list(){
+
+
+    }
+
+    function view_exam_info(){
+
+        
+    }
+
+    function view_exam_submit(){
+
+        
+    }
+
+    function view_my_submit(){
+
+        
+    }
+
+    function sumbit(){
+
+        
     }
 
 }

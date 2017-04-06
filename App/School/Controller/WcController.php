@@ -22,14 +22,14 @@ class WcController extends Controller{
 
 
     
-    function roll(){
-        $redirect_uri = urlencode( 'http://weixin.ivy-china.com/wc/getCode' );
-        $state = 'test';
+    function roll($state = 'test'){
 
-        echo 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.$this->appid
+        $redirect_uri = urlencode( 'http://weixin.ivy-china.com/wc/getCode' );
+
+        header('Location:https://open.weixin.qq.com/connect/oauth2/authorize?appid='.$this->appid
         .'&redirect_uri='.$redirect_uri
         .'&response_type=code&scope=snsapi_base&state='.$state
-        .'#wechat_redirect';
+        .'#wechat_redirect');
 
     }
 
@@ -47,7 +47,18 @@ class WcController extends Controller{
 
         if(!$json)die('微信解析失败！');
 
-        var_dump($json);
+        if(!$json->openid)die('无法识别用户！');
+
+        Response::getInstance()->cookie('wc_openid',$json->openid,0);
+
+        if($state == 'recruit'){
+
+            header('Location:/recruit/view_exam_list');
+        }elseif($state == 'test'){
+            
+            echo 'test';
+        }
+
     }
 
 
