@@ -152,7 +152,7 @@ class RecruitController extends Controller{
 
         $name = $this->L->i18n->language == 'cn' ? 'user.name' : 'user.name_en>name';
 
-        $list = $model->page($page,$limit)->selectExcept('comment')->select('*',$name)->get()->toArray();
+        $list = $model->selectExcept('comment')->where(['status'=>1])->select('*',$name)->order('date','time')->get()->toArray();
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
