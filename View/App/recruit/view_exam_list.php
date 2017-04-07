@@ -10,21 +10,17 @@
 <body>
 <div class="header">
     <em></em>
-    <span>在线报名</span>
-    <a href="#">查看报名信息</a>
+    <span></span>
+    <a href="view_my_submit">查看报名信息</a>
 </div>
+<?php foreach($list as $v){?>
 <div class="bm">
-    <h1>常春藤幼儿园小班报名 <a href="#"></a></h1>
-    <p>开学时间：2017年9月1日</p>
-    <p>地址：虹口区东体育会路390号常春藤幼儿园</p>
-    <span>2017年5月10日</span>
+    <h1><?php echo $v->title;?> <a href="#"></a></h1>
+    <p>报名时间：<?php echo $v->date.' '.$v->time;?></p>
+    <p>地址：<?php echo $v->address;?></p>
+    <span><?php echo date('Y年m月d日',$v->date);?></span>
 </div>
-<div class="bm">
-    <h1>常春藤幼儿园中班报名 <a href="#"></a></h1>
-    <p>开学时间：2017年9月1日</p>
-    <p>地址：虹口区东体育会路390号常春藤幼儿园</p>
-    <span>2017年5月10日</span>
-</div>
+<?php }?>
 <script src="js/main.js"></script>
 </body>
 </html>
