@@ -18,11 +18,6 @@ p{
 p span{
     color: #6f6f6f;
 }
-ul li{
-    color: #6f6f6f;
-    line-height:0.45rem;
-    font-size: 0.24rem;
-}
 p em {
     color: red;
     font-size: 0.3rem;

@@ -150,24 +150,39 @@ class RecruitController extends Controller{
 
     function view_exam_list(RecruitModel $model){
 
-        $name = $this->L->i18n->language == 'cn' ? 'user.name' : 'user.name_en>name';
-
+        $wc_openid = Request::getInstance()->cookie('wc_openid','');
+        !$wc_openid && header('Location:/wc/roll?state=recruit');
         $list = $model->selectExcept('comment')->where(['status'=>1])->select('*',$name)->order('date','time')->get()->toArray();
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
-    function view_exam_info(){
+    function view_exam_info(RecruitModel $model,$id){
+
+        $wc_openid = Request::getInstance()->cookie('wc_openid','');
+        !$wc_openid && header('Location:/wc/roll?state=recruit');
+
+        $info = $model->find($id);
+        !$info && die();
+        $info->comment = str_replace("\n","<br>",$info->comment);
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
     function view_exam_submit(){
 
+        $wc_openid = Request::getInstance()->cookie('wc_openid','');
+        !$wc_openid && header('Location:/wc/roll?state=recruit');
+
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
-    function view_my_submit(){
+    function view_my_submit(RecruitStudentsModel $model){
+
+        $wc_openid = Request::getInstance()->cookie('wc_openid','');
+        !$wc_openid && header('Location:/wc/roll?state=recruit');
+
+        $list = $model->select('*','recruit.title')->where(['openid'=>$wc_openid])->order('pay_time','DESC')->get()->toArray();
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }

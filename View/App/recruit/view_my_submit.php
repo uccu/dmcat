@@ -13,19 +13,18 @@
     }
 </style>
 <body>
-<div class="header">
-    <em></em>
-    <span>报名信息</span>
-    <a href="#"></a>
-</div>
+<!--<div class="header">-->
+    <!--<em></em>-->
+    <!--<span>报名信息</span>-->
+    <!--<a href="#"></a>-->
+<!--</div>-->
+<?php foreach($list as $s){?>
 <div class="bm">
-    <h1>您已报名常春藤幼儿园小班</h1>
-    <p><em style="margin-right: 1.5rem;">家长姓名：沙一秋</em> <em>孩子姓名：沙俊伯</em></p>
+    <a href="view_exam_info?id=<?php echo $s->recruit_id;?>"><h1>您已报名《<?php echo $s->title;?>》</h1></a>
+    <p><em style="margin-right: 1.5rem;">家长姓名：<?php echo $s->parent_name;?></em> <em>孩子姓名：<?php echo $s->student_name;?></em></p>
 </div>
-<div class="bm">
-    <h1>您已报名常春藤幼儿园中班</h1>
-    <p><em style="margin-right: 1rem;">家长姓名：沙一秋</em> <em>孩子姓名：沙俊良</em></p>
-</div>
+<?php }?>
+
 <script src="js/main.js"></script>
 </body>
 </html>

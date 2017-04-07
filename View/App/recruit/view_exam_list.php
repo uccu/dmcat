@@ -8,19 +8,23 @@
     <link rel="stylesheet" href="css/public.css">
 </head>
 <body>
-<div class="header">
-    <em></em>
-    <span></span>
-    <a href="view_my_submit">查看报名信息</a>
-</div>
+<!--<div class="header">-->
+    <!--<em></em>-->
+    <!--<span>在线报名</span>-->
+    <!--<a href="#">查看报名信息</a>-->
+<!--</div>-->
 <?php foreach($list as $v){?>
 <div class="bm">
-    <h1><?php echo $v->title;?> <a href="#"></a></h1>
+    <a href="view_exam_info?id=<?php echo $v->id;?>"><h1><?php echo $v->title;?></h1></a>
+    
     <p>报名时间：<?php echo $v->date.' '.$v->time;?></p>
     <p>地址：<?php echo $v->address;?></p>
-    <span><?php echo date('Y年m月d日',$v->date);?></span>
+    <span><?php echo date('Y年m月d日',$v->create_time);?></span>
 </div>
 <?php }?>
+<div class="footer">
+    <a href="view_my_submit">查看报名信息</a>
+</div>
 <script src="js/main.js"></script>
 </body>
 </html>
