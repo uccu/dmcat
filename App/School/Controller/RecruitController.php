@@ -148,7 +148,7 @@ class RecruitController extends Controller{
 
     }
 
-    function view_exam_list(){
+    function view_exam_list(RecruitModel $model){
 
         $name = $this->L->i18n->language == 'cn' ? 'user.name' : 'user.name_en>name';
 
