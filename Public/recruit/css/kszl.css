@@ -27,6 +27,7 @@ body{
     outline: none;
     color: #1b2b69;
     font-size: 0.25rem;
+    background: #ffffff;
 }
 .zl-main ul li span{
     position: absolute;
@@ -40,8 +41,9 @@ body{
     width:5.2rem;
     outline: none;
     resize: none;
-    border:none;
     color: #1b2b69;
+    font-size: 0.25rem;
+    border:none;
 }
 .zl-main a{
     margin:1rem 0.2rem 1rem 0.2rem;
