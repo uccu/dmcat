@@ -183,8 +183,13 @@ class RecruitController extends Controller{
         !$wc_openid && header('Location:/wc/roll?state=recruit');
 
         $list = $model->select('*','recruit.title')->where(['openid'=>$wc_openid])->order('pay_time','DESC')->get()->toArray();
-
-        include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
+        if(!$list){
+            include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'_none.php';
+        }
+        else{
+            include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
+        }
+        
     }
     function view_my_submit_none(){
 
