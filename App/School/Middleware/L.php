@@ -48,7 +48,7 @@ class L extends Middleware{
         $user_token = substr($user_token,1);
         list($hash,$id,$time) = explode('|',base64_decode($user_token));
         if(!$hash||!$id||!$time){
-            Response::getInstance()->cookie('user_token','',-3600);
+            $this->delCookie();
             return;
         }
         
@@ -57,18 +57,23 @@ class L extends Middleware{
         $user = UserModel::getInstance();
         $info = $user->find($id);
         if(!$info){
-            Response::getInstance()->cookie('user_token','',-3600);
+            $this->delCookie();
             return;
         }
 
         /*验证登陆合法性*/
         if($hash === sha1($info->password.$salt.$time)){
             $this->userInfo = $info;
+            if($this->i18n->language != 'cn')$this->userInfo->name = $this->userInfo->name_en;
             $this->id = $info->id;
             return;
         }
 
         /*其他情况*/
+        $this->delCookie();
+    }
+
+    function delCookie(){
         Response::getInstance()->cookie('user_token','',-3600);
     }
     

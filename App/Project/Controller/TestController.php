@@ -74,8 +74,9 @@ class TestController extends Controller{
 
     function t(){
 
-        
+        $z = explode(',','');
 
+        var_dump($z);
 
     }
 

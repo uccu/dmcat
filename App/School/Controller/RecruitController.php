@@ -94,7 +94,7 @@ class RecruitController extends Controller{
         $recruit = $model->find($id);
         !$recruit && AJAX::error_i18n('no_data');
 
-        $data = Request::getInstance()->post(['parent_name','parent_name_en','student_name','student_name_en','address','age','phone']);
+        $data = Request::getInstance()->post(['parent_name','parent_name_en','student_name','student_name_en','address','age','phone','weight','height']);
         $data['update_time'] = TIME_NOW;
         
         !$model->set($data)->where(['id'=>$id])->save()->getStatus() && AJAX::error_i18n('save_failed');

@@ -5,7 +5,7 @@
         %meta(name="viewport" content="width=device-width, initial-scale=1.0")
         %meta(name="renderer" content="webkit")
         %meta(http-equiv="Cache-Control" content="no-siteapp")
-        %title 后台 - 主页
+        %title 后台 - #{lang.adminIndex.homepage}
         %link(rel="shortcut icon" href="favicon.ico")
         %link(href="/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet")
         %link(href="/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet")
@@ -29,125 +29,52 @@
                                         %strong.font-bold
                                             #{userInfo.name}
                                     %span.text-muted.text-xs.block
-                                        超级管理员
+                                        - if userInfo.type == 2
+                                            #{lang.adminIndex.teacher}
+                                        - elseif userInfo.type == 3
+                                            #{lang.adminIndex.docter}
+                                        - elseif userInfo.type == 4
+                                            #{lang.adminIndex.market}
+                                        - elseif userInfo.type == 5
+                                            #{lang.adminIndex.executive}
+                                        - elseif userInfo.type == 6
+                                            #{lang.adminIndex.principal}
+                                        - elseif userInfo.type == 7
+                                            #{lang.adminIndex.admin}
                                         %b.caret
 
                                 %ul.dropdown-menu.animated.fadeInRight.m-t-xs
                                     -# %li
                                     -#     %a.J_menuItem(href="form_avatar") 修改头像
                                     %li
-                                        %a.J_menuItem(href="form_avatar") 修改个人信息
+                                        %a.J_menuItem(href="form_avatar") #{lang.adminIndex.change_info}
 
                                     %li.divider
                                     %li
-                                        %a(href="/user/logout") 安全退出
+                                        %a(href="/user/logout") #{lang.adminIndex.logout}
 
                             .logo-element A+
 
                         %li
                             %a.J_menuItem(href="home/index")
                                 %i.fa.fa-home
-                                %span.nav-label 主页
-                        %li
-                            %a(href="#")
-                                %i.fa.fa-users
-                                %span.nav-label 家长管理
-                                %span.fa.arrow
-                            %ul.nav.nav-second-level
-                                %li
-                                    %a.J_menuItem(href="xxx1" data-index="1") 绑定新家长
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 管理家长
-                        %li
-                            %a(href="#")
-                                %i.fa.fa-user
-                                %span.nav-label 学校员工管理
-                                %span.fa.arrow
-                            %ul.nav.nav-second-level
-                                %li
-                                    %a.J_menuItem(href="xxx1" data-index="1") 经理管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 校长管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 行政管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 生活老师管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 特色老师管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 校医管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 市场部管理
-                        
-                        %li
-                            %a(href="#")
-                                %i.fa.fa-bookmark
-                                %span.nav-label 学校、班级管理
-                                %span.fa.arrow
-                            %ul.nav.nav-second-level
-                                %li
-                                    %a.J_menuItem(href="xxx1" data-index="1") 学生档案管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 考勤记录
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 行政管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 生活老师管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 特色老师管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 校医管理
-                                %li
-                                    %a.J_menuItem(href="xxx2" data-index="2") 市场部管理
-                        %li
-                            %a(href="#")
-                                %i.fa.fa-internet-explorer
-                                %span.nav-label 学生管理
-                                %span.fa.arrow
-                            %ul.nav.nav-second-level
-                                %li
-                                    %a.J_menuItem(href="xxx1" data-index="1") 学生每日点评
-                                %li
-                                    %a.J_menuItem(href="xxx1" data-index="1") 学生账号管理
-                                %li
-                                    %a.J_menuItem(href="xxx1" data-index="1") 学生体检数据管理
-                        %li
-                            %a.J_menuItem(href="i18n")
-                                %i.fa.fa-graduation-cap
-                                %span.nav-label 学生出勤管理
-                        %li
-                            %a.J_menuItem(href="i18n")
-                                %i.fa.fa-book
-                                %span.nav-label 课程管理
-                        %li
-                            %a.J_menuItem(href="i18n")
-                                %i.fa.fa-beer
-                                %span.nav-label 菜单管理
-                        %li
-                            %a.J_menuItem(href="i18n")
-                                %i.fa.fa-tags
-                                %span.nav-label 学校通知管理
-                        %li
-                            %a(href="#")
-                                %i.fa.fa-tag
-                                %span.nav-label 在线报名
-                                %span.fa.arrow
-                            %ul.nav.nav-second-level
-                                %li
-                                    %a.J_menuItem(href="recruit/news" data-index="1") 发布招生考试信息
-                                %li
-                                    %a.J_menuItem(href="recruit/lists" data-index="1") 查看招生考试信息
-                                %li
-                                    %a.J_menuItem(href="recruit/slists" data-index="1") 查看报名记录
-
-                        %li
-                            %a.J_menuItem(href="i18n")
-                                %i.fa.fa-internet-explorer
-                                %span.nav-label 国际化设置
-                        %li
-                            %a.J_menuItem(href="i18n")
-                                %i.fa.fa-user-secret
-                                %span.nav-label 权限设置
+                                %span.nav-label = lang.adminIndex.homepage
+                        - for k,t in menu
+                            %li
+                                %a.J_menuItem(href="#{t.href}" data-index="#{t.id}")
+                                    - if t.fa_ico
+                                        %i(class="fa fa-#{t.fa_ico}")
+                                    %span.nav-label = t.name
+                                    - if t.list
+                                        %span.fa.arrow
+                                - if t.list
+                                    %ul.nav.nav-second-level
+                                        - for k,m in t.list
+                                            %li
+                                                %a.J_menuItem(href="#{m.href}" data-index="#{m.id}")
+                                                    - if m.fa_ico
+                                                        %i(class="fa fa-#{m.fa_ico}")
+                                                    %span.nav-label = m.name
                         %li.hidden.gotoTag
                             %a.J_menuItem(href="#")
                                 %span.nav-label
@@ -190,14 +117,14 @@
                                 %i.fa.fa-bars
                             %form.navbar-form-custom(role="search" method="post" action="/search_results")
                                 %div.form-group
-                                    %input.form-control(type="text" placeholder="请输入您需要查找的内容 …" name="top-search" id="top-search")
+                                    -# %input.form-control(type="text" placeholder="请输入您需要查找的内容 …" name="top-search" id="top-search")
 
                         %ul.nav.navbar-top-links.navbar-right
                             
                             %li.dropdown.hidden-xs
-                                %a.right-sidebar-toggle(aria-expanded="false")
-                                    %i.fa.fa-tasks
-                                    主题
+                                -# %a.right-sidebar-toggle(aria-expanded="false")
+                                -#     %i.fa.fa-tasks
+                                -#     主题
 
                 .row.content-tabs
                     %button.roll-nav.roll-left.J_tabLeft
@@ -205,28 +132,28 @@
 
                     %nav.page-tabs.J_menuTabs
                         .page-tabs-content
-                            %a.active.J_menuTab(href="javascript:;" data-id="home/index") 主页
+                            %a.active.J_menuTab(href="javascript:;" data-id="home/index") = lang.adminIndex.homepage
 
                     %button.roll-nav.roll-right.J_tabRight
                         %i.fa.fa-forward
 
                     .btn-group.roll-nav.roll-right
                         %button.dropdown.J_tabClose(data-toggle="dropdown")
-                            关闭操作
+                            = lang.adminIndex.operation
                             %span.caret
 
                         %ul.dropdown-menu.dropdown-menu-right(role="menu")
                             %li.J_tabShowActive
-                                %a 定位当前选项卡
+                                %a #{lang.adminIndex.locate}
                             %li.divider
                             %li.J_tabCloseAll
-                                %a 关闭全部选项卡
+                                %a #{lang.adminIndex.closeAll}
                             %li.J_tabCloseOther
-                                %a 关闭其他选项卡
+                                %a #{lang.adminIndex.closeOthers}
 
                     %a.roll-nav.roll-right.J_tabExit(href="/user/logout")
                         %i.fa.fa-sign-out
-                        退出
+                        = lang.adminIndex.logout
                 #content-main.row.J_mainContent
                     %iframe.J_iframe(name="iframe0" width="100%" height="100%" src="home/index" frameborder="0" data-id="home/index" seamless)
                 .footer
@@ -292,8 +219,7 @@
                                 .setings-item.yellow-skin.nb
                                     %span.skin-name
                                         %a.s-skin-3(href="#") 黄色/紫色主题
-            /右侧边栏结束-->
-
+            / 右侧边栏结束
     %script(src="/js/jquery.min.js?v=2.1.4")
     %script(src="/js/bootstrap.min.js?v=3.3.6")
     %script(src="/js/plugins/metisMenu/jquery.metisMenu.js")
