@@ -1,0 +1,68 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                .ibox.float-e-margins
+                    
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(){
+            var getList = function(page){
+                page = page || 1;
+                $('.sk-spinner').removeClass('fadeOutUp');
+                curl('/school/lists',{page:page},function(d){
+                    $('.sk-spinner').addClass('fadeOutUp');
+                    var body = $('<div>').addClass('ibox-content text-center animated fadeInUp'),
+                        head_tr = $('<tr>'),tbody = $('<tbody>'),
+                        table = $('<div>').addClass('table-responsive').append(
+                            $('<table>').addClass('table table-striped').append(
+                                $('<thead>').append(head_tr)
+                            ).append(tbody)
+                        ).appendTo(body);
+                        
+                    for(e in d.thead){
+                        var r = $('<th>');
+                        d.thead[e].class && r.addClass(d.thead[e].class);
+                        if(e == '_opt')r.text('#{lang.adminIndex.option}');
+                        else r.text(e);
+                        r.appendTo(head_tr);
+                    }
+
+                    for(e in d.list){
+                        var tr = $('<tr>');
+                        for(a in d.tbody){
+                            var td = $('<td>');
+                            if(a == '_opt'){
+                                td.append('<a class="data-upd"><i class="fa fa-pencil text-navy"></i> #{lang.adminIndex.update} </a><a class="data-del"><i class="fa fa-close text-danger"></i> #{lang.adminIndex.delete} </a>');
+                            }else{
+                                d.tbody[a].class && td.addClass(d.tbody[a].class);
+                                td.text(d.list[e][a]);
+                            }
+                            td.appendTo(tr);
+                        }
+                        tr.appendTo(tbody);
+                    }
+
+
+                    body.appendTo('.ibox');
+                    
+                })
+
+            };
+            
+            getList()
+        })
+        

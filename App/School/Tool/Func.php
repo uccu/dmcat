@@ -1,7 +1,7 @@
 <?php
 namespace App\School\Tool;
 use Config;
-use AJAX;
+use App\School\Tool\AJAX;
 
 class Func{
     /**
@@ -101,20 +101,22 @@ class Func{
 
     
 
-
+    /* 密码安全性验证 */
     static function check_password($password){
 
         !$password && AJAX::error('密码为空');
-
         preg_match('#^\d+$#',$password) && AJAX::error('密码需要英文字母+数字组成');
-
         preg_match('#^[a-z]+$#i',$password) && AJAX::error('密码需要英文字母+数字组成');
-
         return true;
-
     }
 
+    public static function getInstance(){
+        static $object;
+		if(empty($object)) $object = new self();
+		return $object;
+    }
 
+    /* 上传图片 */
     static function uploadFiles($name = null){
 
 
@@ -143,23 +145,13 @@ class Func{
         return $name?$paths[$name]:$paths;
 
     }
-
-
-    public static function getInstance(){
-        static $object;
-		if(empty($object)) $object = new self();
-		return $object;
-    }
-
-
-    function uploadPic($tmp_name){
+    /* 处理上传图片 */
+    function uploadPic($tmp_name,$type = 'timeline'){
 
         if(!$tmp_name)AJAX::error('上传失败,无法获取缓存路径');
-
-
-        
         $arr = getimagesize($tmp_name);
 
+        /* 判断图片格式 */
         switch($arr[2]){
             case 3:
                 $img = imagecreatefrompng($tmp_name);
@@ -176,17 +168,28 @@ class Func{
                 break;
         }
 
-        
-
-        $md5 = md5_file($tmp_name);
-        $folder = substr($md5,0,2);
-
         $picRoot = PUBLIC_ROOT.'pic';
-        if(!is_dir($picRoot))mkdir($picRoot);
 
-        $folderRoot = $picRoot.'/'.$folder;
-        if(!is_dir($folderRoot))mkdir($folderRoot);
-        $folderRoot .= '/';
+        if($type == 'md5'){
+
+            $md5 = md5_file($tmp_name);
+            $folder = substr($md5,0,2);
+            $folderRoot = $picRoot.'/'.$folder;
+            if(!is_dir($folderRoot))
+                !mkdir($folderRoot,0,true) && AJAX::error('文件夹权限不足，无法创建文件！');
+            $folderRoot .= '/';
+            $src = $folderRoot.$md5.'.jpg';
+            $path = $folder.'/'.$md5.'.jpg';
+        }else{
+
+            $folder = DATE_TODAY;
+            $folderRoot = $picRoot.'/'.$folder;
+            if(!is_dir($folderRoot))
+                !mkdir($folderRoot,0,true) && AJAX::error('文件夹权限不足，无法创建文件！');
+            $folderRoot .= '/';
+            $src = $folderRoot.TIME_NOW.'.jpg';
+            $path = $folder.'/'.TIME_NOW.'.jpg';
+        }
 
         $width = $arr[0];
         $height = $arr[1];
@@ -195,15 +198,15 @@ class Func{
         imagefill($image, 0, 0, $color);
         imagecopyresampled($image, $img,0,0,0,0,$width,$height,$width,$height);
 
-        $src = $folderRoot.$md5.'.jpg';
+        
         imagejpeg($image,$src,75);
         imagedestroy($image);
 
-        return $path = $folder.'/'.$md5.'.jpg';
+        return $path;
 
     }
 
-
+    /* 数字前增加0 */
     public static function add_zero($number,$total){
 
         $string = strval($number);
@@ -224,24 +227,24 @@ class Func{
 
 
 
-    
+    /* 判断是否通过ssl访问 */
     public static function is_SSL(){  
         return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)  
         || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0; 
     }  
 
+    /* 返回全图片网址 */
     public static function fullPicAddr($path){
 
         return self::fullAddr('pic/'.$path);
-
     }
+    /* 返回全网址 */
     public static function fullAddr($path){
 
         return (self::is_SSL()?'https://':'http://').$_SERVER['HTTP_HOST'].'/'.$path;
-
     }
 
-
+    /* 模拟curl */
     public static function curl($url,$data = []){
 
         $ch = curl_init();
@@ -264,5 +267,10 @@ class Func{
     }
 
 
+    public static function lang_change($name){
+
+
+
+    }
     
 }
