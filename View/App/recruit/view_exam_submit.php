@@ -26,7 +26,7 @@
             <li>孩子体重（kg）<input type="number" name="weight"></li>
             <li>孩子年龄（周岁）<input type="number" name="age"></li>
             <li>电话<input type="text" style="width: 5.2rem;" name="phone"></li>
-            <li style="height: 1.4rem;"> <span>地址</span><textarea name="地址" name="address"></textarea></li>
+            <li style="height: 1.4rem;"> <span>地址</span><textarea name="address"></textarea></li>
         </ul>
         <a href="#">提交并支付500元报名费用</a>
     </form>
