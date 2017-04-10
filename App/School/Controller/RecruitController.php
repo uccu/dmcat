@@ -105,7 +105,11 @@ class RecruitController extends Controller{
 
     function post(RecruitStudentsModel $model){
 
+        $wc_openid = Request::getInstance()->cookie('wc_openid','');
+        !$wc_openid && header('Location:/wc/roll?state=recruit');
+
         $data = Request::getInstance()->post(['parent_name','parent_name_en','student_name','student_name_en','address','age','phone','weight','height']);
+        $data['openid'] = $wc_openid;
         $data['update_time'] = $data['create_time'] = TIME_NOW;
         
         !$model->set($data)->add()->getStatus() && AJAX::error_i18n('save_failed');
@@ -183,7 +187,7 @@ class RecruitController extends Controller{
     function view_exam_submit(){
 
         $wc_openid = Request::getInstance()->cookie('wc_openid','');
-        // !$wc_openid && header('Location:/wc/roll?state=recruit');
+        !$wc_openid && header('Location:/wc/roll?state=recruit');
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
