@@ -24,7 +24,7 @@
     </p>
 
     <p>报名费用：<em>500元</em></p>
-    <a href="view_exam_submit">填写报名资料</a>
+    <a href="view_exam_submit?id=<?php echo $info->id;?>">填写报名资料</a>
 </div>
 
 <script src="js/main.js"></script>
