@@ -40,7 +40,9 @@
         $('[name="recruit_id"]').val(id);
         var data = $('form').serializeArray();
         for(v in data){
-            if(!data[v].value)alert('请填写完整！');
+            if(!data[v].value){
+                alert('请填写完整！');return
+            }
         }
         
         $.post('/recruit/post',data,function(d){
