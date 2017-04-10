@@ -89,6 +89,7 @@ body{
     font-size: 0.24rem;
 }
 .footer a{
+    position: fixed;
     margin:1rem 0.2rem 1rem 0.2rem;
     width:6rem;
     display: block;
@@ -99,7 +100,6 @@ body{
     font-size: 0.3rem;
     background: #1b2b69;
     border-radius: 3px;
-    position: absolute;
-    top:9rem;
+    top: 9.5rem;
 
 }

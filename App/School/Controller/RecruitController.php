@@ -166,7 +166,7 @@ class RecruitController extends Controller{
     function view_exam_list(RecruitModel $model){
 
         $wc_openid = Request::getInstance()->cookie('wc_openid','');
-        !$wc_openid && header('Location:/wc/roll?state=recruit');
+        // !$wc_openid && header('Location:/wc/roll?state=recruit');
         $list = $model->selectExcept('comment')->where(['status'=>1])->select('*',$name)->order('date','time')->get()->toArray();
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';

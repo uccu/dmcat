@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/public.css">
 </head>
-<body>
+<body style="padding-bottom: 50px;">
 <!--<div class="header">-->
     <!--<em></em>-->
     <!--<span>在线报名</span>-->
