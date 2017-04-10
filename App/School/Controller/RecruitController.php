@@ -108,7 +108,7 @@ class RecruitController extends Controller{
         $wc_openid = Request::getInstance()->cookie('wc_openid','');
         !$wc_openid && header('Location:/wc/roll?state=recruit');
 
-        $data = Request::getInstance()->post(['parent_name','parent_name_en','student_name','student_name_en','address','age','phone','weight','height']);
+        $data = Request::getInstance()->post(['parent_name','parent_name_en','student_name','student_name_en','address','age','phone','weight','height','recruit_id']);
         $data['openid'] = $wc_openid;
         $data['update_time'] = $data['create_time'] = TIME_NOW;
         

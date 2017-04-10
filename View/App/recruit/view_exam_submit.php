@@ -16,7 +16,7 @@
 <!--</div>-->
 <div class="zl-main">
     <form>
-    <input type="hidden" name="id">
+    <input type="hidden" name="recruit_id">
         <ul>
             <li>家长姓名（中文）<input type="text" name="parent_name"></li>
             <li>家长姓名（英文）<input type="text" name="parent_name_en"></li>
@@ -37,7 +37,7 @@
 <script>
     $('a').bind('click',function(){
         var p = new URL(location),id = p.searchParams.get('id');
-        $('[name="id"]').val(id);
+        $('[name="recruit_id"]').val(id);
         var data = $('form').serializeArray();
         for(v in data){
             if(!data[v].value)alert('请填写完整！');
