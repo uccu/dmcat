@@ -5,7 +5,7 @@
     <title>在线报名</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/public.css">
+    <link rel="stylesheet" href="css/public.css?1">
 </head>
 <body style="padding-bottom: 50px;">
 <!--<div class="header">-->

@@ -88,18 +88,21 @@ body{
     color: #6f6f6f;
     font-size: 0.24rem;
 }
-.footer a{
+.footer{
     position: fixed;
-    margin:1rem 0.2rem 1rem 0.2rem;
-    width:6rem;
+    bottom: 0.2rem;
+    text-align: center;
+    width: 100%;
+}
+.footer a{
+    margin: auto;
+    width: 6rem;
     display: block;
-    height:0.6rem;
     line-height: 0.6rem;
     text-align: center;
     color: #ffffff;
     font-size: 0.3rem;
     background: #1b2b69;
     border-radius: 3px;
-    top: 9.5rem;
 
 }
