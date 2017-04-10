@@ -40,7 +40,7 @@ class SchoolController extends Controller{
             'name_en'=>['class'=>'tc'],
             '_opt'=>['class'=>'tc'],
         ];
-        
+        $out['lang'] = $this->lang->language;
 
         $list = $model->get()->toArray();
 
