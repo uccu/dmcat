@@ -6,63 +6,54 @@
     .wrapper.wrapper-content
         .row
             .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        %button.btn.btn-primary.btn-outline.newOne(data-toggle="button" type="button" aria-pressed="true") new
                 .sk-spinner.sk-spinner-wave.animated
                     .sk-rect1
                     .sk-rect2
                     .sk-rect3
                     .sk-rect4
                     .sk-rect5
-                .ibox.float-e-margins
-                    
+                
+                .ibox.ibox2.float-e-margins
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.school.school_name}
+                            .col-sm-9
+                                %input.form-control(name="name")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.school.school_name_en}
+                            .col-sm-9
+                                %input.form-control(name="name_en")
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Save
+
                         
 
 
 - block otherScript
     :javascript
         $(function(){
-            var getList = function(page){
-                page = page || 1;
-                $('.sk-spinner').removeClass('fadeOutUp');
-                curl('/school/lists',{page:page},function(d){
-                    $('.sk-spinner').addClass('fadeOutUp');
-                    var body = $('<div>').addClass('ibox-content text-center animated fadeInUp'),
-                        head_tr = $('<tr>'),tbody = $('<tbody>'),
-                        table = $('<div>').addClass('table-responsive').append(
-                            $('<table>').addClass('table table-striped').append(
-                                $('<thead>').append(head_tr)
-                            ).append(tbody)
-                        ).appendTo(body);
-                        
-                    for(e in d.thead){
-                        var r = $('<th>');
-                        d.thead[e].class && r.addClass(d.thead[e].class);
-                        if(e == '_opt')r.text('#{lang.adminIndex.option}');
-                        else r.text(e);
-                        r.appendTo(head_tr);
-                    }
-
-                    for(e in d.list){
-                        var tr = $('<tr>');
-                        for(a in d.tbody){
-                            var td = $('<td>');
-                            if(a == '_opt'){
-                                td.append('<a class="data-upd"><i class="fa fa-pencil text-navy"></i> #{lang.adminIndex.update} </a><a class="data-del"><i class="fa fa-close text-danger"></i> #{lang.adminIndex.delete} </a>');
-                            }else{
-                                d.tbody[a].class && td.addClass(d.tbody[a].class);
-                                td.text(d.list[e][a]);
-                            }
-                            td.appendTo(tr);
-                        }
-                        tr.appendTo(tbody);
-                    }
-
-
-                    body.appendTo('.ibox');
-                    
-                })
-
-            };
-            
-            getList()
+            getList('/school/lists',{page:1})
         })
+        
         

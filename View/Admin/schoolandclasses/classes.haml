@@ -6,63 +6,70 @@
     .wrapper.wrapper-content
         .row
             .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        .row
+                            .col-sm-1
+                                %button.btn.btn-primary.btn-outline.newOne(data-toggle="button" type="button" aria-pressed="true") new
+                            .col-sm-2
+                                %select.form-control.m-b.schoolChange
+                                    %option(value="0") #{lang.adminIndex.all}
                 .sk-spinner.sk-spinner-wave.animated
                     .sk-rect1
                     .sk-rect2
                     .sk-rect3
                     .sk-rect4
                     .sk-rect5
-                .ibox.float-e-margins
-                    
+                
+                .ibox.ibox2.float-e-margins
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.classes.class_name}
+                            .col-sm-9
+                                %input.form-control(name="name")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.classes.class_name_en}
+                            .col-sm-9
+                                %input.form-control(name="name_en")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.classes.school_id}
+                            .col-sm-3
+                                %input.form-control(type="number" name="school_id")
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Save
+
                         
 
 
 - block otherScript
     :javascript
         $(function(){
-            var getList = function(page){
-                page = page || 1;
-                $('.sk-spinner').removeClass('fadeOutUp');
-                curl('/classes/lists',{page:page},function(d){
-                    $('.sk-spinner').addClass('fadeOutUp');
-                    var body = $('<div>').addClass('ibox-content text-center animated fadeInUp'),
-                        head_tr = $('<tr>'),tbody = $('<tbody>'),
-                        table = $('<div>').addClass('table-responsive').append(
-                            $('<table>').addClass('table table-striped').append(
-                                $('<thead>').append(head_tr)
-                            ).append(tbody)
-                        ).appendTo(body);
-                        
-                    for(e in d.thead){
-                        console.log(e);
-                        var r = $('<th>');
-                        d.thead[e].class && r.addClass(d.thead[e].class);
-                        r.text(e);
-                        r.appendTo(head_tr);
-                    }
-
-                    for(e in d.list){
-                        var tr = $('<tr>');
-                        for(a in d.tbody){
-                            var td = $('<td>');
-                            if(a == '_opt'){
-                                td.append('<a class="data-upd"><i class="fa fa-pencil text-navy"></i> 修改 </a><a class="data-del"><i class="fa fa-close text-danger"></i> 删除 </a>');
-                            }else{
-                                d.tbody[a].class && td.addClass(d.tbody[a].class);
-                                td.text(d.list[e][a]);
-                            }
-                            td.appendTo(tr);
-                        }
-                        tr.appendTo(tbody);
-                    }
-
-
-                    body.appendTo('.ibox');
-                    
+            var school = 0;
+            curl('/school/lists',{},function(w){
+                for(d in w.list)$('.schoolChange').append(
+                    $('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id)
+                )
+                $('.schoolChange').change(function(){
+                    school = $(this).val();getList('/classes/lists',{school_id:school})
                 })
-
-            };
-            
-            getList()
+            });
+            getList('/classes/lists',{school_id:school})
         })
-        

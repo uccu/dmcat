@@ -84,6 +84,84 @@
                     that.click();
                 }
             }
+            $(function(){
+                var upd = function(d,id){
+                    $('#modal_new .sk-spinner').removeClass('fadeOutUp');
+                    $('#modal_new [name]').val('');
+                    curl(d.get,{id:id},function(g){
+                        $('#modal_new .sk-spinner').addClass('fadeOutUp');
+                        for(h in g.info){
+                            $('#modal_new').find('[name="'+h+'"]').val(g.info[h]);
+                        }
+                        $('#modal_new .save').unbind('click').bind('click',function(){
+                            curl(d.upd,$('#modal_new form').serialize(),function(b){
+                                curl_succ('success!');setTimeout('location.reload()',1000)
+                            })
+                        })
+                        $('#modal_new').modal();
+                    });
+                };
+                window.getList = function(listUrl,gdata){
+                    $('.ibox2').html('');
+                    $('.wrapper .sk-spinner').removeClass('fadeOutUp');
+                    curl(listUrl,gdata,function(d){
+                        $('.wrapper .sk-spinner').addClass('fadeOutUp');
+                        var body = $('<div>').addClass('ibox-content text-center animated fadeInUp'),
+                            head_tr = $('<tr>'),tbody = $('<tbody>'),
+                            table = $('<div>').addClass('table-responsive').append(
+                                $('<table>').addClass('table table-striped').append(
+                                    $('<thead>').append(head_tr)
+                                ).append(tbody)
+                            ).appendTo(body);
+                            
+                        for(e in d.thead){
+                            var r = $('<th>');
+                            d.thead[e].class && r.addClass(d.thead[e].class);
+                            if(e == '_opt')r.text('#{lang.adminIndex.option}');
+                            else r.text(e);
+                            r.appendTo(head_tr);
+                        }
+
+                        for(e in d.list){
+                            var tr = $('<tr>');
+                            for(a in d.tbody){
+                                var td = $('<td>').attr('data-id',d.list[e].id);
+                                if(a == '_opt'){
+                                    td.append('<a class="data-upd"><i class="fa fa-pencil text-navy"></i> #{lang.adminIndex.update} </a><a class="data-del"><i class="fa fa-close text-danger"></i> #{lang.adminIndex.delete} </a>');
+                                    td.find('.data-upd').click(function(){
+                                        $('h4.modal-title').text('#{lang.adminIndex.update}');
+                                        upd(d,$(this).parent().attr('data-id'))
+                                    });
+                                    td.find('.data-del').click(function(){
+                                        var id = $(this).parent().attr('data-id');
+                                        curl_check(function(){
+                                            curl(d.del,{id:id},function(){
+                                                curl_succ('success!');setTimeout('location.reload()',1000)
+                                            });
+                                        })
+                                    });
+                                }else{
+                                    d.tbody[a].class && td.addClass(d.tbody[a].class);
+                                    
+                                    td.text(d.list[e][a]);
+                                }
+                                td.appendTo(tr);
+                            }
+                            tr.appendTo(tbody);
+                        }
+                        var maxPage = parseInt( ( d.max - 1 )/d.limit ) + 1;
+                        if(maxPage>1)pagement(d.page,maxPage,function(p){
+                            gdata.page = p;
+                            getList(listUrl,gdata);
+                        }).appendTo(body);
+                        body.appendTo('.ibox2');
+                        $('.newOne').unbind('click').bind('click',function(){
+                            $('h4.modal-title').text('#{lang.adminIndex.create}');
+                            upd(d,0);
+                        })
+                    })
+                };
+            })
         - block otherScript
             / block otherScript
         

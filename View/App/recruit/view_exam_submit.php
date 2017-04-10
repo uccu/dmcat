@@ -15,20 +15,39 @@
     <!--<a href="#"></a>-->
 <!--</div>-->
 <div class="zl-main">
-    <ul>
-        <li>家长姓名（中文）<input type="text"></li>
-        <li>家长姓名（英文）<input type="text"></li>
-        <li>孩子姓名（中文）<input type="text"></li>
-        <li>孩子姓名（中文）<input type="text"></li>
-        <li>孩子身高（cm）<input type="text"></li>
-        <li>孩子体重（kg）<input type="text"></li>
-        <li>孩子年龄（周岁）<input type="text"></li>
-        <li>电话<input type="text" style="width: 5.2rem;"></li>
-        <li style="height: 1.4rem;"> <span>地址</span><textarea name="地址" id=""></textarea></li>
-    </ul>
-    <a href="#">提交并支付500元报名费用</a>
+    <form>
+        <ul>
+            <li>家长姓名（中文）<input type="text" name="parent_name"></li>
+            <li>家长姓名（英文）<input type="text" name="parent_name_en"></li>
+            <li>孩子姓名（中文）<input type="text" name="student_name"></li>
+            <li>孩子姓名（中文）<input type="text" name="student_name_en"></li>
+            <li>孩子身高（cm）<input type="number" name="height"></li>
+            <li>孩子体重（kg）<input type="number" name="weight"></li>
+            <li>孩子年龄（周岁）<input type="number" name="age"></li>
+            <li>电话<input type="text" style="width: 5.2rem;" name="phone"></li>
+            <li style="height: 1.4rem;"> <span>地址</span><textarea name="地址" name="address"></textarea></li>
+        </ul>
+        <a href="#">提交并支付500元报名费用</a>
+    </form>
 </div>
 
 <script src="js/main.js"></script>
+<script src="js/jquery-1.8.3.min.js"></script>
+<script>
+    $('a').bind('click',function(){
+        var data = $('form').serializeArray();
+        for(v in data){
+            if(!data[v].value)alert('请填写完整！');
+        }
+
+        $.post('/recruit/post',data,function(d){
+            if(d.code == 200)location.href='view_my_submit';
+            else alert(d.message);
+        },'json');
+    })
+    
+
+
+</script>
 </body>
 </html>

@@ -8,7 +8,7 @@ use View;
 use Request;
 use App\School\Middleware\L;
 
-class SchoolAndClassesController extends Controller{
+class StudentController extends Controller{
 
     function __construct(){
 
@@ -17,26 +17,17 @@ class SchoolAndClassesController extends Controller{
 
     }
 
-    /* 学校 */
-    function school(){
+    /* 学生档案 */
+    function record(){
 
         $lang = $this->L->i18n;
         $lang->adminIndex;
-        $lang->school;
+        $lang->student;
         View::addData(['lang'=>$lang]);
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
     }
     
-    /* 班级 */
-    function classes(){
-
-        $lang = $this->L->i18n;
-        $lang->adminIndex;
-        $lang->classes;
-        View::addData(['lang'=>$lang]);
-        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
-
-    }
+    
 
     
 

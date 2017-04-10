@@ -1,0 +1,134 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        .row
+                            .col-sm-1
+                                %button.btn.btn-primary.btn-outline.newOne(data-toggle="button" type="button" aria-pressed="true") new
+                            .col-sm-2
+                                %select.form-control.m-b.schoolChange
+                                    %option(value="0") #{lang.adminIndex.all}
+                            .col-sm-2
+                                %select.form-control.m-b.classesChange
+                                    %option(value="0") #{lang.adminIndex.all}
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                
+                .ibox.ibox2.float-e-margins
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.student_name}
+                            .col-sm-9
+                                %input.form-control(name="name")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.student_name_en}
+                            .col-sm-9
+                                %input.form-control(name="name_en")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.classes_id}
+                            .col-sm-3
+                                %input.form-control(type="number" name="classes_id")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.nationality}
+                            .col-sm-9
+                                %input.form-control(name="nationality")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.language}
+                            .col-sm-9
+                                %input.form-control(name="language")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.birth}
+                            .col-sm-9
+                                %input.form-control(type="date" name="birth")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.park_date}
+                            .col-sm-9
+                                %input.form-control(type="date" name="park_date")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.communicate_language}
+                            .col-sm-9
+                                %input.form-control(name="communicate_language")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.first_contact}
+                            .col-sm-9
+                                %input.form-control(name="first_contact")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.first_contact_relation}
+                            .col-sm-9
+                                %input.form-control(name="first_contact_relation")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.first_contact_wc}
+                            .col-sm-9
+                                %input.form-control(name="first_contact_wc")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.second_contact}
+                            .col-sm-9
+                                %input.form-control(name="second_contact")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.second_contact_phone}
+                            .col-sm-9
+                                %input.form-control(name="second_contact_phone")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.allergy}
+                            .col-sm-9
+                                %input.form-control(name="allergy")
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Save
+
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(){
+            var school = 0,classes = 0;
+            curl('/school/lists',{},function(w){
+                for(d in w.list)$('.schoolChange').append(
+                    $('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id)
+                )
+                $('.schoolChange').change(function(){
+                    classes = 0;$('.classesChange').val(0);
+                    school = $(this).val();
+                    $('.classesChange').unbind('change').html('').append($('<option>').text('#{lang.adminIndex.all}').attr('value',0));
+                    if(school != 0){
+                        curl('/classes/lists',{school_id:school},function(w){
+                            for(d in w.list)$('.classesChange').append($('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id));
+                            $('.classesChange').bind('change',function(){
+                                classes = $(this).val();getList('/student/lists',{school_id:school,classes_id:classes})
+                            })
+                        });
+                    }
+                    getList('/student/lists',{school_id:school});
+                })
+            });
+            
+            getList('/student/lists',{school_id:school,classes_id:classes});
+        })
