@@ -3,13 +3,13 @@
 namespace App\School\Controller;
 
 
-use App\School\Model\UserModel;
+use App\School\Model\I18nModel;
 use Controller;
 use Request;
 use App\School\Tool\AJAX;
 use App\School\Middleware\L;
 
-class StaffController extends Controller{
+class I18nController extends Controller{
 
 
     function __construct(){
@@ -19,33 +19,36 @@ class StaffController extends Controller{
 
     }
 
+    function types(I18nModel $model){
+
+        $out['list'] = $model->select('type')->get_field('type',null,1);
+
+        AJAX::success($out);
+    }
+
 
     /* 列表 */
-    function lists(UserModel $model,$type = 0,$search = '',$page = 1,$limit = 50){
+    function lists(I18nModel $model,$type = 0,$search = '',$page = 1,$limit = 50){
 
         // !$this->L->id && AJAX::error_i18n('not_login');
 
-        $out = ['get'=>'/staff/get','upd'=>'/staff/upd?type='.$type,'del'=>'/staff/del'];
+        $out = ['get'=>'/i18n/get','upd'=>'/i18n/upd','del'=>'/i18n/del'];
 
         $out['thead'] = [
             'ID'=>['class'=>'tc'],
-            ($this->lang->adminIndex->name)=>['class'=>'tc'],
-            ($this->lang->adminLogin->user)=>['class'=>'tc'],
-            ($this->lang->user->email)=>['class'=>'tc'],
-            ($this->lang->user->phone)=>['class'=>'tc'],
-            
-            
+            'type'=>['class'=>'tc'],
+            'name'=>['class'=>'tc'],
+            'cn'=>['class'=>'tc'],
+            'en'=>['class'=>'tc'],
             '_opt'=>['class'=>'tc'],
         ];
-        
-        $name = $this->lang->language == 'cn' ? 'name' : 'name_en';
 
         $out['tbody'] = [
             'id'=>['class'=>'tc'],
-            $name=>['class'=>'tc'],
-            'user_name'=>['class'=>'tc'],
-            'email'=>['class'=>'tc'],
-            'phone'=>['class'=>'tc'],
+            'type'=>['class'=>'tc'],
+            'name'=>['class'=>'tc'],
+            'cn'=>['class'=>'tc'],
+            'en'=>['class'=>'tc'],
             '_opt'=>['class'=>'tc'],
         ];
 
@@ -53,12 +56,14 @@ class StaffController extends Controller{
         
         $out['lang'] = $this->lang->language;
 
-        $where['type'] = $type;
-        if($search)$where[] = ['name LIKE %n OR name_en LIKE %n OR user_name LIKE %n OR phone LIKE %n OR email LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
+        $where = [];
+        if($search)$where[] = ['type LIKE %n OR name LIKE %n OR cn LIKE %n OR en LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
+        elseif($type)$where['type'] = $type;
+
 
         $list = $model->where($where)->page($page,$limit)->get()->toArray();
-
         $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
+
         $out['page'] = $page;
         $out['limit'] = $limit;
 
@@ -68,7 +73,7 @@ class StaffController extends Controller{
 
     }
 
-    function get($id,UserModel $model){
+    function get($id,I18nModel $model){
 
         !$id && AJAX::success(['info'=>[]]);
         $out['info'] = $info = $model->find($id);
@@ -79,14 +84,14 @@ class StaffController extends Controller{
 
     }
 
-    function upd($id,UserModel $model){
+    function upd($id,I18nModel $model){
 
-        $data = Request::getInstance()->request(['name','name_en','email','avatar','phone','user_name','type']);
+        $data = Request::getInstance()->request($model->field);
         unset ($data['id']);
 
         if(!$id){
             
-            $data['create_time'] = TIME_NOW;
+            
             $model->set($data)->add();
 
         }else{
@@ -100,7 +105,7 @@ class StaffController extends Controller{
     }
 
 
-    function del($id,UserModel $model){
+    function del($id,I18nModel $model){
 
         !$id && AJAX::error_i18n('param_error');
         $model->remove($id);

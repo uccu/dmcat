@@ -75,7 +75,7 @@ class StaffController extends Controller{
 
         $lang = $this->L->i18n;
         $lang->adminIndex;
-        $lang->staff;
+        $lang->user;
         View::addData(['lang'=>$lang]);
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
     }

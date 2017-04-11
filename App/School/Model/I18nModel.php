@@ -6,7 +6,7 @@ use Model;
 class I18nModel extends Model{
 
     public $table = 'i18n';
-
+    public $field;
 
     /* 获取列表 */
     public function getter($type,$language){

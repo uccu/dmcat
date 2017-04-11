@@ -11,11 +11,15 @@
                         .row
                             .col-sm-1
                                 %button.btn.btn-primary.btn-outline.newOne(data-toggle="button" type="button" aria-pressed="true") new
+                            .col-sm-2
+                                %select.form-control.m-b.typeChange
+                                    %option(value="0") #{lang.adminIndex.all}
                             .col-sm-3
                                 %form.input-group
                                     %input.form-control
                                     %span.input-group-btn
                                         %button.btn.btn-primary.search(type="submit") 搜索
+
                 .sk-spinner.sk-spinner-wave.animated
                     .sk-rect1
                     .sk-rect2
@@ -43,25 +47,22 @@
                     %form.form-horizontal.animated(method="post")
                         %input.form-control(type="hidden" name="id")
                         .form-group
-                            %label.col-sm-3.control-label #{lang.adminIndex.name}(cn)
+                            %label.col-sm-3.control-label type
+                            .col-sm-9
+                                %input.form-control(name="type")
+                        .form-group
+                            %label.col-sm-3.control-label name
                             .col-sm-9
                                 %input.form-control(name="name")
                         .form-group
-                            %label.col-sm-3.control-label #{lang.adminIndex.name}(en)
+                            %label.col-sm-3.control-label cn
                             .col-sm-9
-                                %input.form-control(name="name_en")
+                                %input.form-control(name="cn")
                         .form-group
-                            %label.col-sm-3.control-label #{lang.user.user_name}(en)
+                            %label.col-sm-3.control-label en
                             .col-sm-9
-                                %input.form-control(name="user_name")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.user.email}
-                            .col-sm-9
-                                %input.form-control(type="email" name="email")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.user.phone}
-                            .col-sm-9
-                                %input.form-control(name="phone")
+                                %input.form-control(name="en")
+                        
                         
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close
@@ -73,15 +74,24 @@
 - block otherScript
     :javascript
         $(function(){
-
+            var type = 0;
+            curl('/i18n/types',{},function(w){
+                for(d in w.list)$('.typeChange').append(
+                    $('<option>').text(w.list[d]).attr('value',w.list[d])
+                )
+                $('.typeChange').change(function(){
+                    type = $(this).val();flesh();
+                })
+            });
             $('.topw form').bind('submit',function(){
+                type = 0;$('.typeChange').val(0);
                 flesh($(this).find('input').val());
                 return false;
-            });
+            })
+            
             function flesh(s){
-                s = s||'';
-                getList('/staff/lists',{type:7,page:1,search:s})
+                s = s || '';
+                getList('/i18n/lists',{type:type,search:s})
             }
             flesh();
-            
         })
