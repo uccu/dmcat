@@ -117,7 +117,7 @@ class Func{
     }
 
     /* 上传图片 */
-    static function uploadFiles($name = null){
+    static function uploadFiles($name = null,$width = 0,$height = 0,$cut = 0){
 
 
         if(!$_FILES)return [];
@@ -130,7 +130,7 @@ class Func{
             $upn[] = $k;
             if(!$name || $k==$name){
                 $upa[] = $k;
-                $paths[$k] = $func->uploadPic($file['tmp_name']);
+                $paths[$k] = $func->uploadPic($file['tmp_name'],0,$width,$height,$cut);
             }
             
         }
@@ -140,13 +140,13 @@ class Func{
         $data['succ'] = ($name?$paths[$name]:$paths) ? 1 : 0;
         $data['ctime'] = TIME_NOW;
         
-        LogUploadModel::getInstance()->set($data)->add();
+        // LogUploadModel::getInstance()->set($data)->add();
 
         return $name?$paths[$name]:$paths;
 
     }
     /* 处理上传图片 */
-    function uploadPic($tmp_name,$type = 'timeline'){
+    function uploadPic($tmp_name,$type = 0,$width = 0,$height = 0,$cut = 0){
 
         if(!$tmp_name)AJAX::error('上传失败,无法获取缓存路径');
         $arr = getimagesize($tmp_name);
@@ -170,13 +170,13 @@ class Func{
 
         $picRoot = PUBLIC_ROOT.'pic';
 
-        if($type == 'md5'){
+        if($type === 'md5'){
 
             $md5 = md5_file($tmp_name);
             $folder = substr($md5,0,2);
             $folderRoot = $picRoot.'/'.$folder;
             if(!is_dir($folderRoot))
-                !mkdir($folderRoot,0,true) && AJAX::error('文件夹权限不足，无法创建文件！');
+                !mkdir($folderRoot,0777,true) && AJAX::error('文件夹权限不足，无法创建文件！');
             $folderRoot .= '/';
             $src = $folderRoot.$md5.'.jpg';
             $path = $folder.'/'.$md5.'.jpg';
@@ -185,18 +185,23 @@ class Func{
             $folder = DATE_TODAY;
             $folderRoot = $picRoot.'/'.$folder;
             if(!is_dir($folderRoot))
-                !mkdir($folderRoot,0,true) && AJAX::error('文件夹权限不足，无法创建文件！');
+                !mkdir($folderRoot,0777,true) && AJAX::error('文件夹权限不足，无法创建文件！');
             $folderRoot .= '/';
             $src = $folderRoot.TIME_NOW.'.jpg';
             $path = $folder.'/'.TIME_NOW.'.jpg';
         }
 
-        $width = $arr[0];
-        $height = $arr[1];
+        $width0 = $arr[0];
+        $height0 = $arr[1];
+        $width = $width?$width:$width0;
+        // var_dump($height);die();
+        $height = $height?$height:$height0;
+        
         $image = imagecreatetruecolor($width, $height);
         $color = imagecolorallocatealpha($image, 255, 255, 255,127);
         imagefill($image, 0, 0, $color);
-        imagecopyresampled($image, $img,0,0,0,0,$width,$height,$width,$height);
+        if($cut == 0)
+            imagecopyresampled($image, $img,0,0,0,0,$width,$height,$width0,$height0);
 
         
         imagejpeg($image,$src,75);

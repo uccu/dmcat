@@ -42,6 +42,10 @@
                         .sk-rect5
                     %form.form-horizontal.animated(method="post")
                         %input.form-control(type="hidden" name="id")
+                        .form-group.tc
+                            %img.img-circle.center-block.cp.avatar_img(data-name="avatar" src="/pic/noavatar.png" style="max-width:100px;max-height:100px")
+                            %input.form-control(type="file" style="display:none")
+                            %input.form-control(type="hidden" name="avatar")
                         .form-group
                             %label.col-sm-3.control-label #{lang.adminIndex.name}(cn)
                             .col-sm-9
@@ -62,6 +66,14 @@
                             %label.col-sm-3.control-label #{lang.user.phone}
                             .col-sm-9
                                 %input.form-control(name="phone")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.user.password}
+                            .col-sm-9
+                                %input.form-control(name="raw_password")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.school.school}
+                            .col-sm-9
+                                %select.form-control(name="school_id")
                         
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close
@@ -78,6 +90,16 @@
                 flesh($(this).find('input').val());
                 return false;
             });
+            curl('/school/lists',{},function(w){
+                for(d in w.list)$('select[name="school_id"]').append(
+                    $('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id)
+                )
+            })
+            
+            upPic('/staff/upPic','input[type="file"]','input[name="avatar"]','.avatar_img');
+            $('.avatar_img').bind('click',function(){
+                $('input[type="file"]').click();
+            })
             function flesh(s){
                 s = s||'';
                 getList('/staff/lists',{type:2,page:1,search:s})

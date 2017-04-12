@@ -42,7 +42,7 @@ class SchoolController extends Controller{
         ];
         $out['lang'] = $this->lang->language;
 
-        $list = $model->get()->toArray();
+        $list = $model->limit(1)->get()->toArray();
 
         $out['list']  = $list;
         AJAX::success($out);

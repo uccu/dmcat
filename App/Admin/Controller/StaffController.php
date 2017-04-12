@@ -33,6 +33,7 @@ class StaffController extends Controller{
 
         $lang = $this->L->i18n;
         $lang->adminIndex;
+        $lang->school;
         $lang->user;
         View::addData(['lang'=>$lang]);
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
@@ -43,6 +44,7 @@ class StaffController extends Controller{
 
         $lang = $this->L->i18n;
         $lang->adminIndex;
+        $lang->school;
         $lang->user;
         View::addData(['lang'=>$lang]);
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
@@ -53,6 +55,8 @@ class StaffController extends Controller{
 
         $lang = $this->L->i18n;
         $lang->adminIndex;
+        $lang->school;
+        $lang->classes;
         $lang->user;
         View::addData(['lang'=>$lang]);
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
@@ -64,6 +68,7 @@ class StaffController extends Controller{
 
         $lang = $this->L->i18n;
         $lang->adminIndex;
+        $lang->school;
         $lang->user;
         View::addData(['lang'=>$lang]);
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
@@ -75,9 +80,23 @@ class StaffController extends Controller{
 
         $lang = $this->L->i18n;
         $lang->adminIndex;
+        $lang->school;
         $lang->user;
         View::addData(['lang'=>$lang]);
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+    }
+
+    /* 家长 */
+    function parent(){
+
+        $lang = $this->L->i18n;
+        $lang->adminIndex;
+        $lang->school;
+        $lang->classes;
+        $lang->student;
+        $lang->user;
+        View::addData(['lang'=>$lang]);
+        View::hamlReader('parent/binding','Admin');
     }
 
 

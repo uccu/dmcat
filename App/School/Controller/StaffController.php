@@ -4,10 +4,14 @@ namespace App\School\Controller;
 
 
 use App\School\Model\UserModel;
+use App\School\Model\UserSchoolModel;
+use App\School\Model\UserClassesModel;
+use App\School\Model\UserStudentModel;
 use Controller;
 use Request;
 use App\School\Tool\AJAX;
 use App\School\Middleware\L;
+use App\School\Tool\Func;
 
 class StaffController extends Controller{
 
@@ -16,12 +20,13 @@ class StaffController extends Controller{
 
         $this->L = L::getInstance();
         $this->lang = $this->L->i18n;
+        $this->salt = $this->L->config->site_salt;
 
     }
 
 
     /* 列表 */
-    function lists(UserModel $model,$type = 0,$search = '',$page = 1,$limit = 50){
+    function lists(UserModel $model,$type = 0,$search = '',$page = 1,$school,$limit = 50){
 
         // !$this->L->id && AJAX::error_i18n('not_login');
 
@@ -33,7 +38,6 @@ class StaffController extends Controller{
             ($this->lang->adminLogin->user)=>['class'=>'tc'],
             ($this->lang->user->email)=>['class'=>'tc'],
             ($this->lang->user->phone)=>['class'=>'tc'],
-            
             
             '_opt'=>['class'=>'tc'],
         ];
@@ -56,6 +60,9 @@ class StaffController extends Controller{
         $where['type'] = $type;
         if($search)$where[] = ['name LIKE %n OR name_en LIKE %n OR user_name LIKE %n OR phone LIKE %n OR email LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
 
+        
+
+
         $list = $model->where($where)->page($page,$limit)->get()->toArray();
 
         $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
@@ -71,7 +78,7 @@ class StaffController extends Controller{
     function get($id,UserModel $model){
 
         !$id && AJAX::success(['info'=>[]]);
-        $out['info'] = $info = $model->find($id);
+        $out['info'] = $info = $model->select('*','school.school_id','classes.classes_id','student.student_id')->find($id);
         !$info && AJAX::error_i18n('no_data');
 
 
@@ -79,24 +86,68 @@ class StaffController extends Controller{
 
     }
 
-    function upd($id,UserModel $model){
+    function upd($id,UserModel $model,$school_id,$classes_id,$student_id){
 
-        $data = Request::getInstance()->request(['name','name_en','email','avatar','phone','user_name','type']);
+        $data = Request::getInstance()->request(['name','name_en','email','avatar','phone','user_name','type','raw_password','avatar']);
         unset ($data['id']);
 
         if(!$id){
-            
+
+            $data['password'] = sha1($this->salt.md5($data['raw_password']));
             $data['create_time'] = TIME_NOW;
-            $model->set($data)->add();
+            $id = $model->set($data)->add()->getStatus();
 
         }else{
+            $info = $model->find($id);
+            !$info && AJAX::error_i18n('no_user_exist');
+
+            if($data['raw_password'] != $info->raw_passowrd)$data['password'] = sha1($this->salt.md5($data['raw_password']));
+
             $model->set($data)->save($id);
+        }
+
+        if($school_id){
+            $mmm = UserSchoolModel::getInstance()->where(['user_id'=>$id])->find();
+            if($mmm){
+                $mmm->school_id = $school_id;
+                $mmm->save();
+            }else{
+                UserSchoolModel::getInstance()->set(['school_id'=>$school_id,'user_id'=>$id])->add();
+            }
+        }
+
+        if($classes_id){
+            $mmm = UserClassesModel::getInstance()->where(['user_id'=>$id])->find();
+            if($mmm){
+                $mmm->classes_id = $classes_id;
+                $mmm->save();
+            }else{
+                UserClassesModel::getInstance()->set(['classes_id'=>$classes_id,'user_id'=>$id])->add();
+            }
+        }
+
+        if($student_id){
+            $mmm = UserStudentModel::getInstance()->where(['user_id'=>$id])->find();
+            if($mmm){
+                $mmm->student_id = $student_id;
+                $mmm->save();
+            }else{
+                UserStudentModel::getInstance()->set(['student_id'=>$student_id,'user_id'=>$id])->add();
+            }
         }
         
         
 
         AJAX::success();
 
+    }
+
+    function upPic(){
+
+        $out['path'] = Func::uploadFiles('file',100,100);
+        $out['fpath'] = '/pic/'.$out['path'];
+        $out['apath'] = Func::fullPicAddr($out['path']);
+        AJAX::success($out);
     }
 
 
