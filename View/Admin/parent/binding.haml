@@ -70,12 +70,19 @@
                             %label.col-sm-3.control-label #{lang.user.password}
                             .col-sm-9
                                 %input.form-control(name="raw_password")
-                        .form-group
+                        .form-group.updateOnly
+                            :css
+                                .form-group.updateOnly kbd{
+                                    margin:4px;
+                                }.form-group.updateOnly kbd:hover{
+                                    background-color:red
+                                }
                             %label.col-sm-3.control-label #{lang.student.student_name}
-                            .col-sm-9
+                            .col-sm-9(style="padding-top:7px")
                                 
-                    .hr-line-dashed
-                    .form-horizontal
+                    
+                    .form-horizontal.updateOnly
+                        .hr-line-dashed
                         .form-group
                             %label.col-sm-3.control-label #{lang.school.school}
                             .col-sm-9
@@ -90,7 +97,7 @@
                                 %select.form-control(name="student_id")
                         .form-group
                             .col-sm-12.tr
-                                %button.btn.btn-success ADD
+                                %button.btn.btn-success.add ADD
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close
                     %button.btn.btn-primary.save(type="button") Save
@@ -133,6 +140,27 @@
                     }
                 })
             });
+            var addKdb = function(z,x){
+                $('.form-group.updateOnly .col-sm-9').append($('<kbd>').text(z).attr('data-student-id',x).addClass('cp t').bind('click',function(){
+                    var that = this;
+                    curl_check(function(){
+                        curl('/staff/delete_student',{id:$(that).attr('data-student-id')},function(){
+                            curl_succ('success!');$(that).remove();
+                        })
+                    })
+                }))
+            }
+            gr.updFunction = function(d){
+                $('.form-group.updateOnly .col-sm-9').html('');
+                for(w in d.student)addKdb(d.lang=='cn'?d.student[w].name:d.student[w].name_en,d.student[w].id)
+                
+            };
+            $('#modal_new .add').bind('click',function(){
+                if($('#modal_new [name="student_id"]').val())
+                    curl('/staff/add_student',{student_id:$('#modal_new [name="student_id"]').val(),id:$('#modal_new [name="id"]').val()},function(d){
+                        curl_succ('success!');addKdb(d.name,d.id)
+                    })
+            })
             upPic('/staff/upPic','input[type="file"]','input[name="avatar"]','.avatar_img');
             $('.avatar_img').bind('click',function(){
                 $('input[type="file"]').click();

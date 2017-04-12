@@ -7,6 +7,7 @@ use App\School\Model\UserModel;
 use App\School\Model\UserSchoolModel;
 use App\School\Model\UserClassesModel;
 use App\School\Model\UserStudentModel;
+use App\School\Model\StudentModel;
 use Controller;
 use Request;
 use App\School\Tool\AJAX;
@@ -78,15 +79,16 @@ class StaffController extends Controller{
     function get($id,UserModel $model){
 
         !$id && AJAX::success(['info'=>[]]);
-        $out['info'] = $info = $model->select('*','school.school_id','classes.classes_id','student.student_id')->find($id);
+        $out['info'] = $info = $model->select('*','school.school_id','classes.classes_id')->find($id);
+        $out['student'] = UserStudentModel::getInstance()->select('id','studentInfo.name','studentInfo.name_en')->where(['user_id'=>$id])->get()->toArray();
         !$info && AJAX::error_i18n('no_data');
-
+        $out['lang'] = $this->lang->language;
 
         AJAX::success($out);
 
     }
 
-    function upd($id,UserModel $model,$school_id,$classes_id,$student_id){
+    function upd($id,UserModel $model,$school_id,$classes_id){
 
         $data = Request::getInstance()->request(['name','name_en','email','avatar','phone','user_name','type','raw_password','avatar']);
         unset ($data['id']);
@@ -126,15 +128,6 @@ class StaffController extends Controller{
             }
         }
 
-        if($student_id){
-            $mmm = UserStudentModel::getInstance()->where(['user_id'=>$id])->find();
-            if($mmm){
-                $mmm->student_id = $student_id;
-                $mmm->save();
-            }else{
-                UserStudentModel::getInstance()->set(['student_id'=>$student_id,'user_id'=>$id])->add();
-            }
-        }
         
         
 
@@ -157,6 +150,22 @@ class StaffController extends Controller{
         $model->remove($id);
         AJAX::success();
 
+    }
+
+    function add_student($student_id,$id){
+
+        $model = UserStudentModel::getInstance();
+        $model->getStudent($student_id,$id) && AJAX::error_i18n('is_binding');
+        $out['id'] = $model->addStudent($student_id,$id)->getStatus();
+        $stu = StudentModel::getInstance()->find($student_id);
+        $out['name'] = $this->lang->language = 'cn' ? $stu->name : $stu->name_en;
+        AJAX::success($out);
+    }
+
+    function delete_student($id){
+        
+         UserStudentModel::getInstance()->remove($id);
+         AJAX::success();
     }
 
 

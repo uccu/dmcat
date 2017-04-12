@@ -1,8 +1,5 @@
-$(function(){
-    $('.historyGo').click(function(){
-        history.go(-1);
-    })
-})
+var gr = {};
+
 function curl(url,data,func,raw){
     var a = {
         url:url,
@@ -90,7 +87,8 @@ $(function(){
                 curl(d.upd,$('#modal_new form').serialize(),function(b){
                     curl_succ('success!');setTimeout('location.reload()',1000)
                 })
-            })
+            });
+            if(typeof gr.updFunction === 'function')gr.updFunction(g);
             $('#modal_new').modal();
         });
     };
@@ -121,6 +119,7 @@ $(function(){
                     if(a == '_opt'){
                         td.append('<a class="data-upd"><i class="fa fa-pencil text-navy"></i> '+lang.adminIndex.update+' </a><a class="data-del"><i class="fa fa-close text-danger"></i> '+lang.adminIndex.delete+' </a>');
                         td.find('.data-upd').click(function(){
+                            $('.updateOnly').removeClass('dn');
                             $('h4.modal-title').text(lang.adminIndex.update);
                             upd(d,$(this).parent().attr('data-id'))
                         });
@@ -148,6 +147,7 @@ $(function(){
             }).appendTo(body);
             body.appendTo('.ibox2');
             $('.newOne').unbind('click').bind('click',function(){
+                $('.updateOnly').addClass('dn');
                 $('h4.modal-title').text(lang.adminIndex.create);
                 upd(d,0);
             })
