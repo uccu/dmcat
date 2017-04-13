@@ -19,10 +19,12 @@
     <!--<a href="#"></a>-->
 <!--</div>-->
 <?php foreach($list as $s){?>
-<div class="bm">
-    <a href="view_exam_info?id=<?php echo $s->recruit_id;?>"><h1>您已报名《<?php echo $s->title;?>》</h1></a>
-    <p><em style="margin-right: 1.5rem;">家长姓名：<?php echo $s->parent_name;?></em> <em>孩子姓名：<?php echo $s->student_name;?></em></p>
-</div>
+<a href="view_exam_info?id=<?php echo $s->recruit_id;?>">
+    <div class="bm">
+        <e><h1>您已报名《<?php echo $s->title;?>》</h1></e>
+        <p><em style="margin-right: 1.5rem;">家长姓名：<?php echo $s->parent_name;?></em> <em>孩子姓名：<?php echo $s->student_name;?></em></p>
+    </div>
+</a>
 <?php }?>
 
 <script src="js/main.js"></script>

@@ -1,0 +1,102 @@
+- extends "base.haml"
+
+
+- block body
+    :css
+        .changeIt:hover{
+            background-color:#f0f0f0
+        }
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        .row
+                            .col-sm-2
+                                %select.form-control.m-b.schoolChange
+                                    %option(value="0") #{lang.adminIndex.all}
+
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                
+                .ibox.ibox2.float-e-margins
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post" onsubmit="return $('#modal_new .save').click(),false")
+                        %input.form-control(type="hidden" name="school_id")
+                        %input.form-control(type="hidden" name="week")
+                        %input.form-control(type="hidden" name="step")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.adminIndex.name}
+                            .col-sm-9
+                                %input.form-control(name="name")
+                        
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Save
+
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(){
+            var school = 0;
+            window.gr.getListAfter = function(d){
+                $('h4.modal-title').text(lang.adminIndex.update);
+                $('.changeIt').bind('click',function(){
+                    $('#modal_new .sk-spinner').removeClass('fadeOutUp');
+                    $('#modal_new [name]').val('');
+                    var school_id = school;
+                    var week = $(this).index();
+                    var step = $(this).parent().index() + 1;
+
+                    curl(d.get,{school_id:school_id,week:week,step:step},function(g){
+                        $('#modal_new .sk-spinner').addClass('fadeOutUp');
+                        for(h in g.info){
+                            $('#modal_new form').find('[name="'+h+'"]').val(g.info[h]).change();
+                        }
+                        $('#modal_new .save').unbind('click').bind('click',function(){
+                            curl(d.upd,$('#modal_new form').serialize(),function(b){
+                                curl_succ('success!');$('[data-dismiss="modal"]').click();setTimeout(flesh,1000)
+                            })
+                        });
+                        $('#modal_new').modal();
+                    });
+                })
+
+            }
+            
+            curl('/school/lists',{},function(w){
+                for(d in w.list)$('.schoolChange').append(
+                    $('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id)
+                )
+                $('.schoolChange').change(function(){
+                    school = $(this).val();
+                    flesh()
+                })
+            });
+            
+            function flesh(){
+                getList('/menu/lists',{school_id:school});
+            }
+            flesh()
+        })

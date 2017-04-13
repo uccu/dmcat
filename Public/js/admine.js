@@ -150,7 +150,8 @@ $(function(){
                 $('.updateOnly').addClass('dn');
                 $('h4.modal-title').text(lang.adminIndex.create);
                 upd(d,0);
-            })
+            });
+            if(typeof gr.getListAfter === 'function')gr.getListAfter(d);
         })
     };
     window.upPic = function(url,f,i,p){
