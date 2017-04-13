@@ -48,7 +48,9 @@ class WcController extends Controller{
 
         if(!$json)die('微信解析失败！');
 
-        if(!$json->openid)die('无法识别用户！');
+        if(!$json->openid){
+            var_dump($json);
+        }
 
         Response::getInstance()->cookie('wc_openid',$json->openid,0);
 

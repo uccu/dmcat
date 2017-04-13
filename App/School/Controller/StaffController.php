@@ -158,7 +158,7 @@ class StaffController extends Controller{
         $model->getStudent($student_id,$id) && AJAX::error_i18n('is_binding');
         $out['id'] = $model->addStudent($student_id,$id)->getStatus();
         $stu = StudentModel::getInstance()->find($student_id);
-        $out['name'] = $this->lang->language = 'cn' ? $stu->name : $stu->name_en;
+        $out['name'] = $this->lang->language == 'cn' ? $stu->name : $stu->name_en;
         AJAX::success($out);
     }
 
