@@ -168,6 +168,13 @@ class WcController extends Controller{
             
     }
 
+    function testprepay(){
+
+        $id = date('Ymdhis').Func::randWord(10,3);
+
+        include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
+    }
+
     
 
 
