@@ -132,7 +132,7 @@ class Api extends Controller{
         elseif(mb_substr($rns->rawName,0,1)== '【')$num = mb_stripos($rns->rawName,'】')+1;
 
         
-        if($rns->theme && match('/[\x80-\xff]/',$rns->theme->name)){
+        if($rns->theme && preg_match('/[\x80-\xff]/',$rns->theme->name)){
             
             if($num)$rns->urrname = mb_substr($rns->rawName,0,$num).'['.$rns->theme->name.']'.mb_substr($rns->rawName,$num);
             else $rns->urrname = '['.$rns->theme->name.']'.$rns->rawName;
