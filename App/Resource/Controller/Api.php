@@ -127,10 +127,22 @@ class Api extends Controller{
     function sort($name){
 
         $rns = new RNS($name);
+        $num = 0;
+        if(mb_substr($rns->rawName,0,1)== '[')$num = mb_stripos($rns->rawName,']')+1;
+        elseif(mb_substr($rns->rawName,0,1)== '【')$num = mb_stripos($rns->rawName,'】')+1;
 
-        echo json_encode($rns);
+        if($rns->theme){
+            if($num)$rns->urrname = mb_substr($rns->rawName,0,$num).'['.$rns->theme->name.']'.mb_substr($rns->rawName,$num);
+            else $rns->urrname = '['.$rns->theme->name.']'.$rns->rawName;
+        }else{
+            $rns->theme->name = $rns->rawName;
+        }
+        
+        AJAX::success($rns);
 
     }
+
+    
 
     function delete(Request $request,Resource $resource){
         $id = $request->request('id');
