@@ -18,7 +18,7 @@
     <!--<span>报名信息</span>-->
     <!--<a href="#"></a>-->
 <!--</div>-->
-<a href="testprepat">测试</a>
+<a href="testprepay">测试</a>
 <?php foreach($list as $s){?>
 <a href="view_exam_info?id=<?php echo $s->recruit_id;?>">
     <div class="bm">
