@@ -137,7 +137,7 @@ class Api extends Controller{
             if($num)$rns->urrname = mb_substr($rns->rawName,0,$num).'['.$rns->theme->name.']'.mb_substr($rns->rawName,$num);
             else $rns->urrname = '['.$rns->theme->name.']'.$rns->rawName;
         }else{
-            $rns->theme->name = $rns->rawName;
+            $rns->urrname = $rns->rawName;
         }
         
         AJAX::success($rns);
