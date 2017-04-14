@@ -18,17 +18,17 @@
     <form>
     <input type="hidden" name="recruit_id">
         <ul>
-            <li>家长姓名（中文）<input type="text" name="parent_name"></li>
-            <li>家长姓名（英文）<input type="text" name="parent_name_en"></li>
-            <li>孩子姓名（中文）<input type="text" name="student_name"></li>
-            <li>孩子姓名（中文）<input type="text" name="student_name_en"></li>
-            <li>孩子身高（cm）<input type="number" name="height"></li>
-            <li>孩子体重（kg）<input type="number" name="weight"></li>
-            <li>孩子年龄（周岁）<input type="number" name="age"></li>
-            <li>电话<input type="text" style="width: 5.2rem;" name="phone"></li>
-            <li style="height: 1.4rem;"> <span>地址</span><textarea name="address"></textarea></li>
+            <li><?php echo $this->lang->recruit->parent_name;?><input type="text" name="parent_name"></li>
+            <li><?php echo $this->lang->recruit->parent_name;?>(EN)<input type="text" name="parent_name_en"></li>
+            <li><?php echo $this->lang->recruit->student_name;?><input type="text" name="student_name"></li>
+            <li><?php echo $this->lang->recruit->student_name;?>(EN)<input type="text" name="student_name_en"></li>
+            <li><?php echo $this->lang->recruit->height;?>(CM)<input type="number" name="height"></li>
+            <li><?php echo $this->lang->recruit->weight;?>(KG)<input type="number" name="weight"></li>
+            <li><?php echo $this->lang->recruit->age;?><input type="number" name="age"></li>
+            <li><?php echo $this->lang->recruit->phone;?><input type="text" style="width: 5.2rem;" name="phone"></li>
+            <li style="height: 1.4rem;"> <span><?php echo $this->lang->recruit->address;?></span><textarea name="address"></textarea></li>
         </ul>
-        <a href="#">提交并支付500元报名费用</a>
+        <a href="#"><?php echo $this->lang->recruit->pay;?></a>
     </form>
 </div>
 
