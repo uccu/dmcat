@@ -17,6 +17,7 @@ function onBridgeReady(){
         for(var i in d.data){
             z += i + ':' + d.data[i] + "\n";
         }
+        alert(z);
         WeixinJSBridge.invoke(
             'getBrandWCPayRequest', d.data,
             function(res){     
