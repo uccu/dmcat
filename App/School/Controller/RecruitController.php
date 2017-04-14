@@ -119,7 +119,7 @@ class RecruitController extends Controller{
 
         
 
-        Wc::getInstance()->prepay($out_trade_no);
+        WcController::getInstance()->prepay($out_trade_no);
 
         AJAX::success();
 
