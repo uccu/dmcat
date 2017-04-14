@@ -26,7 +26,7 @@ class RecruitController extends Controller{
 
     function get($id,RecruitModel $model){
 
-        !$this->L->id && AJAX::error_i18n('not_login');
+        !$id && AJAX::success(['info'=>[]]);
 
         $recruit = $model->find($id);
         !$recruit && AJAX::error_i18n('no_data');
@@ -51,13 +51,42 @@ class RecruitController extends Controller{
 
     }
 
-    function lists($page = 1,$limit = 30,RecruitModel $model){
+    function lists_w($page = 1,$limit = 30,RecruitModel $model){
 
-        !$this->L->id && AJAX::error_i18n('not_login');
+        // !$this->L->id && AJAX::error_i18n('not_login');
+
+        $out = ['get'=>'/recruit/get','upd'=>'/recruit/change','del'=>'/recruit/del'];
+
+        $out['thead'] = [
+            'ID'=>['class'=>'tc'],
+            ($this->lang->recruit->title)=>['class'=>'tc'],
+            ($this->lang->recruit->date)=>['class'=>'tc'],
+            ($this->lang->recruit->number)=>['class'=>'tc'],
+            ($this->lang->recruit->status)=>['class'=>'tc'],
+
+            '_opt'=>['class'=>'tc'],
+        ];
+
+        $title = $this->lang->language == 'cn' ? 'title' : 'title_en';
         
-        $name = $this->L->i18n->language == 'cn' ? 'user.name' : 'user.name_en>name';
+        $out['tbody'] = [
+            'id'=>['class'=>'tc'],
+            $title=>['class'=>'tc'],
+            'date'=>['class'=>'tc'],
+            'number'=>['class'=>'tc'],
+            'status'=>['class'=>'tc','type'=>'checkbox'],
+            '_opt'=>['class'=>'tc'],
+        ];
 
-        $out['list'] = $model->page($page,$limit)->selectExcept('comment')->select('*',$name)->get()->toArray();
+
+        $out['lang'] = $this->lang->language;
+
+        $list = $model->page($page,$limit)->get()->toArray();
+        foreach($list as &$v){
+            $v->title = $this->lang->language == 'cn' ? $v->title : $v->title_en;
+        }
+
+        $out['list']  = $list;
         $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
         $out['page'] = $page;
         $out['limit'] = $limit;
@@ -67,22 +96,28 @@ class RecruitController extends Controller{
 
     function change($id,$status = null,RecruitModel $model,$title,$number,$address,$comment,$date){
 
-        !$this->L->id && AJAX::error_i18n('not_login');
+        if($id){
+            $recruit = $model->find($id);
+            !$recruit && AJAX::error_i18n('no_data');
 
-        $recruit = $model->find($id);
-        !$recruit && AJAX::error_i18n('no_data');
+            $data = Request::getInstance()->request($model->field);
 
-        $status !== null && $recruit->status = $status ? 1 : 0;
-        $title !== null && $recruit->title = $title;
-        $number !== null && $recruit->number = $number;
-        $time !== null && $recruit->time = $time;
-        $date !== null && $recruit->date = $date;
-        $address !== null && $recruit->address = $address;
-        $comment !== null && $recruit->comment = $comment;
+            $data['update_user'] = $this->L->id;
+            $data['update_time'] = TIME_NOW;
+            !$model->set($data)->save($id)->getStatus() && AJAX::error_i18n('save_failed');
 
-        $recruit->update_user = $this->L->id;
-        $recruit->update_time = TIME_NOW;
-        !$recruit->save()->getStatus() && AJAX::error_i18n('save_failed');
+        }else{
+            
+            $data['create_user'] = $data['update_user'] = $this->L->id;
+            $data['create_time'] = $data['update_time'] = TIME_NOW;
+            $data = Request::getInstance()->request($model->field);
+            unset($data['id']);
+            $data['number'] = $data['number']?$data['number']:'0';
+            $model->set($data)->add()->getStatus();
+
+        }
+
+        
 
         AJAX::success();
 
@@ -134,19 +169,7 @@ class RecruitController extends Controller{
     }
 
 
-    function slists($page = 1,$limit = 30,RecruitStudentsModel $model){
-
-        !$this->L->id && AJAX::error_i18n('not_login');
-
-        $pname = $this->L->i18n->language == 'cn' ? 'parent_name' : 'parent_name_en>parent_name';
-        $sname = $this->L->i18n->language == 'cn' ? 'student_name' : 'student_name_en>student_name';
-        $out['list'] = $model->page($page,$limit)->select('id',$sname,$pname,'phone','age','recruit_id','create_time')->get()->toArray();
-        $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
-        $out['page'] = $page;
-        $out['limit'] = $limit;
-        AJAX::success($out);
-
-    }
+    
 
     function slists_w(RecruitStudentsModel $model,$id,$ispaid,$page = 1,$limit = 30){
 
@@ -226,7 +249,7 @@ class RecruitController extends Controller{
 
         $wc_openid = Request::getInstance()->cookie('wc_openid','');
         !$wc_openid && header('Location:/wc/roll?state=recruit');
-        $list = $model->selectExcept('comment')->where(['status'=>1])->select('*',$name)->order('date','time')->get()->toArray();
+        $list = $model->selectExcept('comment','comment_en')->where(['status'=>1])->select('*',$name)->order('date','time')->get()->toArray();
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
@@ -246,7 +269,7 @@ class RecruitController extends Controller{
     function view_exam_submit(){
 
         $wc_openid = Request::getInstance()->cookie('wc_openid','');
-        !$wc_openid && header('Location:/wc/roll?state=recruit');
+        // !$wc_openid && header('Location:/wc/roll?state=recruit');
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
@@ -270,9 +293,5 @@ class RecruitController extends Controller{
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
-    function sumbit(){
-
-        include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
-    }
-
+    
 }

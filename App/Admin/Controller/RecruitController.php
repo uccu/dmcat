@@ -30,6 +30,15 @@ class RecruitController extends Controller{
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
 
     }
+    function lists_w(){
+
+        $lang = $this->L->i18n;
+        $lang->adminIndex;
+        $lang->recruit;
+        View::addData(['lang'=>$lang]);
+        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+
+    }
 
     /* 招生考试信息详情 */
     function info(){
@@ -38,20 +47,7 @@ class RecruitController extends Controller{
 
     }
 
-    /* 招生考试报名列表 */
-    function slists(){
-
-        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
-
-    }
-
-    /* 招生考试报名详情 */
-    function sinfo(){
-
-        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
-
-    }
-
+    
     function slists_w(){
 
         $lang = $this->L->i18n;

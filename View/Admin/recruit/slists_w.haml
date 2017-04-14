@@ -94,7 +94,7 @@
     :javascript
         $(function(){
             var id = 0,ispaid=0;
-            curl('/recruit/lists',{},function(w){
+            curl('/recruit/lists_w',{},function(w){
                 for(d in w.list)$('.idChange').append(
                     $('<option>').text(w.list[d].title).attr('value',w.list[d].id)
                 )

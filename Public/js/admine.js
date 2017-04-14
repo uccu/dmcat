@@ -85,7 +85,9 @@ $(function(){
             }
             $('#modal_new .save').unbind('click').bind('click',function(){
                 curl(d.upd,$('#modal_new form').serialize(),function(b){
-                    curl_succ('success!');setTimeout('location.reload()',1000)
+                    curl_succ('success!');
+                    if(typeof gr.saveAfter === 'function')gr.saveAfter(b);
+                    else setTimeout('location.reload()',1000)
                 })
             });
             if(typeof gr.updFunction === 'function')gr.updFunction(g);
@@ -133,8 +135,10 @@ $(function(){
                         });
                     }else{
                         d.tbody[a].class && td.addClass(d.tbody[a].class);
-                        
-                        td.text(d.list[e][a]);
+                        if(d.tbody[a].type === 'checkbox'){
+                            if(d.list[e][a] == '1')td.append($('<input>').addClass('i-checks').attr('type','checkbox').attr('checked','checked'));
+                            else td.append($('<input>').addClass('i-checks').attr('type','checkbox'));
+                        }else td.text(d.list[e][a]);
                     }
                     td.appendTo(tr);
                 }
@@ -151,6 +155,7 @@ $(function(){
                 $('h4.modal-title').text(lang.adminIndex.create);
                 upd(d,0);
             });
+            $('.i-checks').iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green"});
             if(typeof gr.getListAfter === 'function')gr.getListAfter(d);
         })
     };

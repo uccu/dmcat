@@ -16,7 +16,7 @@
 <!--</div>-->
 <div class="xx-main">
     <img src="img/xx.png" alt="">
-    <p>您还没有报名信息~</p>
+    <p><?php echo $this->lang->recruit->no_data;?></p>
 </div>
 <script src="js/main.js"></script>
 </body>

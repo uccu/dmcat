@@ -6,7 +6,7 @@ use Model;
 class RecruitModel extends Model{
 
     public $table = 'recruit';
-
+    public $field;
 
     public function user(){
 

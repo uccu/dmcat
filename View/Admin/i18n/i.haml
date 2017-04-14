@@ -74,7 +74,7 @@
 - block otherScript
     :javascript
         $(function(){
-            var type = 0;
+            var type = 0,sear = '';
             curl('/i18n/types',{},function(w){
                 for(d in w.list)$('.typeChange').append(
                     $('<option>').text(w.list[d]).attr('value',w.list[d])
@@ -85,13 +85,15 @@
             });
             $('.topw form').bind('submit',function(){
                 type = 0;$('.typeChange').val(0);
-                flesh($(this).find('input').val());
+                sear = $(this).find('input').val();
+                flesh();
                 return false;
             })
             
-            function flesh(s){
-                s = s || '';
-                getList('/i18n/lists',{type:type,search:s})
+            function flesh(){
+                $('[data-dismiss="modal"]').click();
+                getList('/i18n/lists',{type:type,search:sear})
             }
+            gr.saveAfter = flesh;
             flesh();
         })

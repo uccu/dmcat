@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>报名信息</title>
+    <title<?php echo $this->lang->recruit->look_message;?></title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/public.css">
@@ -21,8 +21,8 @@
 <?php foreach($list as $s){?>
 <a href="view_exam_info?id=<?php echo $s->recruit_id;?>">
     <div class="bm">
-        <e><h1>您已报名《<?php echo $s->title;?>》</h1></e>
-        <p><em style="margin-right: 1.5rem;">家长姓名：<?php echo $s->parent_name;?></em> <em>孩子姓名：<?php echo $s->student_name;?></em></p>
+        <e><h1><?php echo $this->lang->language=='cn'?$s->title:$s->title_en;?></h1></e>
+        <p><em style="margin-right: 1.5rem;"><?php echo $this->lang->recruit->parent_name;?>：<?php echo $this->lang->language=='cn'?$s->parent_name:$s->parent_name_en;?></em> <em><?php echo $this->lang->recruit->student_name;?>：<?php echo $this->lang->language=='cn'?$s->student_name:$s->student_name_en;?></em></p>
     </div>
 </a>
 <?php }?>
