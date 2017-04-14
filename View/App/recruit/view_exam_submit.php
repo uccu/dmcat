@@ -35,6 +35,7 @@
 <script src="js/main.js"></script>
 <script src="js/jquery-1.8.3.min.js"></script>
 <script>
+    var dataz = {};
     function onBridgeReady(d){
         WeixinJSBridge.invoke(
             'getBrandWCPayRequest', d,
@@ -71,7 +72,8 @@
         
         $.post('/recruit/post',data,function(d){
             if(d.code == 200){
-                onBridgeReady(d.data); 
+                dataz = data;
+                too(); 
             }
             else alert(d.message);
         },'json');

@@ -148,6 +148,9 @@ class WcController extends Controller{
 
         $prepay_id = $result->prepay_id.'';
 
+        $data['prepay_id'] = $prepay_id;
+        $data['prepay_time'] = TIME_NOW;
+        $data['pay_nonce_str'] = $nonce_str2;
 
         $data2['appId'] = $this->L->config->wc_appid;
         $data2['nonceStr'] = $nonce_str2;
@@ -160,6 +163,7 @@ class WcController extends Controller{
         $signStr .= 'key='.$this->L->config->wcpay_key;
         $data2['paySign'] = strtoupper ( md5 ( $signStr ) );
 
+        $id = PaymentModel::getInstance()->set($data)->add()->getStatus();
         AJAX::success($data2);
             
     }
