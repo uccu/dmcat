@@ -160,7 +160,7 @@ class WcController extends Controller{
 
         ksort($data2,SORT_STRING);
         foreach ( $data2 as $key => $val )$signStr .= trim ( $key ) . "=" . trim ( $val ) . "&";
-        $signStr .= 'key='.$this->L->config->wcpay_key;
+        $signStr .= 'key='.$this->L->config->wc_api;
         $data2['paySign'] = strtoupper ( md5 ( $signStr ) );
 
         $id = PaymentModel::getInstance()->set($data)->add()->getStatus();
