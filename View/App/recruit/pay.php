@@ -3,8 +3,9 @@
 <script src="/js/jquery.min.js"></script>
 </head>
 <body>
-
-
+<h1 style="text-align:center;padding-top:300px">
+Waiting...
+</h1>
 <script>
 
 function onBridgeReady(){

@@ -19,7 +19,7 @@ class RecruitController extends Controller{
     function __construct(){
 
         $this->L = L::getInstance();
-
+        $this->lang = $this->L->i18n;
         
 
     }
@@ -104,6 +104,8 @@ class RecruitController extends Controller{
 
     }
 
+    
+
     function post(RecruitStudentsModel $model){
 
         $wc_openid = Request::getInstance()->cookie('wc_openid','');
@@ -145,6 +147,60 @@ class RecruitController extends Controller{
         AJAX::success($out);
 
     }
+
+    function slists_w(RecruitStudentsModel $model,$id,$ispaid,$page = 1,$limit = 30){
+
+        // !$this->L->id && AJAX::error_i18n('not_login');
+
+        $out = ['get'=>'/recruit/sget','upd'=>'/recruit/schange','del'=>'/recruit/sdel'];
+
+        $out['thead'] = [
+            'ID'=>['class'=>'tc'],
+            ($this->lang->recruit->parent_name)=>['class'=>'tc'],
+            ($this->lang->recruit->student_name)=>['class'=>'tc'],
+            ($this->lang->recruit->phone)=>['class'=>'tc'],
+            ($this->lang->recruit->age)=>['class'=>'tc'],
+            ($this->lang->recruit->ispaid)=>['class'=>'tc'],
+            '_opt'=>['class'=>'tc'],
+        ];
+
+        $name = $this->lang->language == 'cn' ? 'parent_name' : 'parent_name_en';
+        $sname = $this->lang->language == 'cn' ? 'student_name' : 'student_name_en';
+        
+        $out['tbody'] = [
+            'id'=>['class'=>'tc'],
+            $name=>['class'=>'tc'],
+            $sname=>['class'=>'tc'],
+            'phone'=>['class'=>'tc'],
+            'age'=>['class'=>'tc'],
+            'ispaid'=>['class'=>'tc'],
+            '_opt'=>['class'=>'tc'],
+        ];
+
+
+        $out['lang'] = $this->lang->language;
+
+        $where = [];
+        if($id)$where['recruit_id'] = $id;
+        if($ispaid){
+
+            $where[] = $ispaid == 1 ? ['pay_time > 0'] : ['pay_time = 0'];
+        }
+        $list = $model->where($where)->page($page,$limit)->get()->toArray();
+        foreach($list as &$v){
+            $v->ispaid = $v->pay_time ? 'Yes' : 'No';
+        }
+
+        $out['list']  = $list;
+        $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
+        $out['page'] = $page;
+        $out['limit'] = $limit;
+        AJAX::success($out);
+
+
+    }
+
+
 
     function sget($id,RecruitStudentsModel $model){
 
@@ -200,7 +256,7 @@ class RecruitController extends Controller{
         $wc_openid = Request::getInstance()->cookie('wc_openid','');
         !$wc_openid && header('Location:/wc/roll?state=recruit');
 
-        $list = $model->select('*','recruit.title')->where(['openid'=>$wc_openid])->order('pay_time','DESC')->get()->toArray();
+        $list = $model->select('*','recruit.title')->where(['openid'=>$wc_openid,['pay_time > 0']])->order('pay_time','DESC')->get()->toArray();
         if(!$list){
             include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'_none.php';
         }

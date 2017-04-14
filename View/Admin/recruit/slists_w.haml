@@ -1,0 +1,112 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        .form-horizontal
+                            .form-group
+                                
+                                .col-sm-2
+                                    %select.form-control.m-b.idChange
+                                        %option(value="0") #{lang.adminIndex.all}
+                            
+                                %label.col-sm-1.control-label #{lang.recruit.ispaid}
+                                .col-sm-2
+                                    %select.form-control.m-b.isPaidChange
+                                        %option(value="0") #{lang.adminIndex.all}
+                                        %option(value="1") Yes
+                                        %option(value="2") No
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                
+                .ibox.ibox2.float-e-margins
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.recruit.parent_name}
+                            .col-sm-9
+                                %input.form-control(name="parent_name")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.recruit.parent_name}(en)
+                            .col-sm-9
+                                %input.form-control(name="parent_name_en")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.recruit.student_name}
+                            .col-sm-9
+                                %input.form-control(name="student_name")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.recruit.student_name}(en)
+                            .col-sm-9
+                                %input.form-control(name="student_name_en")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.recruit.age}
+                            .col-sm-3
+                                %input.form-control(type="number" name="age")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.recruit.height}
+                            .col-sm-3
+                                %input.form-control(type="number" name="height")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.recruit.weight}
+                            .col-sm-3
+                                %input.form-control(type="number" name="weight")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.recruit.phone}
+                            .col-sm-6
+                                %input.form-control(type="number" name="phone")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.recruit.address}
+                            .col-sm-9
+                                %input.form-control(type="number" name="address")
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Save
+
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(){
+            var id = 0,ispaid=0;
+            curl('/recruit/lists',{},function(w){
+                for(d in w.list)$('.idChange').append(
+                    $('<option>').text(w.list[d].title).attr('value',w.list[d].id)
+                )
+                $('.idChange').change(function(){
+                    id = $(this).val();flesh()
+                });
+                $('.isPaidChange').change(function(){
+                    ispaid = $(this).val();flesh()
+                })
+            });
+            function flesh(){
+                getList('/recruit/slists_w',{id:id,ispaid:ispaid})
+            }
+            flesh()
+        })
