@@ -117,10 +117,6 @@ class RecruitController extends Controller{
         
         !$model->set($data)->add()->getStatus() && AJAX::error_i18n('save_failed');
 
-        
-
-        WcController::getInstance()->prepay($out_trade_no);
-
         AJAX::success($out);
 
     }
