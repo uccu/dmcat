@@ -7,6 +7,7 @@ use Controller;
 use View;
 use Request;
 use App\School\Tool\AJAX;
+use App\School\Tool\Func;
 use App\School\Middleware\L;
 
 use App\School\Model\RecruitModel;
@@ -111,8 +112,14 @@ class RecruitController extends Controller{
         $data = Request::getInstance()->post(['parent_name','parent_name_en','student_name','student_name_en','address','age','phone','weight','height','recruit_id']);
         $data['openid'] = $wc_openid;
         $data['update_time'] = $data['create_time'] = TIME_NOW;
+
+        $out_trade_no = date('Ymdhis').Func::randWord(10,3);
         
         !$model->set($data)->add()->getStatus() && AJAX::error_i18n('save_failed');
+
+        
+
+        Wc::getInstance()->prepay($out_trade_no);
 
         AJAX::success();
 
@@ -166,7 +173,7 @@ class RecruitController extends Controller{
     function view_exam_list(RecruitModel $model){
 
         $wc_openid = Request::getInstance()->cookie('wc_openid','');
-        // !$wc_openid && header('Location:/wc/roll?state=recruit');
+        !$wc_openid && header('Location:/wc/roll?state=recruit');
         $list = $model->selectExcept('comment')->where(['status'=>1])->select('*',$name)->order('date','time')->get()->toArray();
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
