@@ -168,9 +168,9 @@ class WcController extends Controller{
             
     }
 
-    function testprepay(){
+    function pay($out_trade_no){
 
-        $id = date('Ymdhis').Func::randWord(10,3);
+        $id = $out_trade_no;
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }

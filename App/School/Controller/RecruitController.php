@@ -113,7 +113,7 @@ class RecruitController extends Controller{
         $data['openid'] = $wc_openid;
         $data['update_time'] = $data['create_time'] = TIME_NOW;
 
-        $data['out_trade_no'] = $out_trade_no = date('Ymdhis').Func::randWord(10,3);
+        $out['out_trade_no'] =  $data['out_trade_no'] = $out_trade_no = date('Ymdhis').Func::randWord(10,3);
         
         !$model->set($data)->add()->getStatus() && AJAX::error_i18n('save_failed');
 
@@ -121,7 +121,7 @@ class RecruitController extends Controller{
 
         WcController::getInstance()->prepay($out_trade_no);
 
-        AJAX::success();
+        AJAX::success($out);
 
     }
 
