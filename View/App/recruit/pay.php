@@ -18,7 +18,7 @@ function onBridgeReady(){
             'getBrandWCPayRequest', d.data,
             function(res){     
                 if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                    location = 'recruit/view_my_submit'
+                    location = '/recruit/view_my_submit'
                 }else{
                     alert('支付失败！');
                     history.go(-1);
