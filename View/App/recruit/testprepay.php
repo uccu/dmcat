@@ -10,7 +10,9 @@
 function onBridgeReady(){
 
     $.post('/wc/prepay',{out_trade_no:"<?php echo $id;?>"},function(d){
-
+        if(d.code != 200){
+            alert(d.message);return;
+        }
         WeixinJSBridge.invoke(
             'getBrandWCPayRequest', d.data,
             function(res){     
