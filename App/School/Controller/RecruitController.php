@@ -261,7 +261,8 @@ class RecruitController extends Controller{
 
         $info = $model->find($id);
         !$info && die();
-        $info->comment = preg_replace("/(\n|\r)/","<br>",$info->comment);
+        $info->comment = str_replace("\n","<br>",$info->comment);
+        $info->comment_en = str_replace("\n","<br>",$info->comment_en);
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
