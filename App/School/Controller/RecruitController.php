@@ -293,5 +293,10 @@ class RecruitController extends Controller{
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
+    function language(){
+
+        include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
+    }
+
     
 }

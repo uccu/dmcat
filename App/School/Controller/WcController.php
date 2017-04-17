@@ -60,7 +60,7 @@ class WcController extends Controller{
 
         if($state == 'recruit'){
 
-            header('Location:/recruit/view_exam_list');
+            header('Location:/recruit/language');
         }elseif($state == 'test'){
             
             echo 'test';
