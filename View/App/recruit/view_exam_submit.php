@@ -9,24 +9,26 @@
     <link rel="stylesheet" href="css/kszl.css">
 </head>
 <body>
-<!--<div class="header">-->
-    <!--<em></em>-->
-    <!--<span>填写考生资料</span>-->
-    <!--<a href="#"></a>-->
-<!--</div>-->
+<style>
+li p{
+    position:absolute;width:2rem;text-align:right
+}
+li{color:#666}
+.zl-main ul li textarea{width:5rem}
+</style>
 <div class="zl-main">
     <form>
     <input type="hidden" name="recruit_id">
         <ul>
-            <li><?php echo $this->lang->recruit->parent_name;?>(cn)<input type="text" name="parent_name"></li>
-            <li><?php echo $this->lang->recruit->parent_name;?>(en)<input type="text" name="parent_name_en"></li>
-            <li><?php echo $this->lang->recruit->student_name;?>(cn)<input type="text" name="student_name"></li>
-            <li><?php echo $this->lang->recruit->student_name;?>(en)<input type="text" name="student_name_en"></li>
-            <li><?php echo $this->lang->recruit->height;?>(CM)<input type="number" name="height"></li>
-            <li><?php echo $this->lang->recruit->weight;?>(KG)<input type="number" name="weight"></li>
-            <li><?php echo $this->lang->recruit->age;?><input type="number" name="age"></li>
-            <li><?php echo $this->lang->recruit->phone;?><input type="text" name="phone"></li>
-            <li style="height: 1.4rem;"> <span><?php echo $this->lang->recruit->address;?></span><textarea name="address"></textarea></li>
+            <li><p><?php echo $this->lang->recruit->parent_name;?>(cn):</p><input type="text" name="parent_name"></li>
+            <li><p><?php echo $this->lang->recruit->parent_name;?>(en):</p><input type="text" name="parent_name_en"></li>
+            <li><p><?php echo $this->lang->recruit->student_name;?>(cn):</p><input type="text" name="student_name"></li>
+            <li><p><?php echo $this->lang->recruit->student_name;?>(en):</p><input type="text" name="student_name_en"></li>
+            <li><p><?php echo $this->lang->recruit->height;?>(CM):</p><input type="number" name="height"></li>
+            <li><p><?php echo $this->lang->recruit->weight;?>(KG):</p><input type="number" name="weight"></li>
+            <li><p><?php echo $this->lang->recruit->age;?>:</p><input type="number" name="age"></li>
+            <li><p><?php echo $this->lang->recruit->phone;?>:</p><input type="text" name="phone"></li>
+            <li style="height: 1.4rem;"> <span><?php echo $this->lang->recruit->address;?>:</span><textarea name="address"></textarea></li>
         </ul>
         <a href="#"><?php echo $this->lang->recruit->pay;?></a>
     </form>
