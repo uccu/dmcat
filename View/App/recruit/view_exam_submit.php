@@ -11,10 +11,11 @@
 <body>
 <style>
 li p{
-    position:absolute;width:2rem;text-align:right
+    position:absolute;width:1.6rem;text-align:right
 }
 li{color:#666}
-.zl-main ul li textarea{width:5rem}
+.zl-main ul li input{width:4.5rem}
+.zl-main ul li textarea{width:4.5rem}
 </style>
 <div class="zl-main">
     <form>
@@ -28,7 +29,7 @@ li{color:#666}
             <li><p><?php echo $this->lang->recruit->weight;?>(KG):</p><input type="number" name="weight"></li>
             <li><p><?php echo $this->lang->recruit->age;?>:</p><input type="number" name="age"></li>
             <li><p><?php echo $this->lang->recruit->phone;?>:</p><input type="text" name="phone"></li>
-            <li style="height: 1.4rem;"> <span><?php echo $this->lang->recruit->address;?>:</span><textarea name="address"></textarea></li>
+            <li style="height: 1.4rem;"><p><?php echo $this->lang->recruit->address;?>:</p></span><textarea name="address"></textarea></li>
         </ul>
         <a href="#"><?php echo $this->lang->recruit->pay;?></a>
     </form>
