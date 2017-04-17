@@ -261,7 +261,7 @@ class RecruitController extends Controller{
 
         $info = $model->find($id);
         !$info && die();
-        $info->comment = str_replace("\n","<br>",$info->comment);
+        $info->comment = preg_replace("/(\n|\r)/","<br>",$info->comment);
 
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
@@ -279,7 +279,7 @@ class RecruitController extends Controller{
         $wc_openid = Request::getInstance()->cookie('wc_openid','');
         !$wc_openid && header('Location:/wc/roll?state=recruit');
 
-        $list = $model->select('*','recruit.title')->where(['openid'=>$wc_openid,['pay_time > 0']])->order('pay_time','DESC')->get()->toArray();
+        $list = $model->select('*','recruit.title','recruit.title_en')->where(['openid'=>$wc_openid,['pay_time > 0']])->order('pay_time','DESC')->get()->toArray();
         if(!$list){
             include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'_none.php';
         }

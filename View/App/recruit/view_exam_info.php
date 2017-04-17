@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
-    <title>报名详情</title>
+    <title><?php echo $this->lang->recruit->online_register;?></title>
     <link rel="stylesheet" href="css/reset.css">
     <!--<link rel="stylesheet" href="css/public.css">-->
     <link rel="stylesheet" href="css/bmxq.css">

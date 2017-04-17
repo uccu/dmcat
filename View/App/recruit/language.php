@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><?php echo $this->lang->recruit->fill_in;?></title>
+    <title>选择语言</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="css/reset.css">
     <!--<link rel="stylesheet" href="css/public.css">-->
