@@ -277,5 +277,27 @@ class Func{
 
 
     }
+
+
+
+    public static function calculateDayCount($month){
+
+        $myz = $monthFull = $month;
+        
+        if(strlen($month) == 6){
+            $month = substr($monthFull,-2);
+            $year = substr($monthFull,0,4);
+            $myz = $year.'-'.$month;
+        }
+
+
+        $date = new \DateTime($myz);
+        $date->add(new \DateInterval('P1M'));
+        $date->sub(new \DateInterval('P1D'));
+        $dayOfThisMonth = $date->format('d');
+
+        return $dayOfThisMonth;
+
+    }
     
 }
