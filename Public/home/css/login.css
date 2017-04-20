@@ -1,0 +1,55 @@
+body{
+    background: #f4f4f4;
+}
+.user{
+    margin-top:0.4rem;
+}
+.user li{
+    height:0.8rem;
+    width:100%;
+    line-height:0.8rem;
+    background: #ffffff;
+    margin-bottom:0.2rem;
+
+}
+.user li span{
+    display: block;
+    float: left;
+    width:0.8rem;
+    height:0.8rem;
+}
+.user li input{
+    display: block;
+    width:5.2rem;
+    float: right;
+    height:0.78rem;
+    line-height:0.78rem;
+    font-size: 0.3rem;
+    border:none;
+    outline:none;
+
+
+}
+.user li:nth-child(1) span{
+    background: url("../img/dl1.png") no-repeat center right;
+    -webkit-background-size:40%;
+    background-size:40%;
+}
+.user li:nth-child(2) span{
+    background: url("../img/dl2.png") no-repeat center right;
+    -webkit-background-size:40%;
+    background-size:40%;
+}
+button{
+    display: block;
+    height:0.7rem;
+    background: #1b2b69;
+    width:6rem;
+    line-height:0.7rem;
+    color: #ffffff;
+    text-align: center;
+    margin:1rem auto;
+    border-radius: 3px;
+    font-size: 0.3rem;
+
+}

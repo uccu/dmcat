@@ -1,0 +1,28 @@
+!!!
+%html
+    %head
+        %meta(charset="UTF-8")
+        %title 报到
+        %meta#viewport(content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport")
+        %link(rel="stylesheet" href="/recruit/css/reset.css")
+        %link(rel="stylesheet" href="/recruit/css/kszl.css")
+
+    %body
+        .zl-main
+            %a.enter(href="#") 进入学校/Enter School
+            %a.leave(href="#") 离开学校/Leave School
+
+        %script(src="/recruit/js/main.js")
+        %script(src="/js/jquery.min.js?v=2.1.4")
+        %script(src="/js/m.js")
+        :javascript
+            j('.enter').click(function(){
+                tool.post({
+                    url:'/student/attend',
+                    data:{id:1},
+                    func:function(){
+                        
+                    }
+                })
+
+            })

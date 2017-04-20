@@ -1,0 +1,47 @@
+!!!
+%html
+    %head
+        %meta(charset="UTF-8")
+        %title 登录/Login
+        %meta#viewport(content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport")
+        %link(rel="stylesheet" href="css/reset.css")
+        %link(rel="stylesheet" href="css/login.css?1")
+
+    %body
+        %form(role="form" method="post" action="/user/login" onsubmit="return ef()")
+            %input(name="cookie" type="hidden" value="1")
+            %ul.user
+                %li
+                    %span
+                    %input(type="text" placeholder="用户名/user name" name="user_name")
+                %li
+                    %span
+                    %input(type="password" placeholder="密码/password" name="password")
+
+            %button(type="submit" href="javascript:void (0)") 登录/login
+        %script(src="js/main.js")
+        %script(src="/js/jquery.min.js?v=2.1.4")
+        %script(src="/js/m.js")
+        :javascript
+            var ef = function(){
+                j.post('/user/login',j('form').serialize(),function(d){
+                    if(d.code != 200)alert(d.message);
+                    else{
+                        if(d.data.type == 2){
+                            alert('该用户不能登录APP')
+                        else if(d.data.type == 3){
+                            alert('该用户不能登录APP')
+                        }else if(d.data.type == 7){
+                            alert('该用户不能登录APP')
+                        }
+                    }
+                },'json');
+                return false;
+            };
+            
+
+                        
+        
+
+
+            

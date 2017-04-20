@@ -111,7 +111,7 @@ $(function(){
                 var r = $('<th>');
                 d.thead[e].class && r.addClass(d.thead[e].class);
                 if(e == '_opt')r.text(lang.adminIndex.option);
-                else r.text(e);
+                else r.text(e.match(/\d*/)[0]?d.thead[e].name:e);
                 r.appendTo(head_tr);
             }
             for(e in d.list){
@@ -155,7 +155,7 @@ $(function(){
                 $('h4.modal-title').text(lang.adminIndex.create);
                 upd(d,0);
             });
-            $('.i-checks').iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green"});
+            $('tbody .i-checks').iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green"});
             if(typeof gr.getListAfter === 'function')gr.getListAfter(d);
         })
     };

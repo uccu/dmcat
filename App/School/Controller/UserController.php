@@ -100,6 +100,7 @@ class UserController extends Controller{
         $out = [
             'user_token'=>$user_token,
             'id'=>$info->id,
+            'type'=>$info->type
         ];
         
         AJAX::success($out);
