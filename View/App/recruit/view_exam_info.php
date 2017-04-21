@@ -23,7 +23,7 @@
         <?php echo $this->lang->language=='cn'?$info->comment:$info->comment_en;?>
     </p>
 
-    <p><?php echo $this->lang->recruit->fee;?>：<em>500</em></p>
+    <p><?php echo $this->lang->recruit->fee;?>：<em><?php echo $this->lang->language=='cn'?'500 元':'500 RMB'?></em></p>
     <a href="view_exam_submit?id=<?php echo $info->id;?>"><?php echo $this->lang->recruit->fill_in;?></a>
 </div>
 
