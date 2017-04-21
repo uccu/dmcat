@@ -237,7 +237,7 @@ class StudentController extends Controller{
     function attend($id,AttendanceModel $model){
 
         !$id && AJAX::error('Student Not Exist!');
-        $data['student'] = $id;
+        $data['student_id'] = $id;
         $data['month'] = date('Ym');
         $data['day'] = date('d');
         
@@ -253,7 +253,7 @@ class StudentController extends Controller{
     function leave($id,AttendanceModel $model){
 
         !$id && AJAX::error('Student Not Exist!');
-        $where['student'] = $id;
+        $where['student_id'] = $id;
         $where['month'] = date('Ym');
         $where['day'] = date('d');
         
