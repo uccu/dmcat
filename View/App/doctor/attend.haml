@@ -8,8 +8,9 @@
         %link(rel="stylesheet" href="/recruit/css/kszl.css")
 
     %body
-        .zl-main
-            %p 
+        .zl-main(style="text-align:center;padding-top:20px")
+            %p(style="font-size:15px;padding-bottom:20px") #{info.name}/#{info.name_en}
+            %p(style="font-size:15px") #{info.rand_code}
             %a.enter(href="#") 进入学校/Enter School
             %a.leave(href="#") 离开学校/Leave School
 

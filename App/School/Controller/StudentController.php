@@ -87,7 +87,7 @@ class StudentController extends Controller{
         unset ($data['id']);
 
         if(!$id){
-            
+            $data['rand_code'] = TIME_NOW.Func::randWord('10',3);
             $data['create_time'] = TIME_NOW;
             $model->set($data)->add();
 

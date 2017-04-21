@@ -31,9 +31,9 @@ class HomeController extends Controller{
         View::hamlReader(__FUNCTION__,'App');
     }
 
-    function attend($id){
+    function attend($code){
 
-        $info = StudentModel::getInstance()->find($id);
+        $info = StudentModel::getInstance()->where(['rand_code'=>$code])->find();
 
         View::addData(['info'=>$info]);
 
