@@ -257,7 +257,8 @@ class StudentController extends Controller{
         $where['month'] = date('Ym');
         $where['day'] = date('d');
         
-        !$model->where($where)->find() && AJAX::error('Not Attended');
+        !($z = $model->where($where)->find()) && AJAX::error('Not Attended');
+        $z->leave_time && AJAX::error('Has Left');
 
         $data['update_time'] = TIME_NOW;
         $data['leave_time'] = date('H:i:s');
