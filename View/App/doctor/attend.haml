@@ -9,17 +9,19 @@
 
     %body
         .zl-main
+            %p 
             %a.enter(href="#") 进入学校/Enter School
             %a.leave(href="#") 离开学校/Leave School
 
         %script(src="/recruit/js/main.js")
         %script(src="/js/jquery.min.js?v=2.1.4")
-        %script(src="/js/m.js")
+        %script(src="/js/m.js?1")
         :javascript
+            var p = new URL(location),id = p.searchParams.get('id');
             j('.enter').click(function(){
                 tool.post({
                     url:'/student/attend',
-                    data:{id:1},
+                    data:{id:id},
                     func:function(){
                         
                     }

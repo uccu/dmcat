@@ -2,7 +2,8 @@
 namespace App\School\Tool;
 use Config;
 use App\School\Tool\AJAX;
-
+use App\School\Middleware\L;
+use App\School\Model\ConfigModel;
 class Func{
     /**
      *
@@ -298,6 +299,74 @@ class Func{
 
         return $dayOfThisMonth;
 
+    }
+
+    public static function getAccessToken(){
+
+        $L = L::getInstance();
+        
+        $access_token = $L->config->wc_access_token;
+
+        $configModel = ConfigModel::getInstance();
+        $timeline = $configModel->where(['name'=>'wc_access_token'])->find()->timeline;
+
+        if($timeline < TIME_NOW){
+
+            $appid = $L->config->wc_appid;
+            $app_secret = $L->config->wc_app_secret;
+
+            $data = self::curl('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$appid.'&secret='.$app_secret);
+            $access_token = $data->access_token;
+
+            if(!$access_token)AJAX::error('get access_token failed');
+            $configModel->set(['value'=>$access_token,'timeline'=>TIME_NOW+6000])->where(['name'=>'wc_access_token'])->save();
+        }
+
+
+        return $access_token;
+        
+
+    }
+
+    public static function getJsapiTicket(){
+
+        $L = L::getInstance();
+
+        $jsapi_ticket = $L->config->wc_jsapi_ticket;
+
+        $configModel = ConfigModel::getInstance();
+        $timeline = $configModel->where(['name'=>'wc_jsapi_ticket'])->find()->timeline;
+
+        if($timeline < TIME_NOW){
+
+            $access_token = self::getAccessToken();
+            $data = self::curl('https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token='.$access_token.'&type=jsapi');
+            $jsapi_ticket = $data->ticket;
+
+            if($data->errcode)AJAX::error($data->errcode.':'.$data->errmsg);
+            ConfigModel::getInstance()->set(['value'=>$jsapi_ticket,'timeline'=>TIME_NOW+6000])->where(['name'=>'wc_jsapi_ticket'])->save();
+        }
+
+        return $jsapi_ticket;
+
+    }
+
+
+    public static function getSignature(){
+
+        $data['noncestr'] = self::randWord(18);
+        $data['jsapi_ticket'] = self::getJsapiTicket();
+        $data['timestamp'] = TIME_NOW;
+        $data['url'] = self::fullAddr(REQUEST_PATH);
+
+        ksort($data,SORT_STRING);
+
+        $data2 = [];
+        foreach($data as $k=>$v){
+            $data2[] =  $k.'='.$v;
+        }
+        $data['sign'] = sha1(implode('&',$data2));
+        return $data;
     }
     
 }

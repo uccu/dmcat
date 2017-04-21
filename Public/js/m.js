@@ -10,10 +10,10 @@ j=jQuery.noConflict();
             var a = {
                 url:z.url,data:z.data,type:'post',dataType:'json',
                 beforeSend:function(xhr){
-                    if(this.isFunc(z.bfunc))z.bfunc(xhr);
+                    if(w.tool.isFunc(z.bfunc))z.bfunc(xhr);
                 },success:function(d){
                     if(d.code != 200)alert(d.message);
-                    else if(this.isFunc(z.func))z.func(d.data);
+                    else if(w.tool.isFunc(z.func))z.func(d.data);
                 }
             };
             if(z.raw){

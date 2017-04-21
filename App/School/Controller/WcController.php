@@ -38,6 +38,8 @@ class WcController extends Controller{
 
     }
 
+    
+
     function getCode($code,$state){
 
         if(!$code)die('微信连接失败！');
