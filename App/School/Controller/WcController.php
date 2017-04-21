@@ -145,8 +145,8 @@ class WcController extends Controller{
         $p['notify_url']        = Func::fullAddr('wc/wcpay_c');
         $p['out_trade_no']      = $out_trade_no;
         $p['spbill_create_ip']  = $_SERVER ["REMOTE_ADDR"];
-        // $p['total_fee']         = $total_fee100;
-        $p['total_fee']         = '1';
+        $p['total_fee']         = $total_fee100;
+        // $p['total_fee']         = '1';
         $p['trade_type']        = 'JSAPI';
         $p['openid']            = $wc_openid;
             
