@@ -18,11 +18,15 @@
         %script(src="/js/jquery.min.js?v=2.1.4")
         %script(src="/js/m.js?1")
         :javascript
-            var p = new URL(location),id = p.searchParams.get('id');
+            var id = parseInt("#{info.id}");
+            if(!id){
+                alert('Student Not Exist!');
+                location = 'code'
+            }
             j('.enter').click(function(){
                 tool.post({
                     url:'/student/attend',
-                    data:{id:id},
+                    data:{id:"#{info.id}"},
                     func:function(){
                         
                     }

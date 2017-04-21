@@ -27,9 +27,10 @@
             });
             function ef(){
                 wx.scanQRCode({
-                    needResult: 0,
+                    needResult: 1,
                     scanType: ["qrCode","barCode"],
                     success: function (res) {
+                        
                         location = 'attend?code=' + res.resultStr
                     }
                 });
