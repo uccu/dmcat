@@ -124,7 +124,13 @@ class Api extends Controller{
 
     }
 
-    function sort($name){
+    function sort($name,$base64){
+
+        if($base64){
+
+            $name = str_replace(' ','+',$name);
+            $name = base64_decode($name);
+        }
 
         $rns = new RNS($name);
         $num = 0;
