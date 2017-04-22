@@ -439,6 +439,54 @@ class TestController extends Controller{
 
     }
 
+    function acgnx_raw(Cache $cache){
+
+        global $argc;
+        global $argv;
+        if(!$argc)AJAX::error('请在shell运行');
+        
+        ignore_user_abort();
+        set_time_limit(600);
+
+        $json = $this->zCurl('https://open.acgnx.se/json-1-user-150.json');
+        
+
+        if($json)$json = json_decode($json,true);
+        else{
+            echo 'error';
+            return;
+        };
+
+        $json = $json['item'];$array = [];
+        $lastDataId = $cache->cget('last_data_id_raw');
+        foreach($json as $k=>$v)if($v['data_id']>$lastDataId)$array[$v['data_id']] = $v;
+
+        ksort($array);
+        echo $length = count($array);
+        echo ',';
+        foreach($array as $k=>$data){
+            
+
+            echo $json = $this->push(
+                $data['title'],
+                'https://share.acgnx.se/show-'.$data['hash_id'].'.html',
+                $data['hash_id'],
+                $data['data_id'],
+                '860F3ABB7EB7E30FAD15EEEF6BA6A07D3386AB8A'
+            );
+
+
+            $cache->csave('last_data_id_raw',$data['data_id']);
+            if($k+1!=$length){
+                $rand = rand(0,floor(600/$length));
+                sleep($rand);
+
+            }
+        }
+        
+
+    }
+
     
 
     function pull(){
