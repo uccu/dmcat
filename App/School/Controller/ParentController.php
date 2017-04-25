@@ -65,4 +65,19 @@ class ParentController extends Controller{
     }
 
 
+    function get_notice($id){
+
+        $list = Model::getInstance('notice')->selectExcept('content')->where(['isshow'=>1])->order('create_time','DESC')->get()->toArray();
+
+        foreach($list as &$v){
+            $v->create_date = date('Y-m-d',$v->create_time);
+        }
+
+        $out['list'] = $list;
+
+        AJAX::success($out);
+
+    }
+
+
 }

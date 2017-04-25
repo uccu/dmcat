@@ -36,8 +36,8 @@ class CourseController extends Controller{
             'Wed'=>['class'=>'tc'],
             'Thu'=>['class'=>'tc'],
             'Fri'=>['class'=>'tc'],
-            'Sat'=>['class'=>'tc'],
-            'Sun'=>['class'=>'tc'],
+            // 'Sat'=>['class'=>'tc'],
+            // 'Sun'=>['class'=>'tc'],
         ];
 
         $out['tbody'] = [
@@ -47,8 +47,8 @@ class CourseController extends Controller{
             3=>['class'=>'tc changeIt cp t'],
             4=>['class'=>'tc changeIt cp t'],
             5=>['class'=>'tc changeIt cp t'],
-            6=>['class'=>'tc changeIt cp t'],
-            7=>['class'=>'tc changeIt cp t'],
+            // 6=>['class'=>'tc changeIt cp t'],
+            // 7=>['class'=>'tc changeIt cp t'],
         ];
 
         
@@ -62,7 +62,7 @@ class CourseController extends Controller{
         
         for($i = 1;$i<=8;$i++){
             $listw[$i][0] = $i;
-            for($j = 1;$j<=7;$j++){
+            for($j = 1;$j<=5;$j++){
                 $listw[$i][$j] = '';
                 foreach($list as $v){
                     if($v->step == $i && $v->week == $j){
