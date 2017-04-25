@@ -1,1 +1,1 @@
-php Public/index.php
+php Public/index.php git/pull
