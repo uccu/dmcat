@@ -1,1 +1,1 @@
-php Public/index.php git/pull
+php -v
