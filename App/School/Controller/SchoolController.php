@@ -8,7 +8,7 @@ use Controller;
 use Request;
 use App\School\Tool\AJAX;
 use App\School\Middleware\L;
-
+use Model;
 class SchoolController extends Controller{
 
 
@@ -85,6 +85,25 @@ class SchoolController extends Controller{
 
         !$id && AJAX::error_i18n('param_error');
         $model->remove($id);
+        AJAX::success();
+
+    }
+
+
+    function add_notice($id){
+
+        $this->L->check_type([5,6,7]);
+        $data = Request::getInstance()->request(['title','short_message','content','isshow']);
+
+        $model = Model::getInstance('notice');
+        if(!$id){
+            
+            $data['create_time'] = TIME_NOW;
+            $model->set($data)->add();
+
+        }else{
+            $model->set($data)->save($id);
+        }
         AJAX::success();
 
     }

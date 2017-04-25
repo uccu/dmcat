@@ -83,20 +83,7 @@
 }
 .conduct a{
     background:url("../img/p10.png") no-repeat;
-    background-position: 35% 0;
+    background-position: center 0;
     background-size: 1.2rem;
 }
-.conduct p em{
-    text-align: left;
-    width:100%;
-    display: block;
-    padding-left: 21%;
-    /*height:0.5rem;*/
-}
-.conduct p span{
-    text-align: left;
-    width:100%;
-    display: block;
-    padding-left: 8%;
-    margin-top: 0.1rem;
-}
+

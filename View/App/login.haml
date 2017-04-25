@@ -27,7 +27,9 @@
                 j.post('/user/login',j('form').serialize(),function(d){
                     if(d.code != 200)alert(d.message);
                     else{
-                        if(d.data.type == 2){
+                        if(d.data.type == 1){
+                            location = '/parent/index'
+                        }else if(d.data.type == 2){
                             location = '/home/code'
                         }else if(d.data.type == 3){
                             alert('该用户不能登录APP')

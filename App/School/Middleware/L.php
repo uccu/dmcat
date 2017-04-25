@@ -7,6 +7,8 @@ use Config;
 use Response;
 use App\School\Model\ConfigModel;
 use App\School\Model\UserModel;
+use App\School\Tool\AJAX;
+
 
 class L extends Middleware{
 
@@ -33,6 +35,7 @@ class L extends Middleware{
         /*获取干扰码*/
         $salt = $this->config->site_salt;
 
+        header('Access-Control-Allow-Origin:*');
         
         
 
@@ -75,6 +78,14 @@ class L extends Middleware{
 
     function delCookie(){
         Response::getInstance()->cookie('user_token','',-3600);
+    }
+
+    function check_type($arr){
+
+        if(!$this->id)AJAX::error_i18n('not_login');
+        if(!is_array($arr))$arr = [$arr];
+        if(!in_array($this->userInfo->type,$arr))AJAX::error_i18n('no_permission');
+
     }
     
 }
