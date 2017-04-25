@@ -1,1 +1,1 @@
-php -v
+git pull
