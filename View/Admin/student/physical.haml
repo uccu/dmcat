@@ -10,9 +10,6 @@
                     .ibox-content
                         .form-horizontal
                             .form-group
-                                
-                                .col-sm-1
-                                    %button.btn.btn-primary.btn-outline.newOne(data-toggle="button" type="button" aria-pressed="true") new
                                 %label.col-sm-1.control-label #{lang.school.school}
                                 .col-sm-2
                                     %select.form-control.m-b.schoolChange
@@ -27,8 +24,9 @@
                     .sk-rect3
                     .sk-rect4
                     .sk-rect5
-                
-                .ibox.ibox2.float-e-margins
+                :css
+                    .no-del .data-del{display:none}
+                .ibox.ibox2.float-e-margins.no-del
     #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
         .modal-dialog
             .modal-content.animated.fadeInDown
@@ -48,61 +46,18 @@
                     %form.form-horizontal.animated(method="post")
                         %input.form-control(type="hidden" name="id")
                         .form-group
-                            %label.col-sm-3.control-label #{lang.student.student_name}
+                            %label.col-sm-3.control-label #{lang.student.sight}
                             .col-sm-9
-                                %input.form-control(name="name")
+                                %input.form-control(name="sight")
                         .form-group
-                            %label.col-sm-3.control-label #{lang.student.student_name}(en)
+                            %label.col-sm-3.control-label #{lang.student.weight}
                             .col-sm-9
-                                %input.form-control(name="name_en")
+                                %input.form-control(name="weight")
                         .form-group
-                            %label.col-sm-3.control-label #{lang.student.classes_id}
-                            .col-sm-3
-                                %input.form-control(type="number" name="classes_id")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.nationality}
+                            %label.col-sm-3.control-label #{lang.student.height}
                             .col-sm-9
-                                %input.form-control(name="nationality")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.language}
-                            .col-sm-9
-                                %input.form-control(name="language")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.birth}
-                            .col-sm-9
-                                %input.form-control(type="date" name="birth" placeholder="YYYY-MM-DD")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.park_date}
-                            .col-sm-9
-                                %input.form-control(type="date" name="park_date" placeholder="YYYY-MM-DD")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.communicate_language}
-                            .col-sm-9
-                                %input.form-control(name="communicate_language")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.first_contact}
-                            .col-sm-9
-                                %input.form-control(name="first_contact")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.first_contact_relation}
-                            .col-sm-9
-                                %input.form-control(name="first_contact_relation")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.first_contact_wc}
-                            .col-sm-9
-                                %input.form-control(name="first_contact_wc")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.second_contact}
-                            .col-sm-9
-                                %input.form-control(name="second_contact")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.second_contact_phone}
-                            .col-sm-9
-                                %input.form-control(name="second_contact_phone")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.allergy}
-                            .col-sm-9
-                                %input.form-control(name="allergy")
+                                %input.form-control(name="height")
+                        
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close
                     %button.btn.btn-primary.save(type="button") Save
@@ -133,6 +88,8 @@
                     getList('/student/lists',{school_id:school});
                 })
             });
-            
-            getList('/student/lists',{school_id:school,classes_id:classes});
+            function flesh(){
+                getList('/student/lists2',{school_id:school,classes_id:classes});
+            }
+            flesh()
         })

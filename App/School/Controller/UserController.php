@@ -9,6 +9,7 @@ use App\School\Model\UserModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
+use Model;
 
 class UserController extends Controller{
 
@@ -83,6 +84,7 @@ class UserController extends Controller{
         $encryptedPassword = $this->encrypt_password($password,$info->salt);
         if($encryptedPassword!=$info->password)AJAX::error_i18n('wrong_pwd');
 
+        Model::getInstance('user_online')->set(['last_login'=>TIME_NOW])->save($info->id);
 
         //输出登录返回信息
         $this->_out_info($info);

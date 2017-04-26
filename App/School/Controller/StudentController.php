@@ -4,6 +4,7 @@ namespace App\School\Controller;
 
 
 use App\School\Model\StudentModel;
+use App\School\Model\StudentPhysicalModel;
 use App\School\Model\AttendanceModel;
 use App\School\Model\RestDayModel;
 use Controller;
@@ -11,6 +12,7 @@ use Request;
 use App\School\Tool\AJAX;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
+use Model;
 
 class StudentController extends Controller{
 
@@ -29,6 +31,62 @@ class StudentController extends Controller{
         // !$this->L->id && AJAX::error_i18n('not_login');
 
         $out = ['get'=>'/student/get','upd'=>'/student/upd','del'=>'/student/del'];
+
+        $out['thead'] = [
+            'ID'=>['class'=>'tc'],
+            ($this->lang->student->student_name)=>['class'=>'tc'],
+            ($this->lang->student->student_name).'(en)'=>['class'=>'tc'],
+            ($this->lang->classes->class_name)=>['class'=>'tc'],
+            
+            '_opt'=>['class'=>'tc'],
+        ];
+        
+        $out['tbody'] = [
+            'id'=>['class'=>'tc'],
+            'name'=>['class'=>'tc'],
+            'name_en'=>['class'=>'tc'],
+            'class_name'=>['class'=>'tc'],
+            '_opt'=>['class'=>'tc'],
+        ];
+
+        $classesName = $this->lang->language == 'cn' ? 'classes.name>class_name' : 'classes.name_en>class_name';
+        
+        $out['lang'] = $this->lang->language;
+
+        if($school_id)$model->where(['classes.school_id'=>$school_id]);
+        if($classes_id)$model->where(['classes_id'=>$classes_id]);
+
+        $list = $model->select('*', $classesName )->page($page,$limit)->get()->toArray();
+
+        if($school_id)$model->where(['classes.school_id'=>$school_id]);
+        if($classes_id)$model->where(['classes_id'=>$classes_id]);
+        $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $out['page'] = $page;
+        $out['limit'] = $limit;
+
+        $out['list']  = $list;
+        AJAX::success($out);
+
+
+    }
+
+    function physical_get($id){
+
+        !$id && AJAX::success(['info'=>[]]);
+        $out['info'] = $info = Model::getInstance('student_physical')->find($id);
+        !$info && AJAX::error_i18n('no_data');
+
+
+        AJAX::success($out);
+
+
+    }
+
+    function lists2(StudentModel $model,$school_id,$classes_id,$page = 1,$limit = 50){
+
+        // !$this->L->id && AJAX::error_i18n('not_login');
+
+        $out = ['get'=>'/student/physical_get','upd'=>'/student/physical_upd'];
 
         $out['thead'] = [
             'ID'=>['class'=>'tc'],
@@ -101,11 +159,20 @@ class StudentController extends Controller{
 
     }
 
+    function physical_upd($id,StudentPhysicalModel $model){
+
+        $data = Request::getInstance()->request($model->field);
+        $model->set($data)->save($id);
+        AJAX::success();
+
+    }
+
     /* 删除学生档案 */
     function del($id,StudentModel $model){
 
         !$id && AJAX::error_i18n('param_error');
         $model->remove($id);
+        Model::getInstance('student_physical')->remove($id);
         AJAX::success();
 
     }

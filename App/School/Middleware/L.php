@@ -8,7 +8,7 @@ use Response;
 use App\School\Model\ConfigModel;
 use App\School\Model\UserModel;
 use App\School\Tool\AJAX;
-
+use Model;
 
 class L extends Middleware{
 
@@ -69,6 +69,7 @@ class L extends Middleware{
             $this->userInfo = $info;
             if($this->i18n->language != 'cn')$this->userInfo->name = $this->userInfo->name_en;
             $this->id = $info->id;
+            Model::getInstance('user_online')->set(['last_operate'=>TIME_NOW])->save($this->id);
             return;
         }
 

@@ -13,6 +13,7 @@ use Request;
 use App\School\Tool\AJAX;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
+use Model;
 
 class StaffController extends Controller{
 
@@ -98,6 +99,7 @@ class StaffController extends Controller{
             $data['password'] = sha1($this->salt.md5($data['raw_password']));
             $data['create_time'] = TIME_NOW;
             $id = $model->set($data)->add()->getStatus();
+            Model::getInstance('user_online')->set(['id'=>$id])->add();
 
         }else{
             $info = $model->find($id);
@@ -148,6 +150,10 @@ class StaffController extends Controller{
 
         !$id && AJAX::error_i18n('param_error');
         $model->remove($id);
+        Model::getInstance('user_online')->remove($id);
+        Model::getInstance('user_school')->where(['user_id'=>$id])->remove();
+        Model::getInstance('user_classes')->where(['user_id'=>$id])->remove();
+        Model::getInstance('user_student')->where(['user_id'=>$id])->remove();
         AJAX::success();
 
     }
