@@ -62,14 +62,13 @@ class ParentController extends Controller{
 
         if(!$message)AJAX::error_i18n('param_error');
 
-        $data['parent_id'] = $this->L->id;
+        $data['user_id'] = $this->L->id;
         $data['message'] = $message;
         $data['create_time'] = TIME_NOW;
 
         Model::getInstance('school_message')->set($data)->add();
 
         AJAX::success();
-
 
     }
 

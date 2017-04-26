@@ -108,5 +108,22 @@ class SchoolController extends Controller{
 
     }
 
+    function add_school_message($message){
+
+        $this->L->check_type([3,5]);
+
+        if(!$message)AJAX::error_i18n('param_error');
+
+        $data['type'] = 1;
+        $data['user_id'] = $this->L->id;
+        $data['message'] = $message;
+        $data['create_time'] = TIME_NOW;
+
+        Model::getInstance('school_message')->set($data)->add();
+
+        AJAX::success();
+
+    }
+
 
 }

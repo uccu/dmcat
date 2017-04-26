@@ -7,6 +7,7 @@ use App\School\Model\StudentModel;
 use App\School\Model\StudentPhysicalModel;
 use App\School\Model\AttendanceModel;
 use App\School\Model\RestDayModel;
+use App\School\Model\CommentModel;
 use Controller;
 use Request;
 use App\School\Tool\AJAX;
@@ -341,7 +342,42 @@ class StudentController extends Controller{
 
 
 
-    
+    /* 每日点评 */
+
+
+    function add_comment($id,$date,CommentModel $model){
+
+        $data = Request::getInstance()->request($model->field);
+
+
+    }
+
+    function view_comment($id,$date,CommentModel $model){
+
+        $info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id,'date'=>$date])->find();
+
+        !$info && AJAX::error('NO DATA');
+
+        $info->fullAvatar = Func::fullPicAddr( $info->avatar );
+        
+        $info->picArray = [];
+        if($info->pic){
+            $pics = explode(';',$info->pic);
+            foreach($pics as &$v)$v = Func::fullPicAddr( $v );
+            $info->picArray = $pics;
+        }
+
+        $out['info'] = $info;
+
+        $nex = $model->where(['student_id'=>$id,['date>%n',$date]])->find();
+        $las = $model->where(['student_id'=>$id,['date<%n',$date]])->find();
+
+        $out['last'] = $las?$las->date:'';
+        $out['next'] = $nex?$nex->date:'';
+
+        AJAX::success($out);
+
+    }
 
 
 }
