@@ -101,4 +101,26 @@ class ParentController extends Controller{
     }
 
 
+    function upd($id,UserModel $model){
+
+        $data = Request::getInstance()->request(['email','phone','raw_password','avatar']);
+        unset ($data['id']);
+
+        $info = $model->find($id);
+        !$info && AJAX::error_i18n('no_user_exist');
+
+        if(data['raw_password'] && $data['raw_password'] != $info->raw_passowrd)$data['password'] = sha1($this->salt.md5($data['raw_password']));
+
+        $model->set($data)->save($id);
+        
+
+
+        
+        
+
+        AJAX::success();
+
+    }
+
+
 }

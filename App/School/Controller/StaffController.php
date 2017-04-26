@@ -91,7 +91,7 @@ class StaffController extends Controller{
 
     function upd($id,UserModel $model,$school_id,$classes_id){
 
-        $data = Request::getInstance()->request(['name','name_en','email','avatar','phone','user_name','type','raw_password','avatar']);
+        $data = Request::getInstance()->request(['name','name_en','email','avatar','phone','user_name','type','raw_password']);
         unset ($data['id']);
 
         if(!$id){
@@ -140,6 +140,7 @@ class StaffController extends Controller{
     function upPic(){
 
         $out['path'] = Func::uploadFiles('file',100,100);
+        if(!$out['path'])AJAX::error('no image');
         $out['fpath'] = '/pic/'.$out['path'];
         $out['apath'] = Func::fullPicAddr($out['path']);
         AJAX::success($out);
