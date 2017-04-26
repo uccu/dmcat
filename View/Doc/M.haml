@@ -1,0 +1,47 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+  %title = g.title
+  %meta(name="keywords" content="#{g.keywords}")
+  %meta(name="description" content="#{g.description}")
+
+
+- block body
+  .jumbotron
+    .container
+      %h1 = g.title
+
+
+  .container
+    - for z in data
+      %table.table.table-bordered
+        %thead
+          %tr.danger
+            %th
+              = z.url
+            %th
+              = z.note
+        %tbody
+          %tr.warning
+            %td(colspan=2) 请求参数
+        %tbody
+          - for key,val in z.parameter
+            %tr
+              %td
+                = key
+              %td
+                = val
+        %tbody
+          %tr.warning
+            %td(colspan=2) 返回参数
+        %tbody
+          %tr
+            %td
+              %pre = z.return
+            %td
+              %pre = z.message
+    
+
+  

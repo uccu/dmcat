@@ -130,9 +130,12 @@ class StudentController extends Controller{
     function get($id,StudentModel $model){
 
         !$id && AJAX::success(['info'=>[]]);
-        $out['info'] = $info = $model->find($id);
+        $info = $model->find($id);
         !$info && AJAX::error_i18n('no_data');
 
+        $info->fullAvatar = $info->avatar?Func::fullPicAddr( $info->avatar ):'';
+
+        $out['info'] = $info;
 
         AJAX::success($out);
 
@@ -147,6 +150,7 @@ class StudentController extends Controller{
         if(!$id){
             $data['rand_code'] = TIME_NOW.Func::randWord('10',3);
             $data['create_time'] = TIME_NOW;
+            $data['avatar'] = 'noavatar.png';
             $model->set($data)->add();
 
         }else{

@@ -1,10 +1,11 @@
 var gr = {};
 
 function curl(url,data,func,raw){
+
     var a = {
         url:url,
         data:data,
-        type:data.length?'post':'get',
+        type:raw || data !={}?'post':'get',
         dataType:'json',
         beforeSend:function(xhr){
             

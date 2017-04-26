@@ -1,0 +1,25 @@
+
+上传头像
+http://weixin.ivy-china.com/staff/upPic
+file 图片文件
+{}
+{"data":{"path":"20170426\/1493191297.jpg","fpath":"\/pic\/20170426\/1493191297.jpg","apath":"http:\/\/d.baka\/pic\/20170426\/1493191297.jpg"},"code":200,"url":"","message":""}
+
+
+家长更新个人资料
+http://weixin.ivy-china.com/parent/upd
+id 当前是10
+email 邮箱
+phone 手机
+raw_password 密码
+avatar 头像（上传头像接口返回的path参数的值）
+{}
+{}
+
+
+家长更新个人资料
+http://weixin.ivy-china.com/student/get
+id 学生ID
+{"data":{"info":{"id":"2","name":"\u5f20\u4e09","name_en":"San Zhang","nationality":"\u4e2d\u56fd","language":"\u4e2d\u6587","birth":"2000-01-01","park_date":"2017-02-28","communicate_language":"","first_contact":"","first_contact_relation":"","first_contact_wc":"","second_contact":"","second_contact_phone":"","school":"","create_time":"1491804888","allergy":"\u9e21\u86cb","classes_id":"1","rand_code":"121","avatar":"20170426\/1493190569.jpg","fullAvatar":"http:\/\/d.baka\/pic\/20170426\/1493190569.jpg"}},"code":200,"url":"","message":""}
+{"data":{"info":{"id":"编号","name":"中文名","name_en":"英文名","nationality":"国籍","language":"语言","birth":"生日","park_date":"2017-02-28","communicate_language":"","first_contact":"","first_contact_relation":"","first_contact_wc":"","second_contact":"","second_contact_phone":"","school":"","create_time":"1491804888","allergy":"过敏","classes_id":"1","rand_code":"121","avatar":"头像","fullAvatar":"头像全路径"}},"code":200,"url":"","message":""}
+

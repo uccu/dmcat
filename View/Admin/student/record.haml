@@ -47,6 +47,10 @@
                         .sk-rect5
                     %form.form-horizontal.animated(method="post")
                         %input.form-control(type="hidden" name="id")
+                        .form-group.tc
+                            %img.img-circle.center-block.cp.avatar_img(data-name="avatar" src="/pic/noavatar.png" style="max-width:100px;max-height:100px")
+                            %input.form-control(type="file" style="display:none")
+                            %input.form-control(type="hidden" name="avatar")
                         .form-group
                             %label.col-sm-3.control-label #{lang.student.student_name}
                             .col-sm-9
@@ -114,6 +118,10 @@
     :javascript
         $(function(){
             var school = 0,classes = 0;
+            upPic('/staff/upPic','input[type="file"]','input[name="avatar"]','.avatar_img');
+            $('.avatar_img').bind('click',function(){
+                $('input[type="file"]').click();
+            })
             curl('/school/lists',{},function(w){
                 for(d in w.list)$('.schoolChange').append(
                     $('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id)

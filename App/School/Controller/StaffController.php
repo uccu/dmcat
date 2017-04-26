@@ -98,6 +98,7 @@ class StaffController extends Controller{
 
             $data['password'] = sha1($this->salt.md5($data['raw_password']));
             $data['create_time'] = TIME_NOW;
+            $data['avatar'] = 'noavatar.png';
             $id = $model->set($data)->add()->getStatus();
             Model::getInstance('user_online')->set(['id'=>$id])->add();
 
