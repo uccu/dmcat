@@ -53,6 +53,17 @@ class StudentController extends Controller{
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
     }
 
+    function comment(){
+
+        $lang = $this->L->i18n;
+        $lang->adminIndex;
+        $lang->student;
+        $lang->classes;
+        $lang->school;
+        View::addData(['lang'=>$lang]);
+        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+    }
+
     
 
 

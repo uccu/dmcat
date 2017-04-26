@@ -1,0 +1,95 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        .form-horizontal
+                            .form-group
+                                %label.col-sm-1.control-label #{lang.school.school}
+                                .col-sm-2
+                                    %select.form-control.m-b.schoolChange
+                                        %option(value="0") #{lang.adminIndex.all}
+                                %label.col-sm-1.control-label #{lang.classes.classes}
+                                .col-sm-2
+                                    %select.form-control.m-b.classesChange
+                                        %option(value="0") #{lang.adminIndex.all}
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                :css
+                    .no-del .data-del{display:none}
+                .ibox.ibox2.float-e-margins.no-del
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.sight}
+                            .col-sm-9
+                                %input.form-control(name="sight")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.weight}
+                            .col-sm-9
+                                %input.form-control(name="weight")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.student.height}
+                            .col-sm-9
+                                %input.form-control(name="height")
+                        
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Save
+
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(){
+            var school = 0,classes = 0;
+            curl('/school/lists',{},function(w){
+                for(d in w.list)$('.schoolChange').append(
+                    $('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id)
+                )
+                $('.schoolChange').change(function(){
+                    classes = 0;$('.classesChange').val(0);
+                    school = $(this).val();
+                    $('.classesChange').unbind('change').html('').append($('<option>').text('#{lang.adminIndex.all}').attr('value',0));
+                    if(school != 0){
+                        curl('/classes/lists',{school_id:school},function(w){
+                            for(d in w.list)$('.classesChange').append($('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id));
+                            $('.classesChange').bind('change',function(){
+                                classes = $(this).val();getList('/student/lists',{school_id:school,classes_id:classes})
+                            })
+                        });
+                    }
+                    getList('/student/lists',{school_id:school});
+                })
+            });
+            function flesh(){
+                getList('/student/lists2',{school_id:school,classes_id:classes});
+            }
+            flesh()
+        })
