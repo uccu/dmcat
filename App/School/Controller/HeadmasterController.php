@@ -23,7 +23,7 @@ class HeadmasterController extends Controller{
         $this->L = L::getInstance();
     }
 
-    function list(){
+    function lists(){
 
         View::hamlReader('Headmaster/'.__FUNCTION__,'App');
     }
