@@ -5,7 +5,7 @@ function curl(url,data,func,raw){
     var a = {
         url:url,
         data:data,
-        type:raw || data !={}?'post':'get',
+        type:raw || (data && JSON.stringify(data) !="{}")?'post':'get',
         dataType:'json',
         beforeSend:function(xhr){
             

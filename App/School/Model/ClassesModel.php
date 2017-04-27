@@ -14,7 +14,11 @@ class ClassesModel extends Model{
         
     }
     
+    public function level(){
 
+        return $this->join('App\School\Model\ClassesLevelModel','id','level');
+        
+    }
     
 
 }

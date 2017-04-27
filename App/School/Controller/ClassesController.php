@@ -4,6 +4,7 @@ namespace App\School\Controller;
 
 
 use App\School\Model\ClassesModel;
+use App\School\Model\ClassesLevelModel;
 use Controller;
 use Request;
 use App\School\Tool\AJAX;
@@ -50,7 +51,12 @@ class ClassesController extends Controller{
 
         if($school_id)$model->where(['school_id'=>$school_id]);
 
-        $list = $model->select('*', $schoolName )->get()->toArray();
+        $list = $model->select('*', $schoolName ,'level.name>level_name','level.name_en>level_name_en' )->get()->toArray();
+
+        foreach($list as &$v){
+            $v->name = $v->level_name.','.$v->name;
+            $v->name_en = $v->level_name_en.','.$v->name_en;
+        }
 
         $out['list']  = $list;
         AJAX::success($out);
@@ -89,7 +95,7 @@ class ClassesController extends Controller{
     }
 
 
-    function del($id,ClassesModel $model){
+    function level_del($id,ClassesLevelModel $model){
 
         !$id && AJAX::error_i18n('param_error');
         $model->remove($id);
@@ -97,6 +103,66 @@ class ClassesController extends Controller{
 
     }
 
+    function level_upd($id,ClassesLevelModel $model){
+
+        $data = Request::getInstance()->request(['name','name_en']);
+
+        if(!$id){
+
+            $model->set($data)->add();
+
+        }else{
+
+            $model->set($data)->save($id);
+        }
+        
+        
+
+        AJAX::success();
+
+    }
+
+    function level_get($id,ClassesLevelModel $model){
+
+        !$id && AJAX::success(['info'=>[]]);
+        $out['info'] = $info = $model->find($id);
+        !$info && AJAX::error_i18n('no_data');
+
+
+        AJAX::success($out);
+
+    }
+
+
+    function level_lists(ClassesLevelModel $model,$school_id){
+
+        // !$this->L->id && AJAX::error_i18n('not_login');
+
+        $out = ['get'=>'/classes/level_get','upd'=>'/classes/level_upd','del'=>'/classes/level_del'];
+
+        $out['thead'] = [
+            'ID'=>['class'=>'tc'],
+            '名字/chinese name'=>['class'=>'tc'],
+            '英文名/english name'=>['class'=>'tc'],
+            
+            '_opt'=>['class'=>'tc'],
+        ];
+        
+        $out['tbody'] = [
+            'id'=>['class'=>'tc'],
+            'name'=>['class'=>'tc'],
+            'name_en'=>['class'=>'tc'],
+            '_opt'=>['class'=>'tc'],
+        ];
+
+        $list = $model->get()->toArray();
+
+
+        $out['list']  = $list;
+        AJAX::success($out);
+
+
+    }
 
     
 

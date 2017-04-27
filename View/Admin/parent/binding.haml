@@ -84,16 +84,16 @@
                     .form-horizontal.updateOnly
                         .hr-line-dashed
                         .form-group
-                            %label.col-sm-3.control-label #{lang.school.school}
-                            .col-sm-9
+                            %label.col-sm-3.control-label
+                                %p 选择学生
+                                %p Choose Student
+                            .col-sm-3
                                 %select.form-control(name="school_id")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.classes.classes}
-                            .col-sm-9
+                        
+                            .col-sm-3
                                 %select.form-control(name="classes_id")
-                        .form-group
-                            %label.col-sm-3.control-label #{lang.student.student_name}
-                            .col-sm-9
+                        
+                            .col-sm-3
                                 %select.form-control(name="student_id")
                         .form-group
                             .col-sm-12.tr
@@ -126,6 +126,7 @@
                             if($('[name="classes_id"]').attr('data-value'))$('[name="classes_id"]').val($('[name="classes_id"]').attr('data-value')).attr('data-value','');
                             $('[name="classes_id"]').change(function(){
                                 var classes = $(this).val();
+                                if(!classes)return;
                                 $('[name="student_id"]').unbind('change').html('');
                                 if(classes != 0){
                                     curl('/student/lists',{classes_id:classes},function(w){

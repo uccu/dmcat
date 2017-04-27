@@ -38,6 +38,17 @@ class SchoolAndClassesController extends Controller{
 
     }
 
+    /* 班级 */
+    function level(){
+
+        $lang = $this->L->i18n;
+        $lang->adminIndex;
+        $lang->level;
+        View::addData(['lang'=>$lang]);
+        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+
+    }
+
     
 
 

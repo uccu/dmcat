@@ -1,1 +1,4 @@
 Log/*.log
+Public/pic/20*
+.DS_Store
+.vscode
