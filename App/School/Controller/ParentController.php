@@ -113,7 +113,7 @@ class ParentController extends Controller{
         !$info && AJAX::error_i18n('no_user_exist');
 
         if(!$data['raw_password'])unset($data['raw_password']);
-        elseif(data['raw_password'] && $info->raw_password !== $data['raw_password'])
+        elseif($data['raw_password'] && $info->raw_password !== $data['raw_password'])
             $data['password'] = sha1($this->salt.md5($data['raw_password']));
 
         $model->set($data)->save($id);
