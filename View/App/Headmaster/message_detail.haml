@@ -1,0 +1,113 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+    %title 校长/Headmaster
+    %meta(name="keywords" content="#{g.keywords}")
+    %meta(name="description" content="#{g.description}")
+
+
+- block body
+    :css
+        img{
+            width:50px;
+            border-radius:50%
+        }
+        .text-muted{
+            color:#aaa !important;
+        }
+        body{
+            padding-top:10px
+        }
+        .col-xs-12 p{
+            font-size: 17px;
+            margin-bottom:60px
+        }
+        .fixx{
+            bottom:40px;left:0;width:100%;
+        }
+        .fixx a{
+            padding:5px 30px;
+            border-radius:20px;
+            margin:auto 20px;
+            background-color:#1c2d67;
+            color:#fff;
+            outline: none;
+        }
+        
+
+    .container-fluid
+        .row
+            .col-xs-2.tc
+                %img(src="#{info.fullAvatar}")
+            .col-xs-10.tl
+                %h5
+                    #{info.name}/#{info.name_en}
+                    - if info.type == 1
+                        家长
+                    - else
+                        老师
+                %p.text-muted #{info.date}
+            .col-xs-12
+                %p.text-muted #{info.message}
+            - if info.reply
+                .col-xs-12
+                    %h5 回复/Reply：
+                    %p.text-muted #{info.reply}
+                
+        
+
+        .fixx.pf.tc
+            - if info.type == 1
+                - if info.reply == ''
+                    %a.reply 回复/Reply
+            %a.mark
+                - if info.istag
+                    已标记/Marked
+                - else
+                    标记/Mark
+
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 回复/reply
+                    %small.font-bold
+                .modal-body
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id" value="#{info.id}")
+                        .form-group
+                            .col-xs-12
+                                %textarea.form-control(name="reply" style="resize:vertical" rows="10")
+                        
+                        
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Send
+    :javascript
+
+        j('a.mark').click(function(){
+
+            j.post('/headmaster/mark',{id:#{info.id}},function(){
+                alert('success');location.reload();
+            })
+
+        });
+        j('a.reply').click(function(){
+            j('#modal_new').modal();
+        });
+
+        j('.save').click(function(){
+            if(j('[name="reply"]').val()==''){
+                alert('no data');return
+            }
+            j.post('/headmaster/reply',j('form').serialize(),function(){
+                alert('success');location.reload();
+            })
+
+        })
+  

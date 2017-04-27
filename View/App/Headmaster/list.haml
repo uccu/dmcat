@@ -1,0 +1,175 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+    %title 校长/Headmaster
+    %meta(name="keywords" content="#{g.keywords}")
+    %meta(name="description" content="#{g.description}")
+
+
+- block body
+    :css
+        body{
+            background-color:#f0f0f0
+        }
+        .choose .col-xs-4{
+            padding:10px 0;
+            background-color:#fff
+        }
+        .choose .col-xs-4.active{
+            border-bottom:3px #1c2d67 solid
+        }
+        .choose p{
+            padding:0;
+            margin:auto
+        }
+        .choose .pr::before{
+            position:absolute;
+            content:' ';
+            background-color:#f0f0f0;
+            width:2px;
+            height:80%;
+            top:10%;
+            left:0;
+        }
+        .choose .pr::after{
+            position:absolute;
+            content:' ';
+            background-color:#f0f0f0;
+            width:2px;
+            height:80%;
+            top:10%;
+            right:0;
+        }
+        .container-fluid.block{
+            height:40px;
+            background-color:#f0f0f0
+        }
+        .message{
+            padding-top:10px;
+            padding-bottom:10px;
+            box-shadow:0 0 4px #ccc;
+            margin-bottom:10px;
+            background-color:#fff
+        }
+        .message .avatar img{
+            width:50px;
+            border-radius:50%
+        }
+        .message .avatar.noread::after{
+            content:' ';
+            background-color:red;
+            position:absolute;
+            right:3px;
+            top:3px;
+            width:6px;
+            height:6px;
+            border-radius:50%
+
+        }
+        .message h4{
+            padding: 0;
+            margin: auto;
+            margin-top: 8px;
+            line-height: 20px;
+            font-size: 15px;
+        }
+        .message small{
+            padding:0;margin:auto;
+            line-height:50px
+        }
+        .message span{
+            color:red;right:40px;top:3px
+        }
+
+    
+    .container-fluid
+        .row.choose
+            .col-xs-4.tc(data-type=1 data-istag=0)
+                %h4.text-info 家长留言
+                %p.text-muted parent
+            .col-xs-4.tc.pr(data-type=0 data-istag=1)
+                %h4.text-info 已标记
+                %p.text-muted Mark
+            .col-xs-4.tc(data-type=2 data-istag=0)
+                %h4.text-info 申请删除
+                %p.text-muted apply
+    .container-fluid.block
+        
+    .container-fluid.message_box
+        
+
+    :javascript
+
+        var istag = 0;
+        var type = 1;
+        var page = 1;
+
+        function getPage(){
+
+            j.post('/headmaster/view_message',{page:page,type:type,istag:istag},function(d){
+
+                if(d.code !=200){
+                    alert(d.message);return;
+                }
+                if(page==1)j('.row.message').remove();
+                for(var i in d.data.list){
+
+                    var body = j('<div>').addClass('row message cp pr');
+
+                    var oo = j('<div>').addClass('col-xs-4 tc');
+
+                    if(d.data.list[i].istag == '1'){
+                        oo.append(j('<span>').addClass('glyphicon glyphicon-flag pa'));
+                    }
+                    oo.append(
+                        j('<small>').addClass('text-muted').html(d.data.list[i].date)
+                    );
+
+                    body.append(
+                        j('<div>').addClass('col-xs-2 tc avatar'+(d.data.list[i].isread=='0'?' noread':'')).append(
+                            j('<img>').attr('src',d.data.list[i].fullAvatar)
+                        )
+                    ).append(
+                        j('<div>').addClass('col-xs-6 tl').append(
+                            j('<h4>').html(d.data.list[i].message)
+                        )
+                    ).append(
+                        oo
+                    ).appendTo('.message_box').attr('data-id',d.data.list[i].id).click(function(){
+                        location = '/headmaster/message_detail?id='+j(this).attr('data-id')
+                    })
+                }
+                j(window).unbind('scroll');
+                if(d.data.list.length){
+                    page++;
+                    j(window).bind('scroll',function(e){
+                        if(j(this).scrollTop()+j(this).height() == j('body').height())getPage()
+                    })
+                }
+            },'json')
+        }
+
+
+        j('.choose .col-xs-4').click(function(){
+            if(!j(this).hasClass('active')){
+                istag = j(this).attr('data-istag');
+                type = j(this).attr('data-type');
+                page = 1;
+                j('.choose .col-xs-4').removeClass('active');
+                j(this).addClass('active');
+
+                getPage();
+                
+
+            }
+        })
+
+        j('.choose .col-xs-4').eq(0).click();
+
+        
+  
+
+
+  

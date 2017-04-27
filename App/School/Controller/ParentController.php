@@ -12,6 +12,7 @@ use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
 use View;
+use Request;
 use Model;
 
 class ParentController extends Controller{
