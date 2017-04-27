@@ -17,6 +17,15 @@ avatar 头像（上传头像接口返回的path参数的值）
 {}
 
 
+学生更新个人资料
+http://weixin.ivy-china.com/parent/student_upd
+id 当前是10
+allergy 过敏
+avatar 头像（上传头像接口返回的path参数的值）
+{}
+{}
+
+
 学生获取个人资料
 http://weixin.ivy-china.com/student/get
 id 学生ID

@@ -123,5 +123,21 @@ class ParentController extends Controller{
 
     }
 
+    function student_upd($id = 0,StudentModel $model){
+
+        $data = Request::getInstance()->request(['avatar','allergy']);
+
+        $info = $model->find($id);
+        !$info && AJAX::error('没有该学生/no student');
+
+        if($data['avatar'])unset($data['avatar']);
+
+        $model->set($data)->save($id);
+        
+
+        AJAX::success();
+
+    }
+
 
 }
