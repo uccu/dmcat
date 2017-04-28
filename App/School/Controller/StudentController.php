@@ -342,18 +342,12 @@ class StudentController extends Controller{
 
 
 
-    /* 每日点评 */
-
-
-    function add_comment($id,$date,CommentModel $model){
-
-        $data = Request::getInstance()->request($model->field);
-
-
-    }
+    
 
     function view_comment($id,$date,CommentModel $model){
 
+        if(!$date)$info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id])->order('date','DESC')->find();
+        else 
         $info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id,'date'=>$date])->find();
 
         !$info && AJAX::error('NO DATA');
@@ -368,6 +362,8 @@ class StudentController extends Controller{
         }
 
         $out['info'] = $info;
+
+        $date = $info->date;
 
         $nex = $model->where(['student_id'=>$id,['date>%n',$date]])->find();
         $las = $model->where(['student_id'=>$id,['date<%n',$date]])->find();
