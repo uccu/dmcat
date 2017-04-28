@@ -2,7 +2,11 @@
 
 
 - block body
-
+    :css
+        .changeIt:hover{
+            background-color:#f0f0f0
+        }
+        i.fa{font-size:22px}
     .wrapper.wrapper-content
         .row
             .col-sm-12
@@ -10,6 +14,7 @@
                     .ibox-content
                         .form-horizontal
                             .form-group
+                                
                                 %label.col-sm-1.control-label #{lang.school.school}
                                 .col-sm-2
                                     %select.form-control.m-b.schoolChange
@@ -18,15 +23,21 @@
                                 .col-sm-2
                                     %select.form-control.m-b.classesChange
                                         %option(value="0") #{lang.adminIndex.all}
-                .sk-spinner.sk-spinner-wave.animated
+                                %label.col-sm-1.control-label #{lang.adminIndex.year}
+                                .col-sm-2
+                                    %select.form-control.m-b.yearChange
+                                %label.col-sm-1.control-label #{lang.adminIndex.month}
+                                .col-sm-2
+                                    %select.form-control.m-b.monthChange
+
+                .sk-spinner.sk-spinner-wave.animated.fadeOutUp
                     .sk-rect1
                     .sk-rect2
                     .sk-rect3
                     .sk-rect4
                     .sk-rect5
-                :css
-                    .no-del .data-del{display:none}
-                .ibox.ibox2.float-e-margins.no-del
+                
+                .ibox.ibox2.float-e-margins
     #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
         .modal-dialog
             .modal-content.animated.fadeInDown
@@ -44,20 +55,50 @@
                         .sk-rect4
                         .sk-rect5
                     %form.form-horizontal.animated(method="post")
-                        %input.form-control(type="hidden" name="id")
+                        %input(type="hidden" name="student_id")
+                        %input(type="hidden" name="month")
+                        %input(type="hidden" name="day")
+                        %input(type="hidden" name="life")
+                        %input(type="hidden" name="learning")
+                        %input(type="hidden" name="eating")
                         .form-group
-                            %label.col-sm-3.control-label #{lang.student.sight}
+                            %label.col-sm-3.control-label
+                                学习能力/Learning
                             .col-sm-9
-                                %input.form-control(name="sight")
+                                %p(data-name="learning")
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
                         .form-group
-                            %label.col-sm-3.control-label #{lang.student.weight}
+                            %label.col-sm-3.control-label
+                                饮食能力/Eating
                             .col-sm-9
-                                %input.form-control(name="weight")
+                                %p(data-name="eating")
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
                         .form-group
-                            %label.col-sm-3.control-label #{lang.student.height}
+                            %label.col-sm-3.control-label
+                                生活能力/Life
                             .col-sm-9
-                                %input.form-control(name="height")
-                        
+                                %p(data-name="life")
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
+                                    %i.fa.fa-star-o.cp
+                        .form-group
+                            %label.col-sm-3.control-label 评论/Comment
+                            .col-sm-9
+                                %textarea.form-control(name="comment" style="resize:vertical" rows="5")
+                        .form-group
+                            %label.col-sm-3.control-label 图片/Picture
+                            .col-sm-9
+                                
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close
                     %button.btn.btn-primary.save(type="button") Save
@@ -68,28 +109,124 @@
 - block otherScript
     :javascript
         $(function(){
-            var school = 0,classes = 0;
-            curl('/school/lists',{},function(w){
-                for(d in w.list)$('.schoolChange').append(
-                    $('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id)
-                )
-                $('.schoolChange').change(function(){
-                    classes = 0;$('.classesChange').val(0);
-                    school = $(this).val();
-                    $('.classesChange').unbind('change').html('').append($('<option>').text('#{lang.adminIndex.all}').attr('value',0));
-                    if(school != 0){
-                        curl('/classes/lists',{school_id:school},function(w){
-                            for(d in w.list)$('.classesChange').append($('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id));
-                            $('.classesChange').bind('change',function(){
-                                classes = $(this).val();getList('/student/lists',{school_id:school,classes_id:classes})
+            var school = 0,classes = 0,year=0,month=0;
+            var vc = {
+                school:function(){
+
+                    curl('/school/lists',{},function(w){
+                        for(d in w.list)
+                            $('.schoolChange').append(
+                                $('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id)
+                            )
+                        $('.schoolChange').change(function(){
+                            classes = 0;
+                            $('.classesChange').val(0);
+                            
+                            school = $(this).val();
+                            $('.classesChange').unbind('change').html('').append($('<option>').text('#{lang.adminIndex.all}').attr('value',0));
+                            
+                            if(school != 0){
+                                vc.classes();
+                            }
+                            flesh();
+                        })
+                    });
+                },classes:function(){
+
+                    curl('/classes/lists',{school_id:school},function(w){
+                        for(d in w.list)
+                            $('.classesChange').append(
+                                $('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id)
+                            );
+                        $('.classesChange').bind('change',function(){
+                            classes = $(this).val();
+                            flesh();
+                        })
+                    });
+
+                },year:function(){
+                    var date = new Date;
+                    var thisYear = date.getUTCFullYear();
+                    for(var i = 2017;i<=thisYear;i++)
+                            $('.yearChange').append(
+                                $('<option>').text(i).attr('value',i)
+                            );
+                    $('.yearChange').bind('change',function(){ 
+                        year = $(this).val();
+                        flesh();
+                    }).change();
+
+                },month:function(){
+
+                    for(var i = 1;i<=12;i++)
+                        $('.monthChange').append(function(){
+                            if(i<10)i='0'+i;
+                            return $('<option>').text(i).attr('value',i)
+                        }
+                        );
+                    $('.monthChange').bind('change',function(){ 
+                        month = $(this).val();
+                        flesh();
+                    }).change();
+
+                },fa:function(){
+
+                    $('.modal-body i.fa').click(function(){
+                        var index = $(this).index();
+                        $('.modal-body [name="'+$(this).parent().attr('data-name')+'"]').val(index+1);
+                        for(var i=0;i<6;i++){
+                            if(i<=index){
+                                $(this).parent().find('i').eq(i).removeClass('fa-star-o fa-star').addClass('fa-star');
+                            }else $(this).parent().find('i').eq(i).removeClass('fa-star-o fa-star').addClass('fa-star-o');
+                        }
+                    })
+                    
+                }
+            };
+            function flesh(){
+                if(classes && classes !='0' && year && month)
+                    getList('/student/comment_list',{classes_id:classes,year:year,month:month});
+                else $('.ibox2').html('');
+            }
+            gr.getListAfter = function(d){
+                $('tbody td').each(function(){
+                    if($(this).text() == '√')$(this).addClass('bg-success');
+                    else if($(this).text() == '×')$(this).addClass('bg-danger');
+                    else if($(this).text() == '❂')$(this).addClass('bg-warning');
+                    else if($(this).text() == '')$(this).addClass('bg-info');
+                });
+
+                $('h4.modal-title').text(lang.adminIndex.update);
+                $('.changeIt').bind('click',function(){
+                    $('#modal_new .sk-spinner').removeClass('fadeOutUp');
+                    $('#modal_new [name]').val('');
+                    var student_id = $(this).attr('data-id');
+                    var day = $(this).index();
+                    curl(d.get,{month:year+''+month,day:day,id:student_id},function(g){
+                        $('#modal_new .sk-spinner').addClass('fadeOutUp');
+                        
+                        $('#modal_new .save').unbind('click').bind('click',function(){
+                            curl(d.upd,$('#modal_new form').serialize(),function(b){
+                                curl_succ('success!');$('[data-dismiss="modal"]').click();setTimeout(flesh,1000)
                             })
                         });
-                    }
-                    getList('/student/lists',{school_id:school});
+                        $('#modal_new').modal();
+                    });
                 })
-            });
-            function flesh(){
-                getList('/student/lists2',{school_id:school,classes_id:classes});
+
             }
-            flesh()
+            $('#modal_new form').find('[name="status"]').change(function(){
+                if($(this)[0].checked){
+                    $('.reasonZ').addClass('dn');
+                    $('.attendZ').removeClass('dn');
+                }else{
+                    $('.reasonZ').removeClass('dn');
+                    $('.attendZ').addClass('dn');
+                }
+            })
+            
+            vc.school();vc.year();vc.month();vc.fa()
+            
+            
+            
         })

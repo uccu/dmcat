@@ -342,15 +342,84 @@ class StudentController extends Controller{
 
 
 
+
+    function comment_list($year,$month,$classes_id,CommentModel $commentModel,StudentModel $studentModel,RestDayModel $restDayModel){
+
+        if(!$month || !$year || !$classes_id)AJAX::error_i18n('param_error');
+        
+        
+        $dayOfThisMonth = Func::calculateDayCount($year.$month);
+
+        $out = ['get'=>'/student/view_comment','upd'=>'/student/comment_upd'];
+
+        $out['thead'][] = ['class'=>'tc','name'=>$this->lang->student->student];
+        for($i=1;$i<=$dayOfThisMonth;$i++){
+            $out['thead'][$i] = ['class'=>'tc','name'=>$i];
+        }
+        
+
+        $where['month'] = $year.$month;
+        $where['student.classes_id'] = $classes_id;
+        $out[] = $list = $commentModel->select(['student_id,GROUP_CONCAT(day) AS `day`'],'RAW')->where($where)->group('student_id')->get('student_id')->toArray();
+        foreach($list as &$v){
+            $v->stat= explode(',',$v->day);
+            
+        }
+
+        $where2['classes_id'] = $classes_id;
+        $name = $this->lang->language == 'cn' ?'name':'name_en';
+        $out[] = $stu = $studentModel->where($where2)->get_field($name,'id');
+
+        $body = [];
+        $body['0'] = ['class'=>'tc'];
+        for($i=1;$i<=$dayOfThisMonth; $body[$i++] = ['class'=>'tc changeIt cp t']);
+        $out['tbody'] = $body;
+
+        $restDay = $restDayModel->where(['month'=>$month])->get_field('day')->toArray();
+
+        foreach($stu as $k=>$s){
+
+            
+
+            $body = [];
+            $body['0'] = $s;
+            $body['id'] = $k;
+            for($i=1;$i<=$dayOfThisMonth; $i++){
+                if($i<10)$i2 = '0'.$i;else $i2 = $i;
+                if($year.$month.$i2>DATE_TODAY)$body[$i] = '';
+                elseif($list[$k]->stat && in_array($i2,$list[$k]->stat))$body[$i] = '√';
+                
+                else $body[$i] = '×';
+                
+            };
+
+            $out['list'][] = $body;
+        }
+
+        $out['test'] = $listSuccess;
+
+        AJAX::success($out);
+    }
+
+
+    function comment_upd(){
+
+
+
+
+        
+    }
+
+
     
 
-    function view_comment($id,$date,CommentModel $model){
+    function view_comment($id,$student_id,$month,$day,CommentModel $model){
 
-        if(!$date)$info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id])->order('date','DESC')->find();
+        if(!$month || !$day)$info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id])->order('month DESC','day DESC')->find();
         else 
-        $info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id,'date'=>$date])->find();
+        $info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id,'month'=>$month,'day'=>$day])->find();
 
-        !$info && AJAX::error('NO DATA');
+        !$info && AJAX::success(['info'=>[]]);
 
         $info->fullAvatar = Func::fullPicAddr( $info->avatar );
         
@@ -363,13 +432,7 @@ class StudentController extends Controller{
 
         $out['info'] = $info;
 
-        $date = $info->date;
-
-        $nex = $model->where(['student_id'=>$id,['date>%n',$date]])->find();
-        $las = $model->where(['student_id'=>$id,['date<%n',$date]])->find();
-
-        $out['last'] = $las?$las->date:'';
-        $out['next'] = $nex?$nex->date:'';
+        
 
         AJAX::success($out);
 

@@ -28,7 +28,7 @@ class TeacherController extends Controller{
 
     /* 每日点评 */
 
-    function add_comment($id,$date,CommentModel $model){
+    function add_comment($id,$month,$day,CommentModel $model){
 
         $data = Request::getInstance()->request($model->field);
 
@@ -37,7 +37,8 @@ class TeacherController extends Controller{
         $data['create_time'] = TIME_NOW;
 
         $where['student_id'] = $id;
-        $where['date'] = $date;
+        $where['month'] = $month;
+        $where['day'] = $day;
 
         $las = $model->where($where)->find();
 
