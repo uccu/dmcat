@@ -130,7 +130,7 @@ class ParentController extends Controller{
         $info = $model->find($id);
         !$info && AJAX::error('没有该学生/no student');
 
-        if($data['avatar'])unset($data['avatar']);
+        if(!$data['avatar'])unset($data['avatar']);
 
         $model->set($data)->save($id);
         
