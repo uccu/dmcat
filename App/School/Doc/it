@@ -37,6 +37,13 @@ id 学生ID
 http://weixin.ivy-china.com/student/view_comment
 id 学生ID
 date 日期，例如：2017-04-26
-
 {"data":{"info":{"id":"1","student_id":"2","date":"2017-04-26","learning":"5","eat":"5","life":"5","comment":"\u8fd9\u662f\u4e2a\u597d\u5b66\u751f\uff01","pic":"20170426\/1493190569.jpg","teacher_id":"9","create_time":"0","name":"\u5f20\u4e09","name_en":"San Zhang","avatar":"20170426\/1493190569.jpg","fullAvatar":"http:\/\/d.baka\/pic\/20170426\/1493190569.jpg","picArray":["http:\/\/d.baka\/pic\/20170426\/1493190569.jpg"]},"last":"","next":"2017-04-27"},"code":200,"url":"","message":""}
 {}
+
+
+
+获取家长孩子头像以及名字
+http://weixin.ivy-china.com/parent/child
+id 家长ID
+
+{"data":{"list":[{"id":"14","name":"\u5f20\u4e09","name_en":"San Zhang","avatar":"20170426\/1493190569.jpg","fullAvatar":"http:\/\/d.baka\/pic\/20170426\/1493190569.jpg"},{"id":"23","name":"\u5c0f\u660e","name_en":"Ming","avatar":"noavatar.png","fullAvatar":"http:\/\/d.baka\/pic\/noavatar.png"}]},"code":200,"url":"","message":""}
