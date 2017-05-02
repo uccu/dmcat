@@ -188,8 +188,9 @@ class Func{
             if(!is_dir($folderRoot))
                 !mkdir($folderRoot,0777,true) && AJAX::error('文件夹权限不足，无法创建文件！');
             $folderRoot .= '/';
-            $src = $folderRoot.TIME_NOW.'.jpg';
-            $path = $folder.'/'.TIME_NOW.'.jpg';
+            $time = date('H.i.s.').self::randWord(6,3);
+            $src = $folderRoot.$time.'.jpg';
+            $path = $folder.'/'.$time.'.jpg';
         }
 
         $width0 = $arr[0];

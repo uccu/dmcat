@@ -6,7 +6,10 @@
         .changeIt:hover{
             background-color:#f0f0f0
         }
-        i.fa{font-size:22px}
+        .star i.fa{font-size:22px}
+        .picArray img{width:40px}
+        .fa-plus-square-o{font-size:45px}
+        .dn{display:none !important}
     .wrapper.wrapper-content
         .row
             .col-sm-12
@@ -60,12 +63,13 @@
                         %input(type="hidden" name="day")
                         %input(type="hidden" name="life")
                         %input(type="hidden" name="learning")
-                        %input(type="hidden" name="eating")
+                        %input(type="hidden" name="eat")
+                        %input(type="hidden" name="pic")
                         .form-group
                             %label.col-sm-3.control-label
                                 学习能力/Learning
                             .col-sm-9
-                                %p(data-name="learning")
+                                %p.star(data-name="learning")
                                     %i.fa.fa-star-o.cp
                                     %i.fa.fa-star-o.cp
                                     %i.fa.fa-star-o.cp
@@ -75,7 +79,7 @@
                             %label.col-sm-3.control-label
                                 饮食能力/Eating
                             .col-sm-9
-                                %p(data-name="eating")
+                                %p.star(data-name="eat")
                                     %i.fa.fa-star-o.cp
                                     %i.fa.fa-star-o.cp
                                     %i.fa.fa-star-o.cp
@@ -85,7 +89,7 @@
                             %label.col-sm-3.control-label
                                 生活能力/Life
                             .col-sm-9
-                                %p(data-name="life")
+                                %p.star(data-name="life")
                                     %i.fa.fa-star-o.cp
                                     %i.fa.fa-star-o.cp
                                     %i.fa.fa-star-o.cp
@@ -97,10 +101,22 @@
                                 %textarea.form-control(name="comment" style="resize:vertical" rows="5")
                         .form-group
                             %label.col-sm-3.control-label 图片/Picture
-                            .col-sm-9
-                                
+                            .col-sm-9.picArray
+                                %span.dib.clear
+                                    %img.cp.fl(src="/pic/20170426/1493190569.jpg")
+                                    %img.cp.fl(src="/pic/20170426/1493190569.jpg")
+                                    %img.cp.fl(src="/pic/20170426/1493190569.jpg")
+                                    %img.cp.fl(src="/pic/20170426/1493190569.jpg")
+                                    %img.cp.fl(src="/pic/20170426/1493190569.jpg")
+                                    %img.cp.fl(src="/pic/20170426/1493190569.jpg")
+                                    %img.cp.fl(src="/pic/20170426/1493190569.jpg")
+                                    %img.cp.fl(src="/pic/20170426/1493190569.jpg")
+                                    
+                                %i.fa.fa-plus-square-o.cp
+                                %input.dn(type="file")
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-danger.remove(type="button") Remove
                     %button.btn.btn-primary.save(type="button") Save
 
                         
@@ -170,18 +186,35 @@
                     }).change();
 
                 },fa:function(){
-
-                    $('.modal-body i.fa').click(function(){
-                        var index = $(this).index();
-                        $('.modal-body [name="'+$(this).parent().attr('data-name')+'"]').val(index+1);
-                        for(var i=0;i<6;i++){
-                            if(i<=index){
-                                $(this).parent().find('i').eq(i).removeClass('fa-star-o fa-star').addClass('fa-star');
-                            }else $(this).parent().find('i').eq(i).removeClass('fa-star-o fa-star').addClass('fa-star-o');
-                        }
-                    })
+                    var index = $(this).index();
+                    $('.modal-body [name="'+$(this).parent().attr('data-name')+'"]').val(index+1);
+                    for(var i=0;i<6;i++){
+                        if(i<=index){
+                            $(this).parent().find('i').eq(i).removeClass('fa-star-o fa-star').addClass('fa-star');
+                        }else $(this).parent().find('i').eq(i).removeClass('fa-star-o fa-star').addClass('fa-star-o');
+                    }
+                },fac:function(){
+                    var index = $(this).val() || 0;
+                    if(!index || index === '0')return;
+                    $('p[data-name="'+$(this).attr('name')+'"]').find('i').eq(index-1).click();
                     
+                },toPic:function(){
+                    var img = $('#modal_new .picArray span img');
+                    var l = img.length;
+                    var pic = [];
+                    for(var i=0;i<l;i++)pic.push(img.eq(i).attr('data-pic'));
+
+
+                    $('#modal_new [name="pic"]').val(pic.join(';'));
+                },dePic:function(){
+                    var that = this;
+                    curl_check(function(){
+                        $(that).remove();vc.toPic()
+                    })
+
                 }
+                    
+                
             };
             function flesh(){
                 if(classes && classes !='0' && year && month)
@@ -199,15 +232,30 @@
                 $('h4.modal-title').text(lang.adminIndex.update);
                 $('.changeIt').bind('click',function(){
                     $('#modal_new .sk-spinner').removeClass('fadeOutUp');
-                    $('#modal_new [name]').val('');
+                    $('.modal-body .star i.fa').removeClass('fa-star-o fa-star').addClass('fa-star-o');
+                    $('#modal_new input,#modal_new textarea').val('');
+                    $('#modal_new .picArray span').html('');
                     var student_id = $(this).attr('data-id');
                     var day = $(this).index();
+
+                    $('#modal_new [name="month"]').val(year+''+month);
+                    $('#modal_new [name="day"]').val(day);
+                    $('#modal_new [name="student_id"]').val(student_id);
+
                     curl(d.get,{month:year+''+month,day:day,id:student_id},function(g){
                         $('#modal_new .sk-spinner').addClass('fadeOutUp');
-                        
+                        for(h in g.info)$('#modal_new form').find('[name="'+h+'"]').val(g.info[h]).change();
+                        for(h in g.info.pic2Array)$('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.info.picArray[h],'data-pic':g.info.pic2Array[h]}).click(vc.dePic));
                         $('#modal_new .save').unbind('click').bind('click',function(){
                             curl(d.upd,$('#modal_new form').serialize(),function(b){
                                 curl_succ('success!');$('[data-dismiss="modal"]').click();setTimeout(flesh,1000)
+                            })
+                        });
+                        $('#modal_new .remove').unbind('click').bind('click',function(){
+                            curl_check(function(){
+                                curl(d.del,$('#modal_new form').serialize(),function(b){
+                                    curl_succ('success!');$('[data-dismiss="modal"]').click();setTimeout(flesh,1000)
+                                })
                             })
                         });
                         $('#modal_new').modal();
@@ -215,18 +263,17 @@
                 })
 
             }
-            $('#modal_new form').find('[name="status"]').change(function(){
-                if($(this)[0].checked){
-                    $('.reasonZ').addClass('dn');
-                    $('.attendZ').removeClass('dn');
-                }else{
-                    $('.reasonZ').removeClass('dn');
-                    $('.attendZ').addClass('dn');
-                }
-            })
             
-            vc.school();vc.year();vc.month();vc.fa()
             
+            vc.school();vc.year();vc.month();
+            $('.modal-body .star i.fa').click(vc.fa)
+            $('[name="life"],[name="learning"],[name="eat"]').change(vc.fac)
+            $('.fa-plus-square-o').click(function(){$('input[type="file"]').click()})
+
+            upPic('/staff/upPic','input[type="file"]',function(g){
+                $('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.apath,'data-pic':g.path}).click(vc.dePic));
+                vc.toPic()
+            });
             
             
         })

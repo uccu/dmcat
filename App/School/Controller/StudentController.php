@@ -350,7 +350,7 @@ class StudentController extends Controller{
         
         $dayOfThisMonth = Func::calculateDayCount($year.$month);
 
-        $out = ['get'=>'/student/view_comment','upd'=>'/student/comment_upd'];
+        $out = ['get'=>'/student/view_comment','upd'=>'/student/comment_upd','del'=>'/student/comment_del'];
 
         $out['thead'][] = ['class'=>'tc','name'=>$this->lang->student->student];
         for($i=1;$i<=$dayOfThisMonth;$i++){
@@ -402,12 +402,52 @@ class StudentController extends Controller{
     }
 
 
-    function comment_upd(){
+    function comment_upd($month,$student_id,$day,CommentModel $commentModel){
 
+        if(!$month || !$student_id || !$day)AJAX::error_i18n('param_error');
 
+        $where['student_id'] = $student_id;
+        $where['month'] = $month;
+        $where['day'] = $day;
+
+        $comment = $commentModel->where($where)->find();
+
+        $data = Request::getInstance()->request($commentModel->field);
+
+        $data['learning'] = $data['learning']?$data['learning']:0;
+        $data['eat'] = $data['eat']?$data['eat']:0;
+        $data['life'] = $data['life']?$data['life']:0;
+
+        if(!$comment){
+
+            $data['create_time'] = TIME_NOW;
+            $data['teacher_id'] = $this->L->id;
+            $commentModel->set($data)->add();
+        }else{
+
+            $commentModel->set($data)->save($comment->id);
+
+        }
+
+        AJAX::success();
 
 
         
+    }
+
+
+    function comment_del($month,$student_id,$day,CommentModel $commentModel){
+
+        if(!$month || !$student_id || !$day)AJAX::error_i18n('param_error');
+
+        $where['student_id'] = $student_id;
+        $where['month'] = $month;
+        $where['day'] = $day;
+
+        $commentModel->where($where)->remove();
+
+        AJAX::success();
+
     }
 
 
@@ -426,6 +466,7 @@ class StudentController extends Controller{
         $info->picArray = [];
         if($info->pic){
             $pics = explode(';',$info->pic);
+            $info->pic2Array = $pics;
             foreach($pics as &$v)$v = Func::fullPicAddr( $v );
             $info->picArray = $pics;
         }
@@ -436,6 +477,17 @@ class StudentController extends Controller{
 
         AJAX::success($out);
 
+    }
+
+
+
+    function upPic(){
+
+        $out['path'] = Func::uploadFiles('file');
+        if(!$out['path'])AJAX::error('no image');
+        $out['fpath'] = '/pic/'.$out['path'];
+        $out['apath'] = Func::fullPicAddr($out['path']);
+        AJAX::success($out);
     }
 
 

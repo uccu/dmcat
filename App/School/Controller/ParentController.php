@@ -73,6 +73,18 @@ class ParentController extends Controller{
 
     }
 
+
+    function child($id = 0){
+
+        $out['list'] = UserStudentModel::getInstance()->select('id','studentInfo.name','studentInfo.name_en','studentInfo.avatar')->where(['user_id'=>$id])->get()->toArray();
+
+        foreach($out['list'] as &$v){
+            $v->fullAvatar = Func::fullPicAddr($v->avatar);
+        }
+
+        AJAX::success($out);
+    }
+
     function get_notice_list(){
 
         $list = Model::getInstance('notice')->selectExcept('content')->where(['isshow'=>1])->order('create_time','DESC')->get()->toArray();

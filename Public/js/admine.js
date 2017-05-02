@@ -163,7 +163,8 @@ $(function(){
     window.upPic = function(url,f,i,p){
         $(f).bind('change',function(){
             curl(url,packFormData(f),function(d){
-                if(i)$(i).val(d.path);
+                if(typeof i ==="function")i(d);
+                else if(i)$(i).val(d.path);
                 if(p)$(p).attr('src',d.fpath);
             },1);
         })
