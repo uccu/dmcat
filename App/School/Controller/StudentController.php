@@ -375,7 +375,7 @@ class StudentController extends Controller{
         for($i=1;$i<=$dayOfThisMonth; $body[$i++] = ['class'=>'tc changeIt cp t']);
         $out['tbody'] = $body;
 
-        $restDay = $restDayModel->where(['month'=>$month])->get_field('day')->toArray();
+        $restDay = $restDayModel->where(['month'=>$year.$month])->get_field('day')->toArray();
 
         foreach($stu as $k=>$s){
 
@@ -386,9 +386,9 @@ class StudentController extends Controller{
             $body['id'] = $k;
             for($i=1;$i<=$dayOfThisMonth; $i++){
                 if($i<10)$i2 = '0'.$i;else $i2 = $i;
-                if($year.$month.$i2>DATE_TODAY)$body[$i] = '';
-                elseif($list[$k]->stat && in_array($i2,$list[$k]->stat))$body[$i] = '√';
-                
+                if($list[$k]->stat && in_array($i2,$list[$k]->stat))$body[$i] = '√';
+                elseif($year.$month.$i2>DATE_TODAY)$body[$i] = '';
+                elseif(in_array($i2,$restDay))$body[$i] = '';
                 else $body[$i] = '×';
                 
             };
@@ -489,6 +489,27 @@ class StudentController extends Controller{
         $out['apath'] = Func::fullPicAddr($out['path']);
         AJAX::success($out);
     }
+    
+    function restTime($year = 0,RestDayModel $model){
 
+        $list = $model->where('%F BETWEEN %d AND %d','month',$year.'00',($year+1).'00')->get()->toArray();
+        AJAX::success(['list'=>$list]);
+
+    }
+
+    function change_restTime($month = 0,$day = 0,RestDayModel $model){
+
+        $data['month'] = $month;
+        $data['day'] = $day;
+
+        $info = $model->where($data)->find();
+
+        if(!$info)$model->set($data)->add();
+
+        else $model->where($data)->remove();
+
+        AJAX::success();
+
+    }
 
 }

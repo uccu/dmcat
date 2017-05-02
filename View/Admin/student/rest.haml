@@ -1,0 +1,156 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        .form-horizontal
+                            .form-group
+                                %label.col-sm-1.control-label 年份/Year
+                                .col-sm-2
+                                    %select.form-control.m-b.yearChange
+
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                :css
+                    .month{
+                        margin-bottom:40px
+                    }
+                    .week .col-xs-7{
+                        font-size:20px;
+                        font-family: fantasy;
+                    }
+                    .week .col-xs-1{
+                        height:30px;
+                        box-shadow:0 0 5px #ccc;
+                        cursor:pointer;
+                        text-align:center;
+                        line-height:30px;
+                        padding:0;
+                    }
+                    .week .col-xs-1.day-act{
+                        background-color:#dff0d8;
+                    }
+                    .week .col-xs-1.day-act.active{
+                        background-color:#f2dede;
+                    }
+                    .week .col-xs-1:hover{
+                        background-color:red;
+                        color:#fff
+                    }
+                .ibox.ibox2.float-e-margins.row
+                    
+                    
+
+
+- block otherScript
+    :javascript
+        $(function(){
+            var year = 0;
+            var gr = {
+
+                year:function(){
+                    var date = new Date;
+                    var thisYear = date.getUTCFullYear();
+                    for(var i = 2016;i<=2070;i++)
+                        $('.yearChange').append(
+                            $('<option>').text(i).attr('value',i)
+                        );
+                    $('.yearChange').bind('change',function(){ 
+                        year = $(this).val();
+                        gr.vd();
+                    }).val(thisYear).change();
+                },
+                vno:function(c,v){
+                    var e = $('<div>').addClass(c)
+                    if(v)e.append(v);
+                    return e;
+                },
+                box:function(){
+                    $('.ibox2').html('');
+                    var r = $('<div>');
+                    for(var i=1;i<13;i++){
+                        var g = gr.vno('col-sm-6 month animated fadeInRight',gr.vno('row week title',gr.vno('col-xs-2')).append(gr.vno('col-xs-7').html('Month '+i)));
+
+                        gr.vno('row week top',gr.vno('col-xs-2'))
+                            .append(gr.vno('col-xs-1 t bg-danger').html('Sun'))
+                            .append(gr.vno('col-xs-1 t bg-warning').html('Mon'))
+                            .append(gr.vno('col-xs-1 t bg-warning').html('Tue'))
+                            .append(gr.vno('col-xs-1 t bg-warning').html('Wed'))
+                            .append(gr.vno('col-xs-1 t bg-warning').html('Thu'))
+                            .append(gr.vno('col-xs-1 t bg-warning').html('Fri'))
+                            .append(gr.vno('col-xs-1 t bg-danger').html('Sat')).appendTo(g)
+                        for(var j=0;j<6;j++){
+                            var e = gr.vno('row week boot',gr.vno('col-xs-2')).appendTo(g);
+                                for(var u=0;u<7;u++)
+                                    e.append(gr.vno('col-xs-1 t day'))
+                        }
+                        
+                        g.appendTo(r);
+                    }
+                    gr.sor(r);
+                    
+                    return r;
+                },sor:function(g){
+
+                    for(var i=1;i<13;i++){
+
+                        var f = year+'-'+(i<10?'0'+i:i)+'-01';
+                        var week = (new Date(f)).getDay();
+                        var dayc = (new Date(year,i,0)).getDate();
+                        var days = g.find('.month').eq(i-1).find('.day');
+                        for(var j=week,u=1;u<=dayc;u++,j++)days.eq(j).html(u<10?'0'+u:u).addClass('day-act').attr({'data-day':u<10?'0'+u:u,'data-month':year+(i<10?'0'+i:i)})
+
+                    }
+
+                },
+                
+                vd:function(){
+                    var g = gr.box();
+                    $('.wrapper .sk-spinner').removeClass('fadeOutUp');
+                    curl('/student/restTime',{year:year},function(d){
+
+                        for(w in d.list)g.find('[data-month="'+d.list[w].month+'"][data-day="'+d.list[w].day+'"]').addClass('active')
+                        
+                        g.find('.day-act').click(function(){
+                            var that = this;
+                            curl('/student/change_restTime',{month:$(this).attr('data-month'),day:$(this).attr('data-day')},function(){
+                                $(that).toggleClass('active');
+                                curl_succ('success!');
+                            })
+                        });
+                        g.find('.week.top .col-xs-1').click(function(){
+                            var index = $(this).index();
+                            
+                            $(this).parent().parent().find('.week.boot').each(function(){
+                                console.log($(this))
+                                $(this).children().eq(index).click()
+                            })
+                            
+                        });
+                        $('.wrapper .sk-spinner').addClass('fadeOutUp');
+                        g.appendTo('.ibox2');
+
+                    })
+
+                }
+                
+
+            }
+
+
+
+
+            function flesh(){
+                getList('/',{school_id:school,classes_id:classes});
+            }
+            gr.year();
+        })
