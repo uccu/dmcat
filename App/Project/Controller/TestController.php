@@ -11,7 +11,6 @@ use stdClass;
 use App\Project\Model\UserModel as User;
 use App\Project\Model\LessionModel as Lession;
 use Model;
-use App\Resource\Model\ResourceNameSharp as RNS;
 use App\Resource\Model\CacheModel as Cache;
 
 
@@ -22,12 +21,6 @@ class TestController extends Controller{
 
 
     function __construct(){
-       
-        //var_dump(strnatcasecmp('abc','ABC'));
-       
-        // $data['info'] = new RNS('龙珠 第100集');
-
-        // AJAX::success($data);
 
         
         

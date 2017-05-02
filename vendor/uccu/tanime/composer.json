@@ -1,0 +1,22 @@
+{
+    "name": "uccu/tanime",
+    "description": "format anime's title",
+    "keywords": ["tanime","anime"],
+    "homepage": "https://github.com/uccu/tanime",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "pzcat",
+            "email": "cat@4moe.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "fengqi/hanzi": "^0.1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "uccu\\Tanime\\": "src"
+        }
+    }
+}

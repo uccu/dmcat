@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'uccu\\Tanime\\' => array($vendorDir . '/uccu/tanime/src'),
     'fengqi\\Hanzi\\' => array($vendorDir . '/fengqi/hanzi/src'),
     'cebe\\markdown\\' => array($vendorDir . '/cebe/markdown'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),

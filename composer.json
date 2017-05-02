@@ -17,6 +17,7 @@
         "cebe/markdown": "^1.1",
         "twig/twig": "1.26.1",
         "fengqi/hanzi": "^0.1.2",
-        "leafo/lessphp": "^0.5.0"
+        "leafo/lessphp": "^0.5.0",
+        "uccu/tanime": "^0.1.0"
     }
 }

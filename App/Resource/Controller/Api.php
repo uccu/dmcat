@@ -124,6 +124,34 @@ class Api extends Controller{
 
     }
 
+    function sort_v2($name,$base64,ThemeModel $themeModel){
+
+        if(!$name)AJAX::error('标题为空！');
+
+        if($base64){
+
+            $name = str_replace(' ','+',$name);
+            $name = base64_decode($name);
+        }
+
+        $rns = new \uccu\Tanime\Title($name);
+
+        $mat = implode(' ',$rns->exTags);
+        $rns->theme = $themeModel->matchSearch($mat);
+
+        if($rns->theme){
+            foreach($rns->exTags as $k=>$tag){
+                if($k===1 && stripos($rns->theme->matches,$rns->exTags[0]) === false && preg_match('/[\x{4e00}-\x{9fa5}]/u',$rns->theme->name) && !preg_match('/[\x{4e00}-\x{9fa5}]/u',$tag))
+                    $rns->newName .= '['.$rns->theme->name.']';
+                $rns->newName .= '['.$tag.']';
+            }
+        }else foreach($rns->exTags as $tag)$rns->newName .= '['.$tag.']';
+        foreach($rns->tags as $tag)$rns->newName .= '['.$tag.']';
+
+        AJAX::success($rns);
+
+    }
+
     function sort($name,$base64){
 
         if($base64){

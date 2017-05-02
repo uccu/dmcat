@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
 {
     public static $prefixLengthsPsr4 = array (
+        'u' => 
+        array (
+            'uccu\\Tanime\\' => 12,
+        ),
         'f' => 
         array (
             'fengqi\\Hanzi\\' => 13,
@@ -26,6 +30,10 @@ class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
     );
 
     public static $prefixDirsPsr4 = array (
+        'uccu\\Tanime\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/uccu/tanime/src',
+        ),
         'fengqi\\Hanzi\\' => 
         array (
             0 => __DIR__ . '/..' . '/fengqi/hanzi/src',

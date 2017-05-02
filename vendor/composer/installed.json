@@ -411,5 +411,49 @@
         ],
         "description": "lessphp is a compiler for LESS written in PHP.",
         "homepage": "http://leafo.net/lessphp/"
+    },
+    {
+        "name": "uccu/tanime",
+        "version": "v0.1.0",
+        "version_normalized": "0.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/uccu/tanime.git",
+            "reference": "4d46cdb46cf4a8ce02e767b08e979ddd7aed9723"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/uccu/tanime/4d46cdb46cf4a8ce02e767b08e979ddd7aed9723.zip",
+            "reference": "4d46cdb46cf4a8ce02e767b08e979ddd7aed9723",
+            "shasum": ""
+        },
+        "require": {
+            "fengqi/hanzi": "^0.1.2",
+            "php": ">=5.5.0"
+        },
+        "time": "2017-04-23 10:32:22",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "uccu\\Tanime\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "pzcat",
+                "email": "cat@4moe.com"
+            }
+        ],
+        "description": "format anime's title",
+        "homepage": "https://github.com/uccu/tanime",
+        "keywords": [
+            "anime",
+            "tanime"
+        ]
     }
 ]

@@ -11,9 +11,9 @@ class ThemeModel extends Model{
 
     
 
-    function updateMatches(){
+    function matchSearch($match){
 
-
+        return $this->where('MATCH(%F)AGAINST(%n)','matches',$match)->order('level DESC')->find();
 
     }
     

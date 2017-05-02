@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7a736bd071badf4c12632da7814d7ed0",
-    "content-hash": "28d44d043cc32bc682023f317eeb280b",
+    "hash": "8dd554618aa99ae3b027419c00aec9ed",
+    "content-hash": "8a073f84a126cdfaf451c03d4e2b9866",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -405,6 +405,48 @@
                 "templating"
             ],
             "time": "2016-10-05 18:57:41"
+        },
+        {
+            "name": "uccu/tanime",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/uccu/tanime.git",
+                "reference": "4d46cdb46cf4a8ce02e767b08e979ddd7aed9723"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/uccu/tanime/4d46cdb46cf4a8ce02e767b08e979ddd7aed9723.zip",
+                "reference": "4d46cdb46cf4a8ce02e767b08e979ddd7aed9723",
+                "shasum": ""
+            },
+            "require": {
+                "fengqi/hanzi": "^0.1.2",
+                "php": ">=5.5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "uccu\\Tanime\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "pzcat",
+                    "email": "cat@4moe.com"
+                }
+            ],
+            "description": "format anime's title",
+            "homepage": "https://github.com/uccu/tanime",
+            "keywords": [
+                "anime",
+                "tanime"
+            ],
+            "time": "2017-04-23 10:32:22"
         }
     ],
     "packages-dev": [],
