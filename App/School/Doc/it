@@ -54,3 +54,9 @@ id 学生ID
 {"data":{"info":{"id":"2","sight":"\u5de6\u773c1.5\uff0c\u6709\u773c1.5","weight":"123","height":"123"}},"code":200,"url":"","message":""}
 {}
 
+回复comment
+http://weixin.ivy-china.com/student/reply
+id 记录ID
+reply 回复内容
+{}
+{}

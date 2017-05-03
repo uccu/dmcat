@@ -36,7 +36,7 @@
         var id = GetQueryString('id');
 
         $.ajax({
-            url:"http://weixin.ivy-china.com/student/get",
+            url:"/student/get",
             type:"post",
             data:{
                 id:<?php echo $id;?>
@@ -72,7 +72,7 @@
                             var file = $("input[type=\"file\"]")[0].files[0];//获取type="file"类型的input
                             form.append("file",file);
                             $.ajax({
-                                url:"http://weixin.ivy-china.com/staff/upPic",
+                                url:"/staff/upPic",
                                 data:form,
                                 contentType:false,
                                 processData:false,
@@ -98,7 +98,7 @@
             var newhead = $('#head img').attr('data-z');
             var newallergic = $("#allergic").children("input").val();
             $.ajax({
-                url:"http://weixin.ivy-china.com/parent/student_upd	",
+                url:"/parent/student_upd",
                 type:"post",
                 data:{
                     id:2,

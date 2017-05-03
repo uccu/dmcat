@@ -482,6 +482,17 @@ class StudentController extends Controller{
     }
 
 
+    function reply($id = 0,$reply,CommentModel $model){
+
+        $info = $model->find($id);
+        !$info && AJAX::error('comment没有找到！');
+
+        $info->reply = $reply;
+        AJAX::success();
+
+    }
+
+
 
     function upPic(){
 
