@@ -29,7 +29,7 @@ class Format{
             'ｊ' , 'ｋ' , 'ｌ' , 'ｍ' , 'ｎ' , 'ｏ' , 'ｐ' , 'ｑ' , 'ｒ' , 'ｓ' , 'ｔ' , 'ｕ' , 'ｖ' , 'ｗ' , 'ｘ' , 
             'ｙ' , 'ｚ' , '－' , '　' , '：' , '．' , '，' , '／' , '％' , '＃' , '！' , '＠' , '＆' , '（' , '）' ,
             '＜' , '＞' , '＂' , '＇' , '？' , '［' , '］' , '｛' , '｝' , '＼' , '｜' , '＋' , '＝' , '＿' , '＾' ,
-            '￥' , '￣' ,'～', '｀','&amp;','×','・','_','★','❤',
+            '￥' , '￣' ,'～', '｀','&amp;','×','・','_','★','❤','《','》',
             '偵探','團','女僕','復仇','為','什麼','重啟','时鐘','慾'
         );
  
@@ -41,7 +41,7 @@ class Format{
             'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 
             'y', 'z', '-', ' ', ':','.', ',', '/', '%', ' #','!', '@', '&', '(', ')',
             '<', '>', '"', '\'','?','[', ']', '{', '}', '\\','|', '+', '=', '_', '^',
-            '￥','~','~', '`','&','x','·',' ',' ','',
+            '￥','~','~', '`','&','x','·',' ',' ','','[',']',
             '侦探','团','女仆','复仇','为','什么','重启','时钟','欲'
         );
 
@@ -52,7 +52,7 @@ class Format{
     
     static function changeToSplit( $name ){
 
-        $name = preg_replace('# *({|【|「|\[|}|】|」|\]|\+|&| x |附|/|\\|~|\(|\)|:) *#','|',$name);
+        $name = preg_replace('# *({|【|「|\[|}|】|」|\]|\+|&| x |附|/|\\|~|\(|\)|:|~) *#','|',$name);
         
         self::trim( $name );
 
@@ -64,12 +64,11 @@ class Format{
 
         $name = trim( $name );
 
-        $name = preg_replace_callback('#(\|| )+#',function($tea){
+        $name = preg_replace_callback('#[\| \x{200b}\x{200e}]+#u',function($tea){
             return strpos($tea[0], '|') === false ? ' ' : '|';
         },$name);
+        $name = preg_replace('#^\||\|$|#','',$name);
 
-        $name = preg_replace('#^\||\|$#','',$name);
-        
     }
 
 
@@ -79,25 +78,25 @@ class Format{
 
             '(tv-)?720p','360p','1080p','480p','\d{4}x1080','\d{3,4}x\d{3}','\b(19|20)\d{2}\b',
 
-            '(繁|简)(体|體|中|日)?','(GB|BIG5)(_.n)?\b','CH(T|S)\b','(内|外)(嵌|挂)(版)?','中日双语(版)?','字幕(文件)?\b','日文(版)?','\bRAW\b',
+            '\b(繁|简|繁简|简繁)(体|體|中|日)?\b','(GB|BIG5)(_.n)?\b','CH(T|S)\b','(内|外)(嵌|挂)(版)?','中日双语(\w+)?','字幕(文件)?\b','日文(版)?','\bRAW\b',
 
-            '\.?MP4\b','\.?MKV\b','\.?IOS\b','\.?RMVB\b',
+            '\.?MP4\b','\.?MKV\b','\.?ISO\b','\.?RMVB\b','\bsc\b','\btc\b','\bAVC\b',
 
             '(10|1|4|7|一|四|七|十)月(新番|泡面)?\b','剧场版','新番','生肉','合集\b','外传',
 
-            'OVA','OAD','(the )?MOVIE','\w+TV\b','MBS\b',
+            'OVA','OAD','(the )?MOVIE','\w+TV\b','MBS\b','\bcn\b','\bjap\b',
 
             'h264\b','x26\d\b','10-?bit\b','8-?bit\b','HardSub','ACC\b','AAC\b','AC3\b','FLAC\b','HEVC\b','Main10p\b','VFR\b','Web(Rip)?\b',
             
             'BD-?(RIP|BOX)?\b','DVD(RIP)?\b','TV(RIP)?\b','第.{1,2}(季|部|卷|章)',
 
-            '320K','v\d\b','\dnd\b','s\d\b','PSV\b','pc\b'
+            '320K','v\d\b','\dnd\b','s\d\b','PSV\b','pc\b','\bsp\b',
         ];
 
         $tag = [];
 
         foreach($array as $a)$name = mb_ereg_replace_callback($a,function($matches) use ( &$tag ){
-            $tag[] = trim($matches[0]);
+            $tag[] = trim($matches[0],". \t\n\r\0\x0B");
             return '|';
 
         },$name,'i');
@@ -110,14 +109,19 @@ class Format{
 
         $array = [
 
-            '招募\w+?\b','\w+?网盘'
+            '\b(\w+)?招募(\w+)?\b','(\w+)?网盘'
         ];
+
+        $tag = [];
 
         foreach($array as $a)$name = mb_ereg_replace_callback($a,function($matches) use ( &$tag ){
 
+            $tag[] = trim($matches[0]);
             return '|';
 
         },$name,'i');
+
+        return $tag;
 
     }
 
@@ -132,8 +136,8 @@ class Format{
 
             $pieces = explode(' ',$piece);
             foreach($pieces as $k=>$p){
-                
-                if( preg_match('#[^0-9a-z!-]#i',$p) ){
+
+                if( preg_match('#[^0-9a-z!-;]#i',$p) ){
 
                     if( preg_match('/[a-z0-9]+$/i',$p,$mmm) ){
 
@@ -180,13 +184,13 @@ class Format{
             return '';
         },$name);
 
-        $name = preg_replace_callback('/(第)?(\d{2,4})(集|话)/',function($r) use (&$num){
+        $name = preg_replace_callback('/(第)?(\d{2,4})(集|话)(全)?/',function($r) use (&$num){
             $num = $r[2];
             return '';
         },$name);
 
-        $name = preg_replace_callback('#\|(\d{2,3}) ?(end|final)?\|#',function($r) use (&$num){
-            $num = $r[1];
+        $name = preg_replace_callback('#(\||\[|【)(\d{2,3}) ?(end|final)?#i',function($r) use (&$num){
+            $num = $r[2];
             return '|';
         },$name);
         

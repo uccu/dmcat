@@ -1,14 +1,14 @@
 <?php
 
-// require "../vendor/autoload.php";
+require "../vendor/autoload.php";
 
-require "../src/Format.php";
-require "../src/Title.php";
+// require "../src/Format.php";
+// require "../src/Title.php";
 
 use uccu\Tanime\Title;
 
 
-$a = new Title(' [Leopard-Raws][进击的巨人2nd] Shingeki no Kyojin Season 2 - 04 RAW (MBS 1280x720 x264 AAC).mp4 ',false);
+$a = new Title('【7月新番】★[全職法師_QUANZHIFASHI][12 END][GB][720P][MP4]',true);
 
 
 

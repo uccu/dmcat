@@ -24,7 +24,7 @@ class Title{
             /* 简体转换 */
             $this->SimplifiedTitle = Format::changeToSimplified( $name );
             /* 加强简体转换 */
-            $this->SimplifiedTitle = Format::changeToSimplifiedPlus( $name );
+            $this->SimplifiedTitle = Format::changeToSimplifiedPlus( $this->SimplifiedTitle );
 
             $name = $this->SimplifiedTitle;
         
@@ -36,8 +36,10 @@ class Title{
 
         /* 过滤出一般TAG */
         $this->tags = Format::completeToTag( $this->splitedTitle );
+
         /* 删除无用TAG */
-        Format::deleteTag( $this->splitedTitle );
+        $this->tags = array_merge($this->tags, Format::deleteTag( $this->splitedTitle ) );
+echo $this->splitedTitle;
         /* 获取集数 */
         $this->number = Format::getRawNumber( $this->splitedTitle );
 

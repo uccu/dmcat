@@ -13,7 +13,7 @@ class ThemeModel extends Model{
 
     function matchSearch($match){
 
-        return $this->where('MATCH(%F)AGAINST(%n)','matches',$match)->order('level DESC')->find();
+        return $this->where('MATCH(%F)AGAINST(%n)','matches',$match)->find();
 
     }
     

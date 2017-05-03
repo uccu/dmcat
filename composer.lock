@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8dd554618aa99ae3b027419c00aec9ed",
-    "content-hash": "8a073f84a126cdfaf451c03d4e2b9866",
+    "hash": "803f8f3446fbbf3a376c6fa7f589d861",
+    "content-hash": "0a66350310d81815cbad1b739dbd8b41",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -408,16 +408,16 @@
         },
         {
             "name": "uccu/tanime",
-            "version": "v0.1.0",
+            "version": "v0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/uccu/tanime.git",
-                "reference": "4d46cdb46cf4a8ce02e767b08e979ddd7aed9723"
+                "reference": "a5ddb8a2c5f0e01b3d798146bf9cafe1429b850f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/uccu/tanime/4d46cdb46cf4a8ce02e767b08e979ddd7aed9723.zip",
-                "reference": "4d46cdb46cf4a8ce02e767b08e979ddd7aed9723",
+                "url": "https://files.phpcomposer.com/files/uccu/tanime/a5ddb8a2c5f0e01b3d798146bf9cafe1429b850f.zip",
+                "reference": "a5ddb8a2c5f0e01b3d798146bf9cafe1429b850f",
                 "shasum": ""
             },
             "require": {
@@ -446,7 +446,7 @@
                 "anime",
                 "tanime"
             ],
-            "time": "2017-04-23 10:32:22"
+            "time": "2017-05-03 14:30:34"
         }
     ],
     "packages-dev": [],

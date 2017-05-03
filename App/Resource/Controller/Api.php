@@ -15,6 +15,7 @@ use App\Resource\Model\SiteModel as Site;
 use App\Resource\Model\SiteResourceModel as SiteResource;
 use App\Resource\Model\ResourceNameSharp as RNS;
 use App\Resource\Model\ThemeModel;
+use uccu\Tanime\Title;
 
 class Api extends Controller{
 
@@ -66,11 +67,13 @@ class Api extends Controller{
         }else{
 
             /* 解析资源 */
-            $rns = new RNS($info->name);
+            $rns = new Title($r->name);
+            $mat = implode(' ',$rns->exTags);
+            $rns->theme = $themeModel->matchSearch($mat);
 
             /* 添加额外数据 */
-            $info->tags = implode(',',$rns->tag);
-            $info->unftags = implode(',',$rns->nameArray);
+            $info->tags = implode(',',$rns->tags);
+            $info->unftags = implode(',',$rns->exTags);
 
             /* 获取主题 */
             $theme = $rns->theme;
@@ -134,7 +137,7 @@ class Api extends Controller{
             $name = base64_decode($name);
         }
 
-        $rns = new \uccu\Tanime\Title($name);
+        $rns = new Title($name);
 
         $mat = implode(' ',$rns->exTags);
         $rns->theme = $themeModel->matchSearch($mat);
@@ -210,7 +213,7 @@ class Api extends Controller{
         AJAX::success($data);
     }
 
-    function flesh($id = 0,Resource $resource){
+    function flesh($id = 0,Resource $resource,ThemeModel $themeModel){
 
 
         if(!$id)AJAX::error('ID错误');
@@ -238,31 +241,31 @@ class Api extends Controller{
         foreach($ids as $id){
 
             $r = $resource->find($id);
-
             if(!$r)continue;
 
-            $rns = new RNS($r->name);
+            $rns = new Title($r->name);
+            $mat = implode(' ',$rns->exTags);
+            $rns->theme = $themeModel->matchSearch($mat);
 
             $info = new stdClass;
-            $info->tags = implode(',',$rns->tag);
-            $info->unftags = implode(',',$rns->nameArray);
-            // echo $rns->number;die();
+            $info->tags = implode(',',$rns->tags);
+            $info->unftags = implode(',',$rns->exTags);
+            
     
             if($rns->theme){
+
                 $theme = $rns->theme;
                 $info->new_number = $rns->number;
+
                 if($rns->number == $theme->last_number+1){
+
                     $theme->number = 1;
                     $theme->last_number += 1;
                     $theme->change_time = $r->ctime;
                     $theme->visible = 1;
                     $theme->save();
-                    
-
                 }elseif($rns->number == $theme->last_number){
 
-                    
-                    
                     $theme->visible = 1;
                     $theme->save();
                     

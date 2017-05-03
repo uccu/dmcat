@@ -414,24 +414,24 @@
     },
     {
         "name": "uccu/tanime",
-        "version": "v0.1.0",
-        "version_normalized": "0.1.0.0",
+        "version": "v0.1.1",
+        "version_normalized": "0.1.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/uccu/tanime.git",
-            "reference": "4d46cdb46cf4a8ce02e767b08e979ddd7aed9723"
+            "reference": "a5ddb8a2c5f0e01b3d798146bf9cafe1429b850f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://files.phpcomposer.com/files/uccu/tanime/4d46cdb46cf4a8ce02e767b08e979ddd7aed9723.zip",
-            "reference": "4d46cdb46cf4a8ce02e767b08e979ddd7aed9723",
+            "url": "https://files.phpcomposer.com/files/uccu/tanime/a5ddb8a2c5f0e01b3d798146bf9cafe1429b850f.zip",
+            "reference": "a5ddb8a2c5f0e01b3d798146bf9cafe1429b850f",
             "shasum": ""
         },
         "require": {
             "fengqi/hanzi": "^0.1.2",
             "php": ">=5.5.0"
         },
-        "time": "2017-04-23 10:32:22",
+        "time": "2017-05-03 14:30:34",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
