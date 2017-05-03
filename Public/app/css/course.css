@@ -1,0 +1,66 @@
+.course{
+    height:0.6rem;
+}
+.course p{
+    float: left;
+    width:1.2rem;
+    font-size: 0.25rem;
+    line-height:0.6rem;
+    height:0.6rem;
+    background: #3982b7;
+    color: #ffffff;
+    border-radius: 3px;
+    text-align: center;
+}
+.course ul{
+    float: right;
+    height:0.6rem;
+    background: #5da3d7;
+    width:4.6rem;
+    border-radius: 3px;
+}
+.course ul li{
+    line-height: 0.6rem;
+    font-size: 0.25rem;
+    color: #ffffff;
+    width:0.92rem;
+    text-align: center;
+    float: left;
+}
+.courseName{
+    margin-top:0.2rem;
+    height:0.6rem;
+}
+.courseName p{
+    float: left;
+    width:1.2rem;
+    font-size: 0.25rem;
+    line-height:0.6rem;
+    height:0.6rem;
+
+    color: #ffffff;
+    border-radius: 3px;
+    text-align: center;
+}
+.courseName:nth-child(even) p{
+    background: url("../img/cd_03.png") no-repeat center;
+    background-size:100%;
+}
+.courseName:nth-child(odd) p{
+    background: url("../img/cd_06.png") no-repeat center;
+    background-size:100%;
+}
+.courseName ul{
+    float: right;
+    height:0.6rem;
+    background: #f4f4f4;
+    width:4.6rem;
+    border-radius: 3px;
+}
+.courseName ul li{
+    line-height: 0.6rem;
+    font-size: 0.25rem;
+    width:0.92rem;
+    text-align: center;
+    float: left;
+}

@@ -453,7 +453,7 @@ class StudentController extends Controller{
 
     
 
-    function view_comment($id,$student_id,$month,$day,CommentModel $model){
+    function view_comment($id,$month,$day,CommentModel $model){
 
         if(!$month || !$day)$info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id])->order('month DESC','day DESC')->find();
         else 
@@ -470,6 +470,8 @@ class StudentController extends Controller{
             foreach($pics as &$v)$v = Func::fullPicAddr( $v );
             $info->picArray = $pics;
         }
+
+        $info->date = substr($info->month,0,4).'-'.substr($info->month,4).'-'.$info->day;
 
         $out['info'] = $info;
 

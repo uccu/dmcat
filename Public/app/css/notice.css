@@ -1,0 +1,70 @@
+body{
+    position: relative;
+}
+.bm{
+    width:6rem;
+    margin:0.3rem auto;
+    border-radius:5px;
+    /*box-shadow:64px 64px 24px 24px rgba(0,0,0,0.4) ;*/
+    box-shadow:0px 4px 2px 0px rgba(1,0,0,0.07) inset;
+    box-shadow:0px 4px 2px 0px rgba(1,0,0,0.07) ;
+}
+.bm h1{
+    width:5.7rem;
+    padding:0 0.1rem 0 0.2rem;
+    height: 0.6rem;
+    line-height:0.6rem;
+    color: #ffffff;
+    font-size: 0.3rem;
+    font-weight: 400;
+
+}
+.zxbm h1{
+    background: url("../img/1.png") no-repeat ;
+    background-position: 5.6rem center;
+    background-size: 10px 10px;
+
+}
+.bm a{
+    display: block;
+    width:100%;
+    height:100%;
+    background:#1b2b69;
+    border-radius: 5px 5px 0 0;
+
+
+
+
+}
+.bm p{
+    margin:0 0.2rem;
+    height:0.6rem;
+    font-size: 0.16rem;
+    line-height:0.6rem;
+    border-bottom:1px solid #eeeeee;
+    color: #6f6f6f;
+}
+.bm span{
+    padding-right: 0.2rem;
+    line-height: 0.6rem;
+    display: block;
+    height:0.6rem;
+    text-align: right;
+    color: #6f6f6f;
+    font-size: 0.24rem;
+}
+.footer a{
+    margin:1rem 0.2rem 1rem 0.2rem;
+    width:6rem;
+    display: block;
+    height:0.6rem;
+    line-height: 0.6rem;
+    text-align: center;
+    color: #ffffff;
+    font-size: 0.3rem;
+    background: #1b2b69;
+    border-radius: 3px;
+    position: absolute;
+    top:9rem;
+
+}

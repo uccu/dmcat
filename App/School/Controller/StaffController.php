@@ -131,9 +131,6 @@ class StaffController extends Controller{
             }
         }
 
-        
-        
-
         AJAX::success();
 
     }

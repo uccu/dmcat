@@ -1,0 +1,110 @@
+body{
+    width:100%;
+}
+.layout{
+
+}
+.voteactive{
+    width:100%;
+    overflow: hidden;
+}
+.Organizers{
+    padding-top:0.2rem;
+    width:6.0rem;
+    margin:auto;
+    overflow: hidden;
+
+}
+.Organizers span{
+    display: block;
+    width:0.8rem;
+    height:0.8rem;
+    border:1px solid #eeeeee;
+    border-radius: 100%;
+    float: left;
+}
+.Organizers .organizersName{
+    width:5.0rem;
+    float: right;
+    height:0.8rem;
+}
+.organizersName h1{
+    font-size: 0.25rem;
+    line-height:0.4rem;
+    color: #1b2b69;
+}
+.organizersName h2{
+    font-size: 0.2rem;
+    line-height: 0.4rem;
+    color: #525252;
+}
+.activeName{
+    width:6.0rem;
+    margin:auto;
+    font-size:0.3rem;
+    line-height:0.8rem;
+    border-bottom: 1px solid #525252;
+}
+.activeName p{
+    font-size: 0.15rem;
+    color: #525252;
+}
+.timeSpan{
+    font-size: 0.20rem;
+    color: #1b2b69;
+    display: block;
+    float: left;
+    line-height:0.6rem;
+    background: url("../img/xx_09.png") no-repeat center left;
+    -webkit-background-size:0.4rem 0.4rem;
+    background-size:0.4rem 0.4rem;
+    padding-left:0.4rem;
+}
+.remainingTime{
+    height:0.6rem;
+    margin:0.2rem auto;
+    width:6rem;
+}
+.fnTimeCountDown{
+    float: left;
+    font-size: 0.25rem;
+    line-height:0.6rem;
+}
+.fnTimeCountDown span{
+    font-size: 0.20rem;
+    line-height:0.6rem;
+    color: #1b2b69;
+
+}
+.voteing{
+    display: block;
+    height:0.5rem;
+    line-height:0.5rem;
+    width:1.5rem;
+    color: #ffffff;
+    font-size: 0.20rem;
+    float: right;
+    background: #1b2b69;
+    border-radius:0.5rem 0.5rem;
+    text-align: center;
+    margin:0 0.2rem 0.4rem 0;
+    /*margin-bottom: 0.5rem;*/
+    /*position: absolute;*/
+    /*right:0;*/
+
+}
+hr{
+    height:0.2rem;
+    background: #f4f4f4;
+    border:none;
+    margin:0;
+}
+.HotDate{
+    float: left;
+    font-size: 0.25rem;
+    line-height:0.6rem;
+}
+.HotDate span{
+    font-size: 0.25rem;
+    line-height:0.6rem;
+}

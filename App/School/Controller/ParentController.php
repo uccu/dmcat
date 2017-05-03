@@ -31,7 +31,24 @@ class ParentController extends Controller{
 
     function index(){
 
-        View::hamlReader('parent/'.__FUNCTION__,'App');
+        $id = $this->L->id;
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+
+        // View::hamlReader('parent/'.__FUNCTION__,'App');
+    }
+
+
+    function profile($id){
+
+        $stu_id = $id;
+        $id = $this->L->id;
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+
+    function children($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
 
     function get_my_info($id ,UserModel $model){
@@ -76,7 +93,7 @@ class ParentController extends Controller{
 
     function child($id = 0){
 
-        $out['list'] = UserStudentModel::getInstance()->select('id','studentInfo.name','studentInfo.name_en','studentInfo.avatar')->where(['user_id'=>$id])->get()->toArray();
+        $out['list'] = UserStudentModel::getInstance()->select('student_id>id','studentInfo.name','studentInfo.name_en','studentInfo.avatar')->where(['user_id'=>$id])->get()->toArray();
 
         foreach($out['list'] as &$v){
             $v->fullAvatar = Func::fullPicAddr($v->avatar);

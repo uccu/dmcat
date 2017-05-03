@@ -1,0 +1,81 @@
+body{
+    background: #f4f4f4;
+}
+.proposer{
+    width:100%;
+    background: #ffffff;
+    height:0.8rem;
+    margin-top:0.2rem;
+}
+.proposer:nth-child(5){
+    height:2.4rem;
+}
+.proposer p{
+    float: left;
+    position: relative;
+
+}
+.proposer span{
+    padding:0 0.2rem;
+    width:1.5rem;
+    height:0.4rem;
+    line-height:0.4rem;
+    display: block;
+    font-size: 0.25rem;
+    text-align: left;
+}
+.proposer span:nth-child(2){
+    font-size: 0.15rem;
+}
+.proposer input,.proposer select{
+    display: block;
+    float: right;
+    height:0.8rem;
+    line-height:0.8rem;
+    border:none;
+    outline:none;
+    width:4.5rem;
+    font-size: 0.3rem;
+    color: #1b2b69;
+    background: #ffffff;
+}
+.proposer:nth-child(5) textarea{
+    height:2.4rem;
+    width:4.5rem;
+    display: block;
+    float: right;
+    border:none;
+    resize: none;
+    line-height:0.6rem;
+    font-size: 0.3rem;
+    outline:none;
+    color: #1b2b69;
+
+}
+.proposer select{
+    background: url("../img/bottom.png") no-repeat;
+    background-position:4rem;
+    background-size:0.25rem 0.30rem;
+    padding-right:0.2rem;
+}
+.tishi{
+    color: #525252;
+    font-size: 0.3rem;
+    width:100%;
+    text-align: center;
+    height:0.8rem;
+    line-height:0.8rem;
+}
+a{
+    display: block;
+    height:0.7rem;
+    background: #1b2b69;
+    width:6rem;
+    line-height:0.7rem;
+    color: #ffffff;
+    text-align: center;
+    margin:1rem auto;
+    border-radius: 3px;
+    font-size: 0.3rem;
+
+}

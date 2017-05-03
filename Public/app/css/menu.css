@@ -1,0 +1,52 @@
+body{
+    width:100%;
+}
+.layout{
+    width:6rem;
+    margin:auto;
+}
+h1{
+
+    width:100%;
+    height:0.6rem;
+    line-height:0.6rem;
+    font-size: 0.3rem;
+    color: #1b2b69;
+}
+.menu{
+    width:100%;
+    min-height:1.7rem;
+}
+.menu p{
+    float: left;
+    width:1.3rem;
+    height:0.5rem;
+    line-height:0.5rem;
+    font-size: 0.25rem;
+    text-align: center;
+    color: #ffffff;
+    border-radius: 3px;
+}
+.menu:nth-child(even) p{
+    background:url("../img/cd_03.png") no-repeat center;
+    background-size:100%;
+}
+.menu:nth-child(odd) p{
+    background:url("../img/cd_06.png");
+    background-size:100%;
+}
+.mainMenu{
+    width:4.2rem;
+    float: right;
+    background: #f4f4f4;
+    margin-bottom:0.3rem;
+    padding:0.2rem 0.2rem;
+}
+.mainMenu ul li{
+    float: left;
+    font-size: 0.25rem;
+    line-height:0.5rem;
+    /*width:1.5rem;*/
+    text-align: left;
+    margin-right:0.2rem;
+}

@@ -1,0 +1,28 @@
+body{
+    width:100%;
+}
+textarea{
+    display: block;
+    width:5.4rem;
+    margin:0.3rem auto;
+    height:5rem;
+    resize:none;
+    border:1px solid #eeeeee;
+    border-radius: 3px;
+    padding:0 0.2rem;
+    outline:none;
+    font-size: 0.3rem;
+}
+a{
+    display: block;
+    height:0.7rem;
+    background: #1b2b69;
+    width:6rem;
+    line-height:0.7rem;
+    color: #ffffff;
+    text-align: center;
+    margin:1rem auto;
+    border-radius: 3px;
+    font-size: 0.3rem;
+
+}
