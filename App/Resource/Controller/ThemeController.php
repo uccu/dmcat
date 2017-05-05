@@ -22,7 +22,9 @@ class ThemeController extends Controller{
 
     }
 
-    function all($page = 1,$limit = 20,$season = null,$desc = 1,ThemeModel $themeModel,$search,$sort = 'id'){
+    function all($p,$page = 1,$limit = 20,$season = null,$desc = 1,ThemeModel $themeModel,$search,$sort = 'id'){
+
+        if($p != '4moe')AJAX::error('权限不足');
 
         $condition = [];
 
@@ -109,6 +111,7 @@ class ThemeController extends Controller{
         $data['today'] = $today;
         $data['yesterday'] = $yesterday;
 
+        
 
         AJAX::success($data);
 
