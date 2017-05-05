@@ -79,6 +79,39 @@ class MenuController extends Controller{
 
     }
 
+
+    function get_menu(MenuModel $model,$school_id = 1){
+
+        // !$this->L->id && AJAX::error_i18n('not_login');
+
+
+
+        
+        
+        $out['lang'] = $this->lang->language;
+
+        $where['school_id'] = $school_id;
+        $list = $model->where($where)->get()->toArray();
+
+        $listw = [];
+        for($j = 0;$j<5;$j++){
+            $listw[$j] = [];
+            for($i = 0;$i<8;$i++){
+                foreach($list as $v){
+                    if($v->step == $i+1 && $v->week == $j+1){
+                        $listw[$j][] = $v->name;break;
+                    }
+                }
+            }
+        }
+
+
+        $out['list']  = $listw;
+        AJAX::success($out);
+
+
+    }
+
     function get($school_id,$week,$step,MenuModel $model){
 
         !$school_id && AJAX::error_i18n('no_data');

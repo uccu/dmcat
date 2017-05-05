@@ -4,6 +4,7 @@ namespace App\School\Controller;
 
 
 use App\School\Model\CourseModel;
+use App\School\Model\StudentModel;
 
 use Controller;
 use Request;
@@ -79,6 +80,36 @@ class CourseController extends Controller{
 
     }
 
+    function getw(CourseModel $model,$id = 0){
+
+        
+        $out['lang'] = $this->lang->language;
+
+        $classes_id = StudentModel::getInstance()->find($id)->classes_id;
+
+        $where['classes_id'] = $classes_id;
+        $list = $model->where($where)->get()->toArray();
+
+        $listw = [];
+        
+        for($i = 1;$i<=8;$i++){
+            for($j = 1;$j<=5;$j++){
+                $listw[$i-1][$j-1] = '';
+                foreach($list as $v){
+                    if($v->step == $i && $v->week == $j){
+                        $listw[$i-1][$j-1] = $v->name;break;
+                    }
+                }
+            }
+        }
+
+
+        $out['list']  = $listw;
+        AJAX::success($out);
+
+
+    }
+
     function get($classes_id,$week,$step,CourseModel $model){
 
         !$classes_id && AJAX::error_i18n('no_data');
@@ -121,10 +152,6 @@ class CourseController extends Controller{
 
             $model->set($data)->where($where)->save();
         }
-
-        
-        
-        
 
         AJAX::success();
 

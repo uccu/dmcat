@@ -60,3 +60,22 @@ id 记录ID
 reply 回复内容
 {}
 {}
+
+
+获取菜单
+http://weixin.ivy-china.com/menu/get_menu
+{"data":{"lang":"cn","list":[["\u897f\u5170\u82b1","\u756a\u8304\u86cb\u6c64"],[],[],[],[]]},"code":200,"url":"","message":""}
+{}
+
+获取课程
+id 学生ID
+http://weixin.ivy-china.com/course/getw
+{"data":{"lang":"cn","list":[["\u81ea\u4e605","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60"],["\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60"],["\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60"],["\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60"],["\u81ea\u4e60\uff01","ss","","",""],["","\u6570\u5b66","","",""],["","","","",""],["","","","",""]]},"code":200,"url":"","message":""}
+{}
+
+
+给校长写信
+http://weixin.ivy-china.com/parent/add_school_message
+message 内容
+{}
+{}

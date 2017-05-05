@@ -488,6 +488,7 @@ class StudentController extends Controller{
         !$info && AJAX::error('comment没有找到！');
 
         $info->reply = $reply;
+        $info->save();
         AJAX::success();
 
     }
