@@ -99,16 +99,16 @@ class TestController extends Controller{
         $request['token'] = $token;
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://h.4moe.com/api/add");
+        curl_setopt($ch, CURLOPT_URL, "https://yoooo.co/api/add");
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
         $json = curl_exec($ch);
-
-        return $json;
         curl_close($ch);
+        return $json;
+        
 
 
     }
@@ -353,25 +353,8 @@ class TestController extends Controller{
         ksort($array);
         $length = count($array);
         foreach($array as $k=>$data){
-            $request = [];
-            $request['name'] = $data->title;
 
-            $request['outlink'] = 'http://www.bilibili.com/video/av'.$data->aid;
-            $request['additional'] = $data->aid;
-            $request['token'] = '860F3ABBWEB7F30FAD15EEEF6BA6A07D3386AB8A';
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "http://h.4moe.com/api/add");
-            curl_setopt($ch, CURLOPT_HEADER, false);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
-		    curl_setopt($ch, CURLOPT_POST, 1);
-		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
-            //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            $json = curl_exec($ch);
-
-            echo $json;
-            curl_close($ch);
-
+            echo $this->push($data->title,'http://www.bilibili.com/video/av'.$data->aid,'',$data->aid,'860F3ABBWEB7F30FAD15EEEF6BA6A07D3386AB8A');
             $cache->csave('last_data_bili_pubdate',$data->pubdate);
             if($k+1!=$length){
                 $rand = rand(0,floor(600/$length));
