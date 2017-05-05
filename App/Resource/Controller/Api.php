@@ -80,7 +80,7 @@ class Api extends Controller{
             $themeId = $theme ? $theme->id : NULL;
             
             /* 添加新资源 */
-            $info->new_number = $rns->number; /* 该资源的集数 */
+            $info->new_number = $rns->number?$rns->number:''; /* 该资源的集数 */
             $themeId && $info->theme_id = $themeId; /* 该资源所属的主题 */
             $resourceId = $resourceModel->set($info)->add()->getStatus();
 
