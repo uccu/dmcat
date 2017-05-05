@@ -39,7 +39,7 @@ class Title{
 
         /* 删除无用TAG */
         $this->tags = array_merge($this->tags, Format::deleteTag( $this->splitedTitle ) );
-echo $this->splitedTitle;
+
         /* 获取集数 */
         $this->number = Format::getRawNumber( $this->splitedTitle );
 
