@@ -67,7 +67,7 @@ class Api extends Controller{
         }else{
 
             /* 解析资源 */
-            $rns = new Title($r->name);
+            $rns = new Title($name);
             $mat = implode(' ',$rns->exTags);
             $rns->theme = $themeModel->matchSearch($mat);
 
