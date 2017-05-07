@@ -2,9 +2,8 @@
 上传头像
 http://weixin.ivy-china.com/staff/upPic
 file 图片文件
-{}
 {"data":{"path":"20170426\/1493191297.jpg","fpath":"\/pic\/20170426\/1493191297.jpg","apath":"http:\/\/d.baka\/pic\/20170426\/1493191297.jpg"},"code":200,"url":"","message":""}
-
+{}
 
 家长更新个人资料
 http://weixin.ivy-china.com/parent/upd
@@ -37,7 +36,7 @@ id 学生ID
 http://weixin.ivy-china.com/student/view_comment
 id 学生ID
 date 日期，例如：2017-04-26
-{"data":{"info":{"id":"2","student_id":"2","month":"201704","learning":"5","eat":"5","life":"4","comment":"\u8fd9\u662f\u4e2a\u597d\u5b66\u751f\uff01","pic":"20170426\/1493190569.jpg;20170426\/1493190569.jpg","teacher_id":"9","create_time":"0","day":"27","name":"\u5f20\u4e09","name_en":"San Zhang","avatar":"20170426\/1493190569.jpg","fullAvatar":"http:\/\/weixin.ivy-china.com\/pic\/20170426\/1493190569.jpg","picArray":["http:\/\/weixin.ivy-china.com\/pic\/20170426\/1493190569.jpg","http:\/\/weixin.ivy-china.com\/pic\/20170426\/1493190569.jpg"],"pic2Array":["20170426\/1493190569.jpg","20170426\/1493190569.jpg"]}},"code":200,"url":"","message":""}{}
+{"data":{"info":{"id":"2","student_id":"2","month":"201704","learning":"5","eat":"5","life":"4","comment":"\u8fd9\u662f\u4e2a\u597d\u5b66\u751f\uff01","pic":"20170426\/1493190569.jpg;20170426\/1493190569.jpg","teacher_id":"9","create_time":"0","day":"27","name":"\u5f20\u4e09","name_en":"San Zhang","avatar":"20170426\/1493190569.jpg","fullAvatar":"http:\/\/weixin.ivy-china.com\/pic\/20170426\/1493190569.jpg","picArray":["http:\/\/weixin.ivy-china.com\/pic\/20170426\/1493190569.jpg","http:\/\/weixin.ivy-china.com\/pic\/20170426\/1493190569.jpg"],"pic2Array":["20170426\/1493190569.jpg","20170426\/1493190569.jpg"]}},"code":200,"url":"","message":""}
 {}
 
 
@@ -81,7 +80,7 @@ http://weixin.ivy-china.com/parent/get_notice_list
 校内通知内容
 http://weixin.ivy-china.com/parent/get_notice
 id 通知ID
-{"data":{"info":{"id":"1","title":"\u5173\u4e8e2017\u5e74\u62db\u751f\u7684\u901a\u77e5","short_message":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u5f00\u59cb\u62db\u751f\u5566\uff0c\u5927\u5bb6\u8d76\u7d27\u6765\u62a5\u540d\u5427\uff011","content":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u5f00\u59cb\u62db\u751f\u5566\uff0c\u5927\u5bb6\u8d76\u7d27\u6765\u62a5\u540d\u5427\uff01","create_time":"0","isshow":"1","need_confirm":"0","type":"0","options":"","create_date":"1970-01-01"}},"code":200,"url":"","message":""}{}
+{"data":{"info":{"id":"1","title":"\u5173\u4e8e2017\u5e74\u62db\u751f\u7684\u901a\u77e5","short_message":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u5f00\u59cb\u62db\u751f\u5566\uff0c\u5927\u5bb6\u8d76\u7d27\u6765\u62a5\u540d\u5427\uff011","content":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u5f00\u59cb\u62db\u751f\u5566\uff0c\u5927\u5bb6\u8d76\u7d27\u6765\u62a5\u540d\u5427\uff01","create_time":"0","isshow":"1","need_confirm":"0","type":"0","options":"","create_date":"1970-01-01"}},"code":200,"url":"","message":""}
 {}
 
 获取菜单
@@ -90,8 +89,8 @@ http://weixin.ivy-china.com/menu/get_menu
 {}
 
 获取课程
-id 学生ID
 http://weixin.ivy-china.com/course/getw
+id 学生ID
 {"data":{"lang":"cn","list":[["\u81ea\u4e605","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60"],["\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60"],["\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60"],["\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60","\u81ea\u4e60"],["\u81ea\u4e60\uff01","ss","","",""],["","\u6570\u5b66","","",""],["","","","",""],["","","","",""]]},"code":200,"url":"","message":""}
 {}
 
@@ -101,3 +100,6 @@ http://weixin.ivy-china.com/parent/add_school_message
 message 内容
 {}
 {}
+
+
+

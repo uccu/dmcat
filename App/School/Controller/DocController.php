@@ -8,13 +8,20 @@ class DocController{
    /**
     * @source http://www.jb51.net/article/84048.htm
     */
-    private function _format_json($json, $html = false) {
+    private function _format_json($json, $html = true) {
+
+        $json = preg_replace('#\\\/#','/',$json);
+
+        $json = preg_replace_callback('#\\\u\w\w\w\w#',function($e){
+            $t = json_decode('{"d":"'.$e[0].'"}');
+            return $t->d;
+        },$json);
         $tabcount = 0;
         $result = '';
         $inquote = false;
         $ignorenext = false;
         if ($html) {
-            $tab = "   ";
+            $tab = "　　";
             $newline = "<br/>";
         } else {
             $tab = "\t";
@@ -22,6 +29,7 @@ class DocController{
         }
             for($i = 0; $i < strlen($json); $i++) {
             $char = $json[$i];
+            
             if ($ignorenext) {
                 $result .= $char;
                 $ignorenext = false;
@@ -31,7 +39,15 @@ class DocController{
                         $tabcount++;
                         $result .= $char . $newline . str_repeat($tab, $tabcount);
                         break;
+                    case '[':
+                        $tabcount++;
+                        $result .= $char . $newline . str_repeat($tab, $tabcount);
+                        break;
                     case '}':
+                        $tabcount--;
+                        $result = trim($result) . $newline . str_repeat($tab, $tabcount) . $char;
+                        break;
+                    case ']':
                         $tabcount--;
                         $result = trim($result) . $newline . str_repeat($tab, $tabcount) . $char;
                         break;

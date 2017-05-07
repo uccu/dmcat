@@ -13,35 +13,33 @@
     .container
       %h1 = g.title
 
-
+  :css
+    .row{
+      margin:50px auto
+    }
+    .col-xs-4,.col-xs-8,.col-xs-12,.col-xs-6{
+      padding:10px
+    }
+    .col-xs-6.d1{
+      background-color:#fcfdfe
+    }
+    .col-xs-6.d2{
+      background-color:#fefffc
+    }
   .container
     - for z in data
-      %table.table.table-bordered
-        %thead
-          %tr.danger
-            %th
-              = z.url
-            %th
-              = z.note
-        %tbody
-          %tr.warning
-            %td(colspan=2) 请求参数
-        %tbody
-          - for key,val in z.parameter
-            %tr
-              %td
-                = key
-              %td
-                = val
-        %tbody
-          %tr.warning
-            %td(colspan=2) 返回参数
-        %tbody
-          %tr
-            %td
-              %pre = z.return
-            %td
-              %pre = z.message
+      .row
+        .col-xs-4.bg-primary = z.note
+        .col-xs-8.bg-success = z.url
+        .col-xs-12.bg-warning 请求参数
+        - for key,val in z.parameter
+          .col-xs-4.bg-primary = key
+          .col-xs-8.bg-success = val
+        .col-xs-12.bg-warning 返回参数
+        .col-xs-6.d1
+          = z.return|raw
+        .col-xs-6.d2
+          = z.message|raw
     
 
   
