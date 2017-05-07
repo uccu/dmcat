@@ -4,6 +4,16 @@ use Config;
 use App\School\Tool\AJAX;
 use App\School\Middleware\L;
 use App\School\Model\ConfigModel;
+
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\LabelAlignment;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\SvgWriter;
+use Symfony\Component\HttpFoundation\Response;
+
+use App\School\Model\StudentModel;
+
 class Func{
     /**
      *
@@ -274,9 +284,27 @@ class Func{
     }
 
 
-    public static function lang_change($name){
+    public static function student_qr($id = 0){
 
+        $user = StudentModel::getInstance()->find($id);
 
+        $zzz = 'z';
+
+        $zzz = $user ? $user->rand_code : $zzz;
+
+        $qrCode = new QrCode($zzz);
+        $qrCode->setSize(300);
+        
+        $qrCode
+            ->setMargin(10)
+            ->setEncoding('UTF-8')
+            ->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH)
+            ->setForegroundColor(['r' => 0, 'g' => 0, 'b' => 0])
+            ->setBackgroundColor(['r' => 255, 'g' => 255, 'b' => 255])
+            ->setValidateResult(true);
+
+        header('Content-Type: '.$qrCode->getContentType(PngWriter::class));
+        echo $qrCode->writeString(PngWriter::class);
 
     }
 

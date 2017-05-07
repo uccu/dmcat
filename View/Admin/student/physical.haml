@@ -89,7 +89,7 @@
                 })
             });
             function flesh(){
-                getList('/student/lists2',{school_id:school,classes_id:classes});
+                getList('/student/lists',{school_id:school,classes_id:classes,phy:1});
             }
             flesh()
         })

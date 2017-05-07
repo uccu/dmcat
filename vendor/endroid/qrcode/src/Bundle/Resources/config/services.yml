@@ -1,0 +1,9 @@
+services:
+    endroid.qrcode.factory:
+        class: Endroid\QrCode\Factory\QrCodeFactory
+
+    endroid.qrcode.twig.extension:
+        class: Endroid\QrCode\Twig\Extension\QrCodeExtension
+        arguments: [ '@endroid.qrcode.factory', '@router']
+        tags:
+            - { name: twig.extension }

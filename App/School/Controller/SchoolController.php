@@ -50,6 +50,7 @@ class SchoolController extends Controller{
 
     }
 
+    /* 获取学校 */
     function get($id,SchoolModel $model){
 
         !$id && AJAX::success(['info'=>[]]);
@@ -61,6 +62,7 @@ class SchoolController extends Controller{
 
     }
 
+    /* 更新学校 */
     function upd($id,SchoolModel $model){
 
         $data = Request::getInstance()->request(['name','name_en']);
@@ -80,7 +82,7 @@ class SchoolController extends Controller{
 
     }
 
-
+    /* 删除学校 */
     function del($id,SchoolModel $model){
 
         !$id && AJAX::error_i18n('param_error');
@@ -89,7 +91,7 @@ class SchoolController extends Controller{
 
     }
 
-
+    /* 添加学校通知 */
     function add_notice($id){
 
         $this->L->check_type([5,6,7]);
@@ -108,6 +110,7 @@ class SchoolController extends Controller{
 
     }
 
+    /* 给校长写信（老师/行政） */
     function add_school_message($message){
 
         $this->L->check_type([3,5]);

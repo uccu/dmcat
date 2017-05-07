@@ -27,11 +27,12 @@ class StudentController extends Controller{
 
 
     /* 学生档案列表 */
-    function lists(StudentModel $model,$school_id,$classes_id,$page = 1,$limit = 50){
+    function lists(StudentModel $model,$school_id,$classes_id,$page = 1,$limit = 50,$phy = 0){
 
         // !$this->L->id && AJAX::error_i18n('not_login');
 
         $out = ['get'=>'/student/get','upd'=>'/student/upd','del'=>'/student/del'];
+        if($phy)$out = ['get'=>'/student/physical_get','upd'=>'/student/physical_upd'];
 
         $out['thead'] = [
             'ID'=>['class'=>'tc'],
@@ -71,6 +72,7 @@ class StudentController extends Controller{
 
     }
 
+    /* 体检 */
     function physical_get($id){
 
         !$id && AJAX::success(['info'=>[]]);
@@ -81,51 +83,7 @@ class StudentController extends Controller{
         AJAX::success($out);
 
 
-    }
-
-    function lists2(StudentModel $model,$school_id,$classes_id,$page = 1,$limit = 50){
-
-        // !$this->L->id && AJAX::error_i18n('not_login');
-
-        $out = ['get'=>'/student/physical_get','upd'=>'/student/physical_upd'];
-
-        $out['thead'] = [
-            'ID'=>['class'=>'tc'],
-            ($this->lang->student->student_name)=>['class'=>'tc'],
-            ($this->lang->student->student_name).'(en)'=>['class'=>'tc'],
-            ($this->lang->classes->class_name)=>['class'=>'tc'],
-            
-            '_opt'=>['class'=>'tc'],
-        ];
-        
-        $out['tbody'] = [
-            'id'=>['class'=>'tc'],
-            'name'=>['class'=>'tc'],
-            'name_en'=>['class'=>'tc'],
-            'class_name'=>['class'=>'tc'],
-            '_opt'=>['class'=>'tc'],
-        ];
-
-        $classesName = $this->lang->language == 'cn' ? 'classes.name>class_name' : 'classes.name_en>class_name';
-        
-        $out['lang'] = $this->lang->language;
-
-        if($school_id)$model->where(['classes.school_id'=>$school_id]);
-        if($classes_id)$model->where(['classes_id'=>$classes_id]);
-
-        $list = $model->select('*', $classesName )->page($page,$limit)->get()->toArray();
-
-        if($school_id)$model->where(['classes.school_id'=>$school_id]);
-        if($classes_id)$model->where(['classes_id'=>$classes_id]);
-        $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
-        $out['page'] = $page;
-        $out['limit'] = $limit;
-
-        $out['list']  = $list;
-        AJAX::success($out);
-
-
-    }
+    }    
 
     /* 获取单个学生档案 */
     function get($id,StudentModel $model){
@@ -164,6 +122,7 @@ class StudentController extends Controller{
 
     }
 
+    /* 更新体检信息 */
     function physical_upd($id,StudentPhysicalModel $model){
 
         $data = Request::getInstance()->request($model->field);
@@ -182,6 +141,7 @@ class StudentController extends Controller{
 
     }
 
+    /* 获取出勤 */
     function attendance_get($month,AttendanceModel $attendanceModel,$student_id,$day){
 
         if(!$month || !$student_id)AJAX::error_i18n('param_error');
@@ -202,6 +162,7 @@ class StudentController extends Controller{
 
     }
 
+    /* 修改出勤 */
     function attendance_upd($month,$classes_id,AttendanceModel $attendanceModel,$student_id,$day,$status,$attend_time='',$reason=''){
 
         if(!$month || !$student_id)AJAX::error_i18n('param_error');
@@ -305,7 +266,7 @@ class StudentController extends Controller{
         AJAX::success($out);
     }
 
-
+    /* 出勤 */
     function attend($id,AttendanceModel $model){
 
         !$id && AJAX::error('Student Not Exist!');
@@ -322,6 +283,7 @@ class StudentController extends Controller{
         AJAX::success();
     }
 
+    /* 离开 */
     function leave($id,AttendanceModel $model){
 
         !$id && AJAX::error('Student Not Exist!');
@@ -339,10 +301,7 @@ class StudentController extends Controller{
         AJAX::success();
     }
 
-
-
-
-
+    /* 获取点评列表 */
     function comment_list($year,$month,$classes_id,CommentModel $commentModel,StudentModel $studentModel,RestDayModel $restDayModel){
 
         if(!$month || !$year || !$classes_id)AJAX::error_i18n('param_error');
@@ -401,7 +360,7 @@ class StudentController extends Controller{
         AJAX::success($out);
     }
 
-
+    /* 更新点评 */
     function comment_upd($month,$student_id,$day,CommentModel $commentModel){
 
         if(!$month || !$student_id || !$day)AJAX::error_i18n('param_error');
@@ -435,7 +394,7 @@ class StudentController extends Controller{
         
     }
 
-
+    /* 删除点评 */
     function comment_del($month,$student_id,$day,CommentModel $commentModel){
 
         if(!$month || !$student_id || !$day)AJAX::error_i18n('param_error');
@@ -450,9 +409,7 @@ class StudentController extends Controller{
 
     }
 
-
-    
-
+    /* 获取某次点评 */
     function view_comment($id,$month,$day,CommentModel $model){
 
         if(!$month || !$day)$info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id])->order('month DESC','day DESC')->find();
@@ -481,7 +438,7 @@ class StudentController extends Controller{
 
     }
 
-
+    /* 家长恢回复 */
     function reply($id = 0,$reply,CommentModel $model){
 
         $info = $model->find($id);
@@ -493,8 +450,7 @@ class StudentController extends Controller{
 
     }
 
-
-
+    /* 上传学生日常图片 */
     function upPic(){
 
         $out['path'] = Func::uploadFiles('file');
@@ -504,6 +460,7 @@ class StudentController extends Controller{
         AJAX::success($out);
     }
     
+    /* 获取休息时间 */
     function restTime($year = 0,RestDayModel $model){
 
         $list = $model->where('%F BETWEEN %d AND %d','month',$year.'00',($year+1).'00')->get()->toArray();
@@ -511,6 +468,7 @@ class StudentController extends Controller{
 
     }
 
+    /* 修改休息时间 */
     function change_restTime($month = 0,$day = 0,RestDayModel $model){
 
         $data['month'] = $month;
@@ -526,8 +484,7 @@ class StudentController extends Controller{
 
     }
 
-
-    
+    /* 请假 */
     function ask_leave($student_id = 0,$proposer,$date,$type,$content,AttendanceModel $model){
 
         $time  = strtotime($data);
@@ -548,9 +505,13 @@ class StudentController extends Controller{
 
         AJAX::success();
         
+        
+    }
 
-        ;
+    /* 学生二维码 */
+    function qr($id = 0){
 
+        Func::student_qr($id);
         
     }
 
