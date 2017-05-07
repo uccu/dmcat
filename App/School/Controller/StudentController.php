@@ -526,4 +526,33 @@ class StudentController extends Controller{
 
     }
 
+
+    
+    function ask_leave($student_id = 0,$proposer,$date,$type,$content,AttendanceModel $model){
+
+        $time  = strtotime($data);
+
+        
+        
+        $reason = $proposer.":[".$type.']'.$content;
+
+        $data['student'] = $student_id;
+        $data['month'] = date('Ym',$time);
+        $data['day'] = date('d',$time);
+        $data['create_time'] = $data['update_time'] = TIME_NOW;
+        $data['status'] = 0;
+        $data['reason'] = $reason;
+
+
+        $model->set($data)->add();
+
+        AJAX::success();
+        
+
+        ;
+
+        
+    }
+
+
 }

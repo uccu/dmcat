@@ -62,6 +62,28 @@ reply 回复内容
 {}
 
 
+请假
+http://weixin.ivy-china.com/student/ask_leave
+student_id 学生ID
+proposer 申请人
+date 日期
+type 类型
+content 内容
+{}
+{}
+
+
+校内通知列表
+http://weixin.ivy-china.com/parent/get_notice_list
+{"data":{"list":[{"id":"1","title":"\u5173\u4e8e2017\u5e74\u62db\u751f\u7684\u901a\u77e5","short_message":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u5f00\u59cb\u62db\u751f\u5566\uff0c\u5927\u5bb6\u8d76\u7d27\u6765\u62a5\u540d\u5427\uff011","create_time":"0","isshow":"1","need_confirm":"0","type":"0","options":"","create_date":"1970-01-01"}]},"code":200,"url":"","message":""}
+{}
+
+校内通知内容
+http://weixin.ivy-china.com/parent/get_notice
+id 通知ID
+{"data":{"info":{"id":"1","title":"\u5173\u4e8e2017\u5e74\u62db\u751f\u7684\u901a\u77e5","short_message":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u5f00\u59cb\u62db\u751f\u5566\uff0c\u5927\u5bb6\u8d76\u7d27\u6765\u62a5\u540d\u5427\uff011","content":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u5f00\u59cb\u62db\u751f\u5566\uff0c\u5927\u5bb6\u8d76\u7d27\u6765\u62a5\u540d\u5427\uff01","create_time":"0","isshow":"1","need_confirm":"0","type":"0","options":"","create_date":"1970-01-01"}},"code":200,"url":"","message":""}{}
+{}
+
 获取菜单
 http://weixin.ivy-china.com/menu/get_menu
 {"data":{"lang":"cn","list":[["\u897f\u5170\u82b1","\u756a\u8304\u86cb\u6c64"],[],[],[],[]]},"code":200,"url":"","message":""}
