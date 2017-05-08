@@ -9,7 +9,10 @@ class NoticeModel extends Model{
     public $field;
 
 
-    
+    public function user(){
+
+        return $this->join('App\School\Model\UserModel','id','user_id','LEFT');
+    }
 
     
 

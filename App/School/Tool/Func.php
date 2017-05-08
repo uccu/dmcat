@@ -320,7 +320,6 @@ class Func{
             $myz = $year.'-'.$month;
         }
 
-
         $date = new \DateTime($myz);
         $date->add(new \DateInterval('P1M'));
         $date->sub(new \DateInterval('P1D'));
@@ -328,6 +327,36 @@ class Func{
 
         return $dayOfThisMonth;
 
+    }
+    public static function subdate($date){
+        $myz = $monthFull = $date;
+        
+        if(strlen($month) == 8){
+            $month = substr($monthFull,4,2);
+            $year = substr($monthFull,0,4);
+            $day = substr($monthFull,6);
+            $myz = $year.'-'.$month.'-'.$day;
+        }
+
+        $date = new \DateTime($myz);
+        $date->sub(new \DateInterval('P1D'));
+        $dayOfThisMonth = $date->format('Y-m-d');
+        return $dayOfThisMonth;
+    }
+    public static function adddate($date){
+        $myz = $monthFull = $date;
+        
+        if(strlen($month) == 8){
+            $month = substr($monthFull,4,2);
+            $year = substr($monthFull,0,4);
+            $day = substr($monthFull,6);
+            $myz = $year.'-'.$month.'-'.$day;
+        }
+
+        $date = new \DateTime($myz);
+        $date->add(new \DateInterval('P1D'));
+        $dayOfThisMonth = $date->format('Y-m-d');
+        return $dayOfThisMonth;
     }
 
     public static function getAccessToken(){

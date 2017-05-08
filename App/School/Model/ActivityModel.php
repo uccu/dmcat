@@ -3,9 +3,9 @@
 namespace App\School\Model;
 use Model;
 
-class VoteModel extends Model{
+class ActivityModel extends Model{
 
-    public $table = 'vote';
+    public $table = 'activity';
     public $field;
 
     public function user(){

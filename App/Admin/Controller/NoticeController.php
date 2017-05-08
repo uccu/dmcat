@@ -17,7 +17,7 @@ class NoticeController extends Controller{
     }
 
 
-    /* 不需要回复 */
+    /* 通知 */
     function notice(){
 
         $lang = $this->L->i18n;
@@ -27,7 +27,7 @@ class NoticeController extends Controller{
 
     }
 
-    /* 需要回复 */
+    /* 投票 */
     function vote(){
 
         $lang = $this->L->i18n;
@@ -37,8 +37,8 @@ class NoticeController extends Controller{
 
     }
 
-    /* 回执 */
-    function notice_v(){
+    /* 活动 */
+    function activity(){
 
         $lang = $this->L->i18n;
         $lang->adminIndex;
@@ -47,8 +47,8 @@ class NoticeController extends Controller{
 
     }
 
-    /* 投票 */
-    function notice_t(){
+    /* 校外宣传 */
+    function propaganda(){
 
         $lang = $this->L->i18n;
         $lang->adminIndex;

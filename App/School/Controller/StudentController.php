@@ -438,6 +438,9 @@ class StudentController extends Controller{
 
         !$info && AJAX::success(['info'=>[]]);
 
+        $month = $info->month;
+        $day = $info->day;
+
         $info->fullAvatar = Func::fullPicAddr( $info->avatar );
         
         $info->picArray = [];
@@ -450,8 +453,12 @@ class StudentController extends Controller{
 
         $info->date = substr($info->month,0,4).'-'.substr($info->month,4).'-'.$info->day;
 
+        $info->subdate = Func::subdate($month.$day);
+        $info->adddate = Func::adddate($month.$day);
+
         $out['info'] = $info;
 
+        
         
 
         AJAX::success($out);
