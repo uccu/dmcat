@@ -33,7 +33,7 @@ class IndexController extends Controller{
     private function getMenu(){
 
         $model = AdminMenuModel::getInstance();
-        $all = $model->get()->toArray();
+        $all = $model->order('id')->get()->toArray();
 
         $auth = $this->L->userInfo->type;
         $id = $this->L->id;

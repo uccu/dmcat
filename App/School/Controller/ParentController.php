@@ -117,7 +117,9 @@ class ParentController extends Controller{
     }
 
 
-    function get_notice($id=0){
+    function get_notice($id=0,$student_id = 0){
+
+        !$info && AJAX::error_i18n('param_error');
 
         $info = Model::getInstance('notice')->find($id);
 

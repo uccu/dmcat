@@ -39,7 +39,7 @@ class StudentController extends Controller{
             ($this->lang->student->student_name)=>['class'=>'tc'],
             ($this->lang->student->student_name).'(en)'=>['class'=>'tc'],
             ($this->lang->classes->class_name)=>['class'=>'tc'],
-            
+            ''=>['class'=>'tc'],
             '_opt'=>['class'=>'tc'],
         ];
         
@@ -48,6 +48,7 @@ class StudentController extends Controller{
             'name'=>['class'=>'tc'],
             'name_en'=>['class'=>'tc'],
             'class_name'=>['class'=>'tc'],
+            '_pic'=>['class'=>'tc'],
             '_opt'=>['class'=>'tc'],
         ];
 
@@ -59,6 +60,11 @@ class StudentController extends Controller{
         if($classes_id)$model->where(['classes_id'=>$classes_id]);
 
         $list = $model->select('*', $classesName )->page($page,$limit)->get()->toArray();
+
+        foreach($list as &$v){
+
+            $v->_pic = '/student/qr?id='.$v->id;
+        }
 
         if($school_id)$model->where(['classes.school_id'=>$school_id]);
         if($classes_id)$model->where(['classes_id'=>$classes_id]);
@@ -274,12 +280,20 @@ class StudentController extends Controller{
         $data['month'] = date('Ym');
         $data['day'] = date('d');
         
-        $model->where( $data)->find() && AJAX::error('Has Attended');
+        if($stu = $model->where( $data)->find()){
 
-        $data['create_time'] = $data['update_time'] = TIME_NOW;
-        $data['attend_time'] = date('H:i:s');
+            if($stu->status == 1)AJAX::error('已经到校/has attended');
 
-        $model->set($data)->add();
+            $model->where( $data)->set(['attend_time'=>date('H:i:s'),'update_time'=>TIME_NOW])->save();
+        }else{
+
+            $data['create_time'] = $data['update_time'] = TIME_NOW;
+            $data['attend_time'] = date('H:i:s');
+
+            $model->set($data)->add();
+        }
+
+        
         AJAX::success();
     }
 
@@ -410,7 +424,13 @@ class StudentController extends Controller{
     }
 
     /* 获取某次点评 */
-    function view_comment($id,$month,$day,CommentModel $model){
+    function view_comment($id,$month,$day,$date,CommentModel $model){
+
+        if($date){
+            $time = strtotime($date);
+            $month = date('Ym',$time);
+            $day = date('d',$time);
+        }
 
         if(!$month || !$day)$info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id])->order('month DESC','day DESC')->find();
         else 
@@ -487,15 +507,25 @@ class StudentController extends Controller{
     /* 请假 */
     function ask_leave($student_id = 0,$proposer,$date,$type,$content,AttendanceModel $model){
 
-        $time  = strtotime($data);
+        $time  = strtotime($date);
 
-        
-        
-        $reason = $proposer.":[".$type.']'.$content;
+        $ltime = strtotime( date('Ymd',$time) );
 
-        $data['student'] = $student_id;
+        if($ltime<TIME_NOW){
+
+            AJAX::error('请提前8小时申请！/ Please apply for 8 hours in advance!');
+        }
+
+        !$student_id && AJAX::error('没有找到学生/student not find');
+        
+        $reason = '['.$type.']'.$proposer." : ".$content;
+
+        $data['student_id'] = $student_id;
         $data['month'] = date('Ym',$time);
         $data['day'] = date('d',$time);
+        
+        $model->where($data)->find() && AJAX::error('已经请过假了/has asked');
+    
         $data['create_time'] = $data['update_time'] = TIME_NOW;
         $data['status'] = 0;
         $data['reason'] = $reason;

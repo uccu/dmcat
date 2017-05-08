@@ -51,7 +51,22 @@
                             %label.col-sm-3.control-label 详细内容/content
                             .col-sm-9
                                 %textarea.form-control(name="content" style="resize:vertical" rows="10")
-                        
+                        .bbox
+                            .form-group
+                                %label.col-sm-3.control-label 选项/option
+                                .col-sm-8
+                                    %input.form-control.option(name="option[]")
+                                %label.col-sm-1.control-label x
+                            .form-group
+                                %label.col-sm-3.control-label 选项/option
+                                .col-sm-8
+                                    %input.form-control.option(name="option[]")
+                        .bbox2
+                            .form-group
+                                %label.col-sm-12.tr
+                                    %button.btn.btn-success(type="button") 添加
+                                
+                                
                     
                     
                 .modal-footer
@@ -64,24 +79,53 @@
 - block otherScript
     :javascript
         $(function(){
+
+            var se = {
+
+                t:function(va){
+                    if(typeof va === "object")va = '';
+                    $('<div>').addClass('form-group').append(
+                        $('<label>').addClass('col-sm-3 control-label').text('选项/option')
+                    ).append(
+                        $('<div>').addClass('col-sm-8').append(
+                            $('<input>').addClass('form-control option').attr('name','option[]').val(va)
+                        )
+                    ).append(
+                        $('<label>').addClass('col-sm-1 control-label delle cp').text('x').click(function(){
+                            $(this).parent().remove();
+                        })
+                    ).appendTo('.bbox')
+                }
+            };
+
             window.gr.getListAfter = function(){
                 $('.eisshow input.i-checks').on('ifChanged',function(){
-                    curl('/notice/upd',{id:$(this).parent().parent().attr('data-id'),isshow:this.checked?1:0},function(d){
+                    curl('/notice/vote_upd',{id:$(this).parent().parent().attr('data-id'),isshow:this.checked?1:0},function(d){
                         curl_succ('success!');
                     });
                 });
                 $('.eneed_confirm input.i-checks').on('ifChanged',function(){
-                    curl('/notice/upd',{id:$(this).parent().parent().attr('data-id'),need_confirm:this.checked?1:0},function(d){
+                    curl('/notice/vote_upd',{id:$(this).parent().parent().attr('data-id'),need_confirm:this.checked?1:0},function(d){
                         curl_succ('success!');
                     });
                 });
             }
+            window.gr.updFunction = function(g){
+                $('.bbox').html('');
+                for(var d in g.info.option){
+                    se.t(g.info.option[d])
+                }
+                if(!g.info.option || !g.info.option.length)se.t()
+                
+
+
+            }
             
             function flesh(){
 
-                getList('/notice/lists')
+                getList('/notice/vote_lists')
             }
-
+            $('.bbox2 button').click(se.t)
             flesh();
             
         })

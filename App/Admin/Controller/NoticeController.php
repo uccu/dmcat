@@ -28,7 +28,7 @@ class NoticeController extends Controller{
     }
 
     /* 需要回复 */
-    function notice_r(){
+    function vote(){
 
         $lang = $this->L->i18n;
         $lang->adminIndex;

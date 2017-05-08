@@ -8,6 +8,7 @@ use Request;
 use App\School\Model\UserModel;
 use App\School\Model\StudentModel;
 use App\School\Model\NoticeModel;
+use App\School\Model\VoteModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
@@ -46,13 +47,15 @@ class NoticeController extends Controller{
             'ID'=>['class'=>'tc'],
             "标题/Title"=>['class'=>'tc'],
             "显示/Show"=>['class'=>'tc'],
+            "回执/Reply"=>['class'=>'tc'],
             '_opt'=>['class'=>'tc'],
         ];
         
         $out['tbody'] = [
             'id'=>['class'=>'tc'],
             'title'=>['class'=>'tc'],
-            'isshow'=>['class'=>'tc','type'=>'checkbox'],
+            'isshow'=>['class'=>'tc eisshow','type'=>'checkbox'],
+            'need_confirm'=>['class'=>'tc eneed_confirm','type'=>'checkbox'],
             '_opt'=>['class'=>'tc'],
         ];
 
@@ -104,6 +107,71 @@ class NoticeController extends Controller{
         
     }
 
-    
+    function vote_lists(VoteModel $model,$page = 1 ,$limit = 30){
+
+        $out = ['get'=>'/notice/vote_get','upd'=>'/notice/vote_upd','del'=>'/notice/vote_del'];
+
+        $out['thead'] = [
+            'ID'=>['class'=>'tc'],
+            "标题/Title"=>['class'=>'tc'],
+            "显示/Show"=>['class'=>'tc'],
+            '_opt'=>['class'=>'tc'],
+        ];
+        
+        $out['tbody'] = [
+            'id'=>['class'=>'tc'],
+            'title'=>['class'=>'tc'],
+            'isshow'=>['class'=>'tc eisshow','type'=>'checkbox'],
+            '_opt'=>['class'=>'tc'],
+        ];
+
+
+        $out['lang'] = $this->lang->language;
+
+        $list = $model->page($page,$limit)->order('id','DESC')->get()->toArray();
+
+
+        $out['list']  = $list;
+        $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $out['page'] = $page;
+        $out['limit'] = $limit;
+        AJAX::success($out);
+    }
+
+    function vote_upd($id = 0,VoteModel $model,$option){
+
+        $data = Request::getInstance()->request($model->field);
+
+        if($option)$data['options'] = implode(';',$option);
+
+        if($id){
+
+            $info = $model->find($id);
+            !$info && AJAX::error_i18n('no_data');
+            !$model->set($data)->save($id)->getStatus() && AJAX::error_i18n('save_failed');
+        }else{
+            
+            $data['create_time'] = TIME_NOW;
+            unset($data['id']);
+            $model->set($data)->add()->getStatus();
+        }
+        AJAX::success();
+        
+    }
+
+    function vote_get($id=0 ,VoteModel $model){
+
+        !$id && AJAX::success(['info'=>[]]);
+
+        $info = $model->find($id);
+        !$info && AJAX::error_i18n('no_data');
+
+
+        $info->option = explode(';',$info->options);
+        
+
+        AJAX::success(['info'=>$info]);
+
+    }
 
 }

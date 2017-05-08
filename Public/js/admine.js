@@ -134,6 +134,9 @@ $(function(){
                                 });
                             })
                         });
+                    }else if(a == '_pic'){
+                        td.append($('<a>').attr({'href':d.list[e][a],'target':'_blank'}).append($('<img>').addClass('img-m').attr('src',d.list[e][a])));
+
                     }else{
                         d.tbody[a].class && td.addClass(d.tbody[a].class);
                         if(d.tbody[a].type === 'checkbox'){
