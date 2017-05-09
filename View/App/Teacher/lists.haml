@@ -32,9 +32,18 @@
             color:#aaa
         }
         .ppic img{
-            margin:5px auto;
+            margin:8px auto;
             border-radius:50%;
-            height:40px
+            height:34px
+        }
+        .ppic::after{
+            content:' ';
+            position:absolute;
+            bottom:0;
+            left:10%;
+            width:80%;
+            height:1px;
+            background-color:#f6f6f6;
         }
         .ppic .col-xs-10{
             line-height:50px;
@@ -48,7 +57,7 @@
         %div.bo
             .bac.tl A
             .container-fluid
-                .ppic.tl.row(data-id="0")
+                .ppic.tl.row.pr(data-id="0")
                     .col-xs-2.tr
                         %img(src="/pic/20170509/11.03.50.650334.jpg")
                     .col-xs-10
@@ -64,7 +73,7 @@
                 j('<div>').addClass('bac tl').text(e).appendTo('.bo');
                 for(var f in d.data.list[e]){
                     j('<div>').addClass('container-fluid').append(
-                        j('<div>').addClass('ppic tl row').attr('data-id',d.data.list[e][f].id).append(
+                        j('<div>').addClass('ppic tl row cp pr').attr('data-id',d.data.list[e][f].id).append(
                             j('<div>').addClass('col-xs-2 tr').append(
                                 j('<img>').attr('src',d.data.list[e][f].fullAvatar)
                             )
