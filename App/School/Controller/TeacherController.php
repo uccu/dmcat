@@ -9,6 +9,7 @@ use Request;
 use App\School\Model\UserModel;
 use App\School\Model\StudentModel;
 use App\School\Model\CommentModel;
+use App\School\Model\UserClassesModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
@@ -131,6 +132,17 @@ class TeacherController extends Controller{
         $id = $this->L->id;
         if(!$id)header('Location:/home/login');
         include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';
+    }
+
+    function lists(UserClassesModel $model){
+        $id = $this->L->id;
+        if(!$id)header('Location:/home/login');
+
+        $class_id = $model->where(['user_id'=>$id])->find()->classes_id;
+
+        View::addData(['id'=>$id,'class_id'=>$class_id]);
+        View::addData(['lang'=>$lang]);
+        View::hamlReader('Teacher/'.__FUNCTION__,'App');
     }
 
 

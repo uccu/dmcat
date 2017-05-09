@@ -19,7 +19,7 @@
         <p>个人资料<br><span>personal profile</span></p>
     </div>
     <div class="parent-child child">
-        <a href="ChildRecord.html"></a>
+        <a href="lists"></a>
         <p>孩子记录<br><span>child record</span></p>
     </div>
     <div class="parent-child leave">

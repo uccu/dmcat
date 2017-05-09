@@ -178,7 +178,7 @@ class ClassesController extends Controller{
 
             if(!$v->name && $v->name_en)$v->name = $v->name_en;
             elseif(!$v->name && !$v->name_en)$v->name = 'no name';
-            else $v->name = $v->name . '/' . $v->name_en;
+            else $v->name = $v->name . ' ' . $v->name_en;
 
             $v->fullAvatar = Func::fullPicAddr($v->avatar);
 
@@ -188,7 +188,7 @@ class ClassesController extends Controller{
                 $listw[$v->pinyin][] = $v;
             }else{
 
-                $first = substr($v->pinyin,0,1);
+                $first = strtoupper( substr($v->pinyin,0,1) );
                 $listw[$first][] = $v;
             }
         }

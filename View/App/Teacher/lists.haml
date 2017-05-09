@@ -1,0 +1,90 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+    %title 学生列表/Student list
+
+
+- block body
+    :css
+        body{
+            padding:10px 0;
+        }
+        .search{
+            margin:auto 10px;
+            background-color:#eae8e9;
+            box-shadow:0 0 10px inset #666;
+            margin-bottom:10px;
+        }
+        input{
+            width:80%;border:0;padding:10px;
+            background: transparent;
+            outline:0;
+            color:#aaa
+        }
+        .search i{
+            right:15px;top:13px
+        }
+        .bac{
+            background-color:#f6f6f6;
+            padding-left:15px;
+            color:#aaa
+        }
+        .ppic img{
+            margin:5px auto;
+            border-radius:50%;
+            height:40px
+        }
+        .ppic .col-xs-10{
+            line-height:50px;
+            height:50px
+        }
+    .box.tc
+    
+        .search.pr.tl
+            %input
+            %i.fa.fa-search.pa.cp
+        %div.bo
+            .bac.tl A
+            .container-fluid
+                .ppic.tl.row(data-id="0")
+                    .col-xs-2.tr
+                        %img(src="/pic/20170509/11.03.50.650334.jpg")
+                    .col-xs-10
+                        学生/student
+
+        .bac.tl 　        
+        
+
+    :javascript
+        j.post('/classes/get_student_list',{id:#{class_id}},function(d){
+            j('.bo').html('');
+            for(var e in d.data.list){
+                j('<div>').addClass('bac tl').text(e).appendTo('.bo');
+                for(var f in d.data.list[e]){
+                    j('<div>').addClass('container-fluid').append(
+                        j('<div>').addClass('ppic tl row').attr('data-id',d.data.list[e][f].id).append(
+                            j('<div>').addClass('col-xs-2 tr').append(
+                                j('<img>').attr('src',d.data.list[e][f].fullAvatar)
+                            )
+                        ).append(
+                            j('<div>').addClass('col-xs-10').text(d.data.list[e][f].name)
+                        )
+                    ).appendTo('.bo');
+                }
+            }
+            j('.row').click(function(){
+                location = 'record?id='+j(this).attr('data-id')
+            })
+        },'json');
+        j('.fa-search').click(function(){
+
+            j('.row').each(function(){
+                j(this).removeClass('dn');
+                if(j(this).html().search(j('input').val())<0){
+                    j(this).addClass('dn');
+                }
+            })
+        })
+            
