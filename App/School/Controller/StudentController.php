@@ -112,10 +112,18 @@ class StudentController extends Controller{
         $data = Request::getInstance()->request($model->field);
         unset ($data['id']);
 
+        
+        if($data['name']){
+            $pinyin = new \Overtrue\Pinyin\Pinyin();
+            $data['pinyin'] = $pinyin->permalink($data['name'],'');
+            
+        }
+
         if(!$id){
             $data['rand_code'] = TIME_NOW.Func::randWord('10',3);
             $data['create_time'] = TIME_NOW;
             $data['avatar'] = 'noavatar.png';
+            
             $model->set($data)->add();
 
         }else{
@@ -424,7 +432,7 @@ class StudentController extends Controller{
     }
 
     /* 获取某次点评 */
-    function view_comment($id,$month,$day,$date,CommentModel $model){
+    function view_comment($id,$month,$day,$date,CommentModel $model,StudentModel $stuModel){
 
         if($date){
             $time = strtotime($date);
@@ -436,7 +444,23 @@ class StudentController extends Controller{
         else 
         $info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id,'month'=>$month,'day'=>$day])->find();
 
-        !$info && AJAX::success(['info'=>[]]);
+        if(!$info){
+
+            $info2 = $stuModel->find($id);
+
+            if(!$info2)AJAX::error('no student!');
+
+            $info['avatar'] = $info2->avatar;
+            $info['fullAvatar'] = Func::fullPicAddr($info2->avatar);
+            $info['name'] = $info2->name;
+            $info['name_en'] = $info2->name_en;
+
+            $info['date'] = substr($month,0,4).'-'.substr($month,4).'-'.$day;
+            $info['subdate'] = Func::subdate($month.$day);
+            $info['adddate'] = Func::adddate($month.$day);
+
+            AJAX::success(['info'=>$info]);
+        }
 
         $month = $info->month;
         $day = $info->day;
@@ -465,13 +489,14 @@ class StudentController extends Controller{
 
     }
 
-    /* 家长恢回复 */
+    /* 家长回复 */
     function reply($id = 0,$reply,CommentModel $model){
 
         $info = $model->find($id);
         !$info && AJAX::error('comment没有找到！');
 
         $info->reply = $reply;
+        $info->reply_time = TIME_NOW;
         $info->save();
         AJAX::success();
 

@@ -28,6 +28,10 @@ class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
         array (
             'Psr\\Log\\' => 8,
         ),
+        'O' => 
+        array (
+            'Overtrue\\Pinyin\\' => 16,
+        ),
         'M' => 
         array (
             'MyCLabs\\Enum\\' => 13,
@@ -63,6 +67,10 @@ class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Overtrue\\Pinyin\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/overtrue/pinyin/src',
         ),
         'MyCLabs\\Enum\\' => 
         array (

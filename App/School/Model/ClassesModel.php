@@ -19,6 +19,12 @@ class ClassesModel extends Model{
         return $this->join('App\School\Model\ClassesLevelModel','id','level');
         
     }
+
+    public function user(){
+
+        return $this->join('App\School\Model\UserClassesModel','classes_id','id');
+        
+    }
     
 
 }

@@ -135,10 +135,9 @@ class ParentController extends Controller{
 
     function upd($id = 0,UserModel $model){
 
-        // $id = $this->L->id;
+        $id = $this->L->id;
 
         $data = Request::getInstance()->request(['email','phone','raw_password','avatar']);
-
         $info = $model->find($id);
         !$info && AJAX::error_i18n('no_user_exist');
 

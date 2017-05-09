@@ -5,10 +5,12 @@ namespace App\School\Controller;
 
 use App\School\Model\ClassesModel;
 use App\School\Model\ClassesLevelModel;
+use App\School\Model\StudentModel;
 use Controller;
 use Request;
 use App\School\Tool\AJAX;
 use App\School\Middleware\L;
+use App\School\Tool\Func;
 
 class ClassesController extends Controller{
 
@@ -160,6 +162,39 @@ class ClassesController extends Controller{
 
         $out['list']  = $list;
         AJAX::success($out);
+
+
+    }
+
+
+    function get_student_list($id = 0,StudentModel $model){
+
+        $list = $model->select('id','avatar','pinyin','name','name_en')->where(['classes_id'=>$id])->order('pinyin')->get()->toArray();
+
+        $listw = [];
+
+
+        foreach($list as $v){
+
+            if(!$v->name && $v->name_en)$v->name = $v->name_en;
+            elseif(!$v->name && !$v->name_en)$v->name = 'no name';
+            else $v->name = $v->name . '/' . $v->name_en;
+
+            $v->fullAvatar = Func::fullPicAddr($v->avatar);
+
+            unset($v->name_en);
+
+            if(!$v->pinyin){
+                $listw[$v->pinyin][] = $v;
+            }else{
+
+                $first = substr($v->pinyin,0,1);
+                $listw[$first][] = $v;
+            }
+        }
+
+        AJAX::success(['list'=>$listw]);
+
 
 
     }

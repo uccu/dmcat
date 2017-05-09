@@ -1,0 +1,35 @@
+body{
+    background: #f4f4f4;
+}
+.mainbody{
+    width:6rem;
+    margin:0.2rem auto;
+    background: #ffffff;
+    border-radius: 0.1rem;
+
+}
+.mainbody h1{
+    font-size: 0.3rem;
+    width:5.4rem;
+    height:0.8rem;
+    line-height:0.8rem;
+    padding:0 0.2rem;
+    margin:auto;
+    border-bottom:1px solid #EEEEEE;
+}
+.mainbody p{
+    font-size:0.25rem;
+    line-height:0.5rem;
+    color: #c0c0c0;
+    padding:0 0.2rem;
+}
+.mainbody span{
+    display: block;
+    text-align: right;
+    font-size: 0.2rem;
+    color: #c0c0c0;
+    padding:0 0.2rem;
+    line-height:0.5rem;
+
+
+}

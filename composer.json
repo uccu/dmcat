@@ -16,6 +16,7 @@
         "mthaml/mthaml": "^1.8",
         "cebe/markdown": "^1.1",
         "twig/twig": "1.26.1",
-        "endroid/qrcode": "^2.1"
+        "endroid/qrcode": "^2.1",
+        "overtrue/pinyin": "^3.0"
     }
 }
