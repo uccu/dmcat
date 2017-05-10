@@ -15,7 +15,7 @@ body{
     overflow: hidden;
 
 }
-.Organizers span{
+.Organizers img{
     display: block;
     width:0.8rem;
     height:0.8rem;
@@ -23,6 +23,14 @@ body{
     border-radius: 100%;
     float: left;
 }
+/*.Organizers span img{*/
+    /*height:100%;*/
+    /*width:100%;*/
+    /*display: block;*/
+    /*border-radius: 100%;*/
+
+
+/*}*/
 .Organizers .organizersName{
     width:5.0rem;
     float: right;

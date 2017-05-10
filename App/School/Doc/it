@@ -103,3 +103,14 @@ message 内容
 
 
 
+投票列表
+http://weixin.ivy-china.com/notice/get_vote_lists
+{"data":{"list":[{"id":"1","title":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","short_message":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","content":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea72","create_time":"1234512345","isshow":"1","options":"\u82b1\u56ed\u73ed;\u82f9\u679c\u73ed;\u8349\u8393\u73ed;\u8461\u8404\u73ed","user_id":"8","end_time":"0","avatar":"20170412\/1491973977.jpg","name":"\u6821\u529e\u4e2d\u5fc3","name_en":"xing zheng","date":"02.13 16:05","end_date":"1970-01-01 08:00:00","fullAvatar":"http:\/\/d.baka\/pic\/20170412\/1491973977.jpg"}]},"code":200,"url":"","message":""}
+{}
+
+
+投票列表详情
+http://weixin.ivy-china.com/notice/get_vote_info
+id 投票ID
+{"data":{"info":{"id":"1","title":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","short_message":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","content":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea72","create_time":"1234512345","isshow":"1","options":"\u82b1\u56ed\u73ed;\u82f9\u679c\u73ed;\u8349\u8393\u73ed;\u8461\u8404\u73ed","user_id":"8","end_time":"0","date":"02.13 16:05","end_date":"1970-01-01 08:00:00","fullAvatar":"http:\/\/d.baka\/pic\/"}},"code":200,"url":"","message":""}
+{}

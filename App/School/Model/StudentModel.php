@@ -13,6 +13,12 @@ class StudentModel extends Model{
         return $this->join('App\School\Model\ClassesModel','id','classes_id','LEFT');
         
     }
+    public function noticeConfirm(){
+
+        return $this->join('App\School\Model\NoticeConfirmModel','student_id','id','LEFT');
+        
+    }
+    
     
 
     

@@ -14,6 +14,7 @@ use App\School\Tool\AJAX;
 use View;
 use Request;
 use Model;
+use App\School\Model\NoticeConfirmModel;
 
 class ParentController extends Controller{
 
@@ -47,6 +48,18 @@ class ParentController extends Controller{
     }
 
     function children($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function tijian($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function leave($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function ask($id){
 
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
@@ -117,13 +130,22 @@ class ParentController extends Controller{
     }
 
 
-    function get_notice($id=0,$student_id = 0){
+    function get_notice($id=0,$student_id = 0,NoticeConfirmModel $model){
 
         (!$id || !$student_id) && AJAX::error_i18n('param_error');
 
         $info = Model::getInstance('notice')->find($id);
 
         $info->create_date = date('Y-m-d',$v->create_time);
+
+        if($info->need_confirm){
+            $data['student_id'] = $student_id;
+            $data['notice_id'] = $id;
+            if(!$model->where($data)->find()){
+                $data['create_time'] = TIME_NOW;
+                $model->set($data)->add(true);
+            }
+        }
         
 
         $out['info'] = $info;

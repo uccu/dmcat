@@ -53,7 +53,7 @@
                     var language = '<input type="text" value="'+result.language+'" readonly>'
                     var birthday = '<input type="text" value="'+result.birth+'" readonly>'
                     var allergic = '<input type="text" value="'+result.allergy+'">'
-                    var tijian='<a href="tijian.html?id='+result.id+'">查看体检</a>'
+                    var tijian='<a style="width: 100%;height: 100%;display: block;" href="tijian?id='+result.id+'">查看体检</a>'
                     $("#head").append(head);
                     $("#number").append(number)
                     $("#name").append(name)

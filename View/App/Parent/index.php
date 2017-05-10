@@ -112,7 +112,7 @@
                             location.href='ChildRecord.html?id='+student_id
                         })
                         $(".leave").click(function(){
-                            location.href='leaveWord.html?id='+student_id
+                            location.href='leave?id='+student_id
                         })
                         $(".vote").click(function(){
                             location.href='vote.html?id='+student_id
@@ -121,7 +121,7 @@
                             location.href='activity.html?id='+student_id
                         })
                         $(".ask").click(function(){
-                            location.href='askforleave.html?id='+student_id
+                            location.href='ask?id='+student_id
                         })
                         $(".menu").click(function(){
                             location.href='menu.html?id='+student_id

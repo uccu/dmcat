@@ -11,6 +11,7 @@ use App\School\Model\NoticeModel;
 use App\School\Model\VoteModel;
 use App\School\Model\ActivityModel;
 use App\School\Model\PropagandaModel;
+use App\School\Model\NoticeConfirmModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
@@ -25,7 +26,7 @@ class NoticeController extends Controller{
     function __construct(){
 
         $this->L = L::getInstance();
-        
+        $this->lang = $this->L->i18n;
 
     }
 
@@ -40,7 +41,7 @@ class NoticeController extends Controller{
         AJAX::success(['info'=>$info]);
 
     }
-    function lists(NoticeModel $model,$page = 1 ,$limit = 30){
+    function lists(NoticeModel $model,$page = 1 ,$limit = 30,$need_confirm = null){
 
         $out = ['get'=>'/notice/get','upd'=>'/notice/upd','del'=>'/notice/del'];
 
@@ -63,7 +64,9 @@ class NoticeController extends Controller{
 
         $out['lang'] = $this->lang->language;
 
-        $list = $model->page($page,$limit)->order('id','DESC')->get()->toArray();
+        if($need_confirm)$where['need_confirm'] = 1;
+
+        $list = $model->where($where)->page($page,$limit)->order('id','DESC')->get()->toArray();
 
         $out['list']  = $list;
         $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
@@ -136,11 +139,13 @@ class NoticeController extends Controller{
         $out['limit'] = $limit;
         AJAX::success($out);
     }
-    function vote_upd($id = 0,VoteModel $model,$option){
+    function vote_upd($id = 0,VoteModel $model,$option,$end_date){
 
         $data = Request::getInstance()->request($model->field);
 
         if($option)$data['options'] = implode(';',$option);
+
+        $data['end_time'] = strtotime($end_date);
 
         if($id){
 
@@ -160,6 +165,7 @@ class NoticeController extends Controller{
         !$id && AJAX::success(['info'=>[]]);
         $info = $model->find($id);
         !$info && AJAX::error_i18n('no_data');
+        if($info->end_time)$info->end_date = date('Y-m-d',$info->end_time);
         $info->option = explode(';',$info->options);
         AJAX::success(['info'=>$info]);
     }
@@ -281,13 +287,21 @@ class NoticeController extends Controller{
     function get_vote_lists(VoteModel $model){
         $out['list'] = $model->select('*','user.avatar','user.name','user.name_en')->where(['isshow'=>1])->order('id','DESC')->get()->toArray();
         foreach($out['list'] as &$v){
+            $v->date = date('m.d H:i',$v->create_time);
+            $v->end_date = date('Y-m-d H:i:s',$v->end_time);
             $v->fullAvatar = Func::fullPicAddr($v->avatar);
         }
         AJAX::success($out);
     }
     function get_vote_info(VoteModel $model,$id = 0){
-        $out['info'] = $model->find($id);
-        if(!$out['info'])AJAX::error('没有数据/no data');
+        $info = $model->find($id);
+        if(!$info)AJAX::error('没有数据/no data');
+
+        $info->date = date('m.d H:i',$info->create_time);
+        $info->end_date = date('Y-m-d H:i:s',$info->end_time);
+        $info->fullAvatar = Func::fullPicAddr($info->avatar);
+
+        $out['info'] = $info; 
         AJAX::success($out);
     }
 
@@ -312,6 +326,59 @@ class NoticeController extends Controller{
         $out['info'] = $model->find($id);
         if(!$out['info'])AJAX::error('没有数据/no data');
         AJAX::success($out);
+    }
+
+
+
+
+    function get_notice_confirm(StudentModel $model,NoticeConfirmModel $nModel,$notice_id = 0,$classes_id = 0){
+
+        $out = ['upd'=>'/notice/upd_notice_confirm'];
+
+        $out['thead'] = [
+            "学生ID/student's ID"=>['class'=>'tc'],
+            "学生名字/student's name"=>['class'=>'tc'],
+            "是否回执/has replied"=>['class'=>'tc'],
+        ];
+        
+        $out['tbody'] = [
+            'id'=>['class'=>'tc'],
+            'name_e'=>['class'=>'tc'],
+            'is_confirm'=>['class'=>'tc confirm','type'=>'checkbox'],
+            
+        ];
+
+
+        $out['lang'] = $this->lang->language;
+
+        $where['classes_id'] = $classes_id;
+        $list = $model->select('id','name','name_en')->where($where)->order('id')->get()->toArray();
+
+        $where['noticeConfirm.notice_id'] = $notice_id;
+        $listn = $model->where($where)->get_field('id')->toArray();
+
+        foreach($list as &$v){
+            $v->name_e = $v->name . ' ' . $v->name_en;
+            $v->is_confirm = in_array($v->id,$listn) ? '1' : '0';
+        }
+
+        $out['list']  = $list;
+        $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $out['page'] = $page;
+        $out['limit'] = $limit;
+        AJAX::success($out);
+    }
+    function upd_notice_confirm(NoticeConfirmModel $model,$student_id = 0,$notice_id = 0){
+        
+        $data['student_id'] = $student_id;
+        $data['notice_id'] = $notice_id;
+        if(!$model->where($data)->find()){
+            $data['create_time'] = TIME_NOW;
+            $model->set($data)->add(true);
+        }else{
+            $model->where($data)->remove();
+        }
+        AJAX::success();
     }
 
 

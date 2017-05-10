@@ -27,6 +27,17 @@ class NoticeController extends Controller{
 
     }
 
+    function notice_confirm(){
+
+        $lang = $this->L->i18n;
+        $lang->adminIndex;
+        $lang->school;
+        $lang->classes;
+        View::addData(['lang'=>$lang]);
+        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+
+    }
+
     /* 投票 */
     function vote(){
 
