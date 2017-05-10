@@ -130,7 +130,7 @@
                             location.href='course.html?id='+student_id
                         })
                         $(".notice").click(function(){
-                            location.href='notice.html?id='+student_id
+                            location.href='notice?id='+student_id
                         })
 
                     }

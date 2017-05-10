@@ -44,7 +44,7 @@
 //        isinitVal:true,
         isTime:false, //isClear:false,
         isClear: false, //是否显示清空
-        // maxDate: jeDate.now(0),
+        minDate: jeDate.now(0),
     })
 //    jeDate({
 //        dateCell:"#enddateinfo",

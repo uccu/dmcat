@@ -63,6 +63,10 @@ class ParentController extends Controller{
 
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
+    function notice($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
 
     function get_my_info($id ,UserModel $model){
 
