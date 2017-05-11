@@ -12,6 +12,7 @@ use App\School\Model\VoteModel;
 use App\School\Model\ActivityModel;
 use App\School\Model\PropagandaModel;
 use App\School\Model\NoticeConfirmModel;
+use App\School\Model\VoteConfirmModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
@@ -293,21 +294,43 @@ class NoticeController extends Controller{
         }
         AJAX::success($out);
     }
-    function get_vote_info(VoteModel $model,$id = 0){
+    function get_vote_info(VoteModel $model,$id = 0,$student_id = 0,VoteConfirmModel $vModel){
         $info = $model->select('*','user.avatar','user.name','user.name_en')->find($id);
         if(!$info)AJAX::error('没有数据/no data');
 
+        $where['vote_id'] = $id;
+        $where['student_id'] = $student_id;
+        $vote = $vModel->where($where)->find();
+        $info->voted = $vote ? $vote->answer : '0';
         $info->date = date('m.d H:i',$info->create_time);
         $info->end_date = date('Y-m-d H:i:s',$info->end_time);
         $info->fullAvatar = Func::fullPicAddr($info->avatar);
+        $info->option = explode(';',$info->options);
 
         $out['info'] = $info; 
         AJAX::success($out);
     }
 
+    function to_vote($id = 0,$student_id = 0,VoteConfirmModel $model,$answer = '0'){
+
+        $data['vote_id'] = $id;
+        $data['student_id'] = $student_id;
+
+        $model->where($data)->find() && AJAX::error('您已经投过票了/Sorry,you\'ve already voted');
+
+        $data['answer'] = $answer;
+        $vote = $model->set($data)->add();
+        AJAX::success();
+    }
+
 
     function get_activity_lists(ActivityModel $model){
         $out['list'] = $model->select('*','user.avatar','user.name','user.name_en')->where(['isshow'=>1])->order('id','DESC')->get()->toArray();
+        foreach($out['list'] as &$v){
+            $v->date = date('m.d H:i',$v->create_time);
+            $v->end_date = date('Y-m-d H:i:s',$v->end_time);
+            $v->fullAvatar = Func::fullPicAddr($v->avatar);
+        }
         AJAX::success($out);
     }
     function get_activity_info(ActivityModel $model,$id = 0){

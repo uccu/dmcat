@@ -30,7 +30,13 @@ class TeacherController extends Controller{
 
     /* 每日点评 */
 
-    function add_comment($id,$month,$day,CommentModel $model){
+    function add_comment($id,$month,$day,$date,CommentModel $model){
+
+        if($date){
+            $time = strtotime($date);
+            $month = date('Ym',$time);
+            $day = date('d',$time);
+        }
 
         $data = Request::getInstance()->request($model->field);
 

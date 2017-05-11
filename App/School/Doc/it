@@ -5,6 +5,13 @@ file 图片文件
 {"data":{"path":"20170426\/1493191297.jpg","fpath":"\/pic\/20170426\/1493191297.jpg","apath":"http:\/\/d.baka\/pic\/20170426\/1493191297.jpg"},"code":200,"url":"","message":""}
 {}
 
+
+上传图片
+http://weixin.ivy-china.com/student/upPic
+file 图片文件
+{"data":{"path":"20170426\/1493191297.jpg","fpath":"\/pic\/20170426\/1493191297.jpg","apath":"http:\/\/d.baka\/pic\/20170426\/1493191297.jpg"},"code":200,"url":"","message":""}
+{}
+
 家长更新个人资料
 http://weixin.ivy-china.com/parent/upd
 id 当前是10
@@ -109,8 +116,45 @@ http://weixin.ivy-china.com/notice/get_vote_lists
 {}
 
 
-投票列表详情
+投票详情
 http://weixin.ivy-china.com/notice/get_vote_info
+id 投票ID
+student_id 学生ID
+{"data":{"info":{"id":"1","title":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","short_message":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","content":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea72","create_time":"1234512345","isshow":"1","options":"\u82b1\u56ed\u73ed;\u82f9\u679c\u73ed;\u8349\u8393\u73ed;\u8461\u8404\u73ed","user_id":"8","end_time":"985190400","avatar":"noavatar.png","name":"\u6821\u529e\u4e2d\u5fc3","name_en":"xing zheng","voted":"1","date":"02.13 16:05","end_date":"2001-03-22 00:00:00","fullAvatar":"http:\/\/weixin.ivy-china.com\/pic\/noavatar.png","option":["\u82b1\u56ed\u73ed","\u82f9\u679c\u73ed","\u8349\u8393\u73ed","\u8461\u8404\u73ed"]}},"code":200,"url":"","message":""}
+{}
+
+
+进行投票
+http://weixin.ivy-china.com/notice/to_vote
+id 投票ID
+student_id 学生ID
+answer 第几个选项
+{}
+{}
+
+
+评论学生
+http://weixin.ivy-china.com/teacher/add_comment
+date 日期
+id 学生ID
+eat 饮食能力
+life 生活能力
+learning 学习能力
+comment 评论
+pic 图片地址用;分割
+{}
+{}
+
+
+
+活动列表
+http://weixin.ivy-china.com/notice/get_activity_lists
+{"data":{"list":[{"id":"1","title":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","short_message":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","content":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea72","create_time":"1234512345","isshow":"1","options":"\u82b1\u56ed\u73ed;\u82f9\u679c\u73ed;\u8349\u8393\u73ed;\u8461\u8404\u73ed","user_id":"8","end_time":"0","avatar":"20170412\/1491973977.jpg","name":"\u6821\u529e\u4e2d\u5fc3","name_en":"xing zheng","date":"02.13 16:05","end_date":"1970-01-01 08:00:00","fullAvatar":"http:\/\/d.baka\/pic\/20170412\/1491973977.jpg"}]},"code":200,"url":"","message":""}
+{}
+
+
+活动详情
+http://weixin.ivy-china.com/notice/get_activity_info
 id 投票ID
 {"data":{"info":{"id":"1","title":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","short_message":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","content":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea72","create_time":"1234512345","isshow":"1","options":"\u82b1\u56ed\u73ed;\u82f9\u679c\u73ed;\u8349\u8393\u73ed;\u8461\u8404\u73ed","user_id":"8","end_time":"0","date":"02.13 16:05","end_date":"1970-01-01 08:00:00","fullAvatar":"http:\/\/d.baka\/pic\/"}},"code":200,"url":"","message":""}
 {}
