@@ -55,7 +55,7 @@ class TeacherController extends Controller{
 
         $model->set($data)->add();
 
-        AJXAX::success();
+        AJAX::success();
 
     }
 
