@@ -32,25 +32,28 @@ class TeacherController extends Controller{
 
     function add_comment($id,$month,$day,$date,CommentModel $model){
 
+        $data = Request::getInstance()->request($model->field);
+
         if($date){
             $time = strtotime($date);
-            $month = date('Ym',$time);
-            $day = date('d',$time);
+            $data['month'] = $month = date('Ym',$time);
+            $data['day'] = $day = date('d',$time);
         }
 
-        $data = Request::getInstance()->request($model->field);
+        
 
         unset($data['id']);
 
         $data['create_time'] = TIME_NOW;
-
+        $data['teacher_id'] = $this->L->id?$this->L->id:0;
+        $data['student_id'] = $id;
         $where['student_id'] = $id;
         $where['month'] = $month;
         $where['day'] = $day;
 
         $las = $model->where($where)->find();
 
-        if($las)AJAX::error('EXIST');
+        if($las)AJAX::error('已评论/has commented');
 
 
         $model->set($data)->add();
