@@ -26,6 +26,12 @@ class Response implements SingleInstance{
 
     }
     
+    function r302($path = '/'){
+
+        header('Location:'.$path);
+        exit();
+
+    }
 
 
 
