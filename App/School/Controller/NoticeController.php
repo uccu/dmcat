@@ -339,6 +339,7 @@ class NoticeController extends Controller{
         $model->where($data)->find() && AJAX::error('您已经投过票了/Sorry,you\'ve already voted');
 
         $data['answer'] = $answer;
+        $data['create_time'] = TIME_NOW;
         $vote = $model->set($data)->add();
         AJAX::success();
     }
