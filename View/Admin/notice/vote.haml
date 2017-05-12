@@ -54,7 +54,7 @@
                         .form-group
                             %label.col-sm-3.control-label 到期时间/end time
                             .col-sm-9
-                                %input.form-control(name="end_date" placeholder="YY-mm-dd")
+                                %input.form-control(name="end_date" placeholder="YYYY-mm-dd")
                         .bbox
                             .form-group
                                 %label.col-sm-3.control-label 选项/option
@@ -102,17 +102,13 @@
                 }
             };
 
-            window.gr.getListAfter = function(){
+            window.gr.getListAfter = function(d){
                 $('.eisshow input.i-checks').on('ifChanged',function(){
-                    curl('/notice/vote_upd',{id:$(this).parent().parent().attr('data-id'),isshow:this.checked?1:0},function(d){
+                    curl(d.upd,{id:$(this).parent().parent().attr('data-id'),isshow:this.checked?1:0},function(d){
                         curl_succ('success!');
                     });
                 });
-                $('.eneed_confirm input.i-checks').on('ifChanged',function(){
-                    curl('/notice/vote_upd',{id:$(this).parent().parent().attr('data-id'),need_confirm:this.checked?1:0},function(d){
-                        curl_succ('success!');
-                    });
-                });
+                
             }
             window.gr.updFunction = function(g){
                 $('.bbox').html('');

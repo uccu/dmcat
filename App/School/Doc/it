@@ -156,5 +156,5 @@ http://weixin.ivy-china.com/notice/get_activity_lists
 活动详情
 http://weixin.ivy-china.com/notice/get_activity_info
 id 投票ID
-{"data":{"info":{"id":"1","title":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","short_message":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea7","content":"\u6295\u7968\u5e7c\u513f\u56ed\u6700\u4f73\u4f18\u79c0\u73ed\u7ea72","create_time":"1234512345","isshow":"1","options":"\u82b1\u56ed\u73ed;\u82f9\u679c\u73ed;\u8349\u8393\u73ed;\u8461\u8404\u73ed","user_id":"8","end_time":"0","date":"02.13 16:05","end_date":"1970-01-01 08:00:00","fullAvatar":"http:\/\/d.baka\/pic\/"}},"code":200,"url":"","message":""}
+{"data":{"info":{"id":"1","title":"2017\u5e74\u6625\u6e38","short_message":"2017\u5e74\u6625\u6e38","content":"2017\u5e74\u6625\u6e38","create_time":"0","isshow":"1","user_id":"7","end_time":"0","avatar":"20170412\/1491973977.jpg","name":"sea\u6821\u957f","name_en":"sea HR","voted":"1","remark":"www","date":"01.01 08:00","end_date":"1970-01-01 08:00:00","fullAvatar":"http:\/\/d.baka\/pic\/20170412\/1491973977.jpg","option":[""]},"count":{"1":"2"},"countAll":"2"},"code":200,"url":"","message":""}
 {}

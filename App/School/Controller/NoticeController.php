@@ -12,6 +12,7 @@ use App\School\Model\VoteModel;
 use App\School\Model\ActivityModel;
 use App\School\Model\PropagandaModel;
 use App\School\Model\NoticeConfirmModel;
+use App\School\Model\ActivityConfirmModel;
 use App\School\Model\VoteConfirmModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
@@ -177,6 +178,8 @@ class NoticeController extends Controller{
         !$id && AJAX::success(['info'=>[]]);
         $info = $model->find($id);
         !$info && AJAX::error_i18n('no_data');
+        if($info->end_time)$info->end_date = date('Y-m-d',$info->end_time);
+        $info->option = explode(';',$info->options);
         AJAX::success(['info'=>$info]);
     }
     function activity_lists(ActivityModel $model,$page = 1 ,$limit = 30){
@@ -206,11 +209,19 @@ class NoticeController extends Controller{
         $model->remove($id);
         AJAX::success();
     }
-    function activity_upd($id = 0,ActivityModel $model){
+    function activity_upd($id = 0,ActivityModel $model,$option,$end_date){
+
         $data = Request::getInstance()->request($model->field);
+
+        if($option)$data['options'] = implode(';',$option);
+
+        $data['end_time'] = strtotime($end_date);
+        
+        
         if($id){
             $info = $model->find($id);
             !$info && AJAX::error_i18n('no_data');
+            
             !$model->set($data)->save($id)->getStatus() && AJAX::error_i18n('save_failed');
         }else{
             $data['create_time'] = TIME_NOW;
@@ -307,7 +318,16 @@ class NoticeController extends Controller{
         $info->fullAvatar = Func::fullPicAddr($info->avatar);
         $info->option = explode(';',$info->options);
 
+        $count = $vModel->select('COUNT(*) AS num,answer','RAW')->group('answer')->where(['vote_id'=>$id])->get('answer')->toArray();
+
+       foreach($info->option as $k=>$v){
+           $count[$k+1] = $count[$k+1] ? $count[$k+1]->num : '0';
+       }
+        $countAll = $vModel->select('COUNT(*) AS num','RAW')->where(['vote_id'=>$id])->find()->num;
+
         $out['info'] = $info; 
+        $out['count'] = $count;
+        $out['countAll'] = $countAll;
         AJAX::success($out);
     }
 
@@ -333,9 +353,31 @@ class NoticeController extends Controller{
         }
         AJAX::success($out);
     }
-    function get_activity_info(ActivityModel $model,$id = 0){
-        $out['info'] = $model->find($id);
-        if(!$out['info'])AJAX::error('没有数据/no data');
+    function get_activity_info(ActivityModel $model,$id = 0,$student_id = 0,ActivityConfirmModel $aModel){
+        $info = $model->select('*','user.avatar','user.name','user.name_en')->find($id);
+        if(!$info)AJAX::error('没有数据/no data');
+
+        $where['activity_id'] = $id;
+        $where['student_id'] = $student_id;
+        $vote = $aModel->where($where)->find();
+        $info->voted = $vote ? $vote->answer : '0';
+        $info->remark = $vote ? $vote->remark : '0';
+        $info->date = date('m.d H:i',$info->create_time);
+        $info->end_date = date('Y-m-d H:i:s',$info->end_time);
+        $info->fullAvatar = Func::fullPicAddr($info->avatar);
+        $info->option = explode(';',$info->options);
+
+        $count = $aModel->select('COUNT(*) AS num,answer','RAW')->group('answer')->where(['activity_id'=>$id])->get('answer')->toArray();
+
+       foreach($info->option as $k=>$v){
+           $count[$k+1] = $count[$k+1] ? $count[$k+1]->num : '0';
+       }
+        $countAll = $aModel->select('COUNT(*) AS num','RAW')->where(['activity_id'=>$id])->find()->num;
+
+        $out['info'] = $info; 
+        $out['count'] = $count;
+        $out['countAll'] = $countAll;
+
         AJAX::success($out);
     }
 
