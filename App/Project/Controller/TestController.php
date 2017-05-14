@@ -5,9 +5,9 @@ namespace App\Project\Controller;
 use Controller;
 
 use AJAX;
-use Route;
-use Request;
 
+use Request;
+use Route;
 use App\Project\Model\UserModel as User;
 use App\Project\Model\LessionModel as Lession;
 use Model;
@@ -35,6 +35,8 @@ class TestController extends Controller{
 
         
         
+        // Route::getSingleInstance()->method(Request::getInstance()->path,'App\Project\Controller\TestController\ec');
+        echo '123';
  
     }
 
