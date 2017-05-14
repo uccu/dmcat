@@ -72,7 +72,7 @@ Class Route{
                         if(!$controller){
                             E::throwEx('Controller Not Exist');
                         }
-                        $controller = table($m[3].'\\'.$controller);
+                        $controller = table($m[3].'\\'.ucfirst($controller).'Controller');
                         $method = $folder[$on+1];
                     }else{
                         $controller = table($m[3]);
