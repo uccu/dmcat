@@ -42,6 +42,8 @@ class Api extends Controller{
         $info = new stdClass;
         $data = [];
 
+        $name = str_replace('&amp;','&',$name);
+
         /* 名字必须存在 */
         $info->name                     = $name;
         !$info->name && AJAX::error('没有名字');
