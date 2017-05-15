@@ -407,8 +407,10 @@ class NoticeController extends Controller{
         AJAX::success($out);
     }
     function get_propaganda_info(PropagandaModel $model,$id = 0){
-        $out['info'] = $model->find($id);
+        $out['info'] = $model->select('*','user.avatar','user.name','user.name_en')->find($id);
         if(!$out['info'])AJAX::error('没有数据/no data');
+        $out['info']->date = date('m.d H:i',$out['info']->create_time);
+        $out['info']->fullAvatar = Func::fullPicAddr($out['info']->avatar);
         AJAX::success($out);
     }
 

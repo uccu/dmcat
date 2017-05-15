@@ -168,3 +168,14 @@ answer 第几个选项
 remark 附加内容
 {}
 {}
+
+
+校外宣传
+http://weixin.ivy-china.com/notice/get_propaganda_lists
+{"data":{"list":[{"id":"1","title":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u6821\u5916\u5ba3\u4f20","short_message":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u6821\u5916\u5ba3\u4f20","content":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u6821\u5916\u5ba3\u4f20","create_time":"0","isshow":"1","user_id":"0","avatar":"","name":"","name_en":"","date":"01.01 08:00","fullAvatar":"http:\/\/d.baka\/pic\/"}]},"code":200,"url":"","message":""}
+{}
+
+校外宣传详情页
+http://weixin.ivy-china.com/notice/get_propaganda_info
+id 宣传ID
+{"data":{"info":{"id":"1","title":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u6821\u5916\u5ba3\u4f20","short_message":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u6821\u5916\u5ba3\u4f20","content":"\u5e38\u9752\u85e4\u5e7c\u513f\u56ed\u6821\u5916\u5ba3\u4f20","create_time":"0","isshow":"1","user_id":"1","avatar":"20170412\/1491973744.jpg","name":"Tom","name_en":"Tom","date":"01.01 08:00","fullAvatar":"http:\/\/d.baka\/pic\/20170412\/1491973744.jpg"}},"code":200,"url":"","message":""}
