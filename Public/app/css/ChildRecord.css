@@ -189,6 +189,7 @@ hr{
     font-size: 0.25rem;
     outline: none;
     resize: none;
+    overflow: hidden;
 }
 .liuyan textarea{
     margin:0 auto 0.2rem;

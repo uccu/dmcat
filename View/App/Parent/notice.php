@@ -42,7 +42,7 @@
                     var result = e.data.list;
                     for(var i=0; i<result.length;i++){
 //                        console.info(result.length)
-                        var html='<div class="bm zxbm"><a href="noticeDetail.html?id='+result[i].id+'"><h1>'+result[i].title+'</h1></a><p>'+result[i].short_message+'</p><span>'+result[i].create_date+'</span></div>'
+                        var html='<div class="bm zxbm"><a href="notice_detail?id='+result[i].id+'"><h1>'+result[i].title+'</h1></a><p>'+result[i].short_message+'</p><span>'+result[i].create_date+'</span></div>'
                         $("body").append(html);
 
                     }

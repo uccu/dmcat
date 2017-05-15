@@ -71,7 +71,7 @@
                 type = "事假/thing leave"
             }
             $.ajax({
-                url: "http://weixin.ivy-china.com/student/ask_leave",
+                url: "/student/ask_leave",
                 type: "get",
                 data: {
                     student_id:2,

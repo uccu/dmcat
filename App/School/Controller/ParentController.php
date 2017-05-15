@@ -12,6 +12,7 @@ use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
 use View;
+use Route;
 use Request;
 use Model;
 use App\School\Model\NoticeConfirmModel;
@@ -26,7 +27,7 @@ class ParentController extends Controller{
     function __construct(){
 
         $this->L = L::getInstance();
-        
+        $this->salt = $this->L->config->site_salt;
 
     }
 
@@ -44,6 +45,7 @@ class ParentController extends Controller{
 
         $stu_id = $id;
         $id = $this->L->id;
+        if(!$id)Response::getInstance()->r302('/home/login');
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
 
@@ -64,6 +66,18 @@ class ParentController extends Controller{
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
     function notice($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function course($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function menu($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function notice_detail($id){
 
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }

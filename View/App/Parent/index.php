@@ -30,7 +30,7 @@
     </div>
     <div class="parent-child leave">
         <a href="javascript:void(0)"></a>
-        <p>留言<br><span>leave a message</span></p>
+        <p>留言<br><span>leave message</span></p>
     </div>
 </div>
 <div class="parent-main">
@@ -109,25 +109,25 @@
                             location.href='profile?id='+student_id
                         })
                         $(".child").click(function(){
-                            location.href='ChildRecord.html?id='+student_id
+                            location.href='record?id='+student_id
                         })
                         $(".leave").click(function(){
                             location.href='leave?id='+student_id
                         })
                         $(".vote").click(function(){
-                            location.href='vote.html?id='+student_id
+                            location.href='vote?id='+student_id
                         })
                         $(".activity").click(function(){
-                            location.href='activity.html?id='+student_id
+                            location.href='activity?id='+student_id
                         })
                         $(".ask").click(function(){
                             location.href='ask?id='+student_id
                         })
                         $(".menu").click(function(){
-                            location.href='menu.html?id='+student_id
+                            location.href='menu?id='+student_id
                         })
                         $(".course").click(function(){
-                            location.href='course.html?id='+student_id
+                            location.href='course?id='+student_id
                         })
                         $(".notice").click(function(){
                             location.href='notice?id='+student_id

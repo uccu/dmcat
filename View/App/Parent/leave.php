@@ -19,7 +19,7 @@
             if(d.code==200){
                 alert('留言成功！/ Success!');location = 'index'
             }
-        })
+        },'json')
     })
 
 </script>

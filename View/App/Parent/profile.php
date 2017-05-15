@@ -132,7 +132,7 @@
                 success:function(data){
                     if (data.code==200){
                        alert("信息修改成功，请确认保存")
-
+                       location.reload()
                     }
                 }
             })

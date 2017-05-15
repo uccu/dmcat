@@ -236,7 +236,6 @@
                 url:"/teacher/add_comment",
                 type:"post",
                 data:{
-                    id:2,
                     date:date,
                     eat:eat,
                     life:life,
@@ -249,7 +248,7 @@
                 success:function(data){
                     if (data.code==200){
                         show_alert("提交成功")
-//                        location.reload()
+                        location.reload()
                     }else {
                         show_alert("不开心，提交失败")
                     }

@@ -16,6 +16,8 @@ h1{
 .menu{
     width:100%;
     min-height:1.7rem;
+    margin-top:0.4rem;
+    clear: both;
 }
 .menu p{
     float: left;
@@ -26,23 +28,25 @@ h1{
     text-align: center;
     color: #ffffff;
     border-radius: 3px;
+    padding-top:0.1rem;
 }
 .menu:nth-child(even) p{
     background:url("../img/cd_03.png") no-repeat center;
     background-size:100%;
 }
 .menu:nth-child(odd) p{
-    background:url("../img/cd_06.png");
+    background:url("../img/cd_06.png") no-repeat center;
     background-size:100%;
 }
-.mainMenu{
+.menu ul{
     width:4.2rem;
     float: right;
     background: #f4f4f4;
     margin-bottom:0.3rem;
     padding:0.2rem 0.2rem;
+    min-height: 70px;
 }
-.mainMenu ul li{
+.menu ul li{
     float: left;
     font-size: 0.25rem;
     line-height:0.5rem;

@@ -31,9 +31,9 @@ class TeacherController extends Controller{
     /* 每日点评 */
 
     function add_comment($id,$month,$day,$date,CommentModel $model){
-
+        $id = Request::getInstance()->cookie('student_id');
         $data = Request::getInstance()->request($model->field);
-
+        unset($data['id']);
         if($date){
             $time = strtotime($date);
             $data['month'] = $month = date('Ym',$time);
@@ -124,7 +124,7 @@ class TeacherController extends Controller{
     function profile(){
 
         $id = $this->L->id;
-        if(!$id)header('Location:/home/login');
+        if(!$id)Response::getInstance()->r302('/home/login');
         include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';
     }
 

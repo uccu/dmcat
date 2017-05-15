@@ -17,6 +17,17 @@ body{
     line-height:0.6rem;
     color: #1b2b69;
 }
+
+
+
+.xuanze p span{
+    float: right;
+    display: block;
+}
+
+
+
+
 .attend{
     display: block;
     width:100%;
@@ -70,56 +81,3 @@ body{
 }
 
 
-/*活动投票页面*/
-#fullbg {
-    background-color:gray;
-    left:0;
-    opacity:0.5;
-    position:absolute;
-    top:0;
-    z-index:3;
-    filter:alpha(opacity=50);
-    -moz-opacity:0.5;
-    -khtml-opacity:0.5;
-}
-
-
-#logIn{
-    width:6rem;
-    height:5.5rem;
-    /*border:1px solid #ddd;*/
-    position: fixed;
-    left:0;
-    top:0;
-    bottom:0;
-    right:0;
-    margin:auto;
-    background: #ffffff;
-    z-index: 9999999;
-}
-#logIn textarea{
-    display: block;
-    width:5.6rem;
-    margin:0.2rem auto;
-    padding:0 0.1rem;
-    height:4rem;
-    font-size: 0.25rem;
-    line-height:0.6rem;
-    border:none;
-    background: #f4f4f4;
-    border-radius: 3px;
-    resize: none;
-    outline: none;
-}
-#logIn a{
-    height:0.8rem;
-    line-height: 0.8rem;
-    display: block;
-    width:2rem;
-    text-align: center;
-    margin:auto;
-    font-size: 0.3rem;
-    background: #1b2b69;
-    color: #ffffff;
-    border-radius:0.5rem;
-}

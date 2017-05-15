@@ -1,5 +1,7 @@
 .course{
     height:0.6rem;
+    /*clear: both;*/
+    /*overflow: hidden;*/
 }
 .course p{
     float: left;
@@ -29,14 +31,16 @@
 }
 .courseName{
     margin-top:0.2rem;
-    height:0.6rem;
+    /*height:0.6rem;*/
+    clear: both;
+    overflow: hidden;
 }
 .courseName p{
     float: left;
     width:1.2rem;
     font-size: 0.25rem;
     line-height:0.6rem;
-    height:0.6rem;
+    /*height:0.6rem;*/
 
     color: #ffffff;
     border-radius: 3px;
@@ -52,7 +56,7 @@
 }
 .courseName ul{
     float: right;
-    height:0.6rem;
+    /*height:0.6rem;*/
     background: #f4f4f4;
     width:4.6rem;
     border-radius: 3px;
