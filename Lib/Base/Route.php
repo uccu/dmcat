@@ -142,7 +142,7 @@ Class Route{
 
 
     public function getMethod($controller,$method,$get = []){
-
+        $request = Request::getInstance();
         $type = Config::get('CONTROLLER_REQUEST');
         !$get && $get = $request->$type;
         $controllerReflection = new ReflectionClass($controller);
