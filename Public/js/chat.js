@@ -1,5 +1,5 @@
 !function(){
-    var link = 'ws:45.35.251.11:7777/',uid,cid,ws;
+    var link = 'wss:yoooo.co:7777/',uid,cid,ws;
     var mesCore = {
         
         user_login:function(obj){
