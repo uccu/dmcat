@@ -40,7 +40,6 @@ class TeacherController extends Controller{
             $data['day'] = $day = date('d',$time);
         }
 
-        
 
         unset($data['id']);
 
@@ -133,6 +132,15 @@ class TeacherController extends Controller{
 
         $id = $this->L->id;
         if(!$id)header('Location:/home/login');
+        include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';
+    }
+
+    function record($id){
+
+        if($id)Response::getInstance()->cookie('student_id',$id,0);
+
+        $tid = $this->L->id;
+        if(!$tid)header('Location:/home/login');
         include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';
     }
 

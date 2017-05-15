@@ -60,7 +60,7 @@
                         .form-group
                             %label.col-sm-3.control-label #{lang.student.status}
                             .col-sm-9
-                                %input.form-control(type="checkbox" name="status")
+                                %input.form-control(type="checkbox" name="status" value="1")
                         .form-group.attendZ.dn
                             %label.col-sm-3.control-label #{lang.student.attend_time}
                             .col-sm-9
@@ -68,7 +68,7 @@
                         .form-group.reasonZ
                             %label.col-sm-3.control-label #{lang.student.reason}
                             .col-sm-9
-                                %input.form-control(name="reason")
+                                %textarea.form-control(name="reason" style="resize:vertical" rows="10")
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close
                     %button.btn.btn-primary.save(type="button") Save
@@ -158,6 +158,7 @@
                 $('.changeIt').bind('click',function(){
                     $('#modal_new .sk-spinner').removeClass('fadeOutUp');
                     $('#modal_new [name]').val('');
+                    $('#modal_new [name="status"]').val('1');
                     var student_id = $(this).attr('data-id');
                     var day = $(this).index();
                     curl(d.get,{month:year+''+month,day:day,student_id:student_id,classes_id:classes},function(g){

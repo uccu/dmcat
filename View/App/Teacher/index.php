@@ -24,7 +24,7 @@
     </div>
     <div class="parent-child leave">
         <a href="parent"></a>
-        <p>家长留言<br><span>leave a message</span></p>
+        <p>家长留言<br><span>Leave message</span></p>
     </div>
 </div>
 

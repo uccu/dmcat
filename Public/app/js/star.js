@@ -15,9 +15,9 @@ $('.star img').bind('click',function(){
     var type = top.attr('data-type');
     ability[type] = index + 1;
     for(var i = 0;i<=index;i++){
-        top.find('img').eq(i).attr('src',"../img/star_red.png")
+        top.find('img').eq(i).attr('src',"/app/img/star_red.png")
     }
     for(var i = index+1;i<6;){
-        top.find('img').eq(i++).attr('src',"../img/star.png")
+        top.find('img').eq(i++).attr('src',"/app/img/star.png")
     };
 })

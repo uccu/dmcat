@@ -48,7 +48,7 @@ class StudentController extends Controller{
             'name'=>['class'=>'tc'],
             'name_en'=>['class'=>'tc'],
             'class_name'=>['class'=>'tc'],
-            '_pic'=>['class'=>'tc'],
+            $phy?'n':'_pic'=>['class'=>'tc'],
             '_opt'=>['class'=>'tc'],
         ];
 
@@ -196,7 +196,7 @@ class StudentController extends Controller{
 
             $attendanceModel->set($where)->add();
         }else{
-
+            if(!is_null($status))$reason = '';
             if(!$reason)$attendanceModel->remove($attendance->id);
             else{
                 $where['update_time'] = TIME_NOW;
@@ -264,9 +264,9 @@ class StudentController extends Controller{
             $body['id'] = $k;
             for($i=1;$i<=$dayOfThisMonth; $i++){
                 if($i<10)$i2 = '0'.$i;else $i2 = $i;
-                if($month.$i2>DATE_TODAY)$body[$i] = '';
+                if(isset($list[$k]->stat[$i2]) && $list[$k]->stat[$i2] == 0)$body[$i] = '❂';
                 elseif(isset($list[$k]->stat[$i2]) && $list[$k]->stat[$i2] == 1)$body[$i] = '√';
-                elseif(isset($list[$k]->stat[$i2]) && $list[$k]->stat[$i2] == 0)$body[$i] = '❂';
+                elseif($month.$i2>DATE_TODAY)$body[$i] = '';
                 elseif(in_array($i2,$restDay))$body[$i] = '';
                 elseif(!isset($list[$k]->stat[$i2]))$body[$i] = '×';
                 
@@ -432,7 +432,11 @@ class StudentController extends Controller{
     }
 
     /* 获取某次点评 */
-    function view_comment($id,$month,$day,$date,CommentModel $model,StudentModel $stuModel){
+    function view_comment($month,$day,$date,CommentModel $model,StudentModel $stuModel){
+
+        $id = Request::getInstance()->cookie('student_id');
+
+        if(!$id)AJAX::error('学生不存在/no student');
 
         if($date){
             $time = strtotime($date);
@@ -445,6 +449,13 @@ class StudentController extends Controller{
         $info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id,'month'=>$month,'day'=>$day])->find();
 
         if(!$info){
+
+            if(!$date){
+                $date = date('Y-m-d');
+                $time = strtotime($date);
+                $month = date('Ym',$time);
+                $day = date('d',$time);
+            }
 
             $info2 = $stuModel->find($id);
 
@@ -468,6 +479,7 @@ class StudentController extends Controller{
         $info->fullAvatar = Func::fullPicAddr( $info->avatar );
         
         $info->picArray = [];
+        $info->pic2Array = [];
         if($info->pic){
             $pics = explode(';',$info->pic);
             $info->pic2Array = $pics;
