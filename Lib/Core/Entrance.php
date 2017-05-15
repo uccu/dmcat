@@ -80,7 +80,7 @@ if(Config::get('OB_GZHANDLER')){
 
 
 //处理请求路由
-Route::parse();
+Route::getSingleInstance()->parse();
 
 //输出内容
 if(Config::get('OB_GZHANDLER')){

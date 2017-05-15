@@ -7,7 +7,7 @@ use Controller;
 use AJAX;
 
 use Request;
-
+use Route;
 use App\Project\Model\UserModel as User;
 use App\Project\Model\LessionModel as Lession;
 use Model;
@@ -31,20 +31,20 @@ class TestController extends Controller{
 
 
 
-    function main(Request $request ,Lession $lession ,$baka = 1){
+    function main(Request $request){
 
-        // var_dump( $request );
-
-        // var_dump( $lession );
         
+        
+        // Route::getSingleInstance()->method(Request::getInstance()->path,'App\Project\Controller\TestController\ec');
+        echo '123';
  
     }
 
-    function ec(Model $user){
+    function ec(){
 
-        $z = $user->where([['%F=%d','id',1]])->get();
         
-        echo $z;
+        
+        echo 'ok';
         
        
 

@@ -1,161 +1,191 @@
 <?php
 
+use Lib\Sharp\SingleInstance;
+use Lib\Traits\InstanceTrait;
 
 Class Route{
 
-    private static $list = array();
+    use InstanceTrait;
 
-    public static function regExp($reg,$to){
-        
-        self::$list[] = array('regexp',$url,$app);
-
-    }
-
-    public static function controller($url,$control){
-        
-        self::$list[] = array('controller',$url,$app);
-
-    }
-
-    public static function app($url,$app){
-        
-         self::$list[] = array('app',$url,$app);
-         
-    }
+    function __construct(){
 
 
-    public static function get($n = null){
-        if(!$n)
-            return self::$list;
-        else 
-            return self::$list[$n];
     }
     
 
 
-    public static function parse(){
+    /* 控制器 */
+    public function controller($url,$param2){
+        
+        return $this->parse('method '.$url.' '.$param2);
 
-        $route = conf('Route')->ROUTE;
+    }
+
+    /* 方法 */
+    public function method($url,$param2){
+        
+        return $this->parse('method '.$url.' '.$param2);
+    }
+
+    /* 应用 */
+    public function app($url,$param2){
+        
+         return $this->parse('app '.$url.' '.$param2);
+         
+    }
+
+    /* e302 */
+    public function e302($url,$param2){
+        
+         return $this->parse('302 '.$url.' '.$param2);
+         
+    }
+
+    /* 获取 */
+    public function get($num = null){
+
+        return $type ? $this->list[$num] : $this->list;
+        
+    }
+    
+
+    /* 注册路由 */
+    public function parse($route = ''){
+
+        /* 获取路由设置 */
+        !$route && $route = conf('Route')->ROUTE;
         if(!$route)return;
 
-        if(!is_array($route))$route = array($route);
 
+        /* 当只有一条时转换到数组 */
+        !is_array($route) && $route = array($route);
+
+        /* 获取请求信息 */
+        $request = Request::getInstance();
         
-        foreach($route as $r){
+        foreach($route as $rule){
 
-            preg_match('#(controller|regexp|app|302) +(.*?)(?= +(.*)|$)#',$r,$m);
+            preg_match('#(\w+) +(.*?)(?= +(.*)|$)#',$rule,$matches);
 
-            $request = Request::getInstance();
+            
 
             $folder = $request->folder;
+            $path = $request->path;
+            // var_dump($folder);die();
 
-            if($m[1] == 'controller' || $m[1] == 'app'){
-                if(!$m[3]){
-                    $m[3] = $m[2];
-                    $m[2] = '';
-                }
-                $arr = $m[2] ? explode('/',$m[2]) : array();
-                $in = true;$on = 0;
+            if(in_array($matches[1],['controller','app','method'])){
                 
-                foreach($arr as $k=>$v){
-                    
-                    if($v!=$folder[$k]){
-                        $in = false;
-                    }
-                    $on++;
-                }
-
-                if($in){
-                    if($m[1] == 'app'){
-                        $app = $m[3];
-                        $controller = $folder[$on];
-                        if(!$controller){
-                            E::throwEx('Controller Not Exist');
-                        }
-                        $controller = table($m[3].'\\'.ucfirst($controller).'Controller');
-                        $method = $folder[$on+1];
-                    }else{
-                        $controller = table($m[3]);
-                        $method = $folder[$on];
-                    }
-                    
-                    if(!$method){
-                        return;
-                    }
-                    elseif(!method_exists($controller,$method)){
-                        E::throwEx('Method Not Exist');
-                    }else{
-
-                        $type = Config::get('CONTROLLER_REQUEST');
-
-                        $get = $request->$type;
-
-                        $controllerReflection = new ReflectionClass($controller);
-
-                        $actionReflection = $controllerReflection->getMethod($method);
-
-                        $paramReflectionList = $actionReflection->getParameters();
-
-                        $params = array();
-
-                        foreach ($paramReflectionList as $paramReflection) {
-                            $name = $paramReflection->getName();
-                            if($class = $paramReflection->getClass()){
-                                $class = $class->name;
-                                if(method_exists($class,'getInstance')){
-
-                                    if($class=='Model'){
-                                        $params[] = $class::getInstance($name);
-                                        continue;
-
-                                    }
-
-                                    $params[] = $class::getInstance();
-                                    continue;
-                                }
-                            }
-                            if (isset($get[$name])) {
-                                $params[] = $get[$name];
-                                continue;
-                            }
-                            if ($paramReflection->isDefaultValueAvailable()) {
-                                $params[] = $paramReflection->getDefaultValue();
-                                continue;
-                            }
-                            
-                            
-                            $params[] = null;
-                        }
-
-                        call_user_func_array(array($controller,$method),$params);
-
-                        return;
-                    }
-                    continue;
+                if(!$matches[3]){
+                    $matches[3] = $matches[2];
+                    $matches[2] = '';
                 }
                 
+                if($matches[2] && stripos($request->path ,$matches[2]) !== 0)continue;
+                
+                $matches[2] && $path = substr($request->path,strlen($matches[2])+1);
+                
+                $pathArray = explode('/',$path);
+                
+                
+                if($matches[1] == 'app'){
 
-            }elseif($m[1] == 'regexp'){
+                    $app = $matches[3];
+                    $controller = $pathArray[0];
+                    if(!$controller)continue;
+                    $controller = table($matches[3].'\\'.ucfirst($controller).'Controller');
+                    $method = $pathArray[1];
+                }elseif($matches[1] == 'controller'){
 
-                if($m[2] && $m[3]){
-                    $newPath = preg_replace('/'.$m[2].'/',$m[3],REQUEST_PATH);
+                    $controller = table($matches[3]);
+                    $method = $pathArray[0];
+                }elseif($matches[1] == 'method'){
+
+                    $where = strripos($matches[3], "\\");
+                    $controller = table( substr( $matches[3],0,$where ));
+                    $method = substr( $matches[3],$where+1 );
+
+                }
+
+                if(!$method)return;
+                elseif(!method_exists($controller,$method))E::throwEx('Method Not Exist');
+                else{
+
+                    $this->getMethod($controller,$method);
+
+                    return;
+                }
+                continue;
+                
+            }elseif($matches[1] == 'regexp'){
+
+                if($matches[2] && $matches[3]){
+                    $newPath = preg_replace('/'.$matches[2].'/',$matches[3],REQUEST_PATH);
                     $request->flesh_path($newPath);
                     continue;
                 }
                 
 
-            }elseif($m[1] == '302'){
-                if(!$m[3] && $request->path==''){
-                    header('Location: '.$m[2]);return;
+            }elseif($matches[1] == '302'){
+                if(!$matches[3]){
+                    header('Location: '.$matches[2]);return;
                 }
                     
-                elseif($request->path==$m[2]){
-                    header('Location: '.$m[3]);return;
+                elseif($request->path==$matches[2]){
+                    header('Location: '.$matches[3]);return;
                 }
             }
         }
         header('HTTP/1.1 404 Not Found');
 
     }
+
+
+
+    public function getMethod($controller,$method,$get = []){
+
+        $type = Config::get('CONTROLLER_REQUEST');
+        !$get && $get = $request->$type;
+        $controllerReflection = new ReflectionClass($controller);
+        $actionReflection = $controllerReflection->getMethod($method);
+        $paramReflectionList = $actionReflection->getParameters();
+
+        $params = [];
+
+        foreach ($paramReflectionList as $paramReflection) {
+
+            $name = $paramReflection->getName();
+            if($class = $paramReflection->getClass()){
+                $class = $class->name;
+                if(method_exists($class,'getInstance')){
+
+                    if($class=='Model'){
+                        $params[] = $class::getInstance($name);
+                        continue;
+                    }
+
+                    $params[] = $class::getInstance();
+                    continue;
+                }
+            }
+            if (isset($get[$name])) {
+                $params[] = $get[$name];
+                continue;
+            }
+            if ($paramReflection->isDefaultValueAvailable()) {
+                $params[] = $paramReflection->getDefaultValue();
+                continue;
+            }
+                            
+                            
+            $params[] = null;
+        }
+
+        call_user_func_array(array($controller,$method),$params);
+
+
+
+    }
+
+
 }
 
