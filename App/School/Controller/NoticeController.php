@@ -145,9 +145,11 @@ class NoticeController extends Controller{
 
         $data = Request::getInstance()->request($model->field);
 
+        $option = Request::getInstance()->post('option');
+
         if($option)$data['options'] = implode(';',$option);
 
-        $data['end_time'] = strtotime($end_date);
+        if($end_date)$data['end_time'] = strtotime($end_date);
 
         if($id){
 
@@ -212,10 +214,10 @@ class NoticeController extends Controller{
     function activity_upd($id = 0,ActivityModel $model,$option,$end_date){
 
         $data = Request::getInstance()->request($model->field);
-
+        $option = Request::getInstance()->post('option');
         if($option)$data['options'] = implode(';',$option);
 
-        $data['end_time'] = strtotime($end_date);
+        if($end_date)$data['end_time'] = strtotime($end_date);
         
         
         if($id){
@@ -317,7 +319,7 @@ class NoticeController extends Controller{
         $info->end_date = date('Y-m-d H:i:s',$info->end_time);
         $info->fullAvatar = Func::fullPicAddr($info->avatar);
         $info->option = explode(';',$info->options);
-
+        $info->content = str_replace("\r\n",'<br>',$info->content);
         $count = $vModel->select('COUNT(*) AS num,answer','RAW')->group('answer')->where(['vote_id'=>$id])->get('answer')->toArray();
 
        foreach($info->option as $k=>$v){
@@ -367,7 +369,7 @@ class NoticeController extends Controller{
         $info->end_date = date('Y-m-d H:i:s',$info->end_time);
         $info->fullAvatar = Func::fullPicAddr($info->avatar);
         $info->option = explode(';',$info->options);
-
+        $info->content = str_replace("\r",'<br>',$info->content);
         $count = $aModel->select('COUNT(*) AS num,answer','RAW')->group('answer')->where(['activity_id'=>$id])->get('answer')->toArray();
 
        foreach($info->option as $k=>$v){
@@ -381,11 +383,27 @@ class NoticeController extends Controller{
 
         AJAX::success($out);
     }
+    function to_activity($id = 0,$student_id = 0,ActivityConfirmModel $model,$answer = '0',$remark = ''){
 
+        $data['vote_id'] = $id;
+        $data['student_id'] = $student_id;
+
+        $model->where($data)->find() && AJAX::error('您已经投过票了/Sorry,you\'ve already voted');
+
+        $data['answer'] = $answer;
+        $data['remark'] = $remark;
+        $data['create_time'] = TIME_NOW;
+        $vote = $model->set($data)->add();
+        AJAX::success();
+    }
 
 
     function get_propaganda_lists(PropagandaModel $model){
         $out['list'] = $model->select('*','user.avatar','user.name','user.name_en')->where(['isshow'=>1])->order('id','DESC')->get()->toArray();
+        foreach($out['list'] as &$v){
+            $v->date = date('m.d H:i',$v->create_time);
+            $v->fullAvatar = Func::fullPicAddr($v->avatar);
+        }
         AJAX::success($out);
     }
     function get_propaganda_info(PropagandaModel $model,$id = 0){

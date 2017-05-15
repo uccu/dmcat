@@ -5,6 +5,12 @@ use Lib\Sharp\SingleInstance;
 class Request implements SingleInstance{
 
     function __construct(){
+
+        foreach($_REQUEST as &$v){
+            $v = (string)$v;
+        }
+
+
         $this->flesh_path();
     }
 
