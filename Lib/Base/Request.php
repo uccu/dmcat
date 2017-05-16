@@ -75,7 +75,7 @@ class Request implements SingleInstance{
     }
 
     private function filter($content,$filter){
-
+        if(is_null($content))return null;
         if($filter == 'string')return (string)$content;
         elseif($filter == 'raw')return $content;
 
