@@ -6,142 +6,7 @@
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <!--<link rel="stylesheet" href="css/bootstrap.min.css">-->
     <link rel="stylesheet" href="/app/css/reset.css">
-    <style>
-        .banner{
-            width:100%;
-            height:2.8rem;
-            margin-bottom: 0.5rem;
-        }
-        .banner img{
-            height:2.8rem;
-            width:100%;
-        }
-
-
-
-        .headpic{
-            position: absolute;
-            top:1rem;
-            /*left:1.6rem;*/
-            width:100%;
-            text-align: center;
-        }
-        .headpic span{
-            display:inline-block;
-            margin:auto;
-            /*width:32%;*/
-            /*float: left;*/
-            position: relative;
-
-            /*width:100%;*/
-        }
-        .headpic span img{
-            display: block;
-            border-radius: 100%;
-            width:1rem;
-            height:1rem;
-            margin: 0 10px;
-        }
-        .headpic span em{
-            font-size: 0.25rem;
-            display: block;
-            color: #ffffff;
-            width:100%;
-            text-align: center;
-        }
-        .xuanze{
-            display: block;
-            width:0.3rem;
-            height:0.3rem;
-            background: url("/app/img/xx_03.png") no-repeat;
-            background-size: 0.3rem 0.3rem;
-            position: absolute;
-            left:0.5rem;
-            top:0.7rem;
-            z-index: 9999;
-        }
-
-        .parent-main{
-            width:6rem;
-            height: 2.5rem;
-            display: flex;
-            flex-flow: row;
-            margin:auto;
-        }
-        .parent-child{
-            width:1.98rem;
-            height:2.5rem;
-        }
-
-        .parent-child a{
-            display: block;
-            width:100%;
-            height:1.5rem;
-            /*background: url("/app/img/p1.png") no-repeat;*/
-            /*background-position: center 0;*/
-            /*background-size: 60%;*/
-        }
-        .parent-child p{
-            font-size: 0.25rem;
-            text-align: center;
-        }
-        .parent-child p span{
-            font-size: 0.1rem;
-            color: #6f6f6f;
-        }
-        .personal a{
-            background:url("/app/img/p1.png") no-repeat;
-            background-position: center 0;
-            background-size: 1.2rem;
-        }
-        .child a{
-            background:url("/app/img/p2.png") no-repeat;
-            background-position: center 0;
-            background-size: 1.2rem;
-        }
-        .leave a{
-            background:url("/app/img/p3.png") no-repeat;
-            background-position: center 0;
-            background-size: 1.2rem;
-        }
-        .vote a{
-            background:url("/app/img/p4.png") no-repeat;
-            background-position: center 0;
-            background-size: 1.2rem;
-        }
-        .activity a{
-            background:url("/app/img/p5.png") no-repeat;
-            background-position: center 0;
-            background-size: 1.2rem;
-        }
-        .ask a{
-            background:url("/app/img/p6.png") no-repeat;
-            background-position: center 0;
-            background-size: 1.2rem;
-        }
-        .menu a{
-            background:url("/app/img/p7.png") no-repeat;
-            background-position: center 0;
-            background-size: 1.2rem;
-        }
-        .course a{
-            background:url("/app/img/p8.png") no-repeat;
-            background-position: center 0;
-            background-size: 1.2rem;
-        }
-        .notice a{
-            background:url("/app/img/p9.png") no-repeat;
-            background-position: center 0;
-            background-size: 1.2rem;
-        }
-        .conduct a{
-            background:url("/app/img/p10.png") no-repeat;
-            background-position: center 0;
-            background-size: 1.2rem;
-        }
-
-
-    </style>
+    <link rel="stylesheet" href="/app/css/index.css">
 </head>
 <body>
 <div class="banner">
@@ -201,6 +66,10 @@
     <div class="parent-child conduct">
         <a href="javascript:void(0)"></a>
         <p>校外宣传 <br><span>propaganda</span></p>
+    </div>
+    <div class="parent-child message">
+        <a href="javascript:void(0)"></a>
+        <p>消息 <br><span>message</span></p>
     </div>
 </div>
 
@@ -266,6 +135,12 @@
                         })
                         $(".notice").click(function(){
                             location.href='notice?id='+student_id
+                        })
+                        $(".message").click(function(){
+                            location.href='message?id='+student_id
+                        })
+                        $(".conduct").click(function(){
+                            location.href='propaganda?id='+student_id
                         })
 
                     }

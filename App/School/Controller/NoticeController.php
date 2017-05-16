@@ -385,7 +385,7 @@ class NoticeController extends Controller{
     }
     function to_activity($id = 0,$student_id = 0,ActivityConfirmModel $model,$answer = '0',$remark = ''){
 
-        $data['vote_id'] = $id;
+        $data['activity_id'] = $id;
         $data['student_id'] = $student_id;
 
         $model->where($data)->find() && AJAX::error('您已经投过票了/Sorry,you\'ve already voted');

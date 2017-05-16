@@ -1,5 +1,6 @@
 body{
     width:100%;
+    background: #f4f4f4;
 }
 .layout{
 
@@ -7,6 +8,7 @@ body{
 .voteactive{
     width:100%;
     overflow: hidden;
+    background: #ffffff;
 }
 .Organizers{
     padding-top:0.2rem;
@@ -23,14 +25,7 @@ body{
     border-radius: 100%;
     float: left;
 }
-/*.Organizers span img{*/
-    /*height:100%;*/
-    /*width:100%;*/
-    /*display: block;*/
-    /*border-radius: 100%;*/
 
-
-/*}*/
 .Organizers .organizersName{
     width:5.0rem;
     float: right;
@@ -115,4 +110,98 @@ hr{
 .HotDate span{
     font-size: 0.25rem;
     line-height:0.6rem;
+}
+
+/*.voteclassify{*/
+    /*background: #ffffff;*/
+    /*margin-bottom:0.2rem;*/
+    /*padding:0.1rem 0;*/
+    /*overflow: hidden;*/
+    /*clear: both;*/
+    /*!*height:1.1rem;*!*/
+/*}*/
+/*.voteclassify a{*/
+    /*display: block;*/
+    /*text-align: center;*/
+    /*height:1rem;*/
+    /*width:49%;*/
+    /*!*line-height:1rem;*!*/
+    /*line-height:0.5rem;*/
+    /*font-size: 0.25rem;*/
+    /*color: #31708f;*/
+/*}*/
+/*.voteclassify a span{*/
+    /*display: block;*/
+    /*line-height:0.5rem;*/
+    /*color: #777;*/
+/*}*/
+/*.voteclassify a:nth-child(1){*/
+    /*border-right:1px solid #777;*/
+    /*padding-right:0.1rem;*/
+    /*float: left;*/
+/*}*/
+/*.voteclassify a:nth-child(2){*/
+    /*float: right;*/
+/*}*/
+/*.active{*/
+    /*display: block;*/
+    /*border-bottom: 2px solid  #1c2d67;*/
+/*}*/
+
+/*.tabContent{*/
+    /*display: none;*/
+/*}*/
+
+
+
+
+
+.voteclassify{
+    background: #ffffff;
+    margin-bottom:0.2rem;
+    overflow: hidden;
+    clear: both;
+}
+.vote-tab{
+    height:1rem;
+    padding:0.2rem 0;
+    width:49.9%;
+}
+.vote-tab:nth-child(1){
+    float: left;
+}
+.vote-tab:nth-child(2){
+    float: right;
+}
+.voteclassify a{
+    display: block;
+    text-align: center;
+    line-height:0.5rem;
+    font-size: 0.25rem;
+    color: #31708f;
+}
+.voteclassify .vote-tab:nth-child(1) a{
+    border-right: 1px solid #777777;
+    padding-right:1%;
+}
+.voteclassify a span{
+    display: block;
+    line-height:0.5rem;
+    color: #777;
+}
+/*.voteclassify a:nth-child(1){*/
+    /*border-right:1px solid #777;*/
+    /*padding-right:0.1rem;*/
+    /*float: left;*/
+/*}*/
+/*.voteclassify a:nth-child(2){*/
+    /*float: right;*/
+/*}*/
+.active{
+    display: block;
+    border-bottom: 2px solid  #1c2d67;
+}
+
+.tabContent{
+    display: none;
 }

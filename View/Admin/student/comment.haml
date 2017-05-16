@@ -270,7 +270,7 @@
             $('[name="life"],[name="learning"],[name="eat"]').change(vc.fac)
             $('.fa-plus-square-o').click(function(){$('input[type="file"]').click()})
 
-            upPic('/staff/upPic','input[type="file"]',function(g){
+            upPic('/student/upPic','input[type="file"]',function(g){
                 $('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.apath,'data-pic':g.path}).click(vc.dePic));
                 vc.toPic()
             });

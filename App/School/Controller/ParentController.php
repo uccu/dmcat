@@ -8,6 +8,7 @@ use Response;
 use App\School\Model\UserModel;
 use App\School\Model\StudentModel;
 use App\School\Model\UserStudentModel;
+use App\School\Model\MessageModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
@@ -88,6 +89,43 @@ class ParentController extends Controller{
     function album($id){
 
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+
+    function message($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function activity($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function activity_detail($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function propaganda($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function propaganda_detail($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+
+    function get_message($page = 1,$limit = 30,MessageModel $model){
+
+        $id = $this->L->id;
+
+        $list = $model->where(['user_id'=>$id])->page($page,$limit)->order('id desc')->get()->toArray();
+
+        foreach($list AS $v){
+
+            $v->date = date('m.d H:i');
+        }
+
+        $model->where(['user_id'=>$id])->set(['isread'=>1])->save();
+        
+        AJAX::success(['list'=>$list]);
     }
     
 

@@ -77,7 +77,8 @@
         <!--</div>-->
         <div class="liuyan">
             <p class="sanjiao"></p>
-            <textarea name="" readonly></textarea>
+            <!-- <textarea name="" readonly></textarea> -->
+            <div contenteditable="false" id="liuyan"></div>
         </div>
     </div>
     <div class="reply down">
@@ -85,7 +86,8 @@
         <span>回复/reply</span>
     </div>
     <div class="huifu">
-        <textarea name="" readonly></textarea>
+        <!-- <textarea name="" readonly></textarea> -->
+        <div class="texta" contenteditable = "false"></div>
     </div>
 </div>
 <hr>
@@ -190,11 +192,11 @@
                     var headhtml='<span><a href="javascript:void(0)"></a><img data="'+result.id+'" src="'+imgurl+result.avatar+'"><em>'+result.name+'</em><em>'+result.name_en+'</em></span>'
                     $(".headpic").append(headhtml);
 
-                    $('.huifu').find('textarea').append(result.reply)
-                    var reply = $('.huifu').find('textarea').val()
+                    $('.huifu').find('div').append(result.reply)
+                    var reply = $('.huifu').find('div').html()
                     if(!(reply==='')){
                         $(".huifu").css('display','block')
-                        $('.huifu').find('textarea').html(reply);
+                        $('.huifu').find('div').html(reply);
                         $(".reply").find("a").css('display','none');
                         $(".reply").find("span").css('display','block')
                     }
@@ -208,7 +210,7 @@
                         $(".life").find('img').eq(i).attr('src',"/app/img/star_red.png")
                     }
 //                    var liuyan = result.comment
-                    $(".liuyan").find("textarea").append(result.comment)
+                    $(".liuyan").find("div").append(result.comment)
                     if(result.comment==undefined){
                         $(".layout").css('display','none')
                         $(".nojilu").css("display","block")
