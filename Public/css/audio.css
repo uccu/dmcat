@@ -1,0 +1,14 @@
+body{background-size: cover;background-attachment: fixed;background-position: center;background-color:#f0f0f0;}
+input{opacity:0}
+input:hover{opacity:1}
+.turnning{width:200px;overflow: hidden;padding: 10px 30px}
+.turnning a{width: 42px;height: 28px;background: red}
+a.last{background-position: -29px -96px}
+a.space,a.space2{width: 42px;height: 30px;background-position: -18px 0;left: 103px;top:4px}
+a.space2{background-position: -18px -28px}
+a.next{background-position: -29px -69px;}
+a.space:hover,a.space2:hover,a.next:hover,a.last:hover{opacity:0.5}
+.wp_background{display:none}
+.overlay_z_index_1{width:100%;height:100%;top:0;left:0;z-index:1}
+.overlay_z_index_2{z-index:2}
+.process{height: 3px;width: 400px;}

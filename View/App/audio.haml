@@ -1,0 +1,24 @@
+- extends "base.haml"
+
+- block siteInfo
+    %title 伪·直播~(*-ω-)ﾄﾞｷ
+
+- block body
+    %link(rel="stylesheet" href="/css/audio.css")
+    
+    .pr.overlay_z_index_2.tc
+        %div
+            %input.testin.t(type="file" accept="audio/*" style="width: 500px;padding:50px" multiple="multiple")
+        .turnning.pr.tc(style="margin:auto")
+            .cp.fz.last.dib 左
+            .cp.space.dib 播
+            .cp.space2.dn.dib 停
+            .cp.fy.next.dib 右
+        %div
+            %p.inf
+        %div
+            %p.time
+        #slider
+    
+    %script(src="/js/audio.js")
+    %script(src="/js/audio_action.js")

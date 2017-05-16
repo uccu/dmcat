@@ -18,9 +18,16 @@ class MyController extends Controller{
 
 
 
-    function chat(){
+    function audio(){
 
-        View::hamlReader('chat','App');
+        View::hamlReader('audio','App');
+
+ 
+    }
+
+    function video(){
+
+        View::hamlReader('video','App');
 
  
     }
