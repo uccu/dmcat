@@ -185,7 +185,7 @@ Number.prototype.t2=function(){if(this.toString().length===1)return '0'+this;els
 			v.filesInput=t[0];DD.run(v);v = v.canvas;
 		}else DD.run({filesInput:t[0],canvas:v,callback:c})
 		j(window).resize(function(){
-			cp.w = j(v).attr({width:j('body').width(),height:j('body').height()}).width();
+			cp.w = j(v).attr({width:j(window).width(),height:j(window).height()}).width();
 			cp.h = j(v).height();
 			cp.center = [cp.w/2,cp.h/2];
 		});
