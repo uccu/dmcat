@@ -45,7 +45,6 @@ abbr,acronym { border: 0;
     /*width: 100%;*/
     /*height: auto;*/
 /*}*/
-/*信息提交状态提示框*/
 .alert_dialog{
     position:fixed;
     width:6.4rem;

@@ -8,12 +8,9 @@
     width:100%;
 }
 
-
-
 .headpic{
     position: absolute;
     top:1rem;
-    /*left:1.6rem;*/
     width:100%;
     text-align: center;
 }
@@ -40,6 +37,7 @@
     width:100%;
     text-align: center;
 }
+
 .xuanze{
     display: block;
     width:0.3rem;
@@ -130,4 +128,16 @@
     background-position: center 0;
     background-size: 1.2rem;
 }
+
+.scan{
+    background:url("../img/p12.png") no-repeat;
+    background-position: center 0;
+    background-size: 1.2rem;
+}
+.message{
+    background:url("../img/p13.png") no-repeat;
+    background-position: center 0;
+    background-size: 1.2rem;
+}
+
 

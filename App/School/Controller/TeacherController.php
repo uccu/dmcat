@@ -167,6 +167,12 @@ class TeacherController extends Controller{
         if(!$id)header('Location:/home/login');
         include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';
     }
+    function album(){
+
+        $id = $this->L->id;
+        if(!$id)header('Location:/home/login');
+        include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';
+    }
     function message(){
 
         $id = $this->L->id;

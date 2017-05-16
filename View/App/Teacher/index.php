@@ -26,12 +26,21 @@
         <a href="parent"></a>
         <p>家长留言<br><span>Leave message</span></p>
     </div>
+    
 </div>
 
 <div class="parent-main">
     <div class="parent-child conduct">
         <a href="apply"></a>
         <p>删除申请 <br><span>apply</span></p>
+    </div>
+    <div class="parent-child scan">
+        <a href="/home/code"></a>
+        <p>扫码 <br><span>scan</span></p>
+    </div>
+    <div class="parent-child message">
+        <a href="message"></a>
+        <p>消息 <br><span>message</span></p>
     </div>
 </div>
 

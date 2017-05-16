@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="/app/css/popup.css">
     <script type="text/javascript" src="/app/jeDate/jedate.js"></script>
 </head>
+<style>
+
+</style>
 <body>
 <div class="topbanner">
     <img src="/app/img/b1.png" alt="">
@@ -70,19 +73,19 @@
     <div class="comments">
         <h1>老师评语 <span>teacher comments</span></h1>
         <!--<div class="teacherName">-->
-        <!--<span>头像</span>张一白老师-->
+            <!--<span>头像</span>张一白老师-->
         <!--</div>-->
         <div class="liuyan">
             <p class="sanjiao"></p>
-            <!--<textarea name="" readonly id="liuyan"></textarea>-->
+            <textarea name="" readonly></textarea>
         </div>
     </div>
     <div class="reply down">
+        <a href="javascript:void (0)">回复/reply</a>
         <span>回复/reply</span>
     </div>
     <div class="huifu">
-        <!-- <textarea name="" readonly></textarea> -->
-        <div class="texta" contenteditable = "false"></div>
+        <textarea name="" readonly></textarea>
     </div>
 </div>
 <hr>
@@ -90,31 +93,60 @@
     <div class="album">
         <h1>相册<span>album</span></h1>
         <div class="childPicture">
-            <input type="file" id="file" style="display:none" />
-            <div class="childimg">
-                <div class="addimg">
-                    <!--<img src="img/jl.png" alt="">-->
-                </div>
-                <div class="addalubm" style="display: none;"></div>
-            </div>
+            <!--<img src="img/jl.png" alt="">-->
         </div>
     </div>
 </div>
-<div class="footer" style="display: none;">
-    <a href="javascript:void (0)" id="change">提交/submit</a>
+<!--弹出框及蒙层-->
+<div id="fullbg"></div>
+<div class="con hide" id="logIn">
+    <textarea placeholder='亲爱的学生家长，回复老师留言只可回复一次.....'></textarea>
+    <a href='javascript:void(0)' class="submit">提交</a>
+</div>
+<div class="nojilu" style="display: none;">
+    竟然没有记录信息
 </div>
 <script src="/app/js/main.js"></script>
 <script src="/app/js/jquery-1.8.3.min.js"></script>
+<!--<script src="js/star.js?3"></script>-->
 <script type="text/javascript">
+
+    $(function(){
+        //显示蒙层的函数
+        function showBg(){
+            var bh = $("body").height();
+            var bw = $("body").width();
+            $("#fullbg").css({
+                height:bh,
+                width:bw,
+            })
+        }
+        $(".down").find('a').click(function(e){
+            e.stopPropagation();
+            $("div.con").removeClass("hide");
+            showBg()
+        });
+        $("div.con").click(function(even){
+            even.stopPropagation();//阻止冒泡
+        });
+        $(document).click(function(){
+            if(!$("div.con").hasClass("hide")){
+                $("div.con").addClass("hide")
+                $('#fullbg').html('').css({height:0,width:0})
+            }
+        });
+    })
+
     var imgurl='/pic/'
     $(function(){
-//        console.info(ability.eat)
         function GetQueryString(name){
             var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
             var r = window.location.search.substr(1).match(reg);
             if(r!=null)return  unescape(r[2]); return null;
         }
         var id = GetQueryString('id');
+
+
         jeDate({
             dateCell:"#dateinfo",
             format:"YYYY-MM-DD",
@@ -123,20 +155,23 @@
             isClear: false, //是否显示清空
             maxDate: jeDate.now(0),
             choosefun:function(){
-                /*************************************日历**************************************/
-                location.href = '/teacher/record?date='+$('.datainp').val()
+            /*************************************日历**************************************/
+                location.href = 'record?date='+$('.datainp').val()
             },
             okfun:function(val){alert(val)}
         })
-        /*************************************日历**************************************/
+    /*************************************日历**************************************/
         var a=new URL(location);
         var dateval = a.searchParams.get('date')
-        /*************************************日历**************************************/
+        var id = a.searchParams.get('id')
+        var eid
+    /*************************************日历**************************************/
 
         $.ajax({
             url:"/student/view_comment",
             type:"post",
             data:{
+                id:id,
                 date:dateval
             },
             dataType:"json",
@@ -144,22 +179,22 @@
             success:function(e){
                 if (e.code==200){
                     var result=e.data.info;
+                    eid = result.id;
                     /*************************************日历**************************************/
                     $('.datainp').val(result.date)
                     var subdate = result.subdate;
                     var adddate = result.adddate;
-                    var timeHtml='<a href="/teacher/record?date='+subdate+'" class="time-l"></a><a href="/teacher/record?date='+adddate+'" class="time-r"></a>'
+                    var timeHtml='<a href="record?date='+subdate+'" class="time-l"></a><a href="record?date='+adddate+'" class="time-r"></a>'
                     $(".time").append(timeHtml)
                     /*************************************日历**************************************/
                     var headhtml='<span><a href="javascript:void(0)"></a><img data="'+result.id+'" src="'+imgurl+result.avatar+'"><em>'+result.name+'</em><em>'+result.name_en+'</em></span>'
                     $(".headpic").append(headhtml);
 
-                    $('.huifu').find('div').append(result.reply)
-
-                    var reply = $('.huifu').find('div').html()
+                    $('.huifu').find('textarea').append(result.reply)
+                    var reply = $('.huifu').find('textarea').val()
                     if(!(reply==='')){
                         $(".huifu").css('display','block')
-                        $('.huifu').find('div').html(reply);
+                        $('.huifu').find('textarea').html(reply);
                         $(".reply").find("a").css('display','none');
                         $(".reply").find("span").css('display','block')
                     }
@@ -173,93 +208,43 @@
                         $(".life").find('img').eq(i).attr('src',"/app/img/star_red.png")
                     }
 //                    var liuyan = result.comment
-                    var liuyan = '<div contenteditable="false" id="liuyan">'+result.comment+'</div>'
-                    $(".liuyan").append(liuyan)
+                    $(".liuyan").find("textarea").append(result.comment)
+                    if(result.comment==undefined){
+                        $(".layout").css('display','none')
+                        $(".nojilu").css("display","block")
+                        show_alert("今天是假日吗，竟然没有记录哎！！");
+                    }
+
+                    for(i=0 ; i<4 &&i<result.pic2Array.length; i++){
+                        var pic = '<img src="'+imgurl+result.pic2Array[i]+'">'
+                        $('.childPicture').append(pic)
+                    }
                     var xiangce = '<a href="album?date='+result.date+'"></a>'
                     $(".album").find('h1').append(xiangce)
-                    if(!(result.comment==undefined)){
-                        for(i=0 ; i<4 &&i<result.pic2Array.length; i++){
-                            var pic = '<img src="'+imgurl+result.pic2Array[i]+'">'
-                            $('.childimg').append(pic)
-                        }
-                    }
-//                    $(".liuyan").find("textarea").append(result.comment)
-//                    没有记录的情况下，编写信息
-                    if(result.comment==undefined){
-                        $.getScript("/app/js/star.js")
-                        $("#liuyan").css('display','none')
-                        var writeliuyan = '<div contenteditable="true" id="writeliuyan"></div>'
-                        $(".liuyan").append(writeliuyan)
-                        $(".addalubm").css('display','block')
-                        $(".footer").css('display','block')
-                    }
                 }
             }
         })
-        //编写评价时上传图片
-        $('.addalubm').click(function(){
-            $('input[type="file"]').click();
-            $("#file").unbind('change').bind('change',function() {
-                var form = new FormData();
-                var file = $("input[type=\"file\"]")[0].files[0];//获取type="file"类型的input
-                form.append("file", file);
-                $.ajax({
-                    url: "/student/upPic",
-                    data: form,
-                    contentType: false,
-                    processData: false,
-                    type: "post",
-                    dataType: "json",
-                    success: function (e) {
-                        if (e.code == 200) {
-                            var result = e.data;
-                            var childimg = '<img src="'+ result.apath +'" data-z="'+result.path+'">'
-                            $(".addimg").append(childimg)
-                        }
-                    }
-                })
-            })
-        })
-        //  提交评价
-        var a=new URL(location);
-        var id = a.searchParams.get('id')
-        $(".footer").find("a").click(function(){
-            $.getScript("/app/js/star.js")
-            var date = $(".datainp").val();
-            var eat = ability.eat;
-            var learn = ability.learning;
-            var life = ability.life;
-            var comment = $("#writeliuyan").html();
-            var pic = [];
-            //each()用于遍历，未知循环长度时，可用来进行循环操作
-            $('.addimg img').each(function(){
-//                pic += ';'+$(this).attr('data-z');
-                pic.push($(this).attr('data-z'))
-            })
-           var danImg =  pic.join(";")
+        //回复老师留言
+        $(".submit").click(function(){
+            var huifu = $("#logIn").children("textarea").val();
+//            console.info(huifu)
             $.ajax({
-                url:"/teacher/add_comment",
+                url:"/student/reply",
                 type:"post",
                 data:{
-                    date:date,
-                    eat:eat,
-                    life:life,
-                    learning:learn,
-                    comment:comment,
-                    pic:danImg
+                    id:eid,
+                    reply:huifu
                 },
                 dataType:"json",
                 cache: false,
                 success:function(data){
                     if (data.code==200){
-                        show_alert("提交成功")
                         location.reload()
-                    }else {
-                        show_alert("不开心，提交失败")
                     }
                 }
             })
         })
+
     })
 
 </script>

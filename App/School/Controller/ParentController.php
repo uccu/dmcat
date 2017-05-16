@@ -81,6 +81,15 @@ class ParentController extends Controller{
 
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
+    function record($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function album($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    
 
     function get_my_info($id ,UserModel $model){
 
