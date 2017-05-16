@@ -31,12 +31,10 @@ class TestController extends Controller{
 
 
 
-    function main(Request $request){
+    function main($cc){
 
-        
-        
-        // Route::getSingleInstance()->method(Request::getInstance()->path,'App\Project\Controller\TestController\ec');
-        echo '123';
+        $cc = Request::getInstance()->get('cc','s');
+        var_dump($cc);
  
     }
 

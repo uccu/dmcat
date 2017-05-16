@@ -51,18 +51,22 @@ class Request implements SingleInstance{
 
             return $this->$name = $_FILE;
 
+        }elseif($name == 'cookie'){
+
+            return $this->$name = $_COOKIE;
+
         }
         return null;
 
     }
 
-    private function muti($name,$way){
+    private function muti($name,$way,$filter){
 
         $name2 = [];
 
         foreach($name as $k=>$v){
 
-            $g = $this->{$way}($v);
+            $g = $this->{$way}($v,$filter);
             if(!is_null($g))$name2[$v] = $g;
         }
         return $name2;
@@ -70,38 +74,46 @@ class Request implements SingleInstance{
 
     }
 
-    function post($name){
+    private function filter($content,$filter){
+
+        if($filter == 'string')return (string)$content;
+        elseif($filter == 'raw')return $content;
+
+        return null;
+    }
+
+    function post($name,$filter = 'string'){
 
         if(is_array($name)){
 
-            return $this->muti($name,__FUNCTION__);
+            return $this->muti($name,__FUNCTION__,$filter);
         }
 
-        return $_POST[$name];
+        return $this->filter($this->post[$name],$filter);
         
     }
 
     
 
-    function get($name){
+    function get($name,$filter = 'string'){
 
         if(is_array($name)){
 
-            return $this->muti($name,__FUNCTION__);
+            return $this->muti($name,__FUNCTION__,$filter);
         }
 
-        return $_GET[$name];
+        return $this->filter($this->get[$name],$filter);
         
     }
 
-    function request($name){
+    function request($name,$filter = 'string'){
 
         if(is_array($name)){
 
-            return $this->muti($name,__FUNCTION__);
+            return $this->muti($name,__FUNCTION__,$filter);
         }
 
-        return $_REQUEST[$name];
+        return $this->filter($this->request[$name],$filter);
         
     }
 
@@ -112,21 +124,17 @@ class Request implements SingleInstance{
             return $this->muti($name,__FUNCTION__);
         }
 
-        return $_FILES[$name];
+        return $this->file[$name];
         
     }
 
-    function cookie($name,$value=null){
+    function cookie($name,$value=null,$filter = 'string'){
 
-        if($value!==null){
-            
-            return strlen($_COOKIE[$name])?$_COOKIE[$name]:$value;
+        if($value!==null && !strlen($this->cookie[$name]))return $value;
 
-        }else{
 
-            return $_COOKIE[$name];
+        return $this->filter($this->cookie[$name],$filter);
 
-        }
         
     }
 

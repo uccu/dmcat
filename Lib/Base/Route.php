@@ -7,8 +7,11 @@ Class Route{
 
     use InstanceTrait;
 
+    private $request;
+
     function __construct(){
 
+        $this->request = Request::getInstance();
 
     }
     
@@ -61,17 +64,15 @@ Class Route{
         !is_array($route) && $route = array($route);
 
         /* 获取请求信息 */
-        $request = Request::getInstance();
+        $request = $this->request;
         
         foreach($route as $rule){
 
             preg_match('#(\w+) +(.*?)(?= +(.*)|$)#',$rule,$matches);
 
             
-
-            $folder = $request->folder;
             $path = $request->path;
-            // var_dump($folder);die();
+
 
             if(in_array($matches[1],['controller','app','method'])){
                 
@@ -119,7 +120,7 @@ Class Route{
             }elseif($matches[1] == 'regexp'){
 
                 if($matches[2] && $matches[3]){
-                    $newPath = preg_replace('/'.$matches[2].'/',$matches[3],REQUEST_PATH);
+                    $newPath = preg_replace('/'.$matches[2].'/',$matches[3],$request->path);
                     $request->flesh_path($newPath);
                     continue;
                 }
@@ -142,9 +143,9 @@ Class Route{
 
 
     public function getMethod($controller,$method,$get = []){
-        $request = Request::getInstance();
+
         $type = Config::get('CONTROLLER_REQUEST');
-        !$get && $get = $request->$type;
+        !$get && $get = $this->request->$type;
         $controllerReflection = new ReflectionClass($controller);
         $actionReflection = $controllerReflection->getMethod($method);
         $paramReflectionList = $actionReflection->getParameters();
