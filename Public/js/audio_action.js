@@ -1,7 +1,7 @@
 jq(function(){
 	// alert('on test!');
 	j=jQuery;
-		j('<canvas>').css({position:'absolute',top:0,left:0,'z-index':-1}).attr({width:j(window).width(),height:j(window).height()}).appendTo(window);	
+		j('<canvas>').css({position:'absolute',top:0,left:0,'z-index':-1}).attr({width:j(window).width(),height:j(window).height()}).appendTo('body');	
 		var test = 0,rf=[],laz=[],lza=[],lastTime=Date.now(),callback=function(cp,array,array2,ks,a,currentAudioTime,currentAudioLength){
 			cp.cA();
 			cp.bP().arc(0,0,240,0.3,1.2).sG([-240,-240,240,240],'#030','#fff','#90f','#f090f0','#ddd','#d54','#ffc').shCB('#ccc',5).s();
@@ -61,7 +61,7 @@ jq(function(){
 		});
 		j('.last').bind('click',audioApi.last);
 		j('.next').bind('click',audioApi.next);
-		j(window).bind('click',function(e){
+		j('body').bind('click',function(e){
 			if(Math.abs(e.clientY-j(window).height()/2)<4 && Math.abs(e.clientX - j(window).width()/2)<200 ){
 				var percent = (e.clientX - j(window).width()/2 + 200)/400;
 				audioApi.toByPercent(percent)
