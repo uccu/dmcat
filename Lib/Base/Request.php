@@ -27,7 +27,7 @@ class Request implements SingleInstance{
     public function flesh_path($request = REQUEST_PATH){
 
         $this->folder = $request ? explode('/',$request) : array();
-        $this->path = REQUEST_PATH;
+        $this->path = $request;
 
     }
 
