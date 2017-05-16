@@ -385,7 +385,7 @@ class StudentController extends Controller{
     /* 更新点评 */
     function comment_upd($month,$student_id,$day,CommentModel $commentModel){
 
-        if(!$month || !$student_id || !$day)AJAX::error_i18n('param_error');
+        // if(!$month || !$student_id || !$day)AJAX::error_i18n('param_error');
 
         $where['student_id'] = $student_id;
         $where['month'] = $month;
@@ -394,7 +394,7 @@ class StudentController extends Controller{
         $comment = $commentModel->where($where)->find();
 
         $data = Request::getInstance()->request($commentModel->field);
-
+        var_dump($data);die();
         $data['learning'] = $data['learning']?$data['learning']:0;
         $data['eat'] = $data['eat']?$data['eat']:0;
         $data['life'] = $data['life']?$data['life']:0;
@@ -434,7 +434,8 @@ class StudentController extends Controller{
     /* 获取某次点评 */
     function view_comment($month,$day,$date,CommentModel $model,StudentModel $stuModel){
 
-        $id = Request::getInstance()->cookie('student_id');
+        // $id = Request::getInstance()->cookie('student_id');
+        $id = 2;
 
         if(!$id)AJAX::error('学生不存在/no student');
 

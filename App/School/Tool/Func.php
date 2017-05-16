@@ -4,6 +4,7 @@ use Config;
 use App\School\Tool\AJAX;
 use App\School\Middleware\L;
 use App\School\Model\ConfigModel;
+use App\School\Model\MessageModel;
 
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\LabelAlignment;
@@ -425,6 +426,30 @@ class Func{
         }
         $data['sign'] = sha1(implode('&',$data2));
         return $data;
+    }
+
+
+
+    public static function add_message($user_id,$message,$url = ''){
+
+        $model = MessageModel::getInstance();
+
+        if(!$user_id || !$message)return;
+
+        if(!is_array($user_id))$user_id = [$user_id];
+
+        $data['content'] = $message;
+        $data['create_time'] = TIME_NOW;
+        $data['url'] = $url;
+
+        foreach($user_id as $id){
+            
+            $data['user_id'] = $id;
+            $model->set($data)->add();
+        }
+
+
+
     }
     
 }

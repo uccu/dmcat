@@ -81,11 +81,11 @@
                         curl('/classes/lists',{school_id:school},function(w){
                             for(d in w.list)$('.classesChange').append($('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id));
                             $('.classesChange').bind('change',function(){
-                                classes = $(this).val();getList('/student/lists',{school_id:school,classes_id:classes})
+                                classes = $(this).val();flesh()
                             })
                         });
                     }
-                    getList('/student/lists',{school_id:school});
+                    flesh()
                 })
             });
             function flesh(){

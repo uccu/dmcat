@@ -4,9 +4,12 @@ namespace App\School\Controller;
 
 
 use App\School\Model\SchoolModel;
+use App\School\Model\MessageModel;
+use App\School\Model\UserModel;
 use Controller;
 use Request;
 use App\School\Tool\AJAX;
+use App\School\Tool\Func;
 use App\School\Middleware\L;
 use Model;
 class SchoolController extends Controller{
@@ -123,6 +126,11 @@ class SchoolController extends Controller{
         $data['create_time'] = TIME_NOW;
 
         Model::getInstance('school_message')->set($data)->add();
+
+        $ids = UserModel::getInstance()->where(['type'=>6])->get_field('id');
+
+        Func::add_message($this->L->id,'您已成功提交了一条删除申请<br><small>You have successfully submitted a deletion request</small>');
+
 
         AJAX::success();
 

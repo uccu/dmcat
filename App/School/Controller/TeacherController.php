@@ -10,6 +10,7 @@ use App\School\Model\UserModel;
 use App\School\Model\StudentModel;
 use App\School\Model\CommentModel;
 use App\School\Model\UserClassesModel;
+use App\School\Model\MessageModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
@@ -89,7 +90,7 @@ class TeacherController extends Controller{
         $data = Request::getInstance()->request(['email','phone','raw_password','avatar']);
         $info = $model->find($id);
         !$info && AJAX::error_i18n('no_user_exist');
-
+        if(!$data['avatar'])unset($data['avatar']);
         if(!$data['raw_password'])unset($data['raw_password']);
         elseif($data['raw_password'] && $info->raw_password !== $data['raw_password'])
             $data['password'] = sha1($this->salt.md5($data['raw_password']));
@@ -111,6 +112,22 @@ class TeacherController extends Controller{
             $v->title = $v->name.'家长/'.$v->name_en.'\'s parent';
             $v->date = date('m.d H:i');
         }
+        AJAX::success(['list'=>$list]);
+    }
+
+    function get_message($page = 1,$limit = 30,MessageModel $model){
+
+        $id = $this->L->id;
+
+        $list = $model->where(['user_id'=>$id])->page($page,$limit)->order('id desc')->get()->toArray();
+
+        foreach($list AS $v){
+
+            $v->date = date('m.d H:i');
+        }
+
+        $model->where(['user_id'=>$id])->set(['isread'=>1])->save();
+        
         AJAX::success(['list'=>$list]);
     }
 
@@ -148,6 +165,13 @@ class TeacherController extends Controller{
 
         $id = $this->L->id;
         if(!$id)header('Location:/home/login');
+        include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';
+    }
+    function message(){
+
+        $id = $this->L->id;
+        if(!$id)header('Location:/home/login');
+
         include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';
     }
 

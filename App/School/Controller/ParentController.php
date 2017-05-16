@@ -180,7 +180,7 @@ class ParentController extends Controller{
         $data = Request::getInstance()->request(['email','phone','raw_password','avatar']);
         $info = $model->find($id);
         !$info && AJAX::error_i18n('no_user_exist');
-
+        if(!$data['avatar'])unset($data['avatar']);
         if(!$data['raw_password'])unset($data['raw_password']);
         elseif($data['raw_password'] && $info->raw_password !== $data['raw_password'])
             $data['password'] = sha1($this->salt.md5($data['raw_password']));

@@ -57,16 +57,23 @@
             width:50px;
             border-radius:50%
         }
-        .message .avatar.noread::after{
+        .message .avatar.noread .img::after{
             content:' ';
             background-color:red;
             position:absolute;
-            right:3px;
-            top:3px;
+            right:0px;
+            top:0px;
             width:6px;
             height:6px;
             border-radius:50%
 
+        }
+        .message .avatar .img{
+            margin:auto;
+            height: 50px;
+            width: 50px;
+            background-size: 100%;
+            position:relative;
         }
         .message h4{
             padding: 0;
@@ -129,7 +136,7 @@
 
                     body.append(
                         j('<div>').addClass('col-xs-2 tc avatar'+(d.data.list[i].isread=='0'?' noread':'')).append(
-                            j('<img>').attr('src',d.data.list[i].fullAvatar)
+                            j('<div>').addClass('img').css('background-image','url('+d.data.list[i].fullAvatar+')')
                         )
                     ).append(
                         j('<div>').addClass('col-xs-6 tl').append(
