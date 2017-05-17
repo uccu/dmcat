@@ -68,6 +68,10 @@ class ParentController extends Controller{
     }
     function notice($id){
 
+        if($id)Response::getInstance()->cookie('student_id',$id,0);
+        $tid = $this->L->id;
+        if(!$tid)header('Location:/home/login');
+
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
     function course($id){
@@ -84,6 +88,11 @@ class ParentController extends Controller{
     }
     function record($id){
 
+        if($id)Response::getInstance()->cookie('student_id',$id,0);
+
+        $tid = $this->L->id;
+        if(!$tid)header('Location:/home/login');
+
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
     function album($id){
@@ -96,10 +105,26 @@ class ParentController extends Controller{
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
     function activity($id){
+        if($id)Response::getInstance()->cookie('student_id',$id,0);
+
+        $tid = $this->L->id;
+        if(!$tid)header('Location:/home/login');
 
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
     function activity_detail($id){
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function vote($id){
+        if($id)Response::getInstance()->cookie('student_id',$id,0);
+
+        $tid = $this->L->id;
+        if(!$tid)header('Location:/home/login');
+
+        include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
+    }
+    function vote_detail($id){
 
         include VIEW_ROOT.'App/parent/'.__FUNCTION__.'.php';
     }
@@ -164,6 +189,8 @@ class ParentController extends Controller{
 
         Model::getInstance('school_message')->set($data)->add();
 
+        Func::add_message($this->L->id,'您已成功提交了一条学校留言<br><small>You have successfully submitted a school message</small>');
+
         AJAX::success();
 
     }
@@ -196,6 +223,8 @@ class ParentController extends Controller{
 
 
     function get_notice($id=0,$student_id = 0,NoticeConfirmModel $model){
+
+        $student_id = Request::getInstance()->cookie('student_id');
 
         (!$id || !$student_id) && AJAX::error_i18n('param_error');
 

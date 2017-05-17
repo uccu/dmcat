@@ -308,6 +308,7 @@ class NoticeController extends Controller{
         AJAX::success($out);
     }
     function get_vote_info(VoteModel $model,$id = 0,$student_id = 0,VoteConfirmModel $vModel){
+        $student_id = Request::getInstance()->cookie('student_id');
         $info = $model->select('*','user.avatar','user.name','user.name_en')->find($id);
         if(!$info)AJAX::error('没有数据/no data');
 
@@ -335,6 +336,8 @@ class NoticeController extends Controller{
 
     function to_vote($id = 0,$student_id = 0,VoteConfirmModel $model,$answer = '0'){
 
+        $student_id = Request::getInstance()->cookie('student_id');
+
         $data['vote_id'] = $id;
         $data['student_id'] = $student_id;
 
@@ -357,6 +360,8 @@ class NoticeController extends Controller{
         AJAX::success($out);
     }
     function get_activity_info(ActivityModel $model,$id = 0,$student_id = 0,ActivityConfirmModel $aModel){
+
+        $student_id = Request::getInstance()->cookie('student_id');
         $info = $model->select('*','user.avatar','user.name','user.name_en')->find($id);
         if(!$info)AJAX::error('没有数据/no data');
 
@@ -385,6 +390,7 @@ class NoticeController extends Controller{
     }
     function to_activity($id = 0,$student_id = 0,ActivityConfirmModel $model,$answer = '0',$remark = ''){
 
+        $student_id = Request::getInstance()->cookie('student_id');
         $data['activity_id'] = $id;
         $data['student_id'] = $student_id;
 

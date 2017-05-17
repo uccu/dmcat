@@ -434,8 +434,8 @@ class StudentController extends Controller{
     /* 获取某次点评 */
     function view_comment($month,$day,$date,CommentModel $model,StudentModel $stuModel){
 
-        // $id = Request::getInstance()->cookie('student_id');
-        $id = 2;
+        $id = Request::getInstance()->cookie('student_id');
+        // $id = 2;
 
         if(!$id)AJAX::error('学生不存在/no student');
 
@@ -577,6 +577,9 @@ class StudentController extends Controller{
 
 
         $model->set($data)->add();
+
+        Func::add_message($this->L->id,'您已成功提交了一条请假（'.$date.'）<br><small>You have successfully asked for leave</small>');
+
 
         AJAX::success();
         

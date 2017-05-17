@@ -74,8 +74,7 @@
                 url: "/student/ask_leave",
                 type: "get",
                 data: {
-                    student_id:2,
-//                    id:2,
+                    student_id:<?php echo $id;?>,
                     proposer:pro,
                     date:startime,
                     type:type,
