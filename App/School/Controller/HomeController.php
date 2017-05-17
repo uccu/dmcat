@@ -53,6 +53,11 @@ class HomeController extends Controller{
 
         View::hamlReader('doctor/'.__FUNCTION__,'App');
     }
+    function doctor(){
+
+        include VIEW_ROOT.'App/doctor/index.php';
+
+    }
     
 
     function tes(){

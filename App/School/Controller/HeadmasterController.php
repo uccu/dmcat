@@ -27,6 +27,10 @@ class HeadmasterController extends Controller{
 
         View::hamlReader('Headmaster/'.__FUNCTION__,'App');
     }
+    function index(){
+
+        include VIEW_ROOT.'App/Headmaster/'.__FUNCTION__.'.php';
+    }
 
     function view_message($type = 0,$istag = 0,$page = 1,$limit = 30,SchoolMessageModel $model){
 
