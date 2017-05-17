@@ -1,0 +1,16 @@
+- extends "base.haml"
+
+- block siteInfo
+    %title Music~(*-ω-)ﾄﾞｷ
+
+- block body
+    
+    
+    %input(type="file")    
+    %script(src="/js/audioJS.js")
+    :javascript
+        api = new audioApi
+        j('input').bind('change',function(){
+            api.addFiles('input')
+        })
+

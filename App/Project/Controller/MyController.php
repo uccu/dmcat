@@ -24,6 +24,12 @@ class MyController extends Controller{
 
  
     }
+    function audio2(){
+
+        View::hamlReader('audio_test','App');
+
+ 
+    }
 
     function video(){
 
