@@ -27,61 +27,26 @@
             document.body.appendChild( renderer.domElement );
 
 
-            var MAX_POINTS = 500;
-
-            // geometry
-            var geometry = new THREE.BufferGeometry();
-
-            // attributes
-            var positions = new Float32Array( MAX_POINTS * 3 ); // 3 vertices per point
-            geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-
-            // draw range
-            var drawCount = 5; // draw the first 2 points, only
-            geometry.setDrawRange( 0, drawCount );
-
-            // material
-            var material = new THREE.LineBasicMaterial( { color: 0xff0000, linewidth: 2 } );
-
-            // line
-            var line = new THREE.Line( geometry,  material );
-            scene.add( line );
             
-
-            var positions = line.geometry.attributes.position.array;
-
-            var x, y, z, index;
-            x = y = z = index = 0;
-
-            for ( var i = 0, l = MAX_POINTS; i < l; i ++ ) {
-
-                positions[ index ++ ] = x;
-                positions[ index ++ ] = y;
-                positions[ index ++ ] = z;
-
-                x += ( Math.random() - 0.5 ) * 0.5;
-                y += ( Math.random() - 0.5 ) * 0.5;
-                z += ( Math.random() - 0.5 ) * 0.5;
-
-            }
-            var n = 0;
 
             camera.position.z = 5;
 
-            j(window).bind('mousemove',function(e){
-                camera.position.x = (e.clientX-j(window).width()/2) / j(window).width() * 10
-                camera.position.y = (-e.clientY+j(window).height()/2) / j(window).height() * 10
-            })
+            
 
-            api.onrender = function(){
-                if(n = n?0:1)geometry.setDrawRange( 0, ++drawCount );
-                j('p').text( parseInt(j('p').text())+1 )
+            api.onrender = function(a1,a2){
+
+
                 renderer.render( scene, camera );
             }
-            window.addEventListener( 'resize', function(){
-                camera.aspect = j(window).width() / j(window).height();
-                
-                camera.updateProjectionMatrix();
-                renderer.setSize( j(window).width(), j(window).height() );
-            }, false );
+
+            j(window).bind({
+                mousemove:function(e){
+                    camera.position.x = (e.clientX-j(window).width()/2) / j(window).width() * 10
+                    camera.position.y = (-e.clientY+j(window).height()/2) / j(window).height() * 10
+                },resize:function(){
+                    camera.aspect = j(window).width() / j(window).height();
+                    camera.updateProjectionMatrix();
+                    renderer.setSize( j(window).width(), j(window).height() );
+                }
+            })
         })
