@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>孩子记录Child record</title>
+    <title>学生记录 student record</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/ChildRecord.css">

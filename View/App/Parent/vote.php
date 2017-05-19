@@ -63,12 +63,17 @@
             $(".tabContent").eq($(this).index()).css("display","block");
 
         })
-        function GetQueryString(name){
-            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-            var r = window.location.search.substr(1).match(reg);
-            if(r!=null)return  unescape(r[2]); return null;
-        }
-        var id = GetQueryString('id');
+    function time(){
+        $('[data-countdown]').each(function() {
+            var $this = $(this), finalDate = $(this).data('countdown');
+            $this.countdown(finalDate, function(event) {
+                $this.html(event.strftime('%D:%H:%M:%S'));
+                if($this.text()=='00:00:00:00'){
+                    $this.html('投票结束')
+                }
+            });
+        });
+    }
         $.ajax({
             url:"/notice/get_vote_lists",
             type:"get",
@@ -77,14 +82,12 @@
             cache: false,
             success:function(e){
                 if (e.code==200){
-                    $.getScript("/app/js/daojishi.js")
+                    // $.getScript("/app/js/daojishi.js")
                     var result = e.data.list;
                     for(var i=0; i<result.length;i++){
-                        var allvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span><div class="fnTimeCountDown" data-end="'+result[i].end_date+'"><span class="month">00</span>月<span class="day">00</span>天<span class="hour">00</span>时<span class="mini">00</span>分<span class="sec">00</span>秒</div></div><a href="vote_detail?id='+result[i].id+'" class="voteing">投票/vote</a></div><hr>'
+                        var allvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span><div data-countdown="'+result[i].end_date+'" class="time"></div></div><a href="vote_detail?id='+result[i].id+'" class="voteing">投票/vote</a></div><hr>'
                         $(".allvote").append(allvote)
-
-//                        var myvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span><div class="fnTimeCountDown" data-end="'+result[i].end_date+'"><span class="month">00</span>月<span class="day">00</span>天<span class="hour">00</span>时<span class="mini">00</span>分<span class="sec">00</span>秒</div></div><a href="voteDEtails.html?id='+result[i].id+'" class="voteing">投票/vote</a></div><hr>'
-//                        $(".myvote").append(myvote)
+                        time()
                     }
                 }
             }
@@ -97,16 +100,18 @@
             cache: false,
             success:function(e){
                 if (e.code==200){
-                    $.getScript("/app/js/daojishi.js")
+                    // $.getScript("/app/js/daojishi.js")
                     var result = e.data.list;
                     for(var i=0; i<result.length;i++){
-                        var myvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span><div class="fnTimeCountDown" data-end="'+result[i].end_date+'"><span class="month">00</span>月<span class="day">00</span>天<span class="hour">00</span>时<span class="mini">00</span>分<span class="sec">00</span>秒</div></div><a href="vote_detail?id='+result[i].id+'" class="voteing">投票/vote</a></div><hr>'
+                        var myvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span><div data-countdown="'+result[i].end_date+'" class="time"></div></div><a href="vote_detail?id='+result[i].id+'" class="voteing">投票/vote</a></div><hr>'
                         $(".myvote").append(myvote)
+                        time()
                     }
                 }
             }
         })
     })
 </script>
+<script src="/app/js/countdown.js"></script>
 </body>
 </html>

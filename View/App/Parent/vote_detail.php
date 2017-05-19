@@ -52,6 +52,17 @@
     $(document).ready(function(){
         var a=new URL(location);
         var id = a.searchParams.get('id')
+        function time(){
+        $('[data-countdown]').each(function() {
+            var $this = $(this), finalDate = $(this).data('countdown');
+            $this.countdown(finalDate, function(event) {
+                $this.html(event.strftime('%D:%H:%M:%S'));
+                if($this.text()=='00:00:00:00'){
+                    $this.html('投票结束')
+                }
+            });
+        });
+    }
 //        console.info(id)
         $.ajax({
             url:"/notice/get_vote_info",
@@ -63,14 +74,14 @@
             cache: false,
             success:function(e){
                 if (e.code==200){
-                    $.getScript("/app/js/daojishi.js")
                     var result = e.data.info;
                     var attrav = '<img src="'+result.fullAvatar+'" alt=""><div class="organizersName"><h1>'+result.name+'</h1><h2>'+result.date+'</h2></div>'
                     var title = '<span>'+result.title+'</span><p>'+result.content+'</p>'
-                    var time = '<div class="fnTimeCountDown" data-end="'+result.end_date+'"><span class="month">00</span>月<span class="day">00</span>天<span class="hour">00</span>时<span class="mini">00</span>分<span class="sec">00</span>秒</div>'
+                    var time = '<div data-countdown="'+result[i].end_date+'" class="time"></div>'
                     $(".Organizers").append(attrav)
                     $(".activeName").append(title)
                     $(".remainingTime").append(time)
+                    time();
                     var options = result.options.split(';');
                     console.info(options)
                     for (var i=0; i<options.length;i++){
@@ -130,5 +141,6 @@
         })
     })
 </script>
+<script src="/app/js/countdown.js"></script>
 </body>
 </html>

@@ -21,37 +21,6 @@
         </div>
     </div>
 </div>
-
-<style>
-    /*活动投票页面*/
-    #fullbg {
-        background-color:#000000;
-        left:0;
-        opacity:1;
-        position:absolute;
-        top:0;
-        z-index:3;
-    }
-    #logIn{
-        width:100%;
-        height:4rem;
-        /*border:1px solid #ddd;*/
-        position: absolute;
-        left:0;
-        top:0;
-        bottom:0;
-        right:0;
-        margin:auto;
-        z-index: 9999999;
-    }
-    #logIn img{
-        /*width:100%;*/
-        /*height:4rem;*/
-        margin:auto;
-    }
-    .hide{display:none;}
-
-</style>
 <!--弹出框及蒙层-->
 <div id="fullbg"></div>
 <div class="con hide" id="logIn">
@@ -105,18 +74,17 @@
                         var popImg = '<img src='+myurl+' style="max-width: 100%">'
                         $(".popupImg").append(popImg);
 
-                        e.stopPropagation();
+                        // e.stopPropagation();
                         $("div.con").removeClass("hide");
                         showBg()
                     });
-                    $("div.con").click(function(even){
-                        even.stopPropagation();//阻止冒泡
-                    });
-                    $(document).click(function(){
-                        if(!$("div.con").hasClass("hide")){
-                            $("div.con").addClass("hide")
-                            $('#fullbg').html('').css({height:0,width:0})
-                        }
+                    // $("div.con").click(function(even){
+                    //     even.stopPropagation();//阻止冒泡
+                    // });
+                    $('.con.hide').click(function(){
+                        $("div.con").addClass("hide")
+                        $('#fullbg').html('').css({height:0,width:0})
+                        
                     });
                 }
             }
