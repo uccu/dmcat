@@ -24,17 +24,37 @@
             camera = new THREE.PerspectiveCamera( 75, j(window).width() / j(window).height(), 0.1, 1000 );
             var renderer = new THREE.WebGLRenderer();
             renderer.setSize( j(window).width(), j(window).height() );
-            document.body.appendChild( renderer.domElement );
+            j('body').append( renderer.domElement );
 
+            geometry = new THREE.CylinderGeometry( 1, 1, 1, 6 );
+            var geometry2 = new THREE.CylinderGeometry( 1, 1, 1, 6 );
+            var material = new THREE.MeshPhysicalMaterial( {color: 0xffffff,opacity:1} );
+            var mesh = new THREE.Mesh( geometry, material );
+            mesh.position.x = -5;
+            var mesh2 = new THREE.Mesh( geometry2, material );
+            mesh2.position.x = 5;
+            scene.add(mesh)
+            scene.add(mesh2)
 
-            
+            camera.position.z = 100;
 
-            camera.position.z = 5;
+            var light = new THREE.AmbientLight( 0xffffff ); // soft white light
+            scene.add( light );
 
-            
+            var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
+            scene.add( directionalLight );
 
+            var light2 = new THREE.PointLight( 0xffffff, 1, 100 );
+            light2.position.set( 50, 20, 2 );
+            scene.add( light2 );
+            var e1 = e2 = 0;
             api.onrender = function(a1,a2){
 
+
+                j('p').text(a1[0])
+                if(a1[0])mesh.scale.y = a1[0]/2
+                if(a2[0])mesh2.scale.y = a2[0]/2
+                
 
                 renderer.render( scene, camera );
             }

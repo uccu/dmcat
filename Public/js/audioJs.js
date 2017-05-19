@@ -18,8 +18,8 @@
 		this.gain
 		this.animationId
 		this.source
-		this.decoded = 0
-		this.playing = 0
+		this.isdecoded = 0
+		this.isplaying = 0
 		this.ele = d.createElement('audio')
 		this.loadAudio()
 		this.onrender = null
@@ -29,9 +29,9 @@
 		get volume(){return this.gain.gain.value},
 		set volume(x){return this.gain.gain.value = x},
 		play:function(){
-			if(!this.playing)this.loadAudio()
+			if(!this.isplaying)this.loadAudio()
 			this.ele.play()
-			this.playing = 1
+			this.isplaying = 1
 		},pause:function(){
 			this.ele.pause()
 		},stop:function(){
@@ -39,12 +39,12 @@
 		},replay:function(){
 			this.loadAudio()
 			this.ele.play()
-			this.playing = 1
+			this.isplaying = 1
 		},loadAudio:function(){
-			this.playing = 0
+			this.isplaying = 0
 			if(this.playedOne === undefined && this.audioUrls.length)this.playedOne = 0
 			if(this.playedOne !== undefined)this.ele.src = this.audioUrls[this.playedOne]
-			if(!this.decoded)this.decode( this.ac.createMediaElementSource(this.ele) )
+			if(!this.isdecoded)this.decode( this.ac.createMediaElementSource(this.ele) )
 		},addFiles:function(e){
 			var fl = d.querySelector(e).files
 			if(fl.length===0)return false
@@ -66,14 +66,14 @@
 			splitter.connect(this.analyserLeft,0)
 			splitter.connect(this.analyserRight,1)
 			this.gain.connect(this.ac.destination)
-			this.decoded = 1
+			this.isdecoded = 1
 			this.render()
 		},render:function(){
 			
-			var l = new Float32Array(this.analyserLeft.frequencyBinCount)
-			this.analyserLeft.getFloatFrequencyData(l)
-			var r = new Float32Array(this.analyserRight.frequencyBinCount)
-			this.analyserRight.getFloatFrequencyData(r)
+			var l = new Uint8Array(this.analyserLeft.frequencyBinCount)
+			this.analyserLeft.getByteFrequencyData(l)
+			var r = new Uint8Array(this.analyserRight.frequencyBinCount)
+			this.analyserRight.getByteFrequencyData(r)
 			if(this.onrender)this.onrender(l,r)
 			var that = this;
 			this.animationId = w.requestAnimationFrame(function(){
