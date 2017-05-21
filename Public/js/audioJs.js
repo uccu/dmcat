@@ -53,6 +53,7 @@
 				if(fl[i].type.match('audio'))
 					this.audioUrls.push(URL.createObjectURL(fl[i]))
 			if(!this.audioUrls.length)this.playedOne = undefined
+			return this
 		},decode:function(source){
 			var splitter = this.ac.createChannelSplitter(2)
 
