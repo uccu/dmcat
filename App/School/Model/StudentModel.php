@@ -18,7 +18,17 @@ class StudentModel extends Model{
         return $this->join('App\School\Model\NoticeConfirmModel','student_id','id','LEFT');
         
     }
-    
+
+    public function voteConfirm(){
+
+        return $this->join('App\School\Model\VoteConfirmModel','student_id','id','LEFT');
+        
+    }
+    public function activityConfirm(){
+
+        return $this->join('App\School\Model\ActivityConfirmModel','student_id','id','LEFT');
+        
+    }
     
 
     

@@ -17,6 +17,7 @@
         "cebe/markdown": "^1.1",
         "twig/twig": "1.26.1",
         "endroid/qrcode": "^2.1",
-        "overtrue/pinyin": "^3.0"
+        "overtrue/pinyin": "^3.0",
+        "os/php-excel": "^2.1"
     }
 }

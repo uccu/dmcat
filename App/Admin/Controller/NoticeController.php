@@ -47,12 +47,32 @@ class NoticeController extends Controller{
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
 
     }
+    function vote_confirm(){
+
+        $lang = $this->L->i18n;
+        $lang->adminIndex;
+        $lang->school;
+        $lang->classes;
+        View::addData(['lang'=>$lang]);
+        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+
+    }
 
     /* 活动 */
     function activity(){
 
         $lang = $this->L->i18n;
         $lang->adminIndex;
+        View::addData(['lang'=>$lang]);
+        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+
+    }
+    function activity_confirm(){
+
+        $lang = $this->L->i18n;
+        $lang->adminIndex;
+        $lang->school;
+        $lang->classes;
         View::addData(['lang'=>$lang]);
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
 

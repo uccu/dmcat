@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "39151ea880a592d4cd3a36e7d305cd68",
-    "content-hash": "5f28b51325e0234eb9354228c2e1613c",
+    "hash": "9b77365384ae000e3004a38a0262fbf9",
+    "content-hash": "e0b86adf3ef0386090284c6a297b109a",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -420,6 +420,43 @@
                 "enum"
             ],
             "time": "2017-03-26 10:24:21"
+        },
+        {
+            "name": "os/php-excel",
+            "version": "2.1",
+            "target-dir": "PHPExcel",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ouardisoft/PHPExcel.git",
+                "reference": "1dcb280a82b94943a00d478eac099542aa0be2bd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ouardisoft/PHPExcel/zipball/1dcb280a82b94943a00d478eac099542aa0be2bd",
+                "reference": "1dcb280a82b94943a00d478eac099542aa0be2bd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.6"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "LOUARDI Abdeltif",
+                    "email": "louardi.abdeltif@yahoo.fr",
+                    "homepage": "http://phphub.net"
+                }
+            ],
+            "description": "PHP Excel Library",
+            "homepage": "http://github.com/ouardisoft/PHPExcel",
+            "keywords": [
+                "excel"
+            ],
+            "time": "2012-05-02 20:42:37"
         },
         {
             "name": "overtrue/pinyin",
@@ -868,7 +905,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4.0"
+        "php": ">=5.6.0"
     },
     "platform-dev": []
 }

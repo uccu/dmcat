@@ -881,5 +881,44 @@
             "Pinyin",
             "cn2pinyin"
         ]
+    },
+    {
+        "name": "os/php-excel",
+        "version": "2.1",
+        "version_normalized": "2.1.0.0",
+        "target-dir": "PHPExcel",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ouardisoft/PHPExcel.git",
+            "reference": "1dcb280a82b94943a00d478eac099542aa0be2bd"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ouardisoft/PHPExcel/zipball/1dcb280a82b94943a00d478eac099542aa0be2bd",
+            "reference": "1dcb280a82b94943a00d478eac099542aa0be2bd",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.6"
+        },
+        "time": "2012-05-02 20:42:37",
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "LOUARDI Abdeltif",
+                "email": "louardi.abdeltif@yahoo.fr",
+                "homepage": "http://phphub.net"
+            }
+        ],
+        "description": "PHP Excel Library",
+        "homepage": "http://github.com/ouardisoft/PHPExcel",
+        "keywords": [
+            "excel"
+        ]
     }
 ]

@@ -422,7 +422,7 @@ class NoticeController extends Controller{
 
 
 
-
+    /** 通知回执 **/
     function get_notice_confirm(StudentModel $model,NoticeConfirmModel $nModel,$notice_id = 0,$classes_id = 0){
 
         $out = ['upd'=>'/notice/upd_notice_confirm'];
@@ -473,5 +473,118 @@ class NoticeController extends Controller{
         AJAX::success();
     }
 
+
+    /** 投票回执 **/
+    function get_vote_confirm(StudentModel $model,VoteModel $vModel,$vote_id = 0,$classes_id = 0){
+
+        $out = ['upd'=>'/notice/upd_vote_confirm'];
+
+        $out['thead'] = [
+            "学生ID/student's ID"=>['class'=>'tc'],
+            "学生名字/student's name"=>['class'=>'tc'],
+            // "是否回执/has replied"=>['class'=>'tc'],
+            "投票内容/note content"=>['class'=>'tc'],
+        ];
+        
+        $out['tbody'] = [
+            'id'=>['class'=>'tc'],
+            'name_e'=>['class'=>'tc'],
+            // 'is_confirm'=>['class'=>'tc confirm','type'=>'checkbox'],
+            'vote_content'=>['class'=>'tc'],
+        ];
+
+        $vote = $vModel->find($vote_id);
+        if(!$vote)AJAX::error('投票不存在/vote not exist');
+
+        $vote->optionArray = explode(';',$vote->options);
+
+
+
+        $out['lang'] = $this->lang->language;
+
+        $where['classes_id'] = $classes_id;
+        $list = $model->select('id','name','name_en')->where($where)->order('id')->get()->toArray();
+
+
+        $where['voteConfirm.vote_id'] = $vote_id;
+        $listn = $model->where($where)->get_field('id')->toArray();
+        $listr = $model->where($where)->select('voteConfirm.answer','id')->get('id')->toArray();
+
+        foreach($list as &$v){
+            $v->name_e = $v->name . ' ' . $v->name_en;
+            $v->is_confirm = in_array($v->id,$listn) ? '1' : '0';
+            $v->vote_content = $v->is_confirm && $listr[$v->id]->answer>0 ? $vote->optionArray[$listr[$v->id]->answer - 1] : '';
+
+        }
+
+        $out['list']  = $list;
+        $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $out['page'] = $page;
+        $out['limit'] = $limit;
+        AJAX::success($out);
+    }
+    function upd_vote_confirm(VoteConfirmModel $model,$student_id = 0,$vote_id = 0){
+        
+        $data['student_id'] = $student_id;
+        $data['vote_id'] = $vote_id;
+        if(!$model->where($data)->find()){
+            $data['create_time'] = TIME_NOW;
+            $model->set($data)->add(true);
+        }else{
+            $model->where($data)->remove();
+        }
+        AJAX::success();
+    }
+
+    function get_activity_confirm(StudentModel $model,ActivityModel $vModel,$activity_id = 0,$classes_id = 0){
+
+        $out = ['upd'=>'/notice/upd_activity_confirm'];
+
+        $out['thead'] = [
+            "学生ID/student's ID"=>['class'=>'tc'],
+            "学生名字/student's name"=>['class'=>'tc'],
+            // "是否回执/has replied"=>['class'=>'tc'],
+            "反馈/confirm"=>['class'=>'tc'],
+            "备注/remark"=>['class'=>'tc'],
+        ];
+        
+        $out['tbody'] = [
+            'id'=>['class'=>'tc'],
+            'name_e'=>['class'=>'tc'],
+            // 'is_confirm'=>['class'=>'tc confirm','type'=>'checkbox'],
+            'activity_content'=>['class'=>'tc'],
+            'remark'=>['class'=>'tc'],
+        ];
+
+        $activity = $vModel->find($activity_id);
+        if(!$activity)AJAX::error('投票不存在/activity not exist');
+
+        $activity->optionArray = explode(';',$activity->options);
+
+
+
+        $out['lang'] = $this->lang->language;
+
+        $where['classes_id'] = $classes_id;
+        $list = $model->select('id','name','name_en')->where($where)->order('id')->get()->toArray();
+
+
+        $where['activityConfirm.activity_id'] = $activity_id;
+        $listn = $model->where($where)->get_field('id')->toArray();
+        $listr = $model->where($where)->select('activityConfirm.answer','activityConfirm.remark','id')->get('id')->toArray();
+
+        foreach($list as &$v){
+            $v->name_e = $v->name . ' ' . $v->name_en;
+            $v->is_confirm = in_array($v->id,$listn) ? '1' : '0';
+            $v->activity_content = $v->is_confirm && $listr[$v->id]->answer>0 ? $activity->optionArray[$listr[$v->id]->answer - 1] : '';
+            $v->remark = $listr[$v->id] ? $listr[$v->id]->remark : '';
+        }
+
+        $out['list']  = $list;
+        $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $out['page'] = $page;
+        $out['limit'] = $limit;
+        AJAX::success($out);
+    }
 
 }
