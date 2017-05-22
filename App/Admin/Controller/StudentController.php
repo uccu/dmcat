@@ -25,7 +25,7 @@ class StudentController extends Controller{
         $lang->student;
         $lang->classes;
         $lang->school;
-        View::addData(['lang'=>$lang]);
+        View::addData(['lang'=>$lang,'type'=>$this->L->userInfo->type]);
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
     }
 
@@ -60,7 +60,7 @@ class StudentController extends Controller{
         $lang->student;
         $lang->classes;
         $lang->school;
-        View::addData(['lang'=>$lang]);
+        View::addData(['lang'=>$lang,'type'=>$this->L->userInfo->type]);
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
     }
 

@@ -6,6 +6,7 @@ namespace App\School\Controller;
 use App\School\Model\ClassesModel;
 use App\School\Model\ClassesLevelModel;
 use App\School\Model\StudentModel;
+use App\School\Model\UserModel;
 use Controller;
 use Request;
 use App\School\Tool\AJAX;
@@ -26,7 +27,16 @@ class ClassesController extends Controller{
     /* 班级列表 */
     function lists(ClassesModel $model,$school_id){
 
-        // !$this->L->id && AJAX::error_i18n('not_login');
+        !$this->L->id && AJAX::errorn('未登录/no login');
+
+        $this->L->check_type([3,5,6,7]);
+
+        if($this->L->userInfo->type == 3){
+
+            $classes_id = UserModel::getInstance()->select('classes.classes_id')->find($this->L->id)->classes_id;
+
+            $model->where(['id'=>$classes_id]);
+        }
 
         $out = ['get'=>'/classes/get','upd'=>'/classes/upd','del'=>'/classes/del'];
 

@@ -116,7 +116,8 @@
                                 %input.dn(type="file")
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close
-                    %button.btn.btn-danger.remove(type="button") Remove
+                    - if type != 3
+                        %button.btn.btn-danger.remove(type="button") Remove
                     %button.btn.btn-primary.save(type="button") Save
 
                         

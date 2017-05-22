@@ -16,7 +16,7 @@ class IndexController extends Controller{
 
         $array = [1];
 
-        if(!$this->L->id || !$this->L->userInfo->type){
+        if(!$this->L->id || $this->L->userInfo->type<2){
             header('Location:/user/logout');
         }
 

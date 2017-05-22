@@ -136,6 +136,47 @@ class SchoolController extends Controller{
 
     }
 
+    function message_info($id){
+
+        !$id && AJAX::success(['info'=>[]]);
+        $out['info'] = $info = Model::getInstance('school_message')->find($id);
+        !$info && AJAX::error_i18n('no_data');
+
+
+        AJAX::success($out);
+    }
+
+
+    function message_lists(){
+
+        $out = ['get'=>'/school/message_info','upd'=>'/school/add_school_message'];
+
+        $out['thead'] = [
+            'ID'=>['class'=>'tc'],
+            '留言/message'=>['class'=>'tc'],
+            '留言时间/leave time'=>['class'=>'tc'],
+            '已阅/has read'=>['class'=>'tc'],
+        ];
+        
+        $out['tbody'] = [
+            'id'=>['class'=>'tc'],
+            'message'=>['class'=>'tc'],
+            'time'=>['class'=>'tc'],
+            'read'=>['class'=>'tc'],
+        ];
+        $out['lang'] = $this->lang->language;
+
+        $list = Model::getInstance('school_message')->where(['user_id'=>$this->L->id])->order('id DESC')->get()->toArray();
+        foreach($list as &$v){
+            $v->time = date('y.m.d',$v->create_time);
+            $v->read = $v->isread?'yes':'no';
+        }
+
+        $out['list']  = $list;
+        AJAX::success($out);
+
+    }
+
 
     
 

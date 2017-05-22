@@ -8,6 +8,7 @@ use App\School\Model\StudentPhysicalModel;
 use App\School\Model\AttendanceModel;
 use App\School\Model\RestDayModel;
 use App\School\Model\CommentModel;
+use App\School\Model\UserModel;
 use Controller;
 use Request;
 use App\School\Tool\AJAX;
@@ -29,7 +30,14 @@ class StudentController extends Controller{
     /* 学生档案列表 */
     function lists(StudentModel $model,$school_id,$classes_id,$page = 1,$limit = 50,$phy = 0){
 
-        // !$this->L->id && AJAX::error_i18n('not_login');
+        !$this->L->id && AJAX::errorn('未登录/no login');
+        $this->L->check_type([3,5,6,7]);
+        if($this->L->userInfo->type == 3){
+
+            $classes_id = UserModel::getInstance()->select('classes.classes_id')->find($this->L->id)->classes_id;
+
+            $model->where(['classes_id'=>$classes_id]);
+        }
 
         $out = ['get'=>'/student/get','upd'=>'/student/upd','del'=>'/student/del'];
         if($phy)$out = ['get'=>'/student/physical_get','upd'=>'/student/physical_upd'];
@@ -55,9 +63,9 @@ class StudentController extends Controller{
         $classesName = $this->lang->language == 'cn' ? 'classes.name>class_name' : 'classes.name_en>class_name';
         
         $out['lang'] = $this->lang->language;
-
-        if($school_id)$model->where(['classes.school_id'=>$school_id]);
         if($classes_id)$model->where(['classes_id'=>$classes_id]);
+        elseif($school_id)$model->where(['classes.school_id'=>$school_id]);
+        
 
         $list = $model->select('*', $classesName )->page($page,$limit)->get()->toArray();
 
@@ -394,7 +402,7 @@ class StudentController extends Controller{
         $comment = $commentModel->where($where)->find();
 
         $data = Request::getInstance()->request($commentModel->field);
-        var_dump($data);die();
+
         $data['learning'] = $data['learning']?$data['learning']:0;
         $data['eat'] = $data['eat']?$data['eat']:0;
         $data['life'] = $data['life']?$data['life']:0;
@@ -405,6 +413,8 @@ class StudentController extends Controller{
             $data['teacher_id'] = $this->L->id;
             $commentModel->set($data)->add();
         }else{
+
+            if($this->L->userInfo->type == 3)AJAX::error('老师没有该执行权限，请提交删除申请！<br>teacher no permission');
 
             $commentModel->set($data)->save($comment->id);
 
@@ -432,9 +442,9 @@ class StudentController extends Controller{
     }
 
     /* 获取某次点评 */
-    function view_comment($month,$day,$date,CommentModel $model,StudentModel $stuModel){
+    function view_comment($id,$month,$day,$date,CommentModel $model,StudentModel $stuModel){
 
-        $id = Request::getInstance()->cookie('student_id');
+        if(!$id)$id = Request::getInstance()->cookie('student_id');
         // $id = 2;
 
         if(!$id)AJAX::error('学生不存在/no student');
