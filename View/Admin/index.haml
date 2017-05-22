@@ -13,6 +13,8 @@
         %link(href="/css/style.min862f.css?v=4.1.0" rel="stylesheet")
 
     %body.fixed-sidebar.full-height-layout.gray-bg(style="overflow:hidden")
+        :css
+            .dn{display:none !important}
         #wrapper(style="overflow:hidden")
             /左侧导航开始
             %nav.navbar-default.navbar-static-side(role="navigation")
@@ -47,7 +49,7 @@
                                     -# %li
                                     -#     %a.J_menuItem(href="form_avatar") 修改头像
                                     %li
-                                        %a.J_menuItem(href="form_avatar") #{lang.adminIndex.change_info}
+                                        %a.changeMy(href="#") #{lang.adminIndex.change_info}
 
                                     %li.divider
                                     %li
@@ -220,6 +222,56 @@
                                     %span.skin-name
                                         %a.s-skin-3(href="#") 黄色/紫色主题
             / 右侧边栏结束
+        #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+            .modal-dialog
+                .modal-content.animated.fadeInDown
+                    .modal-header
+                        %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                            %span(aria-hidden="true") &times;
+                            %span.sr-only Close
+                        %h4.modal-title 我的信息/my info
+                        %small.font-bold
+                    .modal-body
+                        .sk-spinner.sk-spinner-wave.animated.fadeOutDown
+                            .sk-rect1
+                            .sk-rect2
+                            .sk-rect3
+                            .sk-rect4
+                            .sk-rect5
+                        %form.form-horizontal.animated(method="post")
+                            %input.form-control(type="hidden" name="id")
+                            .form-group.tc
+                                %img.img-circle.center-block.cp.avatar_img(data-name="avatar" src="/pic/noavatar.png" style="max-width:100px;max-height:100px")
+                                %input.form-control(type="file" style="display:none")
+                                %input.form-control(type="hidden" name="avatar")
+                            .form-group
+                                %label.col-sm-3.control-label 中文名/chinese name
+                                .col-sm-9
+                                    %input.form-control(name="name")
+                            .form-group
+                                %label.col-sm-3.control-label 英文名/english name
+                                .col-sm-9
+                                    %input.form-control(name="name_en")
+                            .form-group
+                                %label.col-sm-3.control-label 用户名/user name
+                                .col-sm-9
+                                    %input.form-control(name="user_name")
+                            .form-group
+                                %label.col-sm-3.control-label 邮箱/email
+                                .col-sm-9
+                                    %input.form-control(type="email" name="email")
+                            .form-group
+                                %label.col-sm-3.control-label 手机/phone
+                                .col-sm-9
+                                    %input.form-control(name="phone")
+                            .form-group
+                                %label.col-sm-3.control-label 密码/password
+                                .col-sm-9
+                                    %input.form-control(name="raw_password")
+                            
+                    .modal-footer
+                        %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                        %button.btn.btn-primary.save(type="button") Save
     %script(src="/js/jquery.min.js?v=2.1.4")
     %script(src="/js/bootstrap.min.js?v=3.3.6")
     %script(src="/js/plugins/metisMenu/jquery.metisMenu.js")
@@ -228,3 +280,76 @@
     %script(src="/js/hplus.min.js?v=4.1.0")
     %script(src="/js/contabs.min.js")
     %script(src="/js/plugins/pace/pace.min.js")
+    :javascript
+        function curl(url,data,func,raw){
+            var a = {
+                url:url,
+                data:data,
+                type:raw || (data && JSON.stringify(data) !="{}")?'post':'get',
+                dataType:'json',
+                beforeSend:function(xhr){
+                    
+                },success:function(d){
+                    if(d.code != 200)alert(d.message);
+                    else if(typeof func == 'function')func(d.data);
+                }
+            };
+            if(raw){
+                a.contentType = false;
+                a.processData = false;
+            }
+            $.ajax(a);
+        }
+        function packFormData(file,v,x){
+            var form=new FormData();
+            if(typeof v==="object")
+                for(d in v){
+                    if(typeof v[d]==="object")form.append(v[d].name,v[d].value);
+                    else form.append(d,v[d]);
+                }
+            file=$.prototype.isPrototypeOf(file)?file.get(0).files:$(file).get(0).files;
+            if(file.length)form.append("file",file[0]);
+            else{
+                alert('error image');return
+            }
+            if(!file[0])return;
+            return typeof x==='function'?x(form):form
+        }
+        function upPic(url,f,i,p){
+            $(f).bind('change',function(){
+                curl(url,packFormData(f),function(d){
+                    if(typeof i ==="function")i(d);
+                    else if(i)$(i).val(d.path);
+                    if(p)$(p).attr('src',d.fpath);
+                },1);
+            })
+        }
+        upPic('/staff/upPic','input[type="file"]','input[name="avatar"]','.avatar_img');
+        $('.avatar_img').bind('click',function(){
+            $('input[type="file"]').click();
+        })
+        $('.changeMy').click(function(){
+            $('#modal_new').modal();
+            $('#modal_new .sk-spinner').removeClass('fadeOutDown');
+            $('#modal_new form').removeClass('fadeInDown').addClass('dn');
+            $.post('/user/my_info',function(g){
+                if(g.code==400)alert(g.message);
+                g = g.data;
+                $('#modal_new .sk-spinner').addClass('fadeOutDown');
+                $('#modal_new form').removeClass('dn').addClass('fadeInDown');
+                for(h in g.info){
+                    $('#modal_new form').find('[name="'+h+'"]').val(g.info[h]).change();
+                        if(g.info[h]){
+                            $('#modal_new form').find('img[data-name="'+h+'"]').attr('src','/pic/'+g.info[h]);
+                            $('#modal_new form').find('select[name="'+h+'"]').attr('data-value',g.info[h]);
+                        }
+                }
+                $('#modal_new .save').unbind('click').bind('click',function(){
+                    curl('/staff/upd',$('#modal_new form').serialize(),function(b){
+                        location.reload()
+                    })
+                });
+
+            },'json')
+        })
+            

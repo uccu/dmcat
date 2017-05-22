@@ -34,6 +34,16 @@ class UserController extends Controller{
 
     }
 
+    function my_info(UserModel $model){
+
+        if(!$this->L->id)AJAX::error('未登录/not login');
+
+        $info = $model->find($this->L->id);
+        $out['info'] = $info;
+        AJAX::success($out);
+
+    }
+
 
     /* 通过用户ID判断用户是否存在 */
     function exist($id = 0){
