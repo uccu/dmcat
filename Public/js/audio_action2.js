@@ -42,36 +42,41 @@ j(function(){
     j('body').append( renderer.domElement );
 
 	/** 设置基础频谱条 */
-    var geometry = new THREE.CylinderGeometry( 1, 1, 1, 3 );
-    var material = new THREE.MeshPhysicalMaterial( {color: 0xffffff,opacity:1} );
-    spectrumBar = new THREE.Mesh( geometry, material );
+    geometry = new THREE.Geometry();
+    var vector1 = new THREE.Vector3();
+    var vector2 = new THREE.Vector3();
+    var vector3 = new THREE.Vector3();
+    vector1.setFromSpherical(new THREE.Spherical( 20, 0, Math.PI * 0.5 ));
+    vector2.setFromSpherical(new THREE.Spherical( 30, 0, Math.PI * 0.5 ));
+    vector3.setFromSpherical(new THREE.Spherical( 30, Math.PI * 0.2, Math.PI * 0.5 ));
+    geometry.vertices.push(
+        vector1,vector2,vector3
+    )
+    var material = new THREE.LineBasicMaterial( {color: 0xffffff} );
+    var line = new THREE.LineLoop( geometry, material );
 	
 
+	scene.add(line)
 
-	scene.add(spectrumBar)
+    camera.position.z = 100;
 
-            camera.position.z = 100;
+    var light = new THREE.AmbientLight( 0xffffff ); // soft white light
+    scene.add( light );
+    var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
+    scene.add( directionalLight );
+    var light2 = new THREE.PointLight( 0xffffff, 1, 100 );
+    light2.position.set( 50, 20, 2 );
+    scene.add( light2 );
 
-            var light = new THREE.AmbientLight( 0xffffff ); // soft white light
-            scene.add( light );
-
-            var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
-            scene.add( directionalLight );
-
-            var light2 = new THREE.PointLight( 0xffffff, 1, 100 );
-            light2.position.set( 50, 20, 2 );
-            scene.add( light2 );
-            var e1 = e2 = 0;
-            api.onrender = function(a1,a2){
+    var n = 0;
+    api.onrender = function(a1,a2){
 
 
-                j('p').text(a1[0])
-                if(a1[0])spectrumBar.scale.y = a1[0]/2
-
-                
-
-                renderer.render( scene, camera );
-            }
+        j('p').text(a1[0])
+        geometry.vertices[0].setFromSpherical(new THREE.Spherical( 10,- Math.PI * 0.01 * n++))
+        geometry.verticesNeedUpdate = true
+        renderer.render( scene, camera );
+    }
 
             
-        })
+})
