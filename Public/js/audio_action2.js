@@ -2,13 +2,87 @@
 
         
 j(function(){
+    if(document.all)document.body.onselectstart= function(){return false;}
+    else{
+        document.body.onmousedown= function(){return false;}
+        document.body.onmouseup= function(){return true;}
+    }
+    document.onselectstart = new Function('event.returnValue=false;')
+
 
 	/* 创建audioapi */
-	var api = new audioApi
+	api = new audioApi
+
+    j('.dplay').bind('click',function(){
+        var res = this.classList.contains('fa-play') ? api.play() : api.pause()
+        if(res)j('.dplay').toggleClass('dn')
+    })
+    j('.fa-list').bind('click',function(){j('input').click()})
+    j('.fa-step-backward').bind('click',function(){api.prev()})
+    j('.fa-step-forward').bind('click',function(){api.next()})
+    
+
+    j('.bar').bind('mousedown',function(e){
+        if(!api.ele.readyState)return
+        var vo = (e.offsetX/200) * api.ele.duration;
+        var u = api.onTimeUpdate
+        j('.barr').width(e.offsetX);
+        api.onTimeUpdate = null;
+        var mm1 = function(z){
+            var of  = z.clientX - j('.bar').offset().left
+            if(of<0)of = 0;else if(of>200)of=200
+            vo = (of/200) * api.ele.duration
+            j('.barr').width(of);
+        }
+        var mu1 = function(z){
+            if(api.ele.readyState)api.ele.currentTime = vo
+            api.onTimeUpdate = u
+            j('body').unbind('mousemove',mm1).unbind('mouseup',mu1)
+        }
+        j('body').bind({
+            mousemove:mm1,mouseup:mu1
+        })
+
+    })
+    api.onTimeUpdate = function(){
+        j('.barr').width(200 * api.ele.currentTime / (api.ele.duration?api.ele.duration:9999));
+    }
+    api.onload = function(z){
+        j('.title p').text(z.name)
+    }
+
+    j('.volume').bind('mousedown',function(e){
+        var vo = (38-e.offsetY)/38;
+        j('.vol').height(e.offsetY);
+        api.volume = vo
+        var mm = function(z){
+            var of  = z.clientY - j('.volume').offset().top
+            if(of<0)of = 0;else if(of>38)of=38
+            vo = (38-of)/38;
+            j('.vol').height(of);
+            api.volume = vo
+        }
+        var mu = function(z){
+            j('body').unbind('mousemove',mm).unbind('mouseup',mu)
+        }
+        j('body').bind({
+            mousemove:mm,mouseup:mu
+        })
+    })
+    api.onVolumeChange = function(x){
+        j('.vol').height(38-38*x);
+    }
+    api.ele.onended = function(){
+        // j('.fa-pause').addClass('dn');
+        // j('.fa-play').removeClass('dn');
+        api.next()
+        api.replay()
+    }
 
 	/* 绑定添加歌曲事件 */
 	j('input').bind('change',function(){
-        api.addFiles('input').play()
+        api.addFiles('input')
+        // j('.fa-play:not(.dn)').click()
     })
 
     /* 创建场景 */
@@ -43,37 +117,42 @@ j(function(){
 
 	/** 设置基础频谱条 */
     geometry = new THREE.Geometry();
-    var vector1 = new THREE.Vector3();
-    var vector2 = new THREE.Vector3();
-    var vector3 = new THREE.Vector3();
-    vector1.setFromSpherical(new THREE.Spherical( 20, 0, Math.PI * 0.5 ));
-    vector2.setFromSpherical(new THREE.Spherical( 30, 0, Math.PI * 0.5 ));
-    vector3.setFromSpherical(new THREE.Spherical( 30, Math.PI * 0.2, Math.PI * 0.5 ));
-    geometry.vertices.push(
-        vector1,vector2,vector3
-    )
+
+    for(var i = 0;i<512;i++){
+        geometry.vertices.push(new THREE.Vector3())
+    }
+
     var material = new THREE.LineBasicMaterial( {color: 0xffffff} );
-    var line = new THREE.LineLoop( geometry, material );
+    var line = new THREE.LineSegments( geometry, material );
 	
 
 	scene.add(line)
 
     camera.position.z = 100;
 
-    var light = new THREE.AmbientLight( 0xffffff ); // soft white light
-    scene.add( light );
-    var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
-    scene.add( directionalLight );
-    var light2 = new THREE.PointLight( 0xffffff, 1, 100 );
-    light2.position.set( 50, 20, 2 );
-    scene.add( light2 );
+    // var light = new THREE.AmbientLight( 0xffffff ); // soft white light
+    // scene.add( light );
+    // var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
+    // scene.add( directionalLight );
+    // var light2 = new THREE.PointLight( 0xffffff, 1, 100 );
+    // light2.position.set( 50, 20, 2 );
+    // scene.add( light2 );
 
-    var n = 0;
+    var lastTime = 0;
     api.onrender = function(a1,a2){
 
+        
 
-        j('p').text(a1[0])
-        geometry.vertices[0].setFromSpherical(new THREE.Spherical( 10,- Math.PI * 0.01 * n++))
+        var time = Date.now()
+        j('.fps').text(parseInt(1000/(time-lastTime)))
+        lastTime = time;
+        for(var i = 1;i<256;i+=2){
+            geometry.vertices[i].setFromSpherical(new THREE.Spherical( 30+(a1[i*2]) / 10 ,Math.PI * i / 256 ,Math.PI * 0.5))
+            geometry.vertices[i-1].setFromSpherical(new THREE.Spherical( 30 ,Math.PI * i / 256 ,Math.PI * 0.5))
+            geometry.vertices[511-i].setFromSpherical(new THREE.Spherical( 30+(a2[i*2]) / 10 ,-Math.PI * i / 256 ,Math.PI * 0.5))
+            geometry.vertices[511-i+1].setFromSpherical(new THREE.Spherical( 30 ,-Math.PI * i / 256 ,Math.PI * 0.5))
+        }
+            
         geometry.verticesNeedUpdate = true
         renderer.render( scene, camera );
     }

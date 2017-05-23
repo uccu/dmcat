@@ -4,14 +4,55 @@
     %title Music~(*-ω-)ﾄﾞｷ
 
 - block body
+    %link(rel="stylesheet" href="/css/font-awesome.min.css")
     :css
         body { margin: 0;overflow: hidden;}
         canvas{ width: 100%; height: 100% }
+        .bar{
+            height:3px;width:200px;background-color:#fff;box-shadow:0 0 2px inset
+        }
+        .barr{
+            height:100%;width:0px;background-color:red;
+        }
+        .control{
+            width:200px
+        }
+        .control i{color:#fff;margin:15px}
+        .control i:hover{color:red}
+        .fa-list{left:-15px}
+        .volume{
+            height:36px;width:3px;background-color:red;box-shadow:0 0 2px inset;top: -4px;right: -14px;
+        }
+        .vol{
+            height:0;width:100%;background-color:#fff;
+        }
+        .title p{
+            color:#fff
+        }
+        .pf.top{width: 100%; height: 100%}
     %script(src="/js/three.min.js")
-    
-    .pf
-        %input(type="file")
-        %p(style="color:white") 0
+    %input.dn(type="file" accept="audio/*" multiple="multiple")
+    .pf.top.dt
+        .dtc.vm.tc
+            .title.center-block
+                %p NaN
+            .bar.pr.center-block.cp
+                .barr.pa
+            .control.pr.center-block
+                %i.fa.fa-list.pa.cp.t
+                %i.fa.fa-step-backward.cp.t
+                %i.fa.fa-play.cp.t.dplay
+                %i.fa.fa-pause.dn.cp.t.dplay
+                %i.fa.fa-step-forward.cp.t
+                .volume.dib.pa.cp
+                    .vol.pa
+            
+            -# %p(style="color:white") 0
+
+            
+
     %script(src="/js/audioJS.js")
     %script(src="/js/audio_action2.js")
+    :javascript
+        
         

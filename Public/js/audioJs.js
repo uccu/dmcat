@@ -11,47 +11,86 @@
 	}
 
 	w.audioApi = function(e){
+		var that = this
 		this.ac = new (A('AudioContext'))
 		this.audioUrls = []
 		this.sourceNodes = []
 		this.playedOne
 		this.gain
 		this.animationId
-		this.source
 		this.isdecoded = 0
 		this.isplaying = 0
 		this.ele = d.createElement('audio')
 		this.loadAudio()
 		this.onrender = null
+		this.onplay = null
+		this.onpause = null
+		this.onVolumeChange = null
+		this.onTimeUpdate = null
+		this.onload = null
+		this.ele.ontimeupdate = function(){
+			that.onTimeUpdate && that.onTimeUpdate()
+		}
 		
 	}
 	w.audioApi.prototype = {
 		get volume(){return this.gain.gain.value},
-		set volume(x){return this.gain.gain.value = x},
+		set volume(x){this.onVolumeChange && this.onVolumeChange(x);return this.gain.gain.value = x},
 		play:function(){
 			if(!this.isplaying)this.loadAudio()
+			if(!this.audioUrls.length)return false;
 			this.ele.play()
 			this.isplaying = 1
+			if(this.onplay)this.onplay()
+			return true;
 		},pause:function(){
 			this.ele.pause()
+			if(this.onpause)this.onpause()
+			return true;
 		},stop:function(){
 			this.loadAudio()
 		},replay:function(){
 			this.loadAudio()
 			this.ele.play()
 			this.isplaying = 1
+		},prev:function(){
+			if(!this.audioUrls.length)return false
+			this.playedOne = this.playedOne === 0 ? this.audioUrls.length - 1 : this.playedOne - 1
+			if(!this.ele.paused)this.replay()
+			else{
+				this.ele.currentTime = 0
+				this.loadAudio()
+			}
+			return true;
+		},next:function(){
+			if(!this.audioUrls.length)return false
+			this.playedOne = this.playedOne === this.audioUrls.length - 1 ? 0 : this.playedOne + 1
+			if(!this.ele.paused)this.replay()
+			else{
+				this.ele.currentTime = 0
+				this.loadAudio()
+			}
+			return true;
 		},loadAudio:function(){
 			this.isplaying = 0
 			if(this.playedOne === undefined && this.audioUrls.length)this.playedOne = 0
-			if(this.playedOne !== undefined)this.ele.src = this.audioUrls[this.playedOne]
+			if(this.playedOne !== undefined){
+				this.ele.src = this.audioUrls[this.playedOne].src
+				this.onload && this.onload(this.audioUrls[this.playedOne])
+			}
 			if(!this.isdecoded)this.decode( this.ac.createMediaElementSource(this.ele) )
+			
+			return this
 		},addFiles:function(e){
 			var fl = d.querySelector(e).files
 			if(fl.length===0)return false
-			var v=[]
 			for(var i=0;i<fl.length;i++)
-				if(fl[i].type.match('audio'))
-					this.audioUrls.push(URL.createObjectURL(fl[i]))
+				if(fl[i].type.match('audio')){
+					this.audioUrls.push({
+						src:URL.createObjectURL(fl[i]),
+						name:fl[i].name
+					})
+				}
 			if(!this.audioUrls.length)this.playedOne = undefined
 			return this
 		},decode:function(source){
