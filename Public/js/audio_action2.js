@@ -200,15 +200,40 @@ j(function(){
 	/** 设置基础频谱条 */
     var geometry = new THREE.Geometry();
 
-    for(var i = 0;i<512;i++){
+    for(var i = 0;i<800;i++){
         geometry.vertices.push(new THREE.Vector3())
     }
 
-    var material = new THREE.LineBasicMaterial( {color: 0xffffff} );
-    line = new THREE.LineSegments( geometry, material );
+    var material = new THREE.LineBasicMaterial( {
+        color: 0xff0000,
+        transparent: true,
+        opacity:0.7,
+    } );
+    line = new THREE.Line( geometry, material );
+
+    scene.add(line)
+
+    var geometry = new THREE.TorusGeometry( 50, 0.8, 3, 100 );
+    var material = new THREE.MeshBasicMaterial( { 
+        color: 0x00ff00,
+        transparent: true,
+        opacity:0.3,
+     } );
+    var torus = new THREE.Mesh( geometry, material );
+    // line.add( torus );
+
+
+
+
+
+
+
+
+
+
 	
 
-	scene.add(line)
+	
 
     camera.position.z = 100;
 
@@ -220,23 +245,45 @@ j(function(){
     // light2.position.set( 50, 20, 2 );
     // scene.add( light2 );
 
-    var lastTime = 0;
+    var lastTime = 0,lasta1 = lasta2 = [],delay = 0;
     api.onrender = function(a1,a2){
-
+        if(delay){
+            delay--
+            return
+        }
         var time = performance.now();
         back.rotateX(0.001);
 
         var time = Date.now()
         api.fps = parseInt(1000/(time-lastTime))
         lastTime = time;
-        for(var i = 1;i<256;i+=2){
-            geometry.vertices[i].setFromSpherical(new THREE.Spherical( 30+(a1[i*2]) / 10 ,Math.PI * i / 256 ,Math.PI * 0.5))
-            geometry.vertices[i-1].setFromSpherical(new THREE.Spherical( 30 ,Math.PI * i / 256 ,Math.PI * 0.5))
-            geometry.vertices[511-i].setFromSpherical(new THREE.Spherical( 30+(a2[i*2]) / 10 ,-Math.PI * i / 256 ,Math.PI * 0.5))
-            geometry.vertices[511-i+1].setFromSpherical(new THREE.Spherical( 30 ,-Math.PI * i / 256 ,Math.PI * 0.5))
+        var changeUp = 0;
+        if(lasta1.length){
+            for(var d in a1){
+                if(d%4)continue
+                if(a1[d]>10+lasta1[d]){
+                    changeUp++;
+                }
+            }
+            if(changeUp>100){
+                changeUp = 1
+                delay = 3
+                line.material.color = new THREE.Color( 0xffffff * Math.random() );
+                
+            }else changeUp = 0
         }
+        
+
+        for(var i = 0;i<200;i+=1){
+            line.geometry.vertices[i].setFromSpherical(new THREE.Spherical( 5*changeUp + 30+(a1[i*4]) / 10 ,Math.PI * i / 200 ,Math.PI * 0.5))
+            line.geometry.vertices[i+400].setFromSpherical(new THREE.Spherical( 5*changeUp + 30+(lasta1[i*4]) / 10.5 ,Math.PI * i / 200 ,Math.PI * 0.5))
+            line.geometry.vertices[399-i].setFromSpherical(new THREE.Spherical( 5*changeUp + 30+(a2[i*4]) / 10 ,-Math.PI * i / 200 ,Math.PI * 0.5))
+            line.geometry.vertices[799-i].setFromSpherical(new THREE.Spherical( 5*changeUp + 30+(lasta2[i*4]) / 10.5 ,-Math.PI * i / 200 ,Math.PI * 0.5))
+        }
+        lasta1 = a1
+        lasta2 = a2
             
-        geometry.verticesNeedUpdate = true
+        line.geometry.verticesNeedUpdate = true
         renderer.render( scene, camera );
     }
 
