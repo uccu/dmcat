@@ -87,7 +87,9 @@ j(function(){
 
     /* 创建场景 */
     var scene = new THREE.Scene();
-
+    var fog = new THREE.Fog( 0x101010, 0, 300 )
+    scene.fog = fog;
+    window.line;
 
 	/* 创建相机 */
     camera = new THREE.PerspectiveCamera( 75, j(window).width() / j(window).height(), 0.1, 1000 );
@@ -100,8 +102,8 @@ j(function(){
 	 */ 
 	j(window).bind({
         mousemove:function(e){
-            camera.position.x = (e.clientX-j(window).width()/2) / j(window).width() * 10
-            camera.position.y = (-e.clientY+j(window).height()/2) / j(window).height() * 10
+            line.rotation.y = (-e.clientX+j(window).width() / 2) / j(window).width() * Math.PI * 0.4
+            line.rotation.x = (-e.clientY+j(window).height() / 2) / j(window).height() * Math.PI * 0.4
         },resize:function(){
             camera.aspect = j(window).width() / j(window).height();
             camera.updateProjectionMatrix();
@@ -111,19 +113,99 @@ j(function(){
 
 	/* 创建渲染器 */
     var renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor( 0x101010 );
+	renderer.setPixelRatio( window.devicePixelRatio );
     j(window).resize();
 
     j('body').append( renderer.domElement );
 
+
+    /* 最大三角数量 */
+    var triangles = 400;
+	var geometry = new THREE.BufferGeometry();
+	var vertices = new Float32Array( triangles * 3 * 3 );
+	for ( var i = 0, l = triangles * 3 * 3; i < l; i += 9 ) {
+
+        var rand1 = 600*(Math.random()-0.5);
+        var rand2 = Math.random()-0.5;
+        var rand3 = Math.random()-0.5;
+        if(rand2<100 && rand3<100){
+
+            if(Math.random()<0.5){
+                rand2 = Math.random()<0.5?Math.random()/5+0.3:-Math.random()/5-0.3;
+            }else{
+                rand3 = Math.random()<0.5?Math.random()/5+0.3:-Math.random()/5-0.3;
+            }
+
+        }
+
+
+		vertices[ i     ] = rand1;
+		vertices[ i + 1 ] = 400*rand2;
+		vertices[ i + 2 ] = 400*rand3;
+
+        vertices[ i + 3 ] = vertices[ i     ] + 50*(Math.random() - 0.5);
+		vertices[ i + 4 ] = vertices[ i + 1 ] + 50*(Math.random() - 0.5);
+		vertices[ i + 5 ] = vertices[ i + 2 ] + 50*(Math.random() - 0.5);
+
+        vertices[ i + 6 ] = vertices[ i     ] + 50*(Math.random() - 0.5);
+		vertices[ i + 7 ] = vertices[ i + 1 ] + 50*(Math.random() - 0.5);
+		vertices[ i + 8 ] = vertices[ i + 2 ] + 50*(Math.random() - 0.5);
+    }
+    geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+
+    var colors = new Uint8Array( triangles * 3 * 4 );
+    for ( var i = 0, l = triangles * 3 * 4; i < l; i += 4 ) {
+		colors[ i     ] = Math.random() * 255;
+		colors[ i + 1 ] = Math.random() * 255;
+		colors[ i + 2 ] = Math.random() * 255;
+		colors[ i + 3 ] = Math.random() * 255;
+	}
+    geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 4, true ) );
+    
+    var material = new THREE.MeshBasicMaterial( {
+		
+		side: THREE.DoubleSide,
+		transparent: true,
+        opacity:0.1,
+        vertexColors:THREE.FaceColors
+	} );
+
+
+    back = new THREE.Mesh( geometry, material );
+    back.position.z = 100
+    scene.add( back );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	/** 设置基础频谱条 */
-    geometry = new THREE.Geometry();
+    var geometry = new THREE.Geometry();
 
     for(var i = 0;i<512;i++){
         geometry.vertices.push(new THREE.Vector3())
     }
 
     var material = new THREE.LineBasicMaterial( {color: 0xffffff} );
-    var line = new THREE.LineSegments( geometry, material );
+    line = new THREE.LineSegments( geometry, material );
 	
 
 	scene.add(line)
@@ -141,10 +223,11 @@ j(function(){
     var lastTime = 0;
     api.onrender = function(a1,a2){
 
-        
+        var time = performance.now();
+        back.rotateX(0.001);
 
         var time = Date.now()
-        j('.fps').text(parseInt(1000/(time-lastTime)))
+        api.fps = parseInt(1000/(time-lastTime))
         lastTime = time;
         for(var i = 1;i<256;i+=2){
             geometry.vertices[i].setFromSpherical(new THREE.Spherical( 30+(a1[i*2]) / 10 ,Math.PI * i / 256 ,Math.PI * 0.5))
