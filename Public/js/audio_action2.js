@@ -13,15 +13,16 @@ j(function(){
 	/* 创建audioapi */
 	api = new audioApi
 
+    /* 播放暂停 */
     j('.dplay').bind('click',function(){
         var res = this.classList.contains('fa-play') ? api.play() : api.pause()
         if(res)j('.dplay').toggleClass('dn')
     })
     j('.fa-list').bind('click',function(){j('input').click()})
+    /* 前进后退 */
     j('.fa-step-backward').bind('click',function(){api.prev()})
     j('.fa-step-forward').bind('click',function(){api.next()})
-    
-
+    /* 进度条 */
     j('.bar').bind('mousedown',function(e){
         if(!api.ele.readyState)return
         var vo = (e.offsetX/200) * api.ele.duration;
@@ -50,7 +51,6 @@ j(function(){
     api.onload = function(z){
         j('.title p').text(z.name)
     }
-
     j('.volume').bind('mousedown',function(e){
         var vo = (38-e.offsetY)/38;
         j('.vol').height(e.offsetY);
@@ -73,8 +73,6 @@ j(function(){
         j('.vol').height(38-38*x);
     }
     api.ele.onended = function(){
-        // j('.fa-pause').addClass('dn');
-        // j('.fa-play').removeClass('dn');
         api.next()
         api.replay()
     }
@@ -87,9 +85,7 @@ j(function(){
 
     /* 创建场景 */
     var scene = new THREE.Scene();
-    var fog = new THREE.Fog( 0x101010, 0, 300 )
-    scene.fog = fog;
-    window.line;
+    scene.fog = new THREE.Fog( 0x101010, 0, 300 );
 
 	/* 创建相机 */
     camera = new THREE.PerspectiveCamera( 75, j(window).width() / j(window).height(), 0.1, 1000 );
@@ -98,12 +94,15 @@ j(function(){
 	 * 给window绑定2个事件
 	 * 1.鼠标移动变换角度
 	 * 2.改变窗口大小
-	 * 
 	 */ 
+     var rotation = {x:0,y:0}
 	j(window).bind({
         mousemove:function(e){
-            line.rotation.y = (-e.clientX+j(window).width() / 2) / j(window).width() * Math.PI * 0.4
-            line.rotation.x = (-e.clientY+j(window).height() / 2) / j(window).height() * Math.PI * 0.4
+            rotation.y = (-e.clientX+j(window).width() / 2) / j(window).width() * Math.PI * 0.4
+            rotation.x = (-e.clientY+j(window).height() / 2) / j(window).height() * Math.PI * 0.4
+
+            
+
         },resize:function(){
             camera.aspect = j(window).width() / j(window).height();
             camera.updateProjectionMatrix();
@@ -129,15 +128,10 @@ j(function(){
         var rand1 = 600*(Math.random()-0.5);
         var rand2 = Math.random()-0.5;
         var rand3 = Math.random()-0.5;
-        if(rand2<100 && rand3<100){
-
-            if(Math.random()<0.5){
-                rand2 = Math.random()<0.5?Math.random()/5+0.3:-Math.random()/5-0.3;
-            }else{
-                rand3 = Math.random()<0.5?Math.random()/5+0.3:-Math.random()/5-0.3;
-            }
-
-        }
+        
+        if(Math.random()<0.5)rand2 = Math.random()<0.5?Math.random()/5+0.3:-Math.random()/5-0.3;
+        else rand3 = Math.random()<0.5?Math.random()/5+0.3:-Math.random()/5-0.3;
+        
 
 
 		vertices[ i     ] = rand1;
@@ -198,88 +192,133 @@ j(function(){
 
 
 	/** 设置基础频谱条 */
-    var geometry = new THREE.Geometry();
 
-    for(var i = 0;i<800;i++){
-        geometry.vertices.push(new THREE.Vector3())
-    }
-
-    var material = new THREE.LineBasicMaterial( {
+    var lineCount = 80,vertices = [];
+    for(var i = 0;i<lineCount;i++)vertices.push(new THREE.Vector3())
+    var line = new THREE.LineLoop( new THREE.Geometry(), new THREE.LineBasicMaterial( {
         color: 0xff0000,
         transparent: true,
-        opacity:0.7,
-    } );
-    line = new THREE.Line( geometry, material );
+        opacity:0.2,
+    }));
 
     scene.add(line)
 
-    var geometry = new THREE.TorusGeometry( 50, 0.8, 3, 100 );
-    var material = new THREE.MeshBasicMaterial( { 
-        color: 0x00ff00,
-        transparent: true,
-        opacity:0.3,
-     } );
-    var torus = new THREE.Mesh( geometry, material );
-    // line.add( torus );
+    /* 设置boxes */
 
+    boxes = new THREE.Group();
+    var center = new THREE.Vector3(0,0,0);
+    var geometry = new THREE.BoxGeometry( 1, 1,  4);
+    for(var i = 0;i<lineCount;i++){
+        var material = new THREE.MeshPhysicalMaterial( {
+            color: new THREE.Color( 1,0,0 ),
+            transparent: true,
+            opacity:0.6,
+        });
+        var box = new THREE.Mesh( geometry, material );
 
+        boxes.add( box );
+    }
+    boxes.add(line)
+    scene.add(boxes)
+    
+    
 
-
-
-
-
-
-
-
-	
 
 	
 
     camera.position.z = 100;
 
-    // var light = new THREE.AmbientLight( 0xffffff ); // soft white light
-    // scene.add( light );
-    // var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
-    // scene.add( directionalLight );
-    // var light2 = new THREE.PointLight( 0xffffff, 1, 100 );
+    var light = new THREE.AmbientLight( 0xffffff ); // soft white light
+    scene.add( light );
+    var directionalLight = new THREE.DirectionalLight( 0x00eeee, 0.3 );
+    scene.add( directionalLight );
+    // var light2 = new THREE.PointLight( 0xff2277, 1, 100 );
     // light2.position.set( 50, 20, 2 );
     // scene.add( light2 );
 
-    var lastTime = 0,lasta1 = lasta2 = [],delay = 0;
+    var lastTime = 0,lasta1 = lasta2 = [],delay = 0,na = {l:[],r:[]};
+
     api.onrender = function(a1,a2){
-        if(delay){
-            delay--
-            return
-        }
-        var time = performance.now();
+
+        /* 鼠标移动 */
+        if(Math.abs(scene.rotation.y-rotation.y)<0.01)scene.rotation.y = rotation.y
+        else scene.rotation.y += (rotation.y-scene.rotation.y)/50
+
+        // if(Math.abs(back.rotation.y-rotation.y * 0.5)<0.01)back.rotation.y = rotation.y * 0.5
+        // else back.rotation.y += (rotation.y * 0.5-back.rotation.y)/100
+
+        if(Math.abs(scene.rotation.x-rotation.x)<0.01)scene.rotation.x = rotation.x
+        else scene.rotation.x += (rotation.x-scene.rotation.x)/50
+
+        /* 背景向上旋转 */
         back.rotateX(0.001);
 
+        /* 计算帧数 */
         var time = Date.now()
         api.fps = parseInt(1000/(time-lastTime))
         lastTime = time;
-        var changeUp = 0;
-        if(lasta1.length){
-            for(var d in a1){
-                if(d%4)continue
-                if(a1[d]>10+lasta1[d]){
-                    changeUp++;
-                }
-            }
-            if(changeUp>100){
-                changeUp = 1
-                delay = 3
-                line.material.color = new THREE.Color( 0xffffff * Math.random() );
-                
-            }else changeUp = 0
+
+        /* 延迟 */
+        if(delay>0){
+            delay--   
+            return
         }
         
+        
+        var changeUp = 0;
+        var halfLineCount = lineCount / 2
+        var step = 16
+        var baseLength = 30
 
-        for(var i = 0;i<200;i+=1){
-            line.geometry.vertices[i].setFromSpherical(new THREE.Spherical( 5*changeUp + 30+(a1[i*4]) / 10 ,Math.PI * i / 200 ,Math.PI * 0.5))
-            line.geometry.vertices[i+400].setFromSpherical(new THREE.Spherical( 5*changeUp + 30+(lasta1[i*4]) / 10.5 ,Math.PI * i / 200 ,Math.PI * 0.5))
-            line.geometry.vertices[399-i].setFromSpherical(new THREE.Spherical( 5*changeUp + 30+(a2[i*4]) / 10 ,-Math.PI * i / 200 ,Math.PI * 0.5))
-            line.geometry.vertices[799-i].setFromSpherical(new THREE.Spherical( 5*changeUp + 30+(lasta2[i*4]) / 10.5 ,-Math.PI * i / 200 ,Math.PI * 0.5))
+        if(lasta1.length){
+            for(var d in a1)if(d%step)continue;else if(a1[d]>10+lasta1[d])changeUp++;
+            if(changeUp>halfLineCount/2)changeUp = 1,delay = 3,line.material.color = new THREE.Color( 0xffffff * Math.random() );
+            else changeUp = 0
         }
+        
+        
+
+        for(var i = 0;i<halfLineCount;i+=1){
+
+
+            var v = a1[i * step] || 0
+            var length = 5 * changeUp + baseLength + v / 10
+            if(na.l[i] > length){
+                na.l[i] += (length - na.l[i])/10
+            }else na.l[i] = length;
+
+            var v = a2[i * step] || 0
+            var length = 5 * changeUp + baseLength + v / 10
+            if(na.r[i] > length){
+                na.r[i] += (length - na.r[i])/10
+            }else na.r[i] = length;
+
+
+            vertices[i].setFromSpherical(new THREE.Spherical( na.l[i] ,Math.PI * (i+.5) / halfLineCount ,Math.PI * 0.5))
+            vertices[lineCount-1-i].setFromSpherical(new THREE.Spherical(na.r[i] ,-Math.PI * (i+.5) / halfLineCount ,Math.PI * 0.5))
+
+            var ver = new THREE.Vector3
+            ver.setFromSpherical(new THREE.Spherical( baseLength + 10 ,Math.PI * (i+.5) / halfLineCount ,Math.PI * 0.5))
+            boxes.children[i].position.x = ver.x
+            boxes.children[i].position.y = ver.y
+            boxes.children[i].lookAt(center)
+            boxes.children[i].scale.x = na.l[i] - baseLength - 1
+            boxes.children[i].material.color = new THREE.Color( na.l[i]/100 ,1-na.l[i]/80,1-na.l[i]/80);
+            boxes.children[i].material.opacity = (na.l[i]-20)/100;
+            var ver = new THREE.Vector3
+            ver.setFromSpherical(new THREE.Spherical(baseLength + 10 ,-Math.PI * (i+.5) / halfLineCount ,Math.PI * 0.5))
+            boxes.children[lineCount-1-i].position.x = ver.x
+            boxes.children[lineCount-1-i].position.y = ver.y
+            boxes.children[lineCount-1-i].lookAt(center)
+            boxes.children[lineCount-1-i].scale.x = na.r[i] - baseLength - 1
+            boxes.children[lineCount-1-i].material.color = new THREE.Color( na.r[i]/100 ,1-na.r[i]/80,1-na.r[i]/80 );
+            boxes.children[lineCount-1-i].material.opacity = (na.r[i]-20)/100;
+        }
+
+        var curve = new THREE.SplineCurve(vertices);
+        var path = new THREE.Path( curve.getPoints( 400 ) );
+        line.geometry = path.createPointsGeometry( 400 );
+
         lasta1 = a1
         lasta2 = a2
             
