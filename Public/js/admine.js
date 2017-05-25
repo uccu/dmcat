@@ -96,6 +96,7 @@ $(function(){
         });
     };
     window.getList = function(listUrl,gdata){
+        if(gdata ==undefined)gdata = {}
         $('.ibox2').html('');
         $('.wrapper .sk-spinner').removeClass('fadeOutUp');
         curl(listUrl,gdata,function(d){

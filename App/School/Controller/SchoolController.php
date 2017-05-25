@@ -120,7 +120,7 @@ class SchoolController extends Controller{
 
         if(!$message)AJAX::error_i18n('param_error');
 
-        $data['type'] = 1;
+        $data['type'] = 2;
         $data['user_id'] = $this->L->id;
         $data['message'] = $message;
         $data['create_time'] = TIME_NOW;

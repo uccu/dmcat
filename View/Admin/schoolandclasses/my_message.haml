@@ -1,0 +1,101 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        .form-horizontal
+                            .form-group
+                                %label.col-sm-1.control-label 类型/Type
+                                .col-sm-2
+                                    %select.form-control.m-b.typeChange
+                                        %option(value="0") ALL
+                                        %option(value="1") 家长/Parent
+                                        %option(value="2") 老师/Teacher
+                                %label.col-sm-1.control-label 标记/tag
+                                .col-sm-2
+                                    %select.form-control.m-b.tagChange
+                                        %option(value="0") ALL
+                                        %option(value="1") YES
+                                %label.col-sm-1.control-label 未读/no read
+                                .col-sm-2
+                                    %select.form-control.m-b.readChange
+                                        %option(value="0") ALL
+                                        %option(value="1") YES
+                                
+                
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                :css
+                    .no-del .data-del{display:none}
+                .ibox.ibox2.float-e-margins.no-del
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id")
+                        .form-group
+                            %label.col-sm-3.control-label 留言/message
+                            .col-sm-9
+                                %textarea.form-control(name="message" style="resize:vertical" rows="12")
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+
+
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(){
+            var type = 0,isread = 0,istag = 0;
+            gr.getListAfter = function(){
+                $('.data-upd').html('<i class="fa fa-eye text-navy"></i> 查看/View')
+                $('.istag input.i-checks').on('ifChanged',function(){
+                    curl('/headmaster/mark',{id:$(this).parent().parent().attr('data-id')},function(d){
+                        curl_succ('success!');
+                    });
+                });
+            };
+            gr.updFunction = function(){
+                $('.modal-title').text('查看/View')
+            }
+            $('.typeChange').change(function(){
+                type = $(this).val()
+                flesh()
+            })
+            $('.tagChange').change(function(){
+                istag = $(this).val()
+                flesh()
+            })
+            $('.readChange').change(function(){
+                isread = $(this).val()
+                flesh()
+            })
+
+            function flesh(){
+                getList('/headmaster/message_lists',{type:type,isread:isread,istag:istag})
+            }
+            flesh()
+        })
