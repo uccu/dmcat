@@ -97,12 +97,16 @@ j(function(){
 	 */ 
      var rotation = {x:0,y:0}
 	j(window).bind({
+        keydown:function(e){
+            if(e.which == 32)j('.dplay:not(.dn)').click()
+            else if(e.which == 38)api.volume = api.volume < 0.95 ? api.volume + 0.05 : 1;
+            else if(e.which == 40)api.volume = api.volume > 0.05 ? api.volume - 0.05 : 0;
+            else if(e.which == 39 && api.ele.readyState)api.ele.currentTime = api.ele.currentTime < api.ele.duration - api.ele.duration/100 ? api.ele.currentTime + api.ele.duration / 100 : api.ele.duration;
+            else if(e.which == 37 && api.ele.readyState)api.ele.currentTime = api.ele.currentTime > api.ele.duration/100 ? api.ele.currentTime - api.ele.duration / 100 : 0;
+        },
         mousemove:function(e){
             rotation.y = (-e.clientX+j(window).width() / 2) / j(window).width() * Math.PI * 0.4
             rotation.x = (-e.clientY+j(window).height() / 2) / j(window).height() * Math.PI * 0.4
-
-            
-
         },resize:function(){
             camera.aspect = j(window).width() / j(window).height();
             camera.updateProjectionMatrix();
@@ -302,17 +306,22 @@ j(function(){
             boxes.children[i].position.x = ver.x
             boxes.children[i].position.y = ver.y
             boxes.children[i].lookAt(center)
-            boxes.children[i].scale.x = na.l[i] - baseLength - 1
-            boxes.children[i].material.color = new THREE.Color( na.l[i]/100 ,1-na.l[i]/80,1-na.l[i]/80);
-            boxes.children[i].material.opacity = (na.l[i]-20)/100;
+            boxes.children[i].scale.x = (na.l[i] - baseLength - 1) || 0.1 
+            var ef = na.l[i]/80,ef = ef<0?0:ef>1?1:ef;
+            var ef2 = (na.l[i]-20)/100,ef2 = ef2<0?0:ef2>1?1:ef2;
+            boxes.children[i].material.color = new THREE.Color( ef ,1-ef,1-ef);
+            boxes.children[i].material.opacity = ef2;
+
             var ver = new THREE.Vector3
             ver.setFromSpherical(new THREE.Spherical(baseLength + 10 ,-Math.PI * (i+.5) / halfLineCount ,Math.PI * 0.5))
             boxes.children[lineCount-1-i].position.x = ver.x
             boxes.children[lineCount-1-i].position.y = ver.y
             boxes.children[lineCount-1-i].lookAt(center)
-            boxes.children[lineCount-1-i].scale.x = na.r[i] - baseLength - 1
-            boxes.children[lineCount-1-i].material.color = new THREE.Color( na.r[i]/100 ,1-na.r[i]/80,1-na.r[i]/80 );
-            boxes.children[lineCount-1-i].material.opacity = (na.r[i]-20)/100;
+            boxes.children[lineCount-1-i].scale.x = (na.r[i] - baseLength - 1) || 0.1 
+            var ef = na.r[i]/80,ef = ef<0?0:ef>1?1:ef;
+            var ef2 = (na.r[i]-20)/100,ef2 = ef2<0?0:ef2>1?1:ef2;
+            boxes.children[lineCount-1-i].material.color = new THREE.Color(ef ,1-ef,1-ef );
+            boxes.children[lineCount-1-i].material.opacity = ef2;
         }
 
         var curve = new THREE.SplineCurve(vertices);
