@@ -48,9 +48,21 @@ class Record{
         if($modelName=='Model'){
             $model = clone table($modelName,$this->_model->rawTable);
         }else $model = clone table($modelName);
-
-        //var_dump($this->{$model->primary});
         return $model->set($this)->save($this->{$model->primary});
+        
+    }
+
+    function remove(){
+
+        if(!$this->_model)E::throwEx('Model Lost');
+
+        $modelName = get_class( $this->_model );
+
+        if($modelName=='Model'){
+            $model = clone table($modelName,$this->_model->rawTable);
+        }else $model = clone table($modelName);
+
+        return $model->remove($this->{$model->primary});
         
     }
 
