@@ -18,7 +18,7 @@ class ThemeController extends Controller{
 
     function __construct(){
 
-        
+        Func::visit_log();
 
     }
 

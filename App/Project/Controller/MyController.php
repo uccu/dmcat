@@ -5,14 +5,14 @@ namespace App\Project\Controller;
 use Controller;
 
 use View;
-
+use App\Resource\Tool\Func;
 
 class MyController extends Controller{
 
 
     function __construct(){
 
-        
+        Func::visit_log();
         
     }
 

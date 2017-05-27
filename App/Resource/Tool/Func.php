@@ -3,6 +3,7 @@
 namespace App\Resource\Tool;
 
 use Config;
+use App\Resource\Model\VisitModel;
 
 class Func{
 
@@ -125,4 +126,19 @@ class Func{
 
     }  
 
+    static public function visit_log(){
+
+        $ip = ($_SERVER["HTTP_VIA"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"] : $_SERVER["REMOTE_ADDR"];
+        $ip = ($ip) ? $ip : $_SERVER["REMOTE_ADDR"];
+        
+        $data['ip'] = $ip;
+        $data['date'] = date('Y-m-d');
+        $data['time'] = date('H:i:s');
+        $data['referer'] = $_SERVER['HTTP_REFERER'];
+        $data['url'] = REQUEST_PATH;
+
+        $add = VisitModel::getInstance()->set($data)->add()->getStatus();
+        return $add;
+
+    }
 }
