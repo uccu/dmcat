@@ -55,7 +55,17 @@
 			this.isplaying = 1
 		},prev:function(){
 			if(!this.audioUrls.length)return false
-			this.playedOne = this.playedOne === 0 ? this.audioUrls.length - 1 : this.playedOne - 1
+			this.playedOne = this.playedOne == 0 ? this.audioUrls.length - 1 : this.playedOne - 1
+			if(!this.ele.paused)this.replay()
+			else{
+				this.ele.currentTime = 0
+				this.loadAudio()
+			}
+			return true;
+		},to:function(n){
+			if(!this.audioUrls.length)return false
+			if(n>=this.audioUrls.length)return false
+			this.playedOne = n
 			if(!this.ele.paused)this.replay()
 			else{
 				this.ele.currentTime = 0
@@ -64,7 +74,7 @@
 			return true;
 		},next:function(){
 			if(!this.audioUrls.length)return false
-			this.playedOne = this.playedOne === this.audioUrls.length - 1 ? 0 : this.playedOne + 1
+			this.playedOne = this.playedOne == this.audioUrls.length - 1 ? 0 : parseInt(this.playedOne) + 1
 			if(!this.ele.paused)this.replay()
 			else{
 				this.ele.currentTime = 0
@@ -72,6 +82,7 @@
 			}
 			return true;
 		},loadAudio:function(){
+			if(!this.audioUrls.length)return false
 			this.isplaying = 0
 			if(this.playedOne === undefined && this.audioUrls.length)this.playedOne = 0
 			if(this.playedOne !== undefined){
@@ -82,13 +93,18 @@
 			
 			return this
 		},addFiles:function(e){
-			var fl = d.querySelector(e).files
+			var fl
+			if(e instanceof FileList)fl = e;
+			else if(e instanceof j)fl = e[0].files;
+			else if(e instanceof Element)fl = e.files;
+			else fl = d.querySelector(e).files
 			if(fl.length===0)return false
 			for(var i=0;i<fl.length;i++)
 				if(fl[i].type.match('audio')){
 					this.audioUrls.push({
 						src:URL.createObjectURL(fl[i]),
-						name:fl[i].name
+						name:fl[i].name.match(/^(.*)\.\w{2,3}$/i)[1]
+
 					})
 				}
 			if(!this.audioUrls.length)this.playedOne = undefined

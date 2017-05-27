@@ -37,22 +37,32 @@
         }
         .pf.top{width: 100%; height: 100%}
         .pf.mlist{
-            width: 200px;height: 50%;top: 25%;left: 10%;background-color:white;opacity:0.6;overflow-y:scroll
+            width: 200px;height: 50%;top: 25%;left: 10%;background-color:white;opacity:0.6;overflow-y:scroll;overflow-x: hidden;
         }
-        .mlist li{
-            padding:10px;background-color:white;
+        .pf.mlist.vn{opacity:1}
+        .ntop i{
+            margin:5px 10px
         }
-        .mlist li i{
-            font-style: normal;color:#666;font-size:10px;
+        .nlist li{
+            padding:0 10px;background-color:white;
         }
-        .mlist li i.fr{
+        .nlist li i{
+            font-style: normal;color:#666;font-size:10px;margin:10px auto
+        }
+        .nlist li i.del{
             display:none
         }
-        .mlist li:hover{
+        .nlist li.active{
             background-color:#ffa4a4;
         }
-        .mlist li:hover i{
-            color:white;display:inline-block
+        .nlist li:hover{
+            background-color:#ff7575;
+        }
+        .nlist li:hover i,.nlist li.active i{
+            overflow:inherit;
+            text-overflow: inherit;
+            white-space: inherit;
+            color:white;display:inline-block;
         }
     %script(src="/js/three.min.js")
     %input.dn(type="file" accept="audio/*" multiple="multiple")
@@ -70,12 +80,11 @@
                 %i.fa.fa-step-forward.cp.t
                 .volume.dib.pa.cp
                     .vol.pa
-    .pf.mlist
+    .pf.mlist.dn.t
         .ntop
-        %ul.nlist.list-unstyled.t
-            %li.cp
-                %i 世界第一初恋
-                %i.fr x
+            %i.fa.fa-plus.cp
+        %ul.nlist.list-unstyled
+            
 
         .nscroll
 

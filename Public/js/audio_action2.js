@@ -18,7 +18,8 @@ j(function(){
         var res = this.classList.contains('fa-play') ? api.play() : api.pause()
         if(res)j('.dplay').toggleClass('dn')
     })
-    j('.fa-list').bind('click',function(){j('input').click()})
+    j('.fa-list').bind('click',function(){j('.mlist').toggleClass('dn')})
+    j('.fa-plus').bind('click',function(){j('input').click()})
     /* 前进后退 */
     j('.fa-step-backward').bind('click',function(){api.prev()})
     j('.fa-step-forward').bind('click',function(){api.next()})
@@ -50,6 +51,8 @@ j(function(){
     }
     api.onload = function(z){
         j('.title p').text(z.name)
+        j('.nlist li').removeClass('active')
+        j('.nlist li').eq(api.playedOne).addClass('active')
     }
     j('.volume').bind('mousedown',function(e){
         var vo = (38-e.offsetY)/38;
@@ -78,10 +81,58 @@ j(function(){
     }
 
 	/* 绑定添加歌曲事件 */
-	j('input').bind('change',function(){
-        api.addFiles('input')
-        // j('.fa-play:not(.dn)').click()
+    var fileEv = function(g){
+        j('.mlist').removeClass('vn')
+        g = g || 'input'
+        api.addFiles(g)
+        j('input').val('')
+        var n = 0;
+        j('.nlist li').remove();
+        api.audioUrls.forEach(function(e){
+            j('.nlist').append('<li class="cp row'+(api.playedOne==n?' active':'')+'"><i class="name col-xs-10 to ofh">'+e.name+'</i><i class="col-xs-2 del">x</i></li>')
+            n++
+        })
+        j('.nlist li .col-xs-10').bind('click',function(){
+            api.to(j(this).parent().index())
+            if(api.ele.paused)j('.fa-play').click()
+        })
+        j('.nlist li .col-xs-2').bind('click',function(){
+            var n = j(this).parent().index()
+            var u = api.audioUrls[n]
+            URL.revokeObjectURL(u.src)
+            api.audioUrls.splice(n,1)
+            j(this).parent().remove()
+            if(n == api.playedOne){
+                if(!api.audioUrls.length){
+                    api.playedOne = undefined
+                    if(!api.ele.paused)j('.fa-pause').click()
+                    api.ele.currentTime = 0
+                }else{
+                    if(n == api.audioUrls.length)api.playedOne = api.audioUrls.length - 1
+                    api.replay()
+                }
+            }
+            
+        })
+        
+    }
+	j('input').bind('change',fileEv)
+    j('.mlist').bind({
+        'dragenter':function(e){
+            e.preventDefault();
+            j('.mlist').addClass('vn')
+        },'dragleave':function(e){
+            e.preventDefault();
+            j('.mlist').removeClass('vn')
+        },'dragover':function(e){
+            e.preventDefault();
+        }
     })
+    j('.mlist')[0].addEventListener( "drop", function (e) {
+        e.preventDefault();
+        fileEv(e.dataTransfer.files)
+    }, false );
+    
 
     /* 创建场景 */
     var scene = new THREE.Scene();
@@ -99,6 +150,7 @@ j(function(){
 	j(window).bind({
         keydown:function(e){
             if(e.which == 32)j('.dplay:not(.dn)').click()
+            else if(e.which == 77)j('.fa-list').click()
             else if(e.which == 38)api.volume = api.volume < 0.95 ? api.volume + 0.05 : 1;
             else if(e.which == 40)api.volume = api.volume > 0.05 ? api.volume - 0.05 : 0;
             else if(e.which == 39 && api.ele.readyState)api.ele.currentTime = api.ele.currentTime < api.ele.duration - api.ele.duration/100 ? api.ele.currentTime + api.ele.duration / 100 : api.ele.duration;
