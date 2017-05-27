@@ -116,7 +116,7 @@ j(function(){
         })
         
     }
-	j('input').bind('change',fileEv)
+	j('input').bind('change',function(){fileEv()})
     j('.mlist').bind({
         'dragenter':function(e){
             e.preventDefault();
