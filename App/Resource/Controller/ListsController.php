@@ -88,6 +88,8 @@ class ListsController extends Controller{
         $theme = $themeModel->find($id);
         $data['list'] = $list->toArray();
 
+        $gdata['g']['title'] = $theme->name;
+        
         $week = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六',];
         $week2 = ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日',];
 
@@ -102,7 +104,7 @@ class ListsController extends Controller{
 
         }
 
-        $gdata['g']['title'] = $theme->name;
+        
         View::addData($gdata);
         View::addData($data);
 
