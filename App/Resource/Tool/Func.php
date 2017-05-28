@@ -4,7 +4,7 @@ namespace App\Resource\Tool;
 
 use Config;
 use App\Resource\Model\VisitModel;
-
+use App\Resource\Model\IpTrackerModel;
 class Func{
 
     /**
@@ -130,15 +130,56 @@ class Func{
 
         $ip = ($_SERVER["HTTP_VIA"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"] : $_SERVER["REMOTE_ADDR"];
         $ip = ($ip) ? $ip : $_SERVER["REMOTE_ADDR"];
-        
+
         $data['ip'] = $ip;
         $data['date'] = date('Y-m-d');
         $data['time'] = date('H:i:s');
         $data['referer'] = $_SERVER['HTTP_REFERER'];
         $data['url'] = REQUEST_PATH;
+        if($ip && !in_array($ip,['127.0.0.1','localhost','::1','fe80::1%lo0',])){
+            $model = IpTrackerModel::getInstance();
+            $ipM = $model->find($ip);
+            if(!$ipM){
+                $json = self::zCurl('http://ip-api.com/json/'.$ip);
+                $json = json_decode($json);
+                $data2['ip'] = $ip;
+                if($json->status == 'success'){
+                    $data2['country'] = $json->country;
+                    $data2['city'] = $json->city;
+                    $data2['isp'] = $json->isp;
+                    $data2['_as'] = $json->as;
+                    $data2['country_code'] = $json->countryCode;
+                    $data2['org'] = $json->org;
+                    $data2['region'] = $json->region;
+                    $data2['region_name'] = $json->regionName;
+                    $data2['timezone'] = $json->timezone;
+                    $data2['zip'] = $json->zip;
+                }
+                $model->set($data2)->add();
+            }
+            $add = VisitModel::getInstance()->set($data)->add()->getStatus();
+            return $add;
+        }
+        return false;
+        
+    }
 
-        $add = VisitModel::getInstance()->set($data)->add()->getStatus();
-        return $add;
+    static public function zCurl($url,$postData = []){
 
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
+		if($postData){
+            curl_setopt($ch, CURLOPT_POST, 1);
+		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
+        }
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        $json = curl_exec($ch);
+        curl_close($ch);
+        return $json;
+        
     }
 }
