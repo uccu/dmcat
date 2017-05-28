@@ -289,7 +289,7 @@ class TestController extends Controller{
             $obj = new stdClass();
 
             $obj->title = $item->title.'';
-            $obj->link = $item->link.'';
+            $obj->link = str_ireplace('http://','https://',$item->link.'');
             $base32 = substr($item->enclosure->attributes()['url'].'',20,32);
             $obj->hash = $this->_base32tohash($base32);
             $obj->additional = strtotime($item->pubDate);
