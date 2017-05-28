@@ -111,6 +111,8 @@ j(function(){
                     if(n == api.audioUrls.length)api.playedOne = api.audioUrls.length - 1
                     api.replay()
                 }
+            }else if(n < api.playedOne){
+                api.playedOne--
             }
             
         })
