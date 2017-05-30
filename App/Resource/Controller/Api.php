@@ -99,12 +99,13 @@ class Api extends Controller{
         if($theme){
 
             if($number == $theme->last_number + 1){
-
-                $theme->visible = 1;
-                $theme->last_number = $number;
-                $theme->number = 1;
-                $theme->change_time = TIME_NOW;
-                $theme->save();
+                if(!in_array('预告',$rns->tags) ){
+                    $theme->visible = 1;
+                    $theme->last_number = $number;
+                    $theme->number = 1;
+                    $theme->change_time = TIME_NOW;
+                    $theme->save();
+                }
             }elseif($number == $theme->last_number){
                 $theme->number += 1;
                 $theme->save();
