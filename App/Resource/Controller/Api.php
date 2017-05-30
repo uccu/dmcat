@@ -261,12 +261,13 @@ class Api extends Controller{
                 $info->new_number = $rns->number;
 
                 if($rns->number == $theme->last_number+1){
-
-                    $theme->number = 1;
-                    $theme->last_number += 1;
-                    $theme->change_time = $r->ctime;
-                    $theme->visible = 1;
-                    $theme->save();
+                    if(!in_array('预告',$rns->tags) ){
+                        $theme->number = 1;
+                        $theme->last_number += 1;
+                        $theme->change_time = $r->ctime;
+                        $theme->visible = 1;
+                        $theme->save();
+                    }
                 }elseif($rns->number == $theme->last_number){
 
                     $theme->visible = 1;
