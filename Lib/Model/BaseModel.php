@@ -36,7 +36,7 @@ class BaseModel{
 
     public function __construct($tableName = null){
 
-        $mb = conf('Mysqli');
+        $mb = conf('PdoMysql');
 
         $this->tool = Using::getInstance();
 

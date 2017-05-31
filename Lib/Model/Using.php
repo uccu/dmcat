@@ -6,7 +6,7 @@ use E;
 use Model;
 
 use Lib\Sharp\SingleInstance;
-use Lib\Database\Mysqli;
+use Lib\Database\PdoMysql;
 
 class Using implements SingleInstance{
     private $sqls = array();
@@ -20,7 +20,7 @@ class Using implements SingleInstance{
     function __get($name){
 
         if($name=='mb'){
-            return $this->mb = Mysqli::getInstance();
+            return $this->mb = PdoMysql::getSingleInstance();
         }
         return null;
 

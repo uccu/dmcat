@@ -9,15 +9,6 @@ class UserModel extends Model{
 
 
 
-    protected $field = array('id','nickname');
-
-
-    public function lession2(){
-
-        return $this->join(LessionModel::class,'uid','id');
-        
-    }
-
     
 
 }

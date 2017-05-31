@@ -8,7 +8,7 @@ use AJAX;
 
 use Request;
 use Route;
-use App\Project\Model\UserModel as User;
+use App\Project\Model\UserModel;
 use App\Project\Model\LessionModel as Lession;
 use Model;
 
@@ -66,6 +66,15 @@ class TestController extends Controller{
 
         View::hamlReader('Test/my','App');
 
+
+    }
+
+    function tes(){
+
+        
+
+
+        echo $result;
 
     }
 

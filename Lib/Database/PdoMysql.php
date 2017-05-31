@@ -1,0 +1,169 @@
+<?php
+namespace Lib\Database;
+
+use E;
+use Lib\Traits;
+use PDO;
+use PDOStatement;
+
+class PdoMysql
+{
+	use Traits\InstanceTrait;
+
+	public 	$prefix;
+	private $_connection;
+
+	private $_config;
+	private $_results;
+	private $_effectsNumber = 0;
+
+	function __construct($name = null){
+
+		$this->init_config($name);
+		$this->connect();
+
+
+	}
+	
+
+	# 连接数据库
+	private function connect(){
+
+		if(!$this->_config->DATABASE)E::throwEx('Database Not Selected');
+		
+		$this->prefix = $this->_config->PREFIX;
+
+		$this->_connection = new PDO(
+			'mysql:dbname='.$this->_config->DATABASE.';host='.$this->_config->HOST.';charset='.$this->_config->CHARSET, 
+			$this->_config->USER, 
+			$this->_config->PASSWORD,
+			[
+				PDO::ATTR_PERSISTENT 	=> 	true,
+				PDO::ATTR_TIMEOUT 		=> 	$this->_config->TIMEOUT,
+				PDO::ATTR_AUTOCOMMIT 	=> 	$this->_config->AUTOCOMMIT,
+				PDO::ATTR_ERRMODE 		=>	(int)$this->_config->ATTR_ERRMODE,
+				PDO::ATTR_CASE 			=>	(int)$this->_config->ATTR_CASE,
+			]
+		);
+
+		$auto = $this->_config->AUTOCOMMIT;
+		$auto = is_null($auto) ? 1 : ( $auto ? 1 : 0);
+		$this->_connection->setAttribute( PDO::ATTR_AUTOCOMMIT, $auto);
+
+		if(!$this->_connection){
+			$error = '数据库连接失败';
+			E::throwEx($error);
+		}
+
+		return $this;
+
+	}
+
+
+
+	# 设置参数
+	private function init_config($name){
+
+		if(!$name)$name = 'PdoMysql';
+		$this->_config = conf($name);
+		return $this;
+
+	}
+
+	# 设置results
+	private function setResults(PDOStatement $results){
+
+		$this->_results = $results;
+		return $this;
+	}
+
+	# 执行sql语句并返回PDOStatement的实例
+	function query(String $sql){
+
+		$this->setResults($this->_connection->query($sql));
+		return $this;
+	}
+
+	# 准备执行sql语句并返回PDOStatement的实例
+	function prepare (String $sql){
+
+		$this->serResults($this->_connection->prepare($sql));
+		return $this;
+	}
+
+	# 执行sql、语句并返回影响的行数
+	function exec(String $sql){
+
+		$this->_effectsNumber = $this->_connection->exec($sql);
+		return $this->_effectsNumber;
+	}
+
+	# 事务
+	function start(){
+
+		return $this->_connection->beginTransaction();
+	}
+	function commit(){
+
+		return $this->_connection->commit();
+	}
+	function rollback(){
+
+		return $this->_connection->rollBack();
+	}
+	function inTransaction(){
+
+		return $this->_connection->inTransaction();
+	}
+	
+	# 获取最后插入行的ID或序列值
+	function insert_id(string $name = NULL ){
+
+		return $this->_connection->lastInsertId($name);
+	}
+
+	# 获取sql影响的行数
+	function affected_rows(){
+
+		return $this->_effectsNumber = $this->_results->rowCount();
+	}
+
+	# 执行
+	function execute(){
+
+		return $this->_results->execute();
+	}
+
+	# 解析到对象
+	function fetchObj(){
+
+		$objs = $this->_results->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+		return $objs;
+
+	}
+
+	# 解析到数组
+	function fetch_assoc(){
+
+		$objs = $this->_results->fetchAll(PDO::FETCH_ASSOC);
+		return $objs;
+		
+	}
+
+	# 逐条解析到数组
+	function fetch_array($resulttype = PDO::FETCH_ASSOC){
+
+		if(!$this->_results)return false;
+		return $this->_results->fetch($resulttype);
+		
+	}
+
+	# 关闭游标，使语句能再次被执行
+	function free_result(){
+		if(!$this->_results)return false;
+		return $this->_results->closeCursor();
+	}
+
+
+
+}
