@@ -46,14 +46,14 @@ class PdoMysql
 			]
 		);
 
+		!$this->_connection && E::throwEx('数据库连接失败');
+
 		$auto = $this->_config->AUTOCOMMIT;
 		$auto = is_null($auto) ? 1 : ( $auto ? 1 : 0);
 		$this->_connection->setAttribute( PDO::ATTR_AUTOCOMMIT, $auto);
 
-		if(!$this->_connection){
-			$error = '数据库连接失败';
-			E::throwEx($error);
-		}
+		
+		
 
 		return $this;
 
@@ -64,7 +64,7 @@ class PdoMysql
 	# 设置参数
 	private function init_config($name){
 
-		if(!$name)$name = 'PdoMysql';
+		if(!$name)$name = basename(__CLASS__);
 		$this->_config = conf($name);
 		return $this;
 

@@ -6,13 +6,17 @@ use E;
 use Model;
 
 use Lib\Sharp\SingleInstance;
-use Lib\Database\PdoMysql;
 
 class Using implements SingleInstance{
-    private $sqls = array();
+
+    # 缓存sql，重复利用查询
+    private $sqls = [];
+
+
     function __construct(){
 
-        $model_null = Config::get('MODEL_NULL');
+        $model_null     = Config::get('MODEL_NULL');
+        $this->database = Config::get('DATABASE');
 
         $this->model_null = is_null($model_null) || $model_null ? true :false;
 
@@ -20,7 +24,10 @@ class Using implements SingleInstance{
     function __get($name){
 
         if($name=='mb'){
-            return $this->mb = PdoMysql::getSingleInstance();
+
+            $mod = '\Lib\Database\\'.$this->database;
+
+            return $this->mb = $mod::getSingleInstance();
         }
         return null;
 

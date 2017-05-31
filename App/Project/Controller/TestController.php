@@ -69,12 +69,17 @@ class TestController extends Controller{
 
     }
 
-    function tes(){
+    function tes($e = null){
 
+        // if(!isset($e))echo 1;
+
+        $model = UserModel::getInstance();
+
+        $user = $model->find(null);
+
+        var_dump($model);
         
-
-
-        echo $result;
+        echo basename(__CLASS__);
 
     }
 
