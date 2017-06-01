@@ -64,7 +64,7 @@ class PdoMysql
 	# 设置参数
 	private function init_config($name){
 
-		if(!$name)$name = basename(__CLASS__);
+		if(!$name)$name = end(explode('\\',__CLASS__));
 		$this->_config = conf($name);
 		return $this;
 
