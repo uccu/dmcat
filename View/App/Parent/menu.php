@@ -2,71 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>菜单/Ask forleave</title>
+    <title>菜单/Menu</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/menu.css">
 </head>
 <body>
 <div class="layout">
-    <h1>本周菜单安排:</h1>
+    <h1>菜单安排:</h1>
     <div class="menu">
-        <p>星期一</p>
+        <p>星期一<br>Mon</p>
         <!--<div class="mainMenu">-->
             <ul>
                 <!--<li>西红柿炒鸡蛋</li>-->
-                <!--<li>芹菜炒肉</li>-->
-                <!--<li>水蒸蛋</li>-->
-                <!--<li>冬瓜排骨汤</li>-->
-                <!--<li>米饭</li>-->
             </ul>
         <!--</div>-->
     </div>
     <div class="menu">
-        <p>星期二</p>
+        <p>星期二<br>Tue</p>
         <!--<div class="mainMenu">-->
             <ul>
                 <!--<li>西红柿炒鸡蛋</li>-->
-                <!--<li>芹菜炒肉</li>-->
-                <!--<li>水蒸蛋</li>-->
-                <!--<li>冬瓜排骨汤</li>-->
-                <!--<li>米饭</li>-->
             </ul>
         <!--</div>-->
     </div>
     <div class="menu">
-        <p>星期三</p>
+        <p>星期三<br>Wed</p>
         <!--<div class="mainMenu">-->
             <ul>
-                <!--<li>西红柿炒鸡蛋</li>-->
-                <!--<li>芹菜炒肉</li>-->
-                <!--<li>水蒸蛋</li>-->
-                <!--<li>冬瓜排骨汤</li>-->
-                <!--<li>米饭</li>-->
+                <!--<li>西红柿炒鸡蛋</li>-->          
             </ul>
         <!--</div>-->
     </div>
     <div class="menu">
-        <p>星期四</p>
+        <p>星期四<br>Thur</p>
         <div class="mainMenu">
             <ul class="Monday">
-                <!--<li>西红柿炒鸡蛋</li>-->
-                <!--<li>芹菜炒肉</li>-->
-                <!--<li>水蒸蛋</li>-->
-                <!--<li>冬瓜排骨汤</li>-->
-                <!--<li>米饭</li>-->
+                <!--<li>西红柿炒鸡蛋</li>-->                
             </ul>
         </div>
     </div>
     <div class="menu">
-        <p>星期五</p>
+        <p>星期五<br>Fri</p>
         <div class="mainMenu">
             <ul>
-                <!--<li>西红柿炒鸡蛋</li>-->
-                <!--<li>芹菜炒肉</li>-->
-                <!--<li>水蒸蛋</li>-->
-                <!--<li>冬瓜排骨汤</li>-->
-                <!--<li>米饭</li>-->
+                <!--<li>西红柿炒鸡蛋</li>-->                
             </ul>
         </div>
     </div>

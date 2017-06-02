@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
-    <title>通知详情/Notice details</title>
+    <title>通知详情/Notice Details</title>
     <link rel="stylesheet" href="/app/css/reset.css">
     <!--<link rel="stylesheet" href="css/public.css">-->
     <link rel="stylesheet" href="/app/css/noticedetails.css">

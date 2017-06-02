@@ -75,7 +75,7 @@
     text-align: center;
 }
 .parent-child p span{
-    font-size: 0.1rem;
+    font-size: 0.2rem;
     color: #6f6f6f;
 }
 .personal a{
@@ -130,12 +130,12 @@
 }
 
 .scan{
-    background:url("../img/p12.png") no-repeat;
+    background:url("../img/p13.png") no-repeat;
     background-position: center 0;
     background-size: 1.2rem;
 }
 .message{
-    background:url("../img/p13.png") no-repeat;
+    background:url("../img/p12.png") no-repeat;
     background-position: center 0;
     background-size: 1.2rem;
 }

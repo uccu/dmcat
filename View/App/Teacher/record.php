@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>学生记录 student record</title>
+    <title>学生记录 Students' Record</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/ChildRecord.css">
@@ -30,7 +30,7 @@
 <div class="layout">
     <div class="learning">
         <div class="learningText">
-            学习能力 <span>learning ability</span>
+            学习能力 <span>Learning Ability</span>
         </div>
         <div class="star learn" data-type="learning">
             <a><img src="/app/img/star.png"/></a>
@@ -42,7 +42,7 @@
     </div>
     <div class="learning">
         <div class="learningText">
-            吃饭能力 <span>ability to eat</span>
+            吃饭能力 <span>Ability to Eat</span>
         </div>
         <div class="star eat" data-type="eat">
             <a><img src="/app/img/star.png"/></a>
@@ -54,7 +54,7 @@
     </div>
     <div class="learning">
         <div class="learningText">
-            生活能力 <span>viability</span>
+            生活能力 <span>Viability</span>
         </div>
         <div class="star life" data-type="life">
             <a><img src="/app/img/star.png"/></a>
@@ -68,7 +68,7 @@
 <hr>
 <div class="layout">
     <div class="comments">
-        <h1>老师评语 <span>teacher comments</span></h1>
+        <h1>老师评语 <span>Teacher Comments</span></h1>
         <!--<div class="teacherName">-->
         <!--<span>头像</span>张一白老师-->
         <!--</div>-->
@@ -78,7 +78,7 @@
         </div>
     </div>
     <div class="reply down">
-        <span>回复/reply</span>
+        <span>回复/Reply</span>
     </div>
     <div class="huifu">
         <!-- <textarea name="" readonly></textarea> -->
@@ -88,7 +88,7 @@
 <hr>
 <div class="layout">
     <div class="album">
-        <h1>相册<span>album</span></h1>
+        <h1>相册<span>Album</span></h1>
         <div class="childPicture">
             <input type="file" id="file" style="display:none" />
             <div class="childimg">
@@ -101,7 +101,7 @@
     </div>
 </div>
 <div class="footer" style="display: none;">
-    <a href="javascript:void (0)" id="change">提交/submit</a>
+    <a href="javascript:void (0)" id="change">提交/Submit</a>
 </div>
 <script src="/app/js/main.js"></script>
 <script src="/app/js/jquery-1.8.3.min.js"></script>

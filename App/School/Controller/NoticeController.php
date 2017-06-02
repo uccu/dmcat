@@ -145,7 +145,7 @@ class NoticeController extends Controller{
 
         $data = Request::getInstance()->request($model->field);
 
-        $option = Request::getInstance()->post('option');
+        $option = Request::getInstance()->post('option','raw');
 
         if($option)$data['options'] = implode(';',$option);
 
@@ -214,7 +214,8 @@ class NoticeController extends Controller{
     function activity_upd($id = 0,ActivityModel $model,$option,$end_date){
 
         $data = Request::getInstance()->request($model->field);
-        $option = Request::getInstance()->post('option');
+        $option = Request::getInstance()->post('option','raw');
+
         if($option)$data['options'] = implode(';',$option);
 
         if($end_date)$data['end_time'] = strtotime($end_date);
@@ -241,7 +242,7 @@ class NoticeController extends Controller{
         AJAX::success(['info'=>$info]);
     }
     function propaganda_lists(PropagandaModel $model,$page = 1 ,$limit = 30){
-        $out = ['get'=>'/notice/activity_get','upd'=>'/notice/activity_upd','del'=>'/notice/activity_del'];
+        $out = ['get'=>'/notice/propaganda_get','upd'=>'/notice/propaganda_upd','del'=>'/notice/propaganda_del'];
         $out['thead'] = [
             'ID'=>['class'=>'tc'],
             "标题/Title"=>['class'=>'tc'],

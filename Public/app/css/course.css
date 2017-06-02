@@ -1,14 +1,18 @@
+
+body{
+    margin-bottom: 0.2rem
+}
 .course{
-    height:0.6rem;
-    /*clear: both;*/
-    /*overflow: hidden;*/
+    height:0.8rem;
+    clear: both;
+    overflow: hidden;
 }
 .course p{
     float: left;
     width:1.2rem;
     font-size: 0.25rem;
-    line-height:0.6rem;
-    height:0.6rem;
+    line-height:0.4rem;
+    height:0.8rem;
     background: #3982b7;
     color: #ffffff;
     border-radius: 3px;
@@ -16,18 +20,19 @@
 }
 .course ul{
     float: right;
-    height:0.6rem;
+    height:0.8rem;
     background: #5da3d7;
     width:4.6rem;
     border-radius: 3px;
 }
 .course ul li{
-    line-height: 0.6rem;
+    line-height: 0.4rem;
     font-size: 0.25rem;
     color: #ffffff;
     width:0.92rem;
     text-align: center;
     float: left;
+    /*display: inline-block;*/
 }
 .courseName{
     margin-top:0.2rem;
@@ -48,11 +53,11 @@
 }
 .courseName:nth-child(even) p{
     background: url("../img/cd_03.png") no-repeat center;
-    background-size:100%;
+    background-size:1.2rem 100%;
 }
 .courseName:nth-child(odd) p{
     background: url("../img/cd_06.png") no-repeat center;
-    background-size:100%;
+    background-size:1.2rem 100%;
 }
 .courseName ul{
     float: right;
@@ -66,5 +71,9 @@
     font-size: 0.25rem;
     width:0.92rem;
     text-align: center;
-    float: left;
+    /*float: left;*/
+    display: inline-block;
 }
+/*.courseName:nth-child(8){
+    margin-bottom: 0.2rem
+}*/

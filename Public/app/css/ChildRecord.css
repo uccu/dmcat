@@ -291,6 +291,13 @@ hr{
     /*display: inline-block;*/
     float: left;
 }
+/*safiry兼容*/
+.childPicture img{
+	cursor:pointer
+}
+/*safiry兼容*/
+
+
 .childimg img{
     display: block;
     margin:0.1rem 0.1rem 0.3rem;
@@ -329,5 +336,48 @@ hr{
     /*margin-bottom: 0.5rem;*/
 
 }
+
+.nojilu{
+    width:100%;
+    height:3rem;
+    line-height:3rem;
+    text-align: center;
+    margin:auto;
+    position: fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    top:0;
+}
+
+
+
+
+#fullbg {
+        background-color:#000000;
+        left:0;
+        opacity:1;
+        position:absolute;
+        top:0;
+        z-index:3;
+    }
+    #logIn{
+        width:100%;
+        height:100%;
+        /*border:1px solid #ddd;*/
+        position: fixed;
+        left:0;
+        top:0;
+        bottom:0;
+        right:0;
+        margin:auto;
+        z-index: 9999999;
+    }
+    #logIn img{
+        /*width:100%;*/
+        /*height:4rem;*/
+        margin:auto;
+    }
+    .hide{display:none;}
 
 

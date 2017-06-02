@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>家长留言/parents' messages</title>
+    <title>家长留言/Parents' Messages</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/parentMessages.css">

@@ -67,7 +67,7 @@ class CourseController extends Controller{
                 $listw[$i][$j] = '';
                 foreach($list as $v){
                     if($v->step == $i && $v->week == $j){
-                        $listw[$i][$j] = $v->name;break;
+                        $listw[$i][$j] = $v->name.' '.$v->name_en;break;
                     }
                 }
             }
@@ -91,13 +91,16 @@ class CourseController extends Controller{
         $list = $model->where($where)->get()->toArray();
 
         $listw = [];
-        
+
         for($i = 1;$i<=8;$i++){
             for($j = 1;$j<=5;$j++){
                 $listw[$i-1][$j-1] = '';
+
                 foreach($list as $v){
                     if($v->step == $i && $v->week == $j){
-                        $listw[$i-1][$j-1] = $v->name;break;
+                        $listw[$i-1][$j-1] = $v->name.'<br>'.$v->name_en;
+
+                        break;
                     }
                 }
             }
@@ -105,6 +108,7 @@ class CourseController extends Controller{
 
 
         $out['list']  = $listw;
+
         AJAX::success($out);
 
 
@@ -116,7 +120,7 @@ class CourseController extends Controller{
         $where['classes_id'] = $classes_id;
         $where['week'] = $week;
         $where['step'] = $step;
-        $out['info'] = $info = $model->where($where)->find($id);
+        $out['info'] = $info = $model->where($where)->find();
         !$info && AJAX::success(['info'=>$where]);
         $out['lang'] = $this->lang->language;
 

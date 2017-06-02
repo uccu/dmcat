@@ -42,18 +42,26 @@ class HomeController extends Controller{
 
     function code(){
 
-        $sss = Func::getSignature();
-
-        $data['appId'] = $this->L->config->wc_appid;
-        $data['timestamp'] = $sss['timestamp'];
-        $data['nonceStr'] = $sss['noncestr'];
-        $data['signature'] = $sss['sign'];
+        if($this->L->userInfo->type == 3){
+            header('Location:/teacher/index');
+        }else{
+            header('Location:/home/doctor');
+        }
+        die();
         
         View::addData($data);
 
         View::hamlReader('doctor/'.__FUNCTION__,'App');
     }
     function doctor(){
+
+        $sss = Func::getSignature();
+
+        $appId = $this->L->config->wc_appid;
+        $timestamp = $sss['timestamp'];
+        $nonceStr = $sss['noncestr'];
+        $signature = $sss['sign'];
+
 
         include VIEW_ROOT.'App/doctor/index.php';
 

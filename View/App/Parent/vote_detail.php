@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>投票详情/Voting details</title>
+    <title>投票详情/Voting Details</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/vote.css">
@@ -25,13 +25,13 @@
         <!--</p>-->
     </div>
     <div class="xuanze">
-        <p>单选/single selection</p>
+        <p>单选/Single Selection</p>
         <div class="attend">
             <!--<label class="checkbox_label"><i class="checked"></i> <input type="checkbox"  name="agree" class="hidden"/>参加/attend</label>-->
         </div>
     </div>
     <div class="remainingTime">
-        <span class="timeSpan">&nbsp;&nbsp;剩余时间</span>
+        <span class="timeSpan">&nbsp;&nbsp;剩余时间/Remaining Time&nbsp;</span>
         <!--<div class="fnTimeCountDown" data-end="2017/04/25 23:00:13">-->
             <!--&lt;!&ndash;<span class="year">00</span>年&ndash;&gt;-->
             <!--&lt;!&ndash;<span class="month">00</span>月&ndash;&gt;-->
@@ -44,7 +44,7 @@
     </div>
 </div>
 <div class="footer">
-    <a href="javascript:void (0)">投票/vote</a>
+    <a href="javascript:void (0)">投票/Vote</a>
 </div>
 <script src="/app/js/main.js"></script>
 <script src="/app/js/jquery-1.8.3.min.js"></script>
@@ -87,7 +87,7 @@
                     $this.countdown(finalDate, function(event) {
                         $this.html(event.strftime('%D:%H:%M:%S'));
                             if($this.text()=='00:00:00:00'){
-                                $this.html('投票结束')
+                                $this.html('投票结束/Vote Over')
                             }
                         });
                     });

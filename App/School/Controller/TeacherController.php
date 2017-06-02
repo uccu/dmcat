@@ -133,6 +133,13 @@ class TeacherController extends Controller{
 
     function index(){
 
+        $sss = Func::getSignature();
+
+        $appId = $this->L->config->wc_appid;
+        $timestamp = $sss['timestamp'];
+        $nonceStr = $sss['noncestr'];
+        $signature = $sss['sign'];
+
         $id = $this->L->id;
         if(!$id)header('Location:/home/login');
         include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';

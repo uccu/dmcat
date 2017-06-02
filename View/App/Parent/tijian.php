@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>查看体检</title>
+    <title>体检/Physical Examination </title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/personalProfile.css">
@@ -10,9 +10,9 @@
 <body>
 <div class="pp-main">
     <ul>
-        <li id="height">身高 <span>height</span></li>
-        <li id="weight"> 体重<span>weight</span></li>
-        <li id="sight">视力 <span>sight</span></li>
+        <li id="height">身高 <span>Height</span></li>
+        <li id="weight"> 体重<span>Weight</span></li>
+        <li id="sight">视力 <span>Sight</span></li>
     </ul>
 </div>
 <script src="/app/js/main.js"></script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>孩子记录Child record</title>
+    <title>相册/Album</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/ChildRecord.css">
@@ -11,7 +11,7 @@
 <body>
 <div class="layout">
     <div class="album">
-        <h1>相册<span>album</span></h1>
+        <h1>相册<span>Album</span></h1>
         <div class="childPicture">
             <!--<img src="img/jl.png" alt="" class="down">-->
             <!--<img src="img/jl.png" alt="" class="down">-->

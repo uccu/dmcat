@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>请假/Ask forleave</title>
+    <title>请假/Ask for Leave</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/askforleave.css">
@@ -11,11 +11,11 @@
 
 <body>
 <div class="proposer">
-    <p><span>申请人</span><span>proposer</span></p>
+    <p><span>申请人</span><span>Proposer</span></p>
     <input type="text" class="pro">
 </div>
 <div class="proposer">
-    <p><span>请假时间</span><span>start time</span></p>
+    <p><span>请假时间</span><span>Start Time</span></p>
     <p class="datep" id="stardatep"><input class="datainp" id="dateinfo" type="text" placeholder="请选择请假时间"  readonly></p>
 </div>
 <!--<div class="proposer">-->
@@ -23,18 +23,18 @@
     <!--<p class="datep" id="enddatep"><input class="datainp" id="enddateinfo" type="text" placeholder="请选择请假结束时间"  readonly></p>-->
 <!--</div>-->
 <div class="proposer">
-    <p><span>请假类型</span><span>leave type</span></p>
+    <p><span>请假类型</span><span>Leave Type</span></p>
     <select name="" id="">
-        <option value="1">病假/sick leave</option>
-        <option value="2">事假/thing leave</option>
+        <option value="1">病假/Sick leave</option>
+        <option value="2">事假/Other leave</option>
     </select>
 </div>
 <div class="proposer" style="height: 2.4rem;">
-    <p class="proposerLast"><span>请假事由</span><span style="width: 1.9rem;">reason for leave</span></p>
+    <p class="proposerLast"><span>请假事由</span><span style="width: 1.9rem;">Reason for leave</span></p>
     <textarea name="" class="reason"></textarea>
 </div>
 <p class="tishi">温馨提示：请假至少需要提前8小时</p>
-<a href="javascript:void(0)" class="submitask">提交/refer</a>
+<a href="javascript:void(0)" class="submitask">提交/Refer</a>
 <script src="/app/js/main.js"></script>
 <script src="/app/js/jquery-1.7.1.min.js"></script>
 <script>
@@ -66,9 +66,9 @@
             var reason = $(".reason").val();
             var type = ''
             if ($('select').val() == 1){
-                type = "病假/sick leave"
+                type = "病假/Sick Leave"
             }else{
-                type = "事假/thing leave"
+                type = "事假/Other Leave"
             }
             $.ajax({
                 url: "/student/ask_leave",

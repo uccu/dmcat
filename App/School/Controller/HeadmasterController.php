@@ -41,7 +41,8 @@ class HeadmasterController extends Controller{
 
         foreach($list as &$v){
             
-            $v->message = $v->name.'/'.$v->name_en.($v->type == 1 ? '家长':'老师').'给您发了一条留言';
+            $v->message = $v->name.($v->type == 1 ? '家长':'老师').'发了一条留言<br>'.
+                        ($v->type == 1 ? 'Parent':'Teacher').' '.$v->name_en.' left a message';
             $v->fullAvatar = Func::fullPicAddr($v->avatar);
             $v->date = date('m.d H:i',$v->create_time);
         }

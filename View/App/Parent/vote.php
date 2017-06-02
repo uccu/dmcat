@@ -11,10 +11,10 @@
 <body>
 <div class="usTab voteclassify">
     <div class="vote-tab active">
-        <a href="javascript:void (0)" >全部投票<span>all vote</span></a>
+        <a href="javascript:void (0)" >全部投票<span>All Vote</span></a>
     </div>
     <div class="vote-tab">
-        <a href="javascript:void (0)">我的投票<span>my vote</span></a>
+        <a href="javascript:void (0)">我的投票<span>My Vote</span></a>
     </div>
 
 </div>
@@ -39,7 +39,7 @@
 <!--</p>-->
 <!--</div>-->
 <!--<div class="remainingTime">-->
-<!--<span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span>-->
+<!--<span class="timeSpan">&nbsp;剩余时间/Remaining Time&nbsp;</span>-->
 <!--<div class="fnTimeCountDown">-->
 <!--<span class="month">00</span>月-->
 <!--<span class="day">00</span>天-->
@@ -69,7 +69,7 @@
             $this.countdown(finalDate, function(event) {
                 $this.html(event.strftime('%D:%H:%M:%S'));
                 if($this.text()=='00:00:00:00'){
-                    $this.html('投票结束')
+                    $this.html('投票结束/Vote Over')
                 }
             });
         });
@@ -103,7 +103,7 @@
                     // $.getScript("/app/js/daojishi.js")
                     var result = e.data.list;
                     for(var i=0; i<result.length;i++){
-                        var myvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span><div data-countdown="'+result[i].end_date+'" class="time"></div></div><a href="vote_detail?id='+result[i].id+'" class="voteing">投票/vote</a></div><hr>'
+                        var myvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/Remaining Time&nbsp;</span><div data-countdown="'+result[i].end_date+'" class="time"></div></div><a href="vote_detail?id='+result[i].id+'" class="voteing">查看/Look up</a></div><hr>'
                         $(".myvote").append(myvote)
                         time()
                     }

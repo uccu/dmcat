@@ -66,7 +66,7 @@ class MenuController extends Controller{
                 $listw[$i][$j] = '';
                 foreach($list as $v){
                     if($v->step == $i && $v->week == $j){
-                        $listw[$i][$j] = $v->name;break;
+                        $listw[$i][$j] = $v->name.' '.$v->name_en;break;
                     }
                 }
             }
@@ -99,7 +99,7 @@ class MenuController extends Controller{
             for($i = 0;$i<8;$i++){
                 foreach($list as $v){
                     if($v->step == $i+1 && $v->week == $j+1){
-                        $listw[$j][] = $v->name;break;
+                        $listw[$j][] = $v->name.' '.$v->name_en;break;
                     }
                 }
             }
@@ -118,7 +118,7 @@ class MenuController extends Controller{
         $where['school_id'] = $school_id;
         $where['week'] = $week;
         $where['step'] = $step;
-        $out['info'] = $info = $model->where($where)->find($id);
+        $out['info'] = $info = $model->where($where)->find();
         !$info && AJAX::success(['info'=>$where]);
         $out['lang'] = $this->lang->language;
 

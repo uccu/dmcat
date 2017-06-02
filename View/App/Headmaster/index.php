@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>校长/school header</title>
+    <title>校长/School Header</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <!--<link rel="stylesheet" href="css/bootstrap.min.css">-->
     <link rel="stylesheet" href="/app/css/reset.css">
@@ -16,7 +16,7 @@
 <div class="parent-main">
     <div class="parent-child message">
         <a href="lists"></a>
-        <p>消息 <br><span>message</span></p>
+        <p>消息 <br><span>Message</span></p>
     </div>
 </div>
 

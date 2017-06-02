@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>活动/active</title>
+    <title>活动/Active</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/vote.css">
@@ -11,10 +11,10 @@
 <body>
 <div class="usTab voteclassify">
     <div class="vote-tab active">
-        <a href="javascript:void (0)" >全部活动<span>all activity</span></a>
+        <a href="javascript:void (0)" >全部活动<span>All Activity</span></a>
     </div>
     <div class="vote-tab">
-        <a href="javascript:void (0)">我的活动<span>my activity</span></a>
+        <a href="javascript:void (0)">我的活动<span>My Activity</span></a>
     </div>
 
 </div>
@@ -67,7 +67,7 @@
                 $this.countdown(finalDate, function(event) {
                     $this.html(event.strftime('%D:%H:%M:%S'));
                     if($this.text()=='00:00:00:00'){
-                        $this.html('投票结束')
+                        $this.html('投票结束/Vote Over')
                     }
                 });
             });
@@ -91,7 +91,7 @@
                     $.getScript("/app/js/daojishi.js")
                     var result = e.data.list;
                     for(var i=0; i<result.length;i++){
-                        var allvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span><div data-countdown="'+result[i].end_date+'" class="time"></div></div><a href="activity_detail?id='+result[i].id+'" class="voteing">参加/attend</a></div><hr>'
+                        var allvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+' '+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/Remaining Time&nbsp;</span><div data-countdown="'+result[i].end_date+'" class="time"></div></div><a href="activity_detail?id='+result[i].id+'" class="voteing">参加/Attend</a></div><hr>'
                         $(".allvote").append(allvote)
                         time()
 //                        var myvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span><div class="fnTimeCountDown" data-end="'+result[i].end_date+'"><span class="month">00</span>月<span class="day">00</span>天<span class="hour">00</span>时<span class="mini">00</span>分<span class="sec">00</span>秒</div></div><a href="voteDEtails.html?id='+result[i].id+'" class="voteing">参加/attend</a></div><hr>'
@@ -114,7 +114,7 @@
                     $.getScript("/app/js/daojishi.js")
                     var result = e.data.list;
                     for(var i=0; i<result.length;i++){
-                        var myvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span><div data-countdown="'+result[i].end_date+'" class="time"></div></div><a href="activity_detail?id='+result[i].id+'" class="voteing">参加/attend</a></div><hr>'
+                        var myvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+' '+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/Remaining Time&nbsp;</span><div data-countdown="'+result[i].end_date+'" class="time"></div></div><a href="activity_detail?id='+result[i].id+'" class="voteing">查看/Look up</a></div><hr>'
                         $(".myvote").append(myvote)
                         time()
                     }

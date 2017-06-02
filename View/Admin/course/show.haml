@@ -47,9 +47,13 @@
                         %input.form-control(type="hidden" name="week")
                         %input.form-control(type="hidden" name="step")
                         .form-group
-                            %label.col-sm-3.control-label #{lang.adminIndex.name}
+                            %label.col-sm-3.control-label #{lang.adminIndex.name}（中文）
                             .col-sm-9
                                 %input.form-control(name="name")
+                        .form-group
+                            %label.col-sm-3.control-label #{lang.adminIndex.name}（English）
+                            .col-sm-9
+                                %input.form-control(name="name_en")
                         
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close

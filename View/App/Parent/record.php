@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>孩子记录Child record</title>
+    <title>孩子记录/Child Record</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/ChildRecord.css">
@@ -33,7 +33,7 @@
 <div class="layout">
     <div class="learning">
         <div class="learningText">
-            学习能力 <span>learning ability</span>
+            学习能力 <span>Learning Ability</span>
         </div>
         <div class="star learn" data-type="learning">
             <a><img src="/app/img/star.png"/></a>
@@ -45,7 +45,7 @@
     </div>
     <div class="learning">
         <div class="learningText">
-            吃饭能力 <span>ability to eat</span>
+            吃饭能力 <span>Ability to Eat</span>
         </div>
         <div class="star eat" data-type="eat">
             <a><img src="/app/img/star.png"/></a>
@@ -57,7 +57,7 @@
     </div>
     <div class="learning">
         <div class="learningText">
-            生活能力 <span>viability</span>
+            生活能力 <span>Viability</span>
         </div>
         <div class="star life" data-type="life">
             <a><img src="/app/img/star.png"/></a>
@@ -71,7 +71,7 @@
 <hr>
 <div class="layout">
     <div class="comments">
-        <h1>老师评语 <span>teacher comments</span></h1>
+        <h1>老师评语 <span>Teacher Comments</span></h1>
         <!--<div class="teacherName">-->
             <!--<span>头像</span>张一白老师-->
         <!--</div>-->
@@ -82,8 +82,8 @@
         </div>
     </div>
     <div class="reply down">
-        <a href="javascript:void (0)">回复/reply</a>
-        <span>回复/reply</span>
+        <a href="javascript:void (0)">回复/Reply</a>
+        <span>回复/Reply</span>
     </div>
     <div class="huifu">
         <!-- <textarea name="" readonly></textarea> -->
@@ -93,7 +93,7 @@
 <hr>
 <div class="layout">
     <div class="album">
-        <h1>相册<span>album</span></h1>
+        <h1>相册<span>Album</span></h1>
         <div class="childPicture">
             <!--<img src="img/jl.png" alt="">-->
         </div>
@@ -103,7 +103,7 @@
 <div id="fullbg"></div>
 <div class="con hide" id="logIn">
     <textarea placeholder='亲爱的学生家长，回复老师留言只可回复一次.....'></textarea>
-    <a href='javascript:void(0)' class="submit">提交</a>
+    <a href='javascript:void(0)' class="submit">提交/Submit</a>
 </div>
 <div class="nojilu" style="display: none;">
     竟然没有记录信息

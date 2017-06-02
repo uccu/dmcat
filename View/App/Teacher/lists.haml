@@ -51,7 +51,7 @@
         }
     .box.tc
     
-        .search.pr.tl
+        %form.search.pr.tl
             %input
             %i.fa.fa-search.pa.cp
         %div.bo
@@ -81,13 +81,18 @@
                 location = 'record?id='+j(this).attr('data-id')
             })
         },'json');
-        j('.fa-search').click(function(){
+        var sear = function(){
 
             j('.row').each(function(){
                 j(this).removeClass('dn');
                 if(j(this).html().search(j('input').val())<0){
                     j(this).addClass('dn');
                 }
-            })
-        })
+            });
+            return false
+        };
+        //j('.fa-search').click(sear)
+        //j('input').change(sear)
+        j('input').keyup(sear)
+        //j('form').submit(sear)
             

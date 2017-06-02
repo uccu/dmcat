@@ -22,54 +22,54 @@
 <div class="parent-main">
     <div class="parent-child personal">
         <a href="javascript:void(0)"></a>
-        <p>个人资料<br><span>personal profile</span></p>
+        <p>个人资料<br><span>Personal Profile</span></p>
     </div>
     <div class="parent-child child">
         <a href="javascript:void(0)"></a>
-        <p>孩子记录<br><span>child record</span></p>
+        <p>孩子记录<br><span>Child Record</span></p>
     </div>
     <div class="parent-child leave">
         <a href="javascript:void(0)"></a>
-        <p>留言<br><span>leave message</span></p>
+        <p>留言<br><span>Leave Message</span></p>
     </div>
 </div>
 <div class="parent-main">
     <div class="parent-child vote">
         <a href="javascript:void(0)"></a>
-        <p>投票<br><span>vote</span></p>
+        <p>投票<br><span>Vote</span></p>
 
     </div>
     <div class="parent-child activity">
         <a href="javascript:void(0)"></a>
-        <p>活动<br><span>activity</span></p>
+        <p>活动<br><span>Activity</span></p>
     </div>
     <div class="parent-child ask">
         <a href="javascript:void(0)"></a>
-        <p>请假<br><span>ask for leave</span></p>
+        <p>请假<br><span>Ask for Leave</span></p>
     </div>
 </div>
 <div class="parent-main">
     <div class="parent-child menu">
         <a href="javascript:void(0)"></a>
-        <p>菜单<br><span>menu</span></p>
+        <p>菜单<br><span>Menu</span></p>
     </div>
     <div class="parent-child course">
         <a href="javascript:void(0)"></a>
-        <p>课程<br><span>course</span></p>
+        <p>课程<br><span>Course</span></p>
     </div>
     <div class="parent-child notice">
         <a href="javascript:void(0)"></a>
-        <p>校内通知<br><span>notice</span></p>
+        <p>校内通知<br><span>Notice</span></p>
     </div>
 </div>
 <div class="parent-main">
     <div class="parent-child conduct">
         <a href="javascript:void(0)"></a>
-        <p>校外宣传 <br><span>propaganda</span></p>
+        <p>校外宣传 <br><span>Propaganda</span></p>
     </div>
     <div class="parent-child message">
         <a href="javascript:void(0)"></a>
-        <p>消息 <br><span>message</span></p>
+        <p>消息 <br><span>Message</span></p>
     </div>
 </div>
 

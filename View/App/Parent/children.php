@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>孩子资料/Child information</title>
+    <title>孩子资料/Child's Information</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/personalProfile.css">
@@ -11,18 +11,18 @@
 <div class="pp-main">
     <ul>
         <input type="file" id="file" style="display:none" />
-        <li id="head" style="height: 1.4rem;line-height: 1.4rem;">头像 <span>head portrait</span></li>
-        <li id="number">编号 <span>number</span></li>
-        <li id="name">姓名 <span>name</span></li>
-        <li id="nationality">国籍 <span>nationality</span></li>
-        <li id="language">语言<span>language</span></li>
-        <li id="birthday">生日<span>birthday</span></li>
-        <li id="allergic">过敏史<span>allergic history</span></li>
+        <li id="head" style="height: 1.4rem;line-height: 1.4rem;">头像 <span>Head Portrait</span></li>
+        <li id="number">编号 <span>Number</span></li>
+        <li id="name">姓名 <span>Name</span></li>
+        <li id="nationality">国籍 <span>Nationality</span></li>
+        <li id="language">语言<span>Language</span></li>
+        <li id="birthday">生日<span>Birthday</span></li>
+        <li id="allergic">过敏史<span>Allergic History</span></li>
         <li id="tijian"></li>
     </ul>
 </div>
 <div class="footer">
-    <a href="javascript:void (0)" id="changes">修改并保存信息/change</a>
+    <a href="javascript:void (0)" id="changes">修改并保存信息/Change</a>
 </div>
 <script src="/app/js/main.js"></script>
 <script src="/app/js/jquery-1.8.3.min.js"></script>
@@ -53,7 +53,7 @@
                     var language = '<input type="text" value="'+result.language+'" readonly>'
                     var birthday = '<input type="text" value="'+result.birth+'" readonly>'
                     var allergic = '<input type="text" value="'+result.allergy+'">'
-                    var tijian='<a style="width: 100%;height: 100%;display: block;" href="tijian?id='+result.id+'">查看体检</a>'
+                    var tijian='<a style="width: 100%;height: 100%;display: block;" href="tijian?id='+result.id+'">查看体检 Physical</a>'
                     $("#head").append(head);
                     $("#number").append(number)
                     $("#name").append(name)

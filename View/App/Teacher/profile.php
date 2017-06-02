@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>个人资料/Personal profile</title>
+    <title>个人资料/Personal Profile</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/personalProfile.css">
@@ -11,13 +11,13 @@
 <div class="pp-main">
     <ul>
         <input type="file" id="file" style="display:none" />
-        <li id="head" style="height: 1.4rem;line-height: 1.4rem;">我的头像 <span>head portrait</span></li>
-        <li id="password">密码 <span>password</span></li>
-        <li id="tel">手机号 <span>cell-phonenumber</span></li>
-        <li id="email">邮箱 <span>mailbox</span></li>
+        <li id="head" style="height: 1.4rem;line-height: 1.4rem;">我的头像 <span>Head Portrait</span></li>
+        <li id="password">密码 <span>Password</span></li>
+        <li id="tel">手机号 <span>Cell-phone Number</span></li>
+        <li id="email">邮箱 <span>Mailbox</span></li>
     </ul>
     <div class="footer">
-        <a href="javascript:void (0)" id="change">保存修改信息/change</a>
+        <a href="javascript:void (0)" id="change">保存修改信息/Change</a>
     </div>
 </div>
 <script src="/app/js/main.js"></script>

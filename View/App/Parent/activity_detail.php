@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>活动详情/active details</title>
+    <title>活动详情/Active Details</title>
     <meta id="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
     <link rel="stylesheet" href="/app/css/reset.css">
     <link rel="stylesheet" href="/app/css/vote.css">
@@ -29,14 +29,14 @@
         <!--</p>-->
     </div>
     <div class="xuanze">
-        <p>单选/single selection</p>
+        <p>单选/Single Selection</p>
         <div class="attend">
             <!--<label class="checkbox_label down" id="attend"><i class="checked"></i> <input type="radio"  name="agree" class="hidden"/>参加/attend</label>-->
             <!--<label class="checkbox_label down"><i class="checked"></i> <input type="radio"  name="agree" class="hidden"/>不参加/not attend</label>-->
         </div>
     </div>
     <div class="remainingTime">
-        <span class="timeSpan">&nbsp;&nbsp;剩余时间</span>
+        <span class="timeSpan">&nbsp;&nbsp;剩余时间/Remaining Time &nbsp;</span>
         <!--<div class="fnTimeCountDown" data-end="2017/04/25 23:00:13">-->
             <!--&lt;!&ndash;<span class="year">00</span>年&ndash;&gt;-->
             <!--&lt;!&ndash;<span class="month">00</span>月&ndash;&gt;-->
@@ -49,12 +49,12 @@
     </div>
 </div>
 <div class="footer">
-    <a href="javascript:void (0)">投票/vote</a>
+    <a href="javascript:void (0)">投票/Vote</a>
 </div>
 <!--弹出框及蒙层-->
 <div id="fullbg"></div>
 <div class="con hide" id="logIn">
-    <textarea placeholder='备注'></textarea><a href='javascript:void(0)'>提交</a>
+    <textarea placeholder='备注'></textarea><a href='javascript:void(0)'>提交/Submit</a>
 </div>
 <script src="/app/js/main.js"></script>
 <script src="/app/js/jquery-1.8.3.min.js"></script>
@@ -96,7 +96,7 @@
                 if (e.code==200){
                     $.getScript("/app/js/daojishi.js")
                     var result = e.data.info;
-                    var attrav = '<img src="'+result.fullAvatar+'" alt=""><div class="organizersName"><h1>'+result.name+''+result.name_en+'</h1><h2>'+result.date+'</h2></div>'
+                    var attrav = '<img src="'+result.fullAvatar+'" alt=""><div class="organizersName"><h1>'+result.name+' '+result.name_en+'</h1><h2>'+result.date+'</h2></div>'
                     var title = '<span>'+result.title+'</span><p>'+result.content+'</p>'
                     var time = '<div data-countdown="'+result.end_date+'" class="time"></div>'
                     $(".Organizers").append(attrav)
@@ -177,7 +177,7 @@
                         //获取投票总人数
                         $(".checkbox_label").eq(result.voted-1).click();
                         $(".checkbox_label").unbind()
-                        var allnum = '<span>投票人数/number of voters:'+e.data.countAll+'</span>'
+                        var allnum = '<span>投票人数/Number of Voters:'+e.data.countAll+'</span>'
                         $(".xuanze").find("p").append(allnum)
                         //获取每一个选项的投票人数
                         var votenum = e.data.count;
