@@ -36,15 +36,13 @@ class BaseModel{
 
     public function __construct($tableName = null){
 
-        $mb = conf('Mysqli');
-
         $this->tool = Using::getInstance();
 
-        if($tableName)$this->table = $tableName;
+        $tableName && $this->table = $tableName;
 
         $this->rawTable = $this->table;
 
-        if($mb->PREFIX)$this->table = $mb->PREFIX.$this->table;
+        $this->tool->mb->prefix && $this->table = $this->tool->mb->prefix.$this->table;
 
         $this->table = $this->tool->quote_table($this->table);
 
@@ -57,6 +55,8 @@ class BaseModel{
         if(!$this->primary)$this->primary = $this->field[0];
 
     }
+
+    # 如果没有field,查数据库添加字段名字
     private function _COLUMNS(){
 
         if(!$this->field){
@@ -65,13 +65,14 @@ class BaseModel{
 
 
             foreach($this->field as &$v)$v = $v->Field;
-
             
         }
 
         return $this;
 
     }
+
+    # 执行一次查询或操作清理成原来的样子
     public function clean(){
 
         $this->join     = null;
@@ -92,21 +93,22 @@ class BaseModel{
         return $this;
     }
 
-    public function group($n){
+    # group
+    public function group($name){
 
-        $field = new Field($n,$this);
-
+        $field = new Field($name,$this);
         $this->group = $field->fullName;
-
         return $this;
-
     }
 
+    # distinct 可用性不强的感觉
     public function distinct($distinct = true){
 
-        $this->distinct = $distinct;
-
+        $this->distinct = $distinct ? true : false;
     }
+
+    # 执行一次查询操作
+    # $key 以$key为键返回
     public function get($key = null){
 
         $this->importJoin();
@@ -115,10 +117,8 @@ class BaseModel{
 
         if($this->distinct)$sql .= 'DISTINCT ';
 
-        if(!$this->select){
-            
-            $this->select($this->field);
-        }
+        !$this->select && $this->select($this->field);
+        
 
         $sql .= $this->select.' FROM '.($this->join || $this->asRawTable!=$this->table?$this->table.' AS '. $this->asRawTable:$this->table);
 
@@ -143,6 +143,8 @@ class BaseModel{
         return new Container($this,$key);
 
     }
+
+    # 删除
     public function remove($id = null){
 
         $this->importJoin();
@@ -175,6 +177,8 @@ class BaseModel{
         return new Container($this);
 
     }
+
+    # 格式化查询返回内容
     public function get_field($field = null,$key = null , $distinct = null){
 
         if($distinct)$this->distinct($distinct);
@@ -190,21 +194,29 @@ class BaseModel{
 
 
     }
+
+    # 获取单条
     public function find($id = null){
 
         $this->limit = 1;
 
-        if(!is_null($id)){
+        $container = func_get_args();
+
+        if(count($container)){
 
             $field = new Field($this->primary,$this);
 
-            $this->where =  $field->fullName.' = '.$this->tool->quote($id);
+            $this->where = '';
+
+            $this->where([$this->primary=>$id]);
 
         }
 
         return $this->get()->find(0);
 
     }
+
+    # 保存
     public function save($id = null){
 
         $this->importJoin();
@@ -243,7 +255,9 @@ class BaseModel{
         return new Container($this);
 
     }
-    public function add($replace = false){
+
+    # 添加 
+    public function add(bool $replace = false){
 
         $this->importJoin();
 
@@ -269,6 +283,8 @@ class BaseModel{
         return new Container($this);
 
     }
+
+    # 筛选
     public function where($sql = null , $data = null){
 
         if(is_string($sql)){

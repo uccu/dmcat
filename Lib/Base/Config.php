@@ -1,13 +1,14 @@
 <?php
 
 use Lib\Core\Autoload;
-use Lib\Sharp\SingleInstance;
+use Lib\Traits;
 
 
+class Config
+{
+	use Traits\InstanceTrait;
 
-class Config implements SingleInstance{
-
-	private $list = array();
+	private $list = [];
 	private $init = false;
 	private $set = true;
 	private $null = true;
@@ -16,15 +17,9 @@ class Config implements SingleInstance{
 		
 	}
 
-	public static function getInstance(){
-        static $object;
-		if(empty($object)) $object = new self();
-		return $object;
-    }
-
 	public static function get($v){
 		
-		return self::getInstance()->$v;
+		return self::getSingleInstance()->$v;
 
 	}
 

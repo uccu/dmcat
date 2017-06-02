@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-
 Log/*.log
 Public/Pic/20*
-=======
 .vscode
-Log/20*
->>>>>>> refs/remotes/origin/master
+composer.json
+vendor

@@ -1,10 +1,12 @@
 <?php
 namespace Lib\Database;
 use E;
-use Lib\Sharp\SingleInstance;
+use Lib\Traits;
 
-class Mysqli implements SingleInstance
+class Mysqli
 {
+	use Traits\InstanceTrait;
+
 	private $mysqli;
 	private $config;
 	private $results;
@@ -116,7 +118,7 @@ class Mysqli implements SingleInstance
 
 
 		$this->config = conf('Mysqli');
-		
+		$this->prefix = $this->config->PREFIX;
 		return $this;
 
 	}
@@ -179,12 +181,6 @@ class Mysqli implements SingleInstance
 		if(!$this->results)return false;
 		return $this->results->data_seek($row);
 	}
-
-	public static function getInstance(){
-        static $object;
-		if(empty($object))$object = new self();
-		return $object;
-    }
 
 
 
