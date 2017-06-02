@@ -30,8 +30,6 @@ class PdoMysql
 	private function connect(){
 
 		if(!$this->_config->DATABASE)E::throwEx('Database Not Selected');
-		
-		$this->prefix = $this->_config->PREFIX;
 
 		$this->_connection = new PDO(
 			'mysql:dbname='.$this->_config->DATABASE.';host='.$this->_config->HOST.';charset='.$this->_config->CHARSET, 
@@ -66,6 +64,7 @@ class PdoMysql
 
 		if(!$name)$name = end(explode('\\',__CLASS__));
 		$this->_config = conf($name);
+		$this->prefix = $this->_config->PREFIX;
 		return $this;
 
 	}

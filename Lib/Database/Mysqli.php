@@ -118,7 +118,7 @@ class Mysqli
 
 
 		$this->config = conf('Mysqli');
-		
+		$this->prefix = $this->config->PREFIX;
 		return $this;
 
 	}
