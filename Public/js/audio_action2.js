@@ -2,6 +2,14 @@
 
         
 j(function(){
+
+    
+    var step = (new URL(location)).searchParams.get('step')
+    step = parseInt(step)
+    step = !step || step<1 || step > 16 ? 24 : step
+
+
+
     if(document.all)document.body.onselectstart= function(){return false;}
     else{
         document.body.onmousedown= function(){return false;}
@@ -296,6 +304,12 @@ j(function(){
 
     var lastTime = 0,lasta1 = lasta2 = [],delay = 0,na = {l:[],r:[]};
 
+    var max = function(a){
+        var max = 0
+        for(var e in a)max = a[e]>max?a[e]:max
+        return max
+    }
+
     api.onrender = function(a1,a2){
 
         /* 鼠标移动 */
@@ -314,6 +328,7 @@ j(function(){
         /* 计算帧数 */
         var time = Date.now()
         api.fps = parseInt(1000/(time-lastTime))
+        j('.test p').text(api.fps)
         lastTime = time;
 
         /* 延迟 */
@@ -325,7 +340,7 @@ j(function(){
         
         var changeUp = 0;
         var halfLineCount = lineCount / 2
-        var step = 16
+        
         var baseLength = 30
 
         if(lasta1.length){
@@ -335,17 +350,19 @@ j(function(){
         }
         
         
-
+        
         for(var i = 0;i<halfLineCount;i+=1){
 
 
-            var v = a1[i * step] || 0
+            var v = Math.pow(1.022,max(a1.slice(i*step,i*step+step)))
+
             var length = 5 * changeUp + baseLength + v / 10
             if(na.l[i] > length){
                 na.l[i] += (length - na.l[i])/10
+                // na.l[i] = length;
             }else na.l[i] = length;
 
-            var v = a2[i * step] || 0
+            var v = Math.pow(1.022,max(a2.slice(i*step,i*step+step)))
             var length = 5 * changeUp + baseLength + v / 10
             if(na.r[i] > length){
                 na.r[i] += (length - na.r[i])/10
@@ -360,7 +377,7 @@ j(function(){
             boxes.children[i].position.x = ver.x
             boxes.children[i].position.y = ver.y
             boxes.children[i].lookAt(center)
-            boxes.children[i].scale.x = (na.l[i] - baseLength - 1) || 0.1 
+            boxes.children[i].scale.x = (na.l[i] - baseLength - 1) || 0.1
             var ef = na.l[i]/80,ef = ef<0?0:ef>1?1:ef;
             var ef2 = (na.l[i]-20)/100,ef2 = ef2<0?0:ef2>1?1:ef2;
             boxes.children[i].material.color = new THREE.Color( ef ,1-ef,1-ef);
@@ -371,7 +388,7 @@ j(function(){
             boxes.children[lineCount-1-i].position.x = ver.x
             boxes.children[lineCount-1-i].position.y = ver.y
             boxes.children[lineCount-1-i].lookAt(center)
-            boxes.children[lineCount-1-i].scale.x = (na.r[i] - baseLength - 1) || 0.1 
+            boxes.children[lineCount-1-i].scale.x = (na.r[i] - baseLength - 1) || 0.1
             var ef = na.r[i]/80,ef = ef<0?0:ef>1?1:ef;
             var ef2 = (na.r[i]-20)/100,ef2 = ef2<0?0:ef2>1?1:ef2;
             boxes.children[lineCount-1-i].material.color = new THREE.Color(ef ,1-ef,1-ef );
