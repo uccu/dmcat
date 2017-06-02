@@ -257,7 +257,7 @@ class BaseModel{
     }
 
     # 添加 
-    public function add(bool $replace = false){
+    public function add($replace = false){
 
         $this->importJoin();
 
