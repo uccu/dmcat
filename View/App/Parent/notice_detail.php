@@ -58,7 +58,7 @@
             success:function(e){
                 if (e.code==200){
                     var result = e.data.info;
-                    var html = '<h1>'+result.title+'</h1><p style="color: #6f6f6f;">'+result.content+'</p>'
+                    var html = '<h1>'+result.title+'</h1><h1><small>'+result.short_message+'</small></h1><p style="color: #6f6f6f;">'+result.content+'</p>'
                     $(".xq-main").append(html);
                 }
             }

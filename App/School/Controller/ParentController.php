@@ -229,7 +229,7 @@ class ParentController extends Controller{
         (!$id || !$student_id) && AJAX::error_i18n('param_error');
 
         $info = Model::getInstance('notice')->find($id);
-
+        $info->content = str_replace("\r\n",'<br>',$info->content);
         $info->create_date = date('Y-m-d',$v->create_time);
 
         if($info->need_confirm){

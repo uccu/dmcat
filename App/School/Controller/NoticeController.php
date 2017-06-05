@@ -70,6 +70,10 @@ class NoticeController extends Controller{
 
         $list = $model->where($where)->page($page,$limit)->order('id','DESC')->get()->toArray();
 
+        foreach($list as &$v){
+            $v->title = $this->lang->language == 'en' ? $v->short_message : $v->title;
+        }
+
         $out['list']  = $list;
         $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
         $out['page'] = $page;
@@ -134,6 +138,9 @@ class NoticeController extends Controller{
 
         $list = $model->page($page,$limit)->order('id','DESC')->get()->toArray();
 
+        foreach($list as &$v){
+            $v->title = $this->lang->language == 'en' ? $v->short_message : $v->title;
+        }
 
         $out['list']  = $list;
         $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
@@ -200,6 +207,9 @@ class NoticeController extends Controller{
         ];
         $out['lang'] = $this->lang->language;
         $list = $model->page($page,$limit)->order('id','DESC')->get()->toArray();
+        foreach($list as &$v){
+            $v->title = $this->lang->language == 'en' ? $v->short_message : $v->title;
+        }
         $out['list']  = $list;
         $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
         $out['page'] = $page;
@@ -257,6 +267,9 @@ class NoticeController extends Controller{
         ];
         $out['lang'] = $this->lang->language;
         $list = $model->page($page,$limit)->order('id','DESC')->get()->toArray();
+        foreach($list as &$v){
+            $v->title = $this->lang->language == 'en' ? $v->short_message : $v->title;
+        }
         $out['list']  = $list;
         $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
         $out['page'] = $page;
@@ -321,7 +334,7 @@ class NoticeController extends Controller{
         $info->end_date = date('Y-m-d H:i:s',$info->end_time);
         $info->fullAvatar = Func::fullPicAddr($info->avatar);
         $info->option = explode(';',$info->options);
-        $info->content = str_replace("\r\n",'<br>',$info->content);
+        $info->content = str_replace("\n",'<br>',$info->content);
         $count = $vModel->select('COUNT(*) AS num,answer','RAW')->group('answer')->where(['vote_id'=>$id])->get('answer')->toArray();
 
        foreach($info->option as $k=>$v){
@@ -375,7 +388,7 @@ class NoticeController extends Controller{
         $info->end_date = date('Y-m-d H:i:s',$info->end_time);
         $info->fullAvatar = Func::fullPicAddr($info->avatar);
         $info->option = explode(';',$info->options);
-        $info->content = str_replace("\r",'<br>',$info->content);
+        $info->content = str_replace("\n",'<br>',$info->content);
         $count = $aModel->select('COUNT(*) AS num,answer','RAW')->group('answer')->where(['activity_id'=>$id])->get('answer')->toArray();
 
        foreach($info->option as $k=>$v){
@@ -416,6 +429,7 @@ class NoticeController extends Controller{
     function get_propaganda_info(PropagandaModel $model,$id = 0){
         $out['info'] = $model->select('*','user.avatar','user.name','user.name_en')->find($id);
         if(!$out['info'])AJAX::error('没有数据/no data');
+        $out['info']->content = str_replace("\n",'<br>',$out['info']->content);
         $out['info']->date = date('m.d H:i',$out['info']->create_time);
         $out['info']->fullAvatar = Func::fullPicAddr($out['info']->avatar);
         AJAX::success($out);
