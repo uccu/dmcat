@@ -12,6 +12,7 @@ use Request;
 use App\School\Tool\AJAX;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
+use Model;
 
 class ClassesController extends Controller{
 
@@ -206,6 +207,31 @@ class ClassesController extends Controller{
         AJAX::success(['list'=>$listw]);
 
 
+
+    }
+
+
+    /* 给老师写信 */
+    function add_classes_message($message = '',$student_id = 0){
+
+        $this->L->check_type(1);
+
+        if(!$message)AJAX::error_i18n('param_error');
+
+        $stu = StudentModel::getInstance()->find($student_id);
+
+        if(!$stu)AJAX::error('怀疑是这个假的学生/fake student!');
+
+        $data['classes_id'] = $stu->classes_id;
+        $data['student_id'] = $student_id;
+        $data['message'] = $message;
+        $data['create_time'] = TIME_NOW;
+
+        Model::getInstance('classes_message')->set($data)->add();
+
+        Func::add_message($this->L->id,'您已成功提交了一条老师留言<br><small>You have successfully submitted a school message</small>');
+
+        AJAX::success();
 
     }
 
