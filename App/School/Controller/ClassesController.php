@@ -229,7 +229,7 @@ class ClassesController extends Controller{
 
         Model::getInstance('classes_message')->set($data)->add();
 
-        Func::add_message($this->L->id,'您已成功提交了一条老师留言<br><small>You have successfully submitted a school message</small>');
+        Func::add_message($this->L->id,'您已成功提交了一条老师留言<br><small>You have successfully submitted a school message</small><br><small>'.$message.'</small>');
 
         AJAX::success();
 

@@ -27,8 +27,15 @@
         $.post('/teacher/get_parent_message',{page:page},function(d){
 
             for(var e in d.data.list)
-                $('.box').append('<div class="mainbody"><h1>'+d.data.list[e].title+'</h1><p>'+d.data.list[e].reply+'</p><span>'+d.data.list[e].date+'</span></div>')
+                $('.box').append('<div class="mainbody'+(!d.data.list[e].reply?' reply':'')+'" data-id="'+d.data.list[e].id+'"><h1>'+d.data.list[e].title+
+                '</h1><p>'+d.data.list[e].message+'</p>'+(d.data.list[e].reply?'<p>回复/Reply：'+d.data.list[e].reply+'</p>':'')+'<span>'+d.data.list[e].date+'</span></div>')
             $(window).unbind('scroll');
+            $('.mainbody').click(function(){
+                if($(this).hasClass('reply'))
+                    location = 'leave?id='+$(this).attr('data-id')
+                else alert('你已经回复了该消息/You has replied this message!')
+            })
+
             if(d.data.list.length){
                 page++;
                 $(window).bind('scroll',function(e){

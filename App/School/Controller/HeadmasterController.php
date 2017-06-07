@@ -155,6 +155,8 @@ class HeadmasterController extends Controller{
 
         $info->save();
 
+        Func::add_message($info—>user,'校长回复了您的留言<br><small>The headmaster has replied to your message</small><br><small>'.$info->message.'</small><br><small>回复/Reply：'.$info->reply.'</small>');
+
         AJAX::success();
         
     }

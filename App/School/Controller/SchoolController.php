@@ -129,7 +129,7 @@ class SchoolController extends Controller{
 
         $ids = UserModel::getInstance()->where(['type'=>6])->get_field('id');
 
-        Func::add_message($this->L->id,'您已成功提交了一条删除申请<br><small>You have successfully submitted a deletion request</small>');
+        Func::add_message($this->L->id,'您已成功提交了一条删除申请<br><small>You have successfully submitted a deletion request</small><br><small>'.$message.'</small>');
 
 
         AJAX::success();

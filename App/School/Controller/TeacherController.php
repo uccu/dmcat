@@ -11,9 +11,11 @@ use App\School\Model\StudentModel;
 use App\School\Model\CommentModel;
 use App\School\Model\UserClassesModel;
 use App\School\Model\MessageModel;
+use App\School\Model\ClassesMessageModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
+use Model;
 use View;
 
 class TeacherController extends Controller{
@@ -102,17 +104,35 @@ class TeacherController extends Controller{
 
     }
 
-    function get_parent_message($page = 1,$limit = 30,CommentModel $model){
+    function get_parent_message($page = 1,$limit = 30){
 
         $id = $this->L->id;
 
-        $list = $model->select('reply','student.name','student.name_en','reply_time')->where(['student.classes.user.user_id'=>$id,['reply_time>0']])->page($page,$limit)->order('reply_time desc')->get()->toArray();
+        $classes_id = Model::getInstance('user_classes')->where(['user_id'=>$id])->find()->classes_id;
+
+        // $list = $model->select('reply','student.name','student.name_en','reply_time')->where(['student.classes.user.user_id'=>$id,['reply_time>0']])->page($page,$limit)->order('reply_time desc')->get()->toArray();
+
+        $list = ClassesMessageModel::getInstance()->select('*','student.name','student.name_en')
+            ->where(['classes_id'=>$classes_id])->page($page,$limit)->order('create_time desc')->get()->toArray();
 
         foreach($list AS $v){
-            $v->title = $v->name.'家长/'.$v->name_en.'\'s parent';
-            $v->date = date('m.d H:i');
+            $v->title = $v->name.'的家长/'.$v->name_en.'\'s parent';
+            $v->date = date('m.d H:i',$v->create_time);
         }
         AJAX::success(['list'=>$list]);
+    }
+
+    function reply($id,$message){
+        $user_id = $this->L->id;
+        $e = ClassesMessageModel::getInstance()->find($id);
+        if(!$e)AJAX::error('恢复失败/Reply Failed');
+        ClassesMessageModel::getInstance()->set(['reply'=>$message,'reply_time'=>TIME_NOW])->save($id);
+
+        $sd = Model::getInstance('user_student')->where(['student_id'=>$e->student_id])->get();
+        foreach($sd as $i)
+            Func::add_message($i->user_id,'老师回复了您的留言<br><small>The teacher has replied to your message</small><br><small>'.$e->message.'</small><br><small>回复/Reply：'.$message.'</small>');
+        AJAX::success();
+
     }
 
     function get_message($page = 1,$limit = 30,MessageModel $model){
@@ -146,6 +166,13 @@ class TeacherController extends Controller{
     }
 
     function profile(){
+
+        $id = $this->L->id;
+        if(!$id)Response::getInstance()->r302('/home/login');
+        include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';
+    }
+
+    function leave(){
 
         $id = $this->L->id;
         if(!$id)Response::getInstance()->r302('/home/login');

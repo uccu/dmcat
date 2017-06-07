@@ -85,7 +85,7 @@
                     // $.getScript("/app/js/daojishi.js")
                     var result = e.data.list;
                     for(var i=0; i<result.length;i++){
-                        var allvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/remaining time&nbsp;</span><div data-countdown="'+result[i].end_date+'" class="time"></div></div><a href="vote_detail?id='+result[i].id+'" class="voteing">投票/vote</a></div><hr>'
+                        var allvote = '<div class="voteactive"><div class="Organizers"><img src="'+result[i].fullAvatar+'" alt=""><div class="organizersName"><h1>'+result[i].name+result[i].name_en+'</h1><h2>'+result[i].date+'</h2></div></div><div class="activeName"><span>'+result[i].title+'</span><p>'+result[i].short_message+'</p></div><div class="remainingTime"><span class="timeSpan">&nbsp;剩余时间/Remaining Time&nbsp;</span><div data-countdown="'+result[i].end_date+'" class="time"></div></div><a href="vote_detail?id='+result[i].id+'" class="voteing">投票/vote</a></div><hr>'
                         $(".allvote").append(allvote)
                         time()
                     }

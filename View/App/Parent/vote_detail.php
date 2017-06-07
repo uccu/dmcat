@@ -133,7 +133,7 @@
                         //获取投票总人数
                         $(".checkbox_label").eq(result.voted-1).click();
                         $(".checkbox_label").unbind()
-                        var allnum = '<span>投票人数/number of voters:'+e.data.countAll+'</span>'
+                        var allnum = '<span>投票人数/Number of Voters:'+e.data.countAll+'</span>'
                         $(".xuanze").find("p").append(allnum)
                         //获取每一个选项的投票人数
                         var votenum = e.data.count;
