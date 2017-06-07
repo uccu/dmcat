@@ -1,0 +1,95 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        .form-horizontal
+                            .form-group
+                                %label.col-sm-1.control-label #{lang.school.school}
+                                .col-sm-2
+                                    %select.form-control.m-b.schoolChange
+                                        %option(value="0") #{lang.adminIndex.all}
+                                %label.col-sm-1.control-label #{lang.classes.classes}
+                                .col-sm-2
+                                    %select.form-control.m-b.classesChange
+                                        %option(value="0") #{lang.adminIndex.all}
+
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                :css
+                    .no-del .data-del{display:none}
+                .ibox.ibox2.float-e-margins.no-del
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id")
+                        .form-group
+                            %label.col-sm-3.control-label 回复/Reply
+                            .col-sm-9
+                                %textarea.form-control(name="reply" style="resize:vertical" rows="12")
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Save
+
+
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(){
+            var school = classes = 0;
+            gr.getListAfter = function(){
+                $('.data-upd').html('<i class="fa fa-pencil text-navy"></i>回复/Reply')
+            };
+            gr.saveAfter = function(){
+                $('button.close').click()
+                flesh()
+            }
+            curl('/school/lists',{},function(w){
+                for(d in w.list)$('.schoolChange').append(
+                    $('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id)
+                )
+                $('.schoolChange').change(function(){
+                    classes = 0;$('.classesChange').val(0);
+                    school = $(this).val();
+                    $('.classesChange').unbind('change').html('').append($('<option>').text('#{lang.adminIndex.all}').attr('value',0));
+                    if(school != 0){
+                        curl('/classes/lists',{school_id:school},function(w){
+                            for(d in w.list)$('.classesChange').append($('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id));
+                            $('.classesChange').bind('change',function(){
+                                classes = $(this).val();flesh()
+                            })
+                        });
+                    }
+                })
+            });
+
+            function flesh(){
+                getList('/classes/message_lists',{classes_id:classes})
+            }
+            flesh()
+        })

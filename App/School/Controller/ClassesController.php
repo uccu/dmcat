@@ -7,6 +7,7 @@ use App\School\Model\ClassesModel;
 use App\School\Model\ClassesLevelModel;
 use App\School\Model\StudentModel;
 use App\School\Model\UserModel;
+use App\School\Model\ClassesMessageModel;
 use Controller;
 use Request;
 use App\School\Tool\AJAX;
@@ -235,7 +236,79 @@ class ClassesController extends Controller{
 
     }
 
-    
+    # 老师的信箱
+    function message_lists(ClassesModel $model,$classes_id = 0){
 
+        !$this->L->id && AJAX::errorn('未登录/no login');
+
+        $this->L->check_type([3]);
+
+        $out = ['get'=>'/classes/message_get','upd'=>'/classes/message_upd'];
+
+        $out['thead'] = [
+            'ID'=>['class'=>'tc'],
+            '学生/Student'=>['class'=>'tc'],
+            '日期/Date'=>['class'=>'tc'],
+            '信息/Message'=>['class'=>'tc'],
+            '回复/Reply'=>['class'=>'tc'],
+            
+            '_opt'=>['class'=>'tc'],
+        ];
+        
+        $out['tbody'] = [
+            'id'=>['class'=>'tc'],
+            'name'=>['class'=>'tc'],
+            'date'=>['class'=>'tc'],
+            'message'=>['class'=>'tc'],
+            'reply'=>['class'=>'tc'],
+            '_opt'=>['class'=>'tc'],
+        ];
+
+        $out['lang'] = $this->lang->language;
+
+
+        $list = ClassesMessageModel::getInstance()->select('*','student.name','student.name_en')
+            ->where(['classes_id'=>$classes_id])->order('create_time desc')->get()->toArray();
+
+        foreach($list as &$v){
+            $v->name = $v->name.','.$v->name_en;
+            $v->date = date('Y.m.d',$v->create_time);
+        }
+
+        $out['list']  = $list;
+        AJAX::success($out);
+
+
+    }
+
+    function message_get($id){
+
+        !$id && AJAX::success(['info'=>[]]);
+        $out['info'] = $info = ClassesMessageModel::getInstance()->find($id);
+        !$info && AJAX::error_i18n('no_data');
+        $info->reply && AJAX::error('你已经回复了该家长消息/You has replied this message!');
+
+        AJAX::success($out);
+
+    }
+
+    function message_upd($id){
+
+        $data = Request::getInstance()->request(['reply']);
+
+        if(!$id){
+            
+            $data['create_time'] = TIME_NOW;
+            ClassesMessageModel::getInstance()->set($data)->add();
+
+        }else{
+            ClassesMessageModel::getInstance()->set($data)->save($id);
+        }
+        
+        
+
+        AJAX::success();
+
+    }
 
 }

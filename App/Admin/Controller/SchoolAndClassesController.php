@@ -69,7 +69,18 @@ class SchoolAndClassesController extends Controller{
 
     }
 
-    
+    /* 信箱 */
+    function classes_message(){
+
+        $lang = $this->L->i18n;
+        $lang->adminIndex;
+        $lang->school;
+        $lang->classes;
+
+        View::addData(['lang'=>$lang]);
+        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+
+    }
 
 
 }
