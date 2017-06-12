@@ -13,6 +13,9 @@ use App\School\Middleware\L;
 use App\School\Model\RecruitModel;
 use App\School\Model\RecruitStudentsModel;
 
+use PHPExcel_Writer_Excel2007;
+use PHPExcel;
+
 class RecruitController extends Controller{
 
 
@@ -299,5 +302,80 @@ class RecruitController extends Controller{
         include VIEW_ROOT.'App/recruit/'.__FUNCTION__.'.php';
     }
 
+
+    function zout($recruit_id,$is_paid,$start,$end){
+
+        $this->L->check_type([5,6,7]);
+
+        require_once VENDOR_ROOT.'os/php-excel/PHPExcel/Settings.php';
+        require_once VENDOR_ROOT.'os/php-excel/PHPExcel/PHPExcel.php';
+        $objPHPExcel = new PHPExcel();
+        
+        $sheet = $objPHPExcel->getActiveSheet();
+
+        $model = RecruitStudentsModel::getInstance();
+
+        if($recruit_id)$model->where(['recruit_id'=>$recruit_id]);
+        if($is_paid == 1)$model->where('pay_time>0');
+        else if($is_paid == 2)$model->where(['pay_time'=>0]);
+
+        $start = strtotime($start);
+        $end = strtotime($end);
+        if($start)$model->where('create_time>=%n',$start);
+        if($end)$model->where('create_time<%n',$end+24*3600);
+
+        $list = $model->order('create_time')->get()->toArray();
+
+        if(!$list)AJAX::success('无数据/NO DATA');
+
+        $sheet->setCellValue('B1', '家长名字');
+        $sheet->setCellValue('C1', 'Parent Name');
+        $sheet->setCellValue('D1', '学生名字');
+        $sheet->setCellValue('E1', 'Student Name');
+        $sheet->setCellValue('F1', '电话/Phone');
+        $sheet->setCellValue('G1', '地址/Address');
+        $sheet->setCellValue('H1', '年龄/Age');
+        $sheet->setCellValue('I1', '体重/Weight');
+        $sheet->setCellValue('J1', '身高/Height');
+        $sheet->setCellValue('K1', '填表时间/Apply Date');
+        $sheet->setCellValue('L1', '付款时间/Pay Time');
+
+
+        foreach($list as $k=>$v){
+            $sheet->setCellValue('A'.($k+2), $k+1);
+            $sheet->setCellValue('B'.($k+2), $v->parent_name);
+            $sheet->setCellValue('C'.($k+2), $v->parent_name_en);
+            $sheet->setCellValue('D'.($k+2), $v->student_name);
+            $sheet->setCellValue('E'.($k+2), $v->student_name_en);
+            $sheet->setCellValue('F'.($k+2), $v->phone);
+            $sheet->setCellValue('G'.($k+2), $v->address);
+            $sheet->setCellValue('H'.($k+2), $v->age);
+            $sheet->setCellValue('I'.($k+2), $v->weight.' KG');
+            $sheet->setCellValue('J'.($k+2), $v->height.' CM');
+            $sheet->setCellValue('K'.($k+2), date('Y/m/d',$v->create_time));
+            $sheet->setCellValue('L'.($k+2), $v->pay_time?date('Y/m/d',$v->pay_time):'未付款/Not Paid');
+
+        }
+
+
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save(BASE_ROOT."log/05featuredemo.xlsx");
+
+
+        $filename=realpath(BASE_ROOT."log/05featuredemo.xlsx"); //文件名
+
+        header( "Content-type:  application/octet-stream "); 
+        header( "Accept-Ranges:  bytes "); 
+        header( "Accept-Length: " .filesize($filename));
+        header( "Content-Disposition:  attachment;  filename= report.xlsx");
+        echo file_get_contents($filename);
+        // readfile($filename); 
+
+        // echo $objWriter->generateHTMLHeader();
+        // echo $objWriter->generateStyles(false); // do not write <style> and </style>
+        // echo $objWriter->generateSheetData();
+        // echo $objWriter->generateHTMLFooter();
+
+    }
     
 }

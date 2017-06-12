@@ -58,5 +58,15 @@ class RecruitController extends Controller{
 
     }
 
+    function slists_we(){
+
+        $lang = $this->L->i18n;
+        $lang->adminIndex;
+        $lang->recruit;
+        View::addData(['lang'=>$lang]);
+        View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+
+    }
+
 
 }

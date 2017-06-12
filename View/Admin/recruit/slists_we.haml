@@ -1,0 +1,63 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        %form.form-horizontal(target="_blank" action="/recruit/zout")
+                            .form-group
+                                %label.col-sm-2.control-label 选择考试/Choose Test
+                                .col-sm-2
+                                    %select.form-control.m-b.idChange(name="recruit_id")
+                                        %option(value="0") #{lang.adminIndex.all}
+                            
+                                %label.col-sm-2.control-label 是否付款/Ispaid
+                                .col-sm-2
+                                    %select.form-control.m-b.isPaidChange(name="is_paid")
+                                        %option(value="0") #{lang.adminIndex.all}
+                                        %option(value="1") Yes
+                                        %option(value="2") No
+                            .form-group
+                                %label.col-sm-2.control-label 开始日期/Start Date
+                                .col-sm-2
+                                    %input.form-control(placeholder="XXXX-XX-XX" name="start")
+                                %label.col-sm-2.control-label 结束日期/End Date
+                                .col-sm-2
+                                    %input.form-control(placeholder="XXXX-XX-XX" name="end")
+                                .col-sm-2
+                                    %input.form-control.submit(type="submit" value="导出/Export")
+                .ibox.ibox2.float-e-margins
+    
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(){
+            var id = 0,ispaid=0;
+            curl('/recruit/lists_w',{},function(w){
+                for(d in w.list)$('.idChange').append(
+                    $('<option>').text(w.list[d].title).attr('value',w.list[d].id)
+                )
+                $('.idChange').change(function(){
+                    id = $(this).val();
+                });
+                $('.isPaidChange').change(function(){
+                    ispaid = $(this).val();
+                })
+            });
+
+            $('form').submit(function(e){
+                //e.preventDefault()
+                var d = $(this).serialize()
+                
+                
+
+            })
+
+            
+        })
