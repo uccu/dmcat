@@ -9,13 +9,14 @@
                 .ibox.float-e-margins
                     .ibox-content.topw
                         .row
-                            .col-sm-1
+                            .col-xs-1
                                 %button.btn.btn-primary.btn-outline.newOne(data-toggle="button" type="button" aria-pressed="true") new
-                            .col-sm-3
+                            .visible-xs.col-xs-2
+                            .col-sm-3.col-xs-8
                                 %form.input-group
                                     %input.form-control
                                     %span.input-group-btn
-                                        %button.btn.btn-primary.search(type="submit") 搜索
+                                        %button.btn.btn-primary.search.t(type="submit") 搜索
                 .sk-spinner.sk-spinner-wave.animated
                     .sk-rect1
                     .sk-rect2
@@ -76,17 +77,21 @@
 
 - block otherScript
     :javascript
-        $(function(){
+        $(function(j){
             var search = '';
-            $('.topw form').bind('submit',function(e){
+            j('.topw form').bind('submit',function(e){
                 e.preventDefault()
-                search = $(this).find('input').val()
+                search = j(this).find('input').val()
                 gr.flesh();
             });
             upPic('/staff/upAvatar','input[type="file"]','input[name="avatar"]','.avatar_img');
-            $('.avatar_img').bind('click',function(){
-                $('input[type="file"]').click();
+            j('.avatar_img').bind('click',function(){
+                j('input[type="file"]').click();
             })
+            gr.updBefore = function(){
+                j('input[name="avatar"]').val('noavatar.png')
+                j('.avatar_img')[0].src = '/pic/noavatar.png'
+            }
             gr.flesh = function(){
                 getList('/staff/lists',{type:1,page:1,search:search})
             }

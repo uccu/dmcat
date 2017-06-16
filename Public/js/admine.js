@@ -73,10 +73,8 @@ function packFormData(file,v,x){
     return typeof x==='function'?x(form):form
 }
 $(function(){
-    var upd = function(d,id){
-        $('#modal_new .sk-spinner').removeClass('fadeOutUp');
-        $('#modal_new [name]').val('');
-        curl(d.get,{id:id},function(g){
+    window.cget = function(get,id,upd,er){
+        curl(get,{id:id},function(g){
             $('#modal_new .sk-spinner').addClass('fadeOutUp');
             for(h in g.info){
                 $('#modal_new form').find('[name="'+h+'"]').val(g.info[h]).change();
@@ -84,18 +82,34 @@ $(function(){
                     $('#modal_new form').find('img[data-name="'+h+'"]').attr('src','/pic/'+g.info[h]);
                     $('#modal_new form').find('select[name="'+h+'"]').attr('data-value',g.info[h]);
                 }
+                $('#modal_new form').find('.summernote[data-name="'+h+'"]').each(function(){
+                    $(this).summernote('code',g.info[h]);
+                })
+                    
             }
             $('#modal_new .save').unbind('click').bind('click',function(){
-                curl(d.upd,$('#modal_new form').serialize(),function(b){
+                var data = $('#modal_new form').serializeArray(),k
+                $('#modal_new form .summernote[data-name]').each(function(){
+                    data.push({name:$(this).attr('data-name'),value:$(this).summernote('code')})
+                })
+                
+                curl(upd,data,function(b){
                     curl_succ('success!');
+                    $('.modal .sr-only').click()
                     if(typeof gr.saveAfter === 'function')gr.saveAfter(b);
                     else if(gr.flesh instanceof Function)gr.flesh()
                     else setTimeout('location.reload()',1000)
                 })
             });
             if(typeof gr.updFunction === 'function')gr.updFunction(g);
-            $('#modal_new').modal();
+            er || $('#modal_new').modal();
         });
+    }
+    var upd = function(d,id){
+        $('#modal_new .sk-spinner').removeClass('fadeOutUp');
+        $('#modal_new [name]').val('');
+        if(gr.updBefore instanceof Function)gr.updBefore(id);
+        cget(d.get,id,d.upd);
     };
     window.getList = function(listUrl,gdata){
         if(gdata ==undefined)gdata = {}
@@ -124,10 +138,12 @@ $(function(){
                     var td = $('<td>').attr('data-id',d.list[e].id);
                     if(a == '_opt'){
                         td.append('<a class="data-upd"><i class="fa fa-pencil text-navy"></i> '+lang.adminIndex.update+' </a><a class="data-del"><i class="fa fa-close text-danger"></i> '+lang.adminIndex.delete+' </a>');
+                        if(d.tbody[a].updateLink)td.find('.data-upd').attr('data-href',d.upd+'?id='+d.list[e].id);
                         td.find('.data-upd').click(function(){
                             $('.updateOnly').removeClass('dn');
                             $('h4.modal-title').text(lang.adminIndex.update);
-                            upd(d,$(this).parent().attr('data-id'))
+                            if($(this).attr('data-href'))gotoNewTag($(this).attr('data-href'),lang.adminIndex.update)
+                            else upd(d,$(this).parent().attr('data-id'))
                         });
                         td.find('.data-del').click(function(){
                             var id = $(this).parent().attr('data-id');
@@ -140,7 +156,7 @@ $(function(){
                                 });
                             })
                         });
-                    }else if(a == '_pic'){
+                    }else if(d.tbody[a].type == 'imga'){
                         td.append($('<a>').attr({'href':d.list[e][a],'target':'_blank'}).append($('<img>').addClass('img-m').attr('src',d.list[e][a])));
 
                     }else{
@@ -163,7 +179,8 @@ $(function(){
             $('.newOne').unbind('click').bind('click',function(){
                 $('.updateOnly').addClass('dn');
                 $('h4.modal-title').text(lang.adminIndex.create);
-                upd(d,0);
+                if($(this).attr('data-href'))gotoNewTag($(this).attr('data-href'),lang.adminIndex.create)
+                else upd(d,0);
             });
             $('tbody .i-checks').iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green"});
             if(typeof gr.getListAfter === 'function')gr.getListAfter(d);
@@ -171,7 +188,8 @@ $(function(){
     };
     window.upPic = function(url,f,i,p){
         $(f).bind('change',function(){
-            curl(url,packFormData(f),function(d){
+            var u = packFormData(f)
+            if(u)curl(url,u,function(d){
                 if(typeof i ==="function")i(d);
                 else if(i)$(i).val(d.path);
                 if(p)$(p).attr('src',d.fpath);

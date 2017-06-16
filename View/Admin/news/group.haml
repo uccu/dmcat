@@ -2,60 +2,42 @@
 
 
 - block body
-    
+
     .wrapper.wrapper-content
         .row
             .col-sm-12
                 .ibox.float-e-margins
-                    .ibox-content
-                        .summernote
-                            %h2 后台主题
+                    .ibox-content.topw
+                        .row
+                            .col-sm-1
+                                %button.btn.btn-primary.btn-outline.newOne(data-href="news/group_detail") new
+
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                
+                .ibox.ibox2.float-e-margins
     
-- block otherCss
-    %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
-    %link(href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet")
 
                         
 
 
-
 - block otherScript
-    %script(src="/js/plugins/summernote/summernote.min.js")
-    %script(src="/js/plugins/summernote/summernote-zh-CN.js")
     :javascript
-        $(document).ready(function(){
-            var su = $(".summernote").summernote({
-                toolbar: [
-                    ['style', ['style']],
-                    ['style', ['bold', 'italic', 'underline', 'clear']],
-                    ['fontname',['fontname']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['height', ['height']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['e',['picture','link']],
-                    ['o',['codeview']],
-                ],
-                height: 300,
-                minHeight: 300,
-                maxHeight: null,
-                focus: true,
-                lang:"zh-CN",
-                callbacks: {
-                    onImageUpload: function(files) {
-                        curl('/staff/upPic',packFormData(files),function(d){
-                            var imgNode = new Image
-                            imgNode.src = d.fpath
-                            su.summernote('insertNode', imgNode);
-                        },1);
-                    }
-                }
-            })
+        $(function(j){
+            gr.updBefore = function(){
+                
+            }
+            gr.flesh = function(){
+                getList('/news/group_lists')
+            }
             
-            // $('.click2edit').summernote('code');
-
-        });
-
-
-    
+            gr.flesh();
+        })
+            
         
+        
+            

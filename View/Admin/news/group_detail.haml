@@ -6,7 +6,9 @@
     .wrapper.wrapper-content
         .row
             .col-sm-12
-                .ibox.float-e-margins
+                #modal_new.ibox.float-e-margins
+                    .ibox-title
+                        %h3 集团要闻
                     .ibox-content
                         %form.form-horizontal.animated(method="post")
                             %input.form-control(type="hidden" name="id")
@@ -22,7 +24,9 @@
                             .form-group
                                 %label.col-sm-2.control-label 封面图
                                 .col-sm-6
-                                    %input.form-control(name="pic" type="file")
+                                    %img.cp.pic_img(data-name="pic" src="/pic/nopic.jpg" style="max-width:100px;max-height:100px")
+                                    %input.form-control.picFile(type="file" style="display:none")
+                                    %input.form-control(type="hidden" name="pic")
                             .form-group
                                 %label.col-sm-2.control-label 优先级
                                 .col-sm-2
@@ -31,12 +35,14 @@
                             .form-group
                                 %label.col-sm-2.control-label 描述
                                 .col-sm-6
-                                    %input.form-control(name="description")
+                                    %textarea.form-control.noresize(name="description" rows="4")
                             .form-group
                                 %label.col-sm-2.control-label 详情
                                 .col-sm-9
-                                    .summernote
-                        
+                                    .summernote(data-name="content")
+                        .ibox-title
+                            %a.btn.btn-default(href="javascript:gotoTag('/news/group',1)") Close
+                            %button.btn.btn-primary.save(type="button") Save
     
 - block otherCss
     %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
@@ -50,8 +56,12 @@
     %script(src="/js/plugins/summernote/summernote.min.js")
     %script(src="/js/plugins/summernote/summernote-zh-CN.js")
     :javascript
-        $(document).ready(function(){
-            var su = $(".summernote").summernote({
+        $(function(j){
+            upPic('/staff/upPic','.picFile','input[name="pic"]','.pic_img');
+            j('.pic_img').click(function(){
+                j('.picFile').click();
+            })
+            var su = j(".summernote").summernote({
                 toolbar: [
                     ['style', ['style']],
                     ['style', ['bold', 'italic', 'underline', 'clear']],
@@ -78,7 +88,9 @@
                     }
                 }
             })
-            
+
+            cget('/news/group_get','#{id}','/news/group_upd',1);
+            // gr.flesh = function(){}
             // $('.click2edit').summernote('code');
 
         });

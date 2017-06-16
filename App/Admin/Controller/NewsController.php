@@ -22,7 +22,9 @@ class NewsController extends Controller{
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
     }
     
-    function group_detail(){
+    function group_detail($id){
+
+        View::addData(['id'=>$id]);
 
         View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
     }

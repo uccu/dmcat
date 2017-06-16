@@ -10,7 +10,7 @@
                     .ibox-content.topw
                         .row
                             .col-sm-1
-                                %button.btn.btn-primary.btn-outline.newOne(data-toggle="button" type="button" aria-pressed="true") new
+                                %a.btn.btn-primary.btn-outline.newOneLink new
 
                 .sk-spinner.sk-spinner-wave.animated
                     .sk-rect1
@@ -38,38 +38,19 @@
                         .sk-rect5
                     %form.form-horizontal.animated(method="post")
                         %input.form-control(type="hidden" name="id")
-                        
+                        .form-group.tc
+                            %img.center-block.cp.pic_img(data-name="pic" src="/pic/nopic.jpg" style="max-width:100px;max-height:100px")
+                            %input.form-control(type="file" style="display:none")
+                            %input.form-control(type="hidden" name="pic")
                         .form-group
-                            %label.col-sm-3.control-label 标题/Title
+                            %label.col-sm-3.control-label 顺序序号
                             .col-sm-9
-                                %input.form-control(name="title")
+                                %input.form-control(name="ord")
                         .form-group
-                            %label.col-sm-3.control-label 简介/short message
+                            %label.col-sm-3.control-label 超链接
                             .col-sm-9
-                                %input.form-control(name="short_message")
-                        .form-group
-                            %label.col-sm-3.control-label 详细内容/content
-                            .col-sm-9
-                                %textarea.form-control(name="content" style="resize:vertical" rows="10")
-                        .form-group
-                            %label.col-sm-3.control-label 到期时间/end time
-                            .col-sm-9
-                                %input.form-control(name="end_date" placeholder="YYYY-mm-dd")
-                        .bbox
-                            .form-group
-                                %label.col-sm-3.control-label 选项/option
-                                .col-sm-8
-                                    %input.form-control.option(name="option[]")
-                                %label.col-sm-1.control-label x
-                            .form-group
-                                %label.col-sm-3.control-label 选项/option
-                                .col-sm-8
-                                    %input.form-control.option(name="option[]")
-                                %label.col-sm-1.control-label x
-                        .bbox2
-                            .form-group
-                                %label.col-sm-12.tr
-                                    %button.btn.btn-success(type="button") 添加
+                                %input.form-control(name="href")
+
                     
                     
                 .modal-footer
@@ -81,13 +62,21 @@
 
 - block otherScript
     :javascript
+        $(function(j){
+            gr.updBefore = function(){
+                j('input[name="pic"]').val('nopic.jpg')
+                j('.pic_img')[0].src = '/pic/nopic.jpg'
+            }
+            gr.flesh = function(){
+                getList('/home/banner_lists')
+            }
+            upPic('/staff/upPic','input[type="file"]','input[name="pic"]','.pic_img');
+            j('.pic_img').click(function(){
+                j('input[type="file"]').click();
+            })
+            gr.flesh();
+        })
+            
+        
         
             
-            function flesh(){
-
-                getList('/notice/activity_lists')
-            }
-
-            flesh();
-            
-        })

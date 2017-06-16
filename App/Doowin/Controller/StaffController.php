@@ -25,7 +25,7 @@ class StaffController extends Controller{
 
     /* 列表 */
     function lists(UserModel $model,$type = 0,$search = '',$page = 1,$school,$limit = 30){
-
+        $this->L->check_type(7);
         // !$this->L->id && AJAX::error('not_login');
 
         $out = ['get'=>'/staff/get','upd'=>'/staff/upd?type='.$type,'del'=>'/staff/del'];
@@ -70,7 +70,7 @@ class StaffController extends Controller{
     }
 
     function get($id,UserModel $model){
-
+        $this->L->check_type(7);
         !$id && AJAX::success(['info'=>[]]);
         $out['info'] = $info = $model->find($id);
         !$info && AJAX::error('no_data');
@@ -80,7 +80,7 @@ class StaffController extends Controller{
     }
 
     function upd($id,UserModel $model,$raw_password,$user_name){
-
+        $this->L->check_type(7);
         $data = Request::getInstance()->request(['name','email','avatar','phone','user_name','type']);
         unset ($data['id']);
 
@@ -125,7 +125,7 @@ class StaffController extends Controller{
     }
 
     function upPic(){
-
+        
         $out['path'] = Func::uploadFiles('file');
         if(!$out['path'])AJAX::error('no image');
         $out['fpath'] = '/pic/'.$out['path'];
@@ -135,7 +135,7 @@ class StaffController extends Controller{
 
 
     function del($id,UserModel $model){
-
+        $this->L->check_type(7);
         !$id && AJAX::error('param_error');
         $model->remove($id);
         AJAX::success();
