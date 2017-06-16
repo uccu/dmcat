@@ -31,7 +31,6 @@ class E extends Exception{
 		$str =  "$base EXCEPTION : [$code][$message] FILE [$file] LINE [$line]";
 		
 		
-
 		
 
 		// create a log channel

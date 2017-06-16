@@ -1,0 +1,88 @@
+- extends "base.haml"
+
+
+- block body
+    
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content
+                        %form.form-horizontal.animated(method="post")
+                            %input.form-control(type="hidden" name="id")
+                            .form-group
+                                %label.col-sm-2.control-label 标题
+                                .col-sm-6
+                                    %input.form-control(name="title")
+                            
+                            .form-group
+                                %label.col-sm-2.control-label 年份
+                                .col-sm-2
+                                    %input.form-control(name="year" value="2017")
+                            .form-group
+                                %label.col-sm-2.control-label 封面图
+                                .col-sm-6
+                                    %input.form-control(name="pic" type="file")
+                            .form-group
+                                %label.col-sm-2.control-label 优先级
+                                .col-sm-2
+                                    %input.form-control(name="top" value="0")
+                                %label.col-sm-2.control-label.text-muted (*优先级越高排在越前面)
+                            .form-group
+                                %label.col-sm-2.control-label 描述
+                                .col-sm-6
+                                    %input.form-control(name="description")
+                            .form-group
+                                %label.col-sm-2.control-label 详情
+                                .col-sm-9
+                                    .summernote
+                        
+    
+- block otherCss
+    %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
+    %link(href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet")
+
+                        
+
+
+
+- block otherScript
+    %script(src="/js/plugins/summernote/summernote.min.js")
+    %script(src="/js/plugins/summernote/summernote-zh-CN.js")
+    :javascript
+        $(document).ready(function(){
+            var su = $(".summernote").summernote({
+                toolbar: [
+                    ['style', ['style']],
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname',['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['height', ['height']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['e',['picture','link']],
+                    ['o',['codeview']],
+                ],
+                height: 300,
+                minHeight: 300,
+                maxHeight: null,
+                focus: true,
+                lang:"zh-CN",
+                callbacks: {
+                    onImageUpload: function(files) {
+                        curl('/staff/upPic',packFormData(files),function(d){
+                            var imgNode = new Image
+                            imgNode.src = d.fpath
+                            su.summernote('insertNode', imgNode);
+                        },1);
+                    }
+                }
+            })
+            
+            // $('.click2edit').summernote('code');
+
+        });
+
+
+    
+        

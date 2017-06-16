@@ -1,0 +1,95 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content.topw
+                        .row
+                            .col-sm-1
+                                %button.btn.btn-primary.btn-outline.newOne(data-toggle="button" type="button" aria-pressed="true") new
+                            .col-sm-3
+                                %form.input-group
+                                    %input.form-control
+                                    %span.input-group-btn
+                                        %button.btn.btn-primary.search(type="submit") 搜索
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                
+                .ibox.ibox2.float-e-margins
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id")
+                        .form-group.tc
+                            %img.img-circle.center-block.cp.avatar_img(data-name="avatar" src="/pic/noavatar.png" style="max-width:100px;max-height:100px")
+                            %input.form-control(type="file" style="display:none")
+                            %input.form-control(type="hidden" name="avatar")
+                        .form-group
+                            %label.col-sm-3.control-label 昵称
+                            .col-sm-9
+                                %input.form-control(name="name")
+                        .form-group
+                            %label.col-sm-3.control-label 登录用户名
+                            .col-sm-9
+                                %input.form-control(name="user_name")
+                        .form-group
+                            %label.col-sm-3.control-label 邮箱
+                            .col-sm-9
+                                %input.form-control(type="email" name="email")
+                        .form-group
+                            %label.col-sm-3.control-label 手机号
+                            .col-sm-9
+                                %input.form-control(name="phone")
+                        .form-group
+                            %label.col-sm-3.control-label 密码
+                            .col-sm-9
+                                %input.form-control(name="raw_password")
+                        
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Save
+
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(){
+            var search = '';
+            $('.topw form').bind('submit',function(e){
+                e.preventDefault()
+                search = $(this).find('input').val()
+                gr.flesh();
+            });
+            upPic('/staff/upAvatar','input[type="file"]','input[name="avatar"]','.avatar_img');
+            $('.avatar_img').bind('click',function(){
+                $('input[type="file"]').click();
+            })
+            gr.flesh = function(){
+                getList('/staff/lists',{type:1,page:1,search:search})
+            }
+            gr.flesh();
+            
+        })
