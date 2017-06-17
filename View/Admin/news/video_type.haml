@@ -38,18 +38,18 @@
                         .sk-rect5
                     %form.form-horizontal.animated(method="post")
                         %input.form-control(type="hidden" name="id")
-                        .form-group.tc
-                            %img.center-block.cp.pic_img(data-name="pic" src="/pic/nopic.jpg" style="max-width:100px;max-height:100px")
-                            %input.form-control(type="file" style="display:none")
-                            %input.form-control(type="hidden" name="pic")
                         .form-group
                             %label.col-sm-3.control-label 顺序序号
                             .col-sm-9
                                 %input.form-control(name="ord")
                         .form-group
-                            %label.col-sm-3.control-label 超链接
+                            %label.col-sm-3.control-label 名字
                             .col-sm-9
-                                %input.form-control(name="href")
+                                %input.form-control(name="name")
+                        .form-group
+                            %label.col-sm-3.control-label 名字(EN)
+                            .col-sm-9
+                                %input.form-control(name="name_en")
 
                     
                     
@@ -64,16 +64,12 @@
     :javascript
         $(function(j){
             gr.updBefore = function(){
-                j('input[name="pic"]').val('nopic.jpg')
-                j('.pic_img')[0].src = '/pic/nopic.jpg'
+                
             }
             gr.flesh = function(){
-                getList('/home/banner_lists')
+                getList('/news/video_type_lists')
             }
-            upPic('/staff/upPic','input[type="file"]','input[name="pic"]','.pic_img');
-            j('.pic_img').click(function(){
-                j('input[type="file"]').click();
-            })
+
             gr.flesh();
         })
             

@@ -1,0 +1,43 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content.topw
+                        .row
+                            .col-sm-1
+                                %button.btn.btn-primary.btn-outline.newOne(data-href="news/hot_detail") new
+
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                
+                .ibox.ibox2.float-e-margins
+    
+
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(j){
+            gr.updBefore = function(){
+                
+            }
+            gr.flesh = function(){
+                getList('/news/hot_lists')
+            }
+            
+            gr.flesh();
+        })
+            
+        
+        
+            
