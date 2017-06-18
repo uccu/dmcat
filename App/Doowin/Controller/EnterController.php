@@ -6,6 +6,7 @@ namespace App\Doowin\Controller;
 use App\Doowin\Model\StaticPageModel;
 use App\Doowin\Model\IntroductionProductModel;
 use App\Doowin\Model\DevelopModel;
+use App\Doowin\Model\ChairmanPictureModel;
 use App\Doowin\Model\HonorModel;
 use App\Doowin\Model\CharitableModel;
 
@@ -112,6 +113,74 @@ class EnterController extends Controller{
             $data = Request::getInstance()->request(['content','content_en']);
             $model->set($data)->save(2);
             AJAX::success();
+        }
+
+        function chairman_picture_lists(ChairmanPictureModel $model,$page = 1,$limit = 30){
+
+            $out = [
+                'get'=>'/enter/chairman_picture_get',
+                'upd'=>'/enter/chairman_picture_upd',
+                'del'=>'/enter/chairman_picture_del'
+            ];
+
+            $out['thead'] = [
+                '描述'=>['class'=>'tc'],
+                '_opt'=>['class'=>'tc'],
+            ];
+            
+            $out['tbody'] = [
+                'description'=>['class'=>'tc'],
+                '_opt'=>['class'=>'tc'],
+            ];
+
+            $list = $model->where($where)->page($page,$limit)->order('year desc','month desc')->get()->toArray();
+
+            foreach($list as &$v){
+
+            }
+
+            $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
+            $out['page'] = $page;
+            $out['limit'] = $limit;
+
+            $out['list']  = $list;
+            AJAX::success($out);
+
+        }
+        function chairman_picture_get(ChairmanPictureModel $model,$id){
+
+            !$id && AJAX::success(['info'=>[]]);
+            $info = $model->find($id);
+            !$info && AJAX::error('没有数据！');
+            $info->picArray = [];
+            $info->pic2Array = [];
+            if($info->pic){
+                $pics = explode(';',$info->pic);
+                $info->pic2Array = $pics;
+                foreach($pics as &$v)$v = Func::fullPicAddr( $v );
+                $info->picArray = $pics;
+            }
+            $out['info'] = $info;
+            AJAX::success($out);
+
+        }
+        function chairman_picture_upd($id,ChairmanPictureModel $model){
+
+            $data = Request::getInstance()->request(['pic','description','description_en']);
+            $data['year'] = floor($data['year']);
+            $data['month'] = floor($data['month']);
+            if(!$id)$id = $model->set($data)->add()->getStatus();
+            else $model->set($data)->save($id);
+
+            AJAX::success();
+
+        }
+        function chairman_picture_del($id,ChairmanPictureModel $model){
+
+            !$id && AJAX::error('删除失败！');
+            $model->remove($id);
+            AJAX::success();
+
         }
         
     # 发展历程
@@ -264,9 +333,7 @@ class EnterController extends Controller{
         }
 
         # charitable
-
-        /* banner */
-    function charitable_lists(CharitableModel $model,$page = 1,$limit = 30){
+        function charitable_lists(CharitableModel $model,$page = 1,$limit = 30){
 
             $out = [
                 'get'=>'/enter/charitable_get',

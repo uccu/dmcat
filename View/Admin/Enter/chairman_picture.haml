@@ -1,0 +1,109 @@
+- extends "base.haml"
+
+- block otherCss
+    :css
+        .picArray img{width:40px}
+        .fa-plus-square-o{font-size:45px}
+        .dn{display:none !important}
+
+- block body
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content.topw
+                        .row
+                            .col-sm-1
+                                %a.btn.btn-primary.btn-outline.newOne new
+
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                
+                .ibox.ibox2.float-e-margins
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id")
+                        %input(type="hidden" name="pic")
+                        .form-group
+                            %label.col-sm-3.control-label 图片/Picture
+                            .col-sm-9.picArray
+                                %span.dib.clear
+
+                                    
+                                %i.fa.fa-plus-square-o.cp
+                                %input.dn(type="file")
+                        .form-group
+                            %label.col-sm-3.control-label 描述
+                            .col-sm-9
+                                %textarea.form-control(name="description" style="resize:none;")
+                        .form-group
+                            %label.col-sm-3.control-label 描述(EN)
+                            .col-sm-9
+                                %textarea.form-control(name="description_en" style="resize:none;")
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Save
+
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(j){
+            gr.updBefore = function(){
+                $('#modal_new .picArray span').html('');
+            }
+            gr.flesh = function(){
+                getList('/enter/chairman_picture_lists')
+            }
+            gr.updFunction = function(g){
+                for(h in g.info.pic2Array)$('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.info.picArray[h],'data-pic':g.info.pic2Array[h]}).click(vc.dePic));
+            }
+
+            gr.flesh();
+            $('.fa-plus-square-o').click(function(){$('input[type="file"]').click()})
+            var vc = {
+                toPic:function(){
+                    var img = $('#modal_new .picArray span img');
+                    var l = img.length;
+                    var pic = [];
+                    for(var i=0;i<l;i++)pic.push(img.eq(i).attr('data-pic'));
+
+
+                    $('#modal_new [name="pic"]').val(pic.join(';'));
+                },dePic:function(){
+                    var that = this;
+                    curl_check(function(){
+                        $(that).remove();vc.toPic()
+                    })
+
+                }
+            }
+            upPic('/staff/upPic','input[type="file"]',function(g){
+                $('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.apath,'data-pic':g.path}).click(vc.dePic));
+                vc.toPic()
+            });
+        })
+            
+        
+        
+            
