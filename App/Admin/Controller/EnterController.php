@@ -8,7 +8,7 @@ use View;
 use Request;
 use App\Doowin\Middleware\L;
 
-class NewsController extends Controller{
+class EnterController extends Controller{
 
     function __construct(){
 
@@ -17,43 +17,50 @@ class NewsController extends Controller{
 
     }
 
-    # 集团要闻
-        function group(){
+    # 集团简介
+        function introduction(){
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
-        function group_detail($id){
+        function introduction_product(){
+            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+        }
+        function introduction_product_detail($id){
             View::addData(['id'=>$id]);
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
     
-    # 热点专题
-        function hot(){
+    # 董事长专区
+        function chairman(){
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
-        function hot_detail($id){
-            View::addData(['id'=>$id]);
-            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
-        }
-
-    # 媒体聚焦
-        function media(){
-            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
-        }
-        function media_detail($id){
-            View::addData(['id'=>$id]);
-            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
-        }
-    
-    # 视频中心
-        function video(){
-            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
-        }
-        function video_detail($id){
-            View::addData(['id'=>$id]);
+        function chairman_picture(){
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
 
-        function video_type(){
+
+    # 发展历程
+        function develop(){
+            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+        }
+
+    # 企业文化
+        function culture(){
+            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+        }
+        function magazine(){
+            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+        }
+
+    # 企业荣誉
+        function honor(){
+            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+        }
+
+    # 社会责任
+        function responsibility(){
+            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+        }
+        function charitable(){
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
 

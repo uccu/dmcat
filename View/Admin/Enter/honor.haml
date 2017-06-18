@@ -1,0 +1,80 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    .ibox-content.topw
+                        .row
+                            .col-sm-1
+                                %a.btn.btn-primary.btn-outline.newOne new
+
+                .sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                
+                .ibox.ibox2.float-e-margins
+    #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+        .modal-dialog
+            .modal-content.animated.fadeInDown
+                .modal-header
+                    %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                        %span(aria-hidden="true") &times;
+                        %span.sr-only Close
+                    %h4.modal-title 
+                    %small.font-bold
+                .modal-body
+                    .sk-spinner.sk-spinner-wave.animated
+                        .sk-rect1
+                        .sk-rect2
+                        .sk-rect3
+                        .sk-rect4
+                        .sk-rect5
+                    %form.form-horizontal.animated(method="post")
+                        %input.form-control(type="hidden" name="id")
+                        .form-group
+                            %label.col-sm-3.control-label 年份
+                            .col-sm-9
+                                %input.form-control(name="year")
+                        .form-group
+                            %label.col-sm-3.control-label 月份
+                            .col-sm-9
+                                %input.form-control(name="month")
+                        
+                        .form-group
+                            %label.col-sm-3.control-label 描述
+                            .col-sm-9
+                                %textarea.form-control(name="description" style="resize:none;height:200px")
+                        .form-group
+                            %label.col-sm-3.control-label 描述(EN)
+                            .col-sm-9
+                                %textarea.form-control(name="description_en" style="resize:none;height:200px")
+                .modal-footer
+                    %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                    %button.btn.btn-primary.save(type="button") Save
+
+                        
+
+
+- block otherScript
+    :javascript
+        $(function(j){
+            gr.updBefore = function(){
+                
+            }
+            gr.flesh = function(){
+                getList('/enter/honor_lists')
+            }
+
+            gr.flesh();
+        })
+            
+        
+        
+            
