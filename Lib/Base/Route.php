@@ -81,7 +81,7 @@ Class Route{
                     $matches[2] = '';
                 }
                 
-                if($matches[2] && stripos($request->path.'/' ,$matches[2].'/') !== 0)continue;
+                if($matches[2] && strpos($request->path.'/' ,$matches[2].'/') !== 0)continue;
                 
                 $matches[2] && $path = substr($request->path,strlen($matches[2])+1);
                 

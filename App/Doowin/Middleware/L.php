@@ -17,12 +17,14 @@ class L extends Middleware{
     public $user_token;
     public $userInfo;
     public $id;
+    public $lang;
 
 
     function __construct(){
 
         $this->request = Request::getInstance();
 
+        $this->lang = $this->request->cookie('language','cn');
 
         /*获取所有的参数*/
         $this->config = ConfigModel::getInstance()->get_field('value','name');

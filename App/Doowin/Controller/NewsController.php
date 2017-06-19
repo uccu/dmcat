@@ -79,7 +79,11 @@ class NewsController extends Controller{
             $data = Request::getInstance()->request(['title','description','title_en','description_en','content_en','top','content','year','pic']);
             unset ($data['id']);
             $data['top'] = floor($data['top']);
-            if(!$id)$id = $model->set($data)->add()->getStatus();
+            
+            if(!$id){
+                $data['create_time'] = TIME_NOW;
+                $id = $model->set($data)->add()->getStatus();
+            }
             else $model->set($data)->save($id);
 
             AJAX::success();
@@ -146,7 +150,10 @@ class NewsController extends Controller{
             $data = Request::getInstance()->request(['title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
             $data['top'] = floor($data['top']);
-            if(!$id)$id = $model->set($data)->add()->getStatus();
+            if(!$id){
+                $data['create_time'] = TIME_NOW;
+                $id = $model->set($data)->add()->getStatus();
+            }
             else $model->set($data)->save($id);
 
             AJAX::success();
@@ -213,7 +220,10 @@ class NewsController extends Controller{
             $data = Request::getInstance()->request(['title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
             $data['top'] = floor($data['top']);
-            if(!$id)$id = $model->set($data)->add()->getStatus();
+            if(!$id){
+                $data['create_time'] = TIME_NOW;
+                $id = $model->set($data)->add()->getStatus();
+            }
             else $model->set($data)->save($id);
 
             AJAX::success();
@@ -280,7 +290,10 @@ class NewsController extends Controller{
             $data = Request::getInstance()->request(['video','type','title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
             $data['top'] = floor($data['top']);
-            if(!$id)$id = $model->set($data)->add()->getStatus();
+            if(!$id){
+                $data['create_time'] = TIME_NOW;
+                $id = $model->set($data)->add()->getStatus();
+            }
             else $model->set($data)->save($id);
 
             AJAX::success();

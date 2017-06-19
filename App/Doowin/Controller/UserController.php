@@ -25,6 +25,12 @@ class UserController extends Controller{
 
     }
 
+    function language($l = 'cn'){
+        if(!is_string($l))$l = 'cn';
+        Response::getInstance()->cookie('language',$l,0);
+        AJAX::success();
+
+    }
 
     function my_info(UserModel $model){
 
