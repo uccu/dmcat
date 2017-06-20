@@ -77,21 +77,21 @@ class PdoMysql
 	}
 
 	# 执行sql语句并返回PDOStatement的实例
-	function query(String $sql){
+	function query(string $sql){
 
 		$this->setResults($this->_connection->query($sql));
 		return $this;
 	}
 
 	# 准备执行sql语句并返回PDOStatement的实例
-	function prepare (String $sql){
+	function prepare (string $sql){
 
 		$this->serResults($this->_connection->prepare($sql));
 		return $this;
 	}
 
 	# 执行sql、语句并返回影响的行数
-	function exec(String $sql){
+	function exec(string $sql){
 
 		$this->_effectsNumber = $this->_connection->exec($sql);
 		return $this->_effectsNumber;
