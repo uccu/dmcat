@@ -10,11 +10,13 @@
             if($n && mb_strlen($v->$name_en) > 2 * $n){
                 return mb_substr($v->$name_en,0,2 * $n).'...';
             }
+            str_replace("\n",'<br>',$v->$name_en);
             return $v->$name_en;
         }
         if($n && mb_strlen($v->$name) > $n){
                 return mb_substr($v->$name,0, $n).'...';
             }
+        str_replace("\n",'<br>',$v->$name);
         return $v->$name;
     }
 
@@ -32,7 +34,14 @@
             '关注我们'=>'Concern Us',
             '传真'=>'Fax',
             '地址'=>'Address',
+            '选择年份'=>'Choose Year',
 
+            '上一页'=>'Prev',
+            '下一页'=>'Next',
+            '末页'=>'Last',
+            '每页显示'=>'Each page shows ',
+            '条，共'=>' records, with ',
+            '条记录'=>' records',
 
             '首页'=>'Home',
             '走进德汇'=>'Enter Doowin',
@@ -40,11 +49,11 @@
             '董事长专区'=>'President Zone',
             '发展历程'=>'Development History',
             '企业文化'=>'Corporate Culture',
-            '企业荣誉'=>'Enterprise hHonor',
+            '企业荣誉'=>'Enterprise Honor',
             '社会责任'=>'Social Responsibility',
 
             '德汇产业'=>'Doowin Industry',
-            '德汇新天地'=>'World',
+            '德汇新天地'=>'New World',
             '万达广场'=>'Wanda Plaza',
             '亚欧新城'=>'New Town',
             '新闻中心'=>'News Center',

@@ -28,11 +28,11 @@
             <div class="one-nav <if condition='$action eq Domain'>checked</if>">
                 <a href="javascript:void(0);"><?php echo lang('德汇产业');?></a>
                 <div class="more-nav">
-                    <a href="javascript:void(0);"><?php echo lang('德汇新天地');?></a>
+                    <a href="/Home/Domain/newWord"><?php echo lang('德汇新天地');?></a>
                     <a href="/Home/Domain/wandaSquare"><?php echo lang('万达广场');?></a>
-                    <a href="javascript:void(0);"><?php echo lang('亚欧新城');?></a>
-                    <a href="javascript:void(0);"><?php echo lang('德汇金融');?></a>
-                    <a href="javascript:void(0);"><?php echo lang('德汇教育');?></a>
+                    <a href="/Home/Domain/newCity"><?php echo lang('亚欧新城');?></a>
+                    <a href="/Home/Domain/finance"><?php echo lang('德汇金融');?></a>
+                    <a href="/Home/Domain/edu"><?php echo lang('德汇教育');?></a>
                 </div>
             </div>
             <div class="one-nav <if condition='$action eq News'>checked</if>">

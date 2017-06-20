@@ -6,53 +6,23 @@
 </style>
 <div class="w-1200">
     <div class="content-top">
-        <span>走进德汇</span>
+        <span><?php echo lang('走进德汇');?></span>
         <form method="get" onsubmit="return false;">
-            <input type="search" placeholder="输入关键字"/>
+            <input type="search" placeholder="<?php echo lang('输入关键字');?>"/>
         </form>
     </div>
-    <div class="this-address">首页 > 走进德汇 > 企业文化</div>
+    <div class="this-address"><?php echo lang('首页');?> > <?php echo lang('走进德汇');?> > <?php echo lang('企业文化');?></div>
     <div class="main-content">
         <?php include(VIEW_ROOT.'App/EnteredDorsey_left.php');?>
         <div class="content-right">
-            <div class="content-title">企业文化
+            <div class="content-title"><?php echo lang('企业文化');?>
                 <div class="video-nav">
-                    <a href="javascript:void(0);" class="checked" onclick="changeType(this, 1);">文化体系</a>
-                    <a href="javascript:void(0);" onclick="changeType(this, 2);">企业内刊</a>
+                    <a href="javascript:void(0);" class="checked" onclick="changeType(this, 1);"><?php echo lang('文化体系');?></a>
+                    <a href="javascript:void(0);" onclick="changeType(this, 2);"><?php echo lang('企业内刊');?></a>
                 </div>
             </div>
             <div class="culture_content">
-                <div class="profile_info">
-                    <img src="/Home/images/dorsey/w-h-t-x.png">
-                </div>
-                <div class="profile_info">
-                    <div style="color: #333; font-size: 14px; font-weight: 600; line-height: 50px;">一、企业愿景、使命、精神</div>
-                    <p>企业愿景：致力于成为中国西部商业的领军力量</p>
-                    <p>企业使命：产业兴城 实业兴邦</p>
-                    <p>企业精神：德者汇天下</p>
-                    <div style="color: #333; font-size: 14px; font-weight: 600; line-height: 50px;">二、经营理念</div>
-                    <p>合作共赢 &nbsp; 诚信守约 &nbsp; 服务客户 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 贴近市场 &nbsp;贴近客户</p>
-                    <div style="color: #333; font-size: 14px; font-weight: 600; line-height: 50px;">三、管理风格</div>
-                    <p style="color: #444;">1、组织架构：</p>
-                    <p>责任结构与业务结构匹配，责任中心明确，所有责任落实到岗，岗位责任落实到人；组织扁平化，减少领导岗位职数，通过信息化手段改善沟通，实现政令通畅；讲求组织原则，系统化，简约化</p>
-                    <p style="color: #444;">2、流程：</p>
-                    <p>关键业务流程持续优化，沉淀业务经验，打造核心竞争力，建立高绩效组织</p>
-                    <p style="color: #444;">3、制度：</p>
-                    <p>制度面前人人平等，关键节点严格控制</p>
-                    <p style="color: #444;">4、知识与信息：</p>
-                    <p>制度面前人人平等，关键节点严格控制</p>
-                    <p style="color: #444;">5、会议：</p>
-                    <p> 会前有准备，会中有记录，会后有落实；有话则长，无话则短，尊重别人的时间价值；每个人都有讲话的权利；杜绝会上不说会下乱说</p>
-                    <div style="color: #333; font-size: 14px; font-weight: 600; line-height: 50px;">四、用人哲学</div>
-                    <p style="color: #444;"> 1、人才观：</p>
-                    <p>英雄不问出处，广纳贤才，才尽其用；能者上，庸者下；品格高于学历；责任心重于技能；精湛的服务能力来自于专业</p>
-                    <p style="color: #444;"> 2、团队：</p>
-                    <p>团队合作；团队的成功才是个人的成功；低绩效团队中没有真正成功的个人；资源向高绩效团队/组织倾斜</p>
-                    <p style="color: #444;"> 3、评价与激励：</p>
-                    <p>依靠KPI正式评价，杜绝小报告，禁止随意的说长道短；业绩说话，公正评价，奖罚分明；及时奖励；将股权、培训和发展机会作为奖励</p>
-                    <p style="color: #444;"> 4、学习与发展：</p>
-                    <p>倡导终生学习；自我学习与培训发展相结合</p>
-                </div>
+                <?php echo langV($page,'content');?>
             </div>
             <div class="enterprise_info" style="display: none;">
                 <div class="picture_album">

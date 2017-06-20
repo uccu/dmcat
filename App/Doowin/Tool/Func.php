@@ -451,5 +451,61 @@ class Func{
 
 
     }
+
+    public static function getPageLink($page, $count, $url = "",$length = 16)
+    {
+
+
+        $total_page = (int)ceil($count / $length);
+        /*if ($total_page <= 1) {
+            return 0;
+        }*/
+        /*合成分页链接*/
+        $html_pages = '';
+        $html_pages .= '<span>'.lang('每页显示') . $length . lang('条，共') . $count . lang('条记录').'</span><div id="links">';
+        if ($page != 1) {
+            $html_pages .= '<a href="' . $url . '?page=1" >'.lang('首页').'</a>';
+        } else {
+            $html_pages .= '<a href="javascript:void(0);" class="no_page">'.lang('首页').'</a>';
+        }
+        if ($page != 1) {
+            $html_pages .= '<a href="' . $url . '?page=' . ($page - 1) . '" >'.lang('上一页').'</a>';
+        }
+        if (($page - 4) >= 1) {
+            $html_pages .= '<a href="javascript:void(0);" class="no_page">...</a>';
+        }
+        if (($page - 3) >= 1) {
+            $html_pages .= '<a href="' . $url . '?page=' . ($page - 3) . '" >' . ($page - 3) . '</a>';
+        }
+        if (($page - 2) >= 1) {
+            $html_pages .= '<a href="' . $url . '?page=' . ($page - 2) . '" >' . ($page - 2) . '</a>';
+        }
+        if (($page - 1) >= 1) {
+            $html_pages .= '<a href="' . $url . '?page=' . ($page - 1) . '" >' . ($page - 1) . '</a>';
+        }
+        $html_pages .= '<a href="javascript:void(0);" class="this_page">' . $page . '</a>';
+        if (($page + 1) <= $total_page) {
+            $html_pages .= '<a href="' . $url . '?page=' . ($page + 1) . '" >' . ($page + 1) . '</a>';
+        }
+        if (($page + 2) <= $total_page) {
+            $html_pages .= '<a href="' . $url . '?page=' . ($page + 2) . '" >' . ($page + 2) . '</a>';
+        }
+        if (($page + 3) <= $total_page) {
+            $html_pages .= '<a href="' . $url . '?page=' . ($page + 3) . '" >' . ($page + 3) . '</a>';
+        }
+        if (($page + 4) <= $total_page) {
+            $html_pages .= '<a href="javascript:void(0);" class="no_page">...</a>';
+        }
+        if ($page != $total_page && $total_page != 0) {
+            $html_pages .= '<a href="' . $url . '?page=' . ($page + 1) . '" >'.lang('下一页').'</a>';
+        }
+        if ($page != $total_page && $total_page != 0) {
+            $html_pages .= '<a href="' . $url . '?page=' . $total_page . '" >'.lang('末页').'</a>';
+        } else {
+            $html_pages .= '<a href="javascript:void(0);" class="no_page">'.lang('末页').'</a>';
+        }
+        return $html_pages .= "</div>";
+
+    }
     
 }

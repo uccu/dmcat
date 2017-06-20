@@ -11,7 +11,7 @@
     <div class="this-address"><?php echo lang('首页');?> > <?php echo lang('走进德汇');?> > <?php echo lang('集团简介');?></div>
     <div class="main-content">
         <?php include(VIEW_ROOT.'App/EnteredDorsey_left.php');?>
-        <div class="content-right">
+        <div class="content-right" style="min-height:700px">
             <div class="content-title"><?php echo lang('集团简介');?></div>
             <?php echo langV($page,'content');?>
 

@@ -61,6 +61,39 @@ class AppHomeEnteredDorseyController extends Controller{
         include_once(VIEW_ROOT.'App/EnteredDorsey_'.__FUNCTION__.'.php');
 
     }
+    
 
+    function develop($year = 0,DevelopModel $model){
+        $type = __FUNCTION__;
+        $yearM = date('Y');
+        $year = floor($year);
+        if(!$year)$year = $yearM;
+        $where['year'] = $year;
+        $list = $model->where($where)->order('month desc')->get()->toArray();
+        include_once(VIEW_ROOT.'App/EnteredDorsey_'.__FUNCTION__.'.php');
 
+    }
+    function culture(StaticPageModel $pageModel){
+        $type = __FUNCTION__;
+        $page = $pageModel->find(3);
+        include_once(VIEW_ROOT.'App/EnteredDorsey_'.__FUNCTION__.'.php');
+    }
+    function honor($year = 0,HonorModel $model){
+        $type = __FUNCTION__;
+        $yearM = date('Y');
+        $year = floor($year);
+        if(!$year)$year = $yearM;
+        $where['year'] = $year;
+        $list = $model->where($where)->order('month desc')->get()->toArray();
+        include_once(VIEW_ROOT.'App/EnteredDorsey_'.__FUNCTION__.'.php');
+
+    }
+
+    function blame(StaticPageModel $pageModel,CharitableModel $charitableModel){
+        $type = __FUNCTION__;
+        $page = $pageModel->find(4);
+
+        $charitable = $charitableModel->order('year desc','month desc')->get()->toArray();
+        include_once(VIEW_ROOT.'App/EnteredDorsey_'.__FUNCTION__.'.php');
+    }
 }
