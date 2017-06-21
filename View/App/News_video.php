@@ -25,98 +25,44 @@
         <div class="content-right">
             <div class="content-title">视频中心
                 <div class="video-nav">
-                    <a href="javascript:void(0);" class="checked">全部视频</a>
-                    <a href="javascript:void(0);">董事长演讲</a>
-                    <a href="javascript:void(0);">德汇宣传片</a>
-                    <a href="javascript:void(0);">企业活动</a>
-                    <a href="javascript:void(0);">媒体报道</a>
-                    <a href="javascript:void(0);">战略合作</a>
+                    <a href="javascript:void(0);" data-id="0"<?php echo $video_type==0?' class="checked"':'';?>>全部视频</a>
+                    <?php foreach($newsVideoType as $v){?>
+
+                    <a href="javascript:void(0);" data-id="<?php echo $v->id;?>"<?php echo $video_type==$v->id?' class="checked"':'';?>><?php echo langV($v,'name');?></a>
+                    <?php }?>
+                    <script>
+                        $('.video-nav a').click(function(){$.post('/user/video_type',{l:$(this).attr('data-id')},function(){location.reload()})})
+                    </script>
                 </div>
             </div>
+            <?php if($page == 1 && $video_type==0 && $banner){?>
             <div class="video-banner">
                 <div class="swiper-wrapper">
+                <?php foreach($banner as $v){?>
                     <div class="video-one-banner swiper-slide">
-                        <img src="/Home/images/video/video_1.png">
-                        <a href="/Home/News/videoPlay" target="_blank"></a>
-                        <h1>首届新疆商业发展新趋势论坛召开 千人见证德汇万达广场开业倒计时</h1>
-                        <span>3月10日，首届新疆商业发展新趋势论坛暨德汇万达广场开业倒计时200天启动仪式在万达文华酒店盛大举行。沙依巴克区区委副书记、常务副区长李长江出席大会并作重要讲话，企业代表、商户代表、业内人士和媒体代表等1000多人共同见证这一历史时刻。<br/>“3、2、1……”，当晚，伴随着倒计时钟声敲响，宣布德汇万达广场开业倒计时200天，标志着德汇新天地将步入商业宏图全面发展的新进程。来自银行、企业和政府的7位精英，在首届新疆商业发展新趋势论坛上共同解读“新疆财富密码”。就经济战略、企业转型、未来商业发展趋势等相关课题，7位嘉宾做了精彩讨论，并与各行业大佬一起分析经济大势，共谋新疆建设及经济发展大局。</span>
+                        <img src="/pic/<?php echo langV($v,'pic');?>">
+                        <a href="/Home/News/videoPlay?id=<?php echo $v->id;?>" target="_blank"></a>
+                        <h1><?php echo langV($v,'title',60);?></h1>
+                        <span><?php echo langV($v,'description',300);?></span>
                     </div>
-                    <div class="video-one-banner swiper-slide">
-                        <img src="/Home/images/video/video_1.png">
-                        <a href="/Home/News/videoPlay" target="_blank"></a>
-                        <h1>首届新疆商业发展新趋势论坛召开 千人见证德汇万达广场开业倒计时</h1>
-                        <span>3月10日，首届新疆商业发展新趋势论坛暨德汇万达广场开业倒计时200天启动仪式在万达文华酒店盛大举行。沙依巴克区区委副书记、常务副区长李长江出席大会并作重要讲话，企业代表、商户代表、业内人士和媒体代表等1000多人共同见证这一历史时刻。<br/>“3、2、1……”，当晚，伴随着倒计时钟声敲响，宣布德汇万达广场开业倒计时200天，标志着德汇新天地将步入商业宏图全面发展的新进程。来自银行、企业和政府的7位精英，在首届新疆商业发展新趋势论坛上共同解读“新疆财富密码”。就经济战略、企业转型、未来商业发展趋势等相关课题，7位嘉宾做了精彩讨论，并与各行业大佬一起分析经济大势，共谋新疆建设及经济发展大局。</span>
-                    </div>
-                    <div class="video-one-banner swiper-slide">
-                        <img src="/Home/images/video/video_1.png">
-                        <a href="/Home/News/videoPlay" target="_blank"></a>
-                        <h1>首届新疆商业发展新趋势论坛召开 千人见证德汇万达广场开业倒计时</h1>
-                        <span>3月10日，首届新疆商业发展新趋势论坛暨德汇万达广场开业倒计时200天启动仪式在万达文华酒店盛大举行。沙依巴克区区委副书记、常务副区长李长江出席大会并作重要讲话，企业代表、商户代表、业内人士和媒体代表等1000多人共同见证这一历史时刻。<br/>“3、2、1……”，当晚，伴随着倒计时钟声敲响，宣布德汇万达广场开业倒计时200天，标志着德汇新天地将步入商业宏图全面发展的新进程。来自银行、企业和政府的7位精英，在首届新疆商业发展新趋势论坛上共同解读“新疆财富密码”。就经济战略、企业转型、未来商业发展趋势等相关课题，7位嘉宾做了精彩讨论，并与各行业大佬一起分析经济大势，共谋新疆建设及经济发展大局。</span>
-                    </div>
-                    <div class="video-one-banner swiper-slide">
-                        <img src="/Home/images/video/video_1.png">
-                        <a href="/Home/News/videoPlay" target="_blank"></a>
-                        <h1>首届新疆商业发展新趋势论坛召开 千人见证德汇万达广场开业倒计时</h1>
-                        <span>3月10日，首届新疆商业发展新趋势论坛暨德汇万达广场开业倒计时200天启动仪式在万达文华酒店盛大举行。沙依巴克区区委副书记、常务副区长李长江出席大会并作重要讲话，企业代表、商户代表、业内人士和媒体代表等1000多人共同见证这一历史时刻。<br/>“3、2、1……”，当晚，伴随着倒计时钟声敲响，宣布德汇万达广场开业倒计时200天，标志着德汇新天地将步入商业宏图全面发展的新进程。来自银行、企业和政府的7位精英，在首届新疆商业发展新趋势论坛上共同解读“新疆财富密码”。就经济战略、企业转型、未来商业发展趋势等相关课题，7位嘉宾做了精彩讨论，并与各行业大佬一起分析经济大势，共谋新疆建设及经济发展大局。</span>
-                    </div>
+                <?php }?>
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
+            <?php }?>
             <div class="video-list">
-                <div class="video-list-one" style="margin-left: 0;">
-                    <img src="/Home/images/video/video_2.png">
-                    <a href="/Home/News/videoPlay" target="_blank"></a>
-                    <h1>凭着实力谋合作 靠着质量求发展 德汇集团与合作单位签订廉洁从业协议</h1>
+                <?php foreach($newsVideo as $k=>$v){?>
+                <div class="video-list-one"<?php echo !$k%4?' style="margin-left: 0;"':'';?>>
+                    <img src="/pic/<?php echo langV($v,'pic');?>">
+                    <a href="/Home/News/videoPlay?id=<?php echo $v->id;?>" target="_blank"></a>
+                    <h1><?php echo langV($v,'title');?></h1>
                 </div>
-                <div class="video-list-one">
-                    <img src="/Home/images/video/video_3.png">
-                    <a href="/Home/News/videoPlay" target="_blank"></a>
-                    <h1>凭着实力谋合作 靠着质量求发展 德汇集团与合作单位签订廉洁从业协议</h1>
-                </div>
-                <div class="video-list-one">
-                    <img src="/Home/images/video/video_4.png">
-                    <a href="/Home/News/videoPlay" target="_blank"></a>
-                    <h1>凭着实力谋合作 靠着质量求发展 德汇集团与合作单位签订廉洁从业协议</h1>
-                </div>
-                <div class="video-list-one">
-                    <img src="/Home/images/video/video_5.png">
-                    <a href="/Home/News/videoPlay" target="_blank"></a>
-                    <h1>凭着实力谋合作 靠着质量求发展 德汇集团与合作单位签订廉洁从业协议</h1>
-                </div>
-                <div class="video-list-one" style="margin-left: 0;">
-                    <img src="/Home/images/video/video_6.png">
-                    <a href="/Home/News/videoPlay" target="_blank"></a>
-                    <h1>凭着实力谋合作 靠着质量求发展 德汇集团与合作单位签订廉洁从业协议</h1>
-                </div>
-                <div class="video-list-one">
-                    <img src="/Home/images/video/video_7.png">
-                    <a href="/Home/News/videoPlay" target="_blank"></a>
-                    <h1>凭着实力谋合作 靠着质量求发展 德汇集团与合作单位签订廉洁从业协议</h1>
-                </div>
-                <div class="video-list-one">
-                    <img src="/Home/images/video/video_8.png">
-                    <a href="/Home/News/videoPlay" target="_blank"></a>
-                    <h1>凭着实力谋合作 靠着质量求发展 德汇集团与合作单位签订廉洁从业协议</h1>
-                </div>
-                <div class="video-list-one">
-                    <img src="/Home/images/video/video_9.png">
-                    <a href="/Home/News/videoPlay" target="_blank"></a>
-                    <h1>凭着实力谋合作 靠着质量求发展 德汇集团与合作单位签订廉洁从业协议</h1>
-                </div>
+                <?php }?>
+                
                 <div class="clear"></div>
             </div>
             <div id="page_content">
-                <span>每页显示5条，共78条记录</span>
-                <div id="links">
-                    <a href="javascript:void(0);" class="no_page">首页</a>
-                    <a href="javascript:void(0);" class="this_page">1</a>
-                    <a href="javascript:void(0);">2</a>
-                    <a href="javascript:void(0);">3</a>
-                    <a href="javascript:void(0);">4</a>
-                    <a href="javascript:void(0);" class="no_page">...</a>
-                    <a href="javascript:void(0);">下一页</a>
-                    <a href="javascript:void(0);">末页</a>
-                </div>
+                <?php echo $this->getPageLink($page,$max,'',$limit);?>
             </div>
         </div>
         <div class="clear"></div>

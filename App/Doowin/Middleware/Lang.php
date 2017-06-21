@@ -52,6 +52,12 @@
             '企业荣誉'=>'Enterprise Honor',
             '社会责任'=>'Social Responsibility',
 
+            '德汇宝贝广场'=>'Baby Plaza',
+            '德汇万达广场'=>'Wanda Plaza',
+            '德汇特色小镇'=>'Characteristic Town',
+            '德汇物流'=>'Logistics',
+            '德汇刊报'=>'Doowin Newspaper',
+
             '德汇产业'=>'Doowin Industry',
             '德汇新天地'=>'New World',
             '万达广场'=>'Wanda Plaza',
@@ -62,14 +68,18 @@
             '媒体聚焦'=>'Media Focus',
             '视频中心'=>'Video Center',
             '德汇招聘'=>'Dorsey Recruitment',
-            '招式公告'=>'Style Announcement',
-            '投诉及建议'=>'Complaints&Suggestions',
+            '招标公告'=>'Bid announcement',
+            '投诉及建议'=>'Complaint&Suggestion',
             '法律声明'=>'Legal Statement',
 
             '查看更多'=>'MORE',
-
+            '发布时间'=>'Publish Date',
+            '了解其它相关视频'=>'Other Video',
 
             '董事长图片'=>'President\'s Picture',
+            '德汇企业形象广告画册'=>'Doowin Corporate advertising album',
+            '德汇企业宣传画册'=>'Doowin Enterprise Brochure',
+            '德汇运营创新“产学研一体”画册'=>'"research in one" album',
 
         ];
         if(L::getInstance()->lang == 'en' && $array[$name]){

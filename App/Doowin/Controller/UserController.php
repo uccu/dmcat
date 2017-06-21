@@ -6,6 +6,7 @@ namespace App\Doowin\Controller;
 use Controller;
 use Response;
 use App\Doowin\Model\UserModel;
+use App\Doowin\Model\CaptchaModel;
 use App\Doowin\Middleware\L;
 use App\Doowin\Tool\Func;
 use AJAX;
@@ -22,6 +23,20 @@ class UserController extends Controller{
 
         $this->L = L::getInstance();
         $this->salt = $this->L->config->site_salt;
+
+    }
+
+    function video_type($l = 0){
+        $l = (string)floor($l);
+        Response::getInstance()->cookie('video_type',$l,0);
+        AJAX::success();
+
+    }
+
+    function recruit_type($l = 0){
+        $l = (string)floor($l);
+        Response::getInstance()->cookie('recruit_type',$l,0);
+        AJAX::success();
 
     }
 
@@ -145,5 +160,52 @@ class UserController extends Controller{
     }
     
 
-
+    /**
+    * 生成验证码 
+    * 做了下修改
+    * @source  https://www.oschina.net/code/snippet_258733_12375
+    */
+    function captcha() {
+        $num = 4;$size = 20;$width = 0;$height = 0;
+        !$width && $width = $num * $size  + 5;
+        !$height && $height = $size + 10; 
+        // 去掉了 0 1 O l 等
+        $str = "1234567890";
+        $code = '';
+        for ($i = 0; $i < $num; $i++) {
+            $code .= $str[mt_rand(0, strlen($str)-1)];
+        } 
+        // 画图像
+        $im = imagecreatetruecolor($width, $height); 
+        // 定义要用到的颜色
+        $back_color = imagecolorallocate($im, 235, 236, 237);
+        $boer_color = imagecolorallocate($im, 118, 151, 199);
+        $text_color = imagecolorallocate($im, mt_rand(0, 200), mt_rand(0, 120), mt_rand(0, 120)); 
+        // 画背景
+        imagefilledrectangle($im, 0, 0, $width, $height, $back_color); 
+        // 画边框
+        imagerectangle($im, 0, 0, $width-1, $height-1, $boer_color); 
+        // 画干扰线
+        imagesetthickness ( $im , 2 );
+        for($i = 0;$i < 10;$i++) {
+            
+            imagearc($im, mt_rand(- $width, $width), mt_rand(- $height, $height), mt_rand(30, $width * 2), mt_rand(20, $height * 2), mt_rand(0, 360), mt_rand(0, 360), $text_color);
+        } 
+        
+        // 画验证码
+        @imagefttext($im, $size + 15 , 0, 10, $size + 10, $text_color, BASE_ROOT.'App/Doowin/1980sWriter.ttf', $code);
+        if($this->L->id){
+            $data['user_id'] = $this->L->id;
+        }
+        $data['ctime'] = TIME_NOW;
+        $data['ip'] = $_SERVER["REMOTE_ADDR"];
+        $data['value'] = $code;
+        $model = CaptchaModel::getInstance();
+        $model->where('ip=%n AND type=0',$data['ip'])->remove();
+        $model->set($data)->add();
+        header("Cache-Control: max-age=1, s-maxage=1, no-cache, must-revalidate");
+        header("Content-type: image/png;charset=utf=8");
+        imagepng($im);
+        imagedestroy($im);
+    } 
 }

@@ -128,6 +128,32 @@ class Func{
 		return $object;
     }
 
+    static function upload($name){
+        if(!$_FILES)return [];
+
+        $func = self::getInstance();
+
+        $paths = [];
+        $upn = $upa = [];
+        if(!is_dir(BASE_ROOT.'upload'))
+                !mkdir(BASE_ROOT.'upload',0777,true) && AJAX::error('文件夹权限不足，无法创建文件！');
+        foreach($_FILES as $k=>$file){
+            $upn[] = $k;
+            if(!$name || $k==$name){
+                $upa[] = $k;
+                $paths[$k] = date('Ymd_His',TIME_NOW).'_'.$k.'.cache';
+                move_uploaded_file($file['tmp_name'],BASE_ROOT."upload/".$paths[$k]);
+            }
+        }
+        $data['upn'] = implode(',',$upn);
+        $data['upa'] = implode(',',$upa);
+        $data['succ'] = ($name?$paths[$name]:$paths) ? 1 : 0;
+        $data['ctime'] = TIME_NOW;
+        
+
+        return $name?$paths[$name]:$paths;
+    }
+
     /* 上传图片 */
     static function uploadFiles($name = null,$width = 0,$height = 0,$cut = 0){
 
@@ -157,6 +183,8 @@ class Func{
         return $name?$paths[$name]:$paths;
 
     }
+
+
     /* 处理上传图片 */
     function uploadPic($tmp_name,$type = 0,$width = 0,$height = 0,$cut = 0){
 
@@ -223,6 +251,7 @@ class Func{
         return $path;
 
     }
+
 
     /* 数字前增加0 */
     public static function add_zero($number,$total){

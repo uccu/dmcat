@@ -62,18 +62,23 @@
     <div class="right-body">
         <div class="right-banner">
             <div class="banner-title">
-                <?php if($this->L->lang == 'en'){?>
+                
                 <style>
-                    .banner-title a{width:auto;margin-left: 28px;}
+                    .banner-title a.checked:after{left: 47%;}
+                    .banner-title a{width:auto;margin-left: 100px;}
                     .banner-title a[data-num="1"]{margin-left: 0px;}
-                    .banner-title a.checked:after{left: 48%;}
-                </style>
+                <?php if($this->L->lang == 'en'){?>
+                    .banner-title a{width:auto;margin-left: 83px;}
+
+                    
                 <?php }?>
-                <a href="javascript:void(0);" class="checked" data-num="1"><?php echo lang('德汇新天地');?></a>
-                <a href="javascript:void(0);" data-num="2"><?php echo lang('万达广场');?></a>
-                <a href="javascript:void(0);" data-num="3"><?php echo lang('亚欧新城');?></a>
-                <a href="javascript:void(0);" data-num="4"><?php echo lang('德汇金融');?></a>
-                <a href="javascript:void(0);" data-num="5"><?php echo lang('德汇教育');?></a>
+                </style>
+                
+                <a href="javascript:void(0);" class="checked" data-num="1"><?php echo lang('德汇宝贝广场');?></a>
+                <a href="javascript:void(0);" data-num="2"><?php echo lang('德汇万达广场');?></a>
+                <a href="javascript:void(0);" data-num="3"><?php echo lang('德汇特色小镇');?></a>
+                <a href="javascript:void(0);" data-num="4"><?php echo lang('德汇物流');?></a>
+
             </div>
             <div class="banner-box">
                 <!-- 德汇新天地 开始 -->
@@ -95,7 +100,7 @@
                         </div>
                         <!-- 如果需要分页器 -->
                         <div class="swiper-pagination"></div>
-                        <div class="this-title"><?php echo lang('德汇新天地');?></div>
+                        <div class="this-title"><?php echo lang('德汇宝贝广场');?></div>
                     </div>
                     <h1>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。<a href="javascript:void(0);">【了解更多】</a></h1>
                 </div>
@@ -117,7 +122,7 @@
                         </div>
                         <!-- 如果需要分页器 -->
                         <div class="swiper-pagination"></div>
-                        <div class="this-title"><?php echo lang('万达广场');?></div>
+                        <div class="this-title"><?php echo lang('德汇万达广场');?></div>
                     </div>
                     <h1>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。<a href="javascript:void(0);">【了解更多】</a></h1>
                 </div>
@@ -141,7 +146,7 @@
                         </div>
                         <!-- 如果需要分页器 -->
                         <div class="swiper-pagination"></div>
-                        <div class="this-title"><?php echo lang('亚欧新城');?></div>
+                        <div class="this-title"><?php echo lang('德汇特色小镇');?></div>
                     </div>
                     <h1>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。<a href="javascript:void(0);">【了解更多】</a></h1>
                 </div>
@@ -162,38 +167,12 @@
                         </div>
                         <!-- 如果需要分页器 -->
                         <div class="swiper-pagination"></div>
-                        <div class="this-title"><?php echo lang('德汇金融');?></div>
+                        <div class="this-title"><?php echo lang('德汇物流');?></div>
                     </div>
                     <h1>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。<a href="javascript:void(0);">【了解更多】</a></h1>
                 </div>
                 <!-- 德汇金融 结束 -->
-                <!-- 德汇教育 开始 -->
-                <div class="one-banner">
-                    <div class="slider_1" id="slider_5">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                        </div>
-                        <!-- 如果需要分页器 -->
-                        <div class="swiper-pagination"></div>
-                        <div class="this-title">德汇教育</div>
-                    </div>
-                    <h1>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。<a href="javascript:void(0);">【了解更多】</a></h1>
-                </div>
-                <!-- 德汇教育 结束 -->
+                
             </div>
             <div class="right-content">
                 <div class="right-title"><?php echo lang('发展历程');?></div>

@@ -10,7 +10,7 @@
                     .ibox-content.topw
                         .row
                             .col-sm-1
-                                %button.btn.btn-primary.btn-outline.newOne(data-href="news/video_detail") new
+                                %button.btn.btn-primary.btn-outline.newOne(data-href="contact/recruit_detail") new
 
                 .sk-spinner.sk-spinner-wave.animated
                     .sk-rect1
@@ -33,13 +33,13 @@
             }
             gr.getListAfter = function(d){
                 $('input.i-checks').on('ifChanged',function(){
-                    curl('/news/video_upd',{id:$(this).parent().parent().attr('data-id'),banner:this.checked?1:0},function(d){
+                    curl('/contact/recruit_upd',{id:$(this).parent().parent().attr('data-id'),top:this.checked?1:0},function(d){
                         curl_succ('success!');
                     });
                 });
             }
             gr.flesh = function(){
-                getList('/news/video_lists')
+                getList('/contact/recruit_lists')
             }
             
             gr.flesh();

@@ -4,6 +4,7 @@ namespace App\Doowin\Controller;
 
 
 use App\Doowin\Model\UserModel;
+use App\Doowin\Model\UploadModel;
 
 use Controller;
 use Request;
@@ -130,6 +131,19 @@ class StaffController extends Controller{
         if(!$out['path'])AJAX::error('no image');
         $out['fpath'] = '/pic/'.$out['path'];
         $out['apath'] = Func::fullPicAddr($out['path']);
+        AJAX::success($out);
+    }
+    function upFile(){
+        
+        $path = Func::upload('file');
+        if(!$path)AJAX::error('no file');
+
+        $data['path'] = $path;
+        $id = UploadModel::getInstance()->set($data)->add();
+
+        $out['path'] = $id;
+        $out['fpath'] = '/pic/file.jpg';
+        $out['apath'] = Func::fullPicAddr('file.jpg');
         AJAX::success($out);
     }
 

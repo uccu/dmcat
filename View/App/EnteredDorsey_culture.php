@@ -28,87 +28,37 @@
                 <div class="picture_album">
                     <div class="picture_content">
                         <img src="/Home/images/dorsey/pic-huace1.png">
-                        <h1>德汇企业形象广告画册</h1>
+                        <h1><?php echo lang('德汇企业形象广告画册');?></h1>
                     </div>
                     <div class="picture_content">
                         <img src="/Home/images/dorsey/pic-huace2.png">
-                        <h1>德汇企业宣传画册</h1>
+                        <h1><?php echo lang('德汇企业宣传画册');?></h1>
                     </div>
                     <div class="picture_content">
                         <img src="/Home/images/dorsey/pic-huace3.png">
-                        <h1>德汇运营创新“产学研一体”画册</h1>
+                        <h1><?php echo lang('德汇运营创新“产学研一体”画册');?></h1>
                     </div>
                 </div>
-                <div class="content-title" style="margin-top: 30px;">德汇刊报
+                <div class="content-title" style="margin-top: 30px;"><?php echo lang('德汇刊报');?>
                     <div class="newspaper_years_p">
                         <a href="javascript:void(0);" class="left" onclick="navMove(1);"></a>
                         <a href="javascript:void(0);" class="right" onclick="navMove(-1);"></a>
                         <div id="newspaper_years">
                             <div class="video-nav" style="float: left; transition: 0.2s;" id="vio_nav">
-                                <a href="javascript:void(0);" class="checked">2017</a>
-                                <a href="javascript:void(0);">2016</a>
-                                <a href="javascript:void(0);">2015</a>
-                                <a href="javascript:void(0);">2014</a>
-                                <a href="javascript:void(0);">2013</a>
-                                <a href="javascript:void(0);">2012</a>
-                                <a href="javascript:void(0);">2011</a>
-                                <a href="javascript:void(0);">2010</a>
-                                <a href="javascript:void(0);">2009</a>
-                                <a href="javascript:void(0);">2008</a>
-                                <a href="javascript:void(0);">2007</a>
-                                <a href="javascript:void(0);">2006</a>
-                                <a href="javascript:void(0);">2005</a>
-                                <a href="javascript:void(0);">2004</a>
-                                <a href="javascript:void(0);">2003</a>
-                                <a href="javascript:void(0);">2002</a>
-                                <a href="javascript:void(0);">2001</a>
+                                <?php 
+                                    $yearM = date('Y');
+                                    for($i = $yearM;$i>2000;$i--){
+                                        if($year == $i || (!$year && $i == $yearM))echo '<a data-year="'.$i.'" href="javascript:void(0);" class="checked">'.$i.'</a>';
+                                        else echo '<a data-year="'.$i.'" href="javascript:void(0);">'.$i.'</a>';
+                                    }
+                                ?>
+
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="newspaper-content">
-                    <div class="newspaper-one">
-                        <img src="/Home/images/dorsey/month-1.png">
-                        <h1>德汇人 6月报刊</h1>
-                        <h2>总第125期 &nbsp; 本期4版 &nbsp; 2015年6月</h2>
-                        <h3>“艾德莱斯炫昆仑” 启动</h3>
-                        <h4>从苍茫的昆仑山下， 到时尚前卫的上海滩， 一条艾德莱斯炫带正从新疆舞动到上海。6 月 23 日，“艾德莱斯炫昆仑援疆万里行暨创意产品上海见面会” 盛大启幕。</h4>
-                    </div>
-                    <div class="newspaper-one">
-                        <img src="/Home/images/dorsey/month-2.png">
-                        <h1>德汇人 5月报刊</h1>
-                        <h2>总第124期 &nbsp; 本期4版 &nbsp; 2015年5月</h2>
-                        <h3>市委副书记、 市长伊力哈木·沙比尔一行莅临德汇</h3>
-                        <h4>5 月 20 日， 市委副书记、 市长伊力哈木·沙比尔、 市政府秘书长、 办公厅主任肖勇、 沙依巴克区区长斯地克·牙生等一行莅临德汇集团检查指导工作。</h4>
-                    </div>
-                    <div class="newspaper-one">
-                        <img src="/Home/images/dorsey/month-3.png">
-                        <h1>德汇人 4月报刊</h1>
-                        <h2>总第123期 &nbsp; 本期4版 &nbsp; 2015年6月</h2>
-                        <h3>“艾德莱斯炫昆仑” 启动</h3>
-                        <h4>从苍茫的昆仑山下， 到时尚前卫的上海滩， 一条艾德莱斯炫带正从新疆舞动到上海。6 月 23 日，“艾德莱斯炫昆仑援疆万里行暨创意产品上海见面会” 盛大启幕。</h4>
-                    </div>
-                    <div class="newspaper-one">
-                        <img src="/Home/images/dorsey/month-4.png">
-                        <h1>德汇人 3月报刊</h1>
-                        <h2>总第122期 &nbsp; 本期4版 &nbsp; 2015年5月</h2>
-                        <h3>市委副书记、 市长伊力哈木·沙比尔一行莅临德汇</h3>
-                        <h4>5 月 20 日， 市委副书记、 市长伊力哈木·沙比尔、 市政府秘书长、 办公厅主任肖勇、 沙依巴克区区长斯地克·牙生等一行莅临德汇集团检查指导工作。</h4>
-                    </div>
-                    <div class="newspaper-one">
-                        <img src="/Home/images/dorsey/month-5.png">
-                        <h1>德汇人 2月报刊</h1>
-                        <h2>总第121期 &nbsp; 本期4版 &nbsp; 2015年6月</h2>
-                        <h3>“艾德莱斯炫昆仑” 启动</h3>
-                        <h4>从苍茫的昆仑山下， 到时尚前卫的上海滩， 一条艾德莱斯炫带正从新疆舞动到上海。6 月 23 日，“艾德莱斯炫昆仑援疆万里行暨创意产品上海见面会” 盛大启幕。</h4>
-                    </div>
-                    <div class="newspaper-one">
-                        <img src="/Home/images/dorsey/month-6.png">
-                        <h1>德汇人 1月报刊</h1>
-                        <h2>总第120期 &nbsp; 本期4版 &nbsp; 2015年5月</h2>
-                        <h3>市委副书记、 市长伊力哈木·沙比尔一行莅临德汇</h3>
-                        <h4>5 月 20 日， 市委副书记、 市长伊力哈木·沙比尔、 市政府秘书长、 办公厅主任肖勇、 沙依巴克区区长斯地克·牙生等一行莅临德汇集团检查指导工作。</h4>
-                    </div>
+                    
                     <div class="clear"></div>
                 </div>
             </div>
@@ -128,11 +78,13 @@
     $(document).ready(function () {
         $("#vio_nav > a").click(function () {
             var obj = $(this);
-            if (obj.hasClass("checked")) {
-                return false;
-            }
+
             obj.addClass("checked").siblings("a").removeClass("checked");
+            $.post('magazine',{year:obj.attr('data-year')},function(s){
+                $('.newspaper-content').html(s).append('<div class="clear"></div>')
+            })
         });
+        $("#vio_nav > a.checked").click()
     });
 
     function navMove(type) {

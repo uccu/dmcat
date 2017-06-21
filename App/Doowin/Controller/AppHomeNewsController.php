@@ -97,13 +97,34 @@ class AppHomeNewsController extends Controller{
         include_once(VIEW_ROOT.'App/News_newsInfo.php');
 
     }
-    function video(){
+    function video(NewsVideoTypeModel $newsVideoTypeModel,NewsVideoModel $newsVideoModel,$page = 1){
         
         $type = __FUNCTION__;
         $name = '视频中心';
+        $limit = 16;
+        $video_type = Request::getInstance()->cookie('video_type',0);
+        if($video_type)$where = ['type'=>$video_type];
+        $newsVideoType = $newsVideoTypeModel->order('ord','id')->get()->toArray();
+        $newsVideo = $newsVideoModel->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
+        $where2 = $where;
+        $where2['banner'] = 1;
+        $banner = $newsVideoModel->where($where2)->order('top desc','id desc')->get()->toArray();
+        $max = $newsVideoModel->select('COUNT(*) as c','RAW')->where($where)->find()->c;
+
         include_once(VIEW_ROOT.'App/News_'. __FUNCTION__ .'.php');
 
     }
-    
+    function videoPlay(NewsVideoModel $newsVideoModel,$id = 0){
+        
+        
+        
+        $info = $newsVideoModel->find($id);
+
+        $newsVideo = $newsVideoModel->order('rand()','RAW')->limit(4)->get()->toArray();
+        
+
+        include_once(VIEW_ROOT.'App/News_'. __FUNCTION__ .'.php');
+
+    }
     
 }

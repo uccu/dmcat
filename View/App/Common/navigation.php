@@ -28,9 +28,10 @@
             <div class="one-nav <if condition='$action eq Domain'>checked</if>">
                 <a href="javascript:void(0);"><?php echo lang('德汇产业');?></a>
                 <div class="more-nav">
-                    <a href="/Home/Domain/newWord"><?php echo lang('德汇新天地');?></a>
-                    <a href="/Home/Domain/wandaSquare"><?php echo lang('万达广场');?></a>
-                    <a href="/Home/Domain/newCity"><?php echo lang('亚欧新城');?></a>
+                    <a href="/Home/Domain/newWorld"><?php echo lang('德汇宝贝广场');?></a>
+                    <a href="/Home/Domain/wandaSquare"><?php echo lang('德汇万达广场');?></a>
+                    <a href="/Home/Domain/newCity"><?php echo lang('德汇特色小镇');?></a>
+                    <a href="/Home/Domain/logistics"><?php echo lang('德汇物流');?></a>
                     <a href="/Home/Domain/finance"><?php echo lang('德汇金融');?></a>
                     <a href="/Home/Domain/edu"><?php echo lang('德汇教育');?></a>
                 </div>
@@ -48,9 +49,9 @@
                 <a href="javascript:void(0);"><?php echo lang('联系我们');?></a>
                 <div class="more-nav">
                     <a href="/Home/CountUs/recruit"><?php echo lang('德汇招聘');?></a>
-                    <a href="javascript:void(0);"><?php echo lang('招式公告');?></a>
-                    <a href="javascript:void(0);"><?php echo lang('投诉及建议');?></a>
-                    <a href="javascript:void(0);"><?php echo lang('法律声明');?></a>
+                    <a href="/Home/CountUs/moves"><?php echo lang('招标公告');?></a>
+                    <a href="/Home/CountUs/complaints"><?php echo lang('投诉及建议');?></a>
+                    <a href="/Home/CountUs/legalNotices"><?php echo lang('法律声明');?></a>
                 </div>
             </div>
             <div class="clear"></div>

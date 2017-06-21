@@ -73,5 +73,15 @@ class IndustryController extends Controller{
             $model->set($data)->save(9);
             AJAX::success();
         }
+    # 德汇物流
+        function logistics_get(StaticPageModel $model){
+            $out['info'] = $model->find(10);
+            AJAX::success($out);
+        }
+        function logistics_upd(StaticPageModel $model){
+            $data = Request::getInstance()->request(['content','content_en']);
+            $model->set($data)->save(10);
+            AJAX::success();
+        }
         
 }

@@ -22,10 +22,10 @@ class AppHomeDomainController extends Controller{
         
     }
 
-    function newWord(StaticPageModel $pageModel){
+    function newWorld(StaticPageModel $pageModel){
         
         $type = __FUNCTION__;
-        $name = '德汇新天地';
+        $name = '德汇宝贝广场';
         $page = $pageModel->find(5);
         include_once(VIEW_ROOT.'App/Domain_wandaSquare.php');
 
@@ -33,7 +33,7 @@ class AppHomeDomainController extends Controller{
     function wandaSquare(StaticPageModel $pageModel){
         
         $type = __FUNCTION__;
-        $name = '万达广场';
+        $name = '德汇万达广场';
         $page = $pageModel->find(6);
         include_once(VIEW_ROOT.'App/Domain_wandaSquare.php');
 
@@ -41,7 +41,7 @@ class AppHomeDomainController extends Controller{
     function newCity(StaticPageModel $pageModel){
         
         $type = __FUNCTION__;
-        $name = '亚欧新城';
+        $name = '德汇特色小镇';
         $page = $pageModel->find(7);
         include_once(VIEW_ROOT.'App/Domain_wandaSquare.php');
 
@@ -59,6 +59,14 @@ class AppHomeDomainController extends Controller{
         $type = __FUNCTION__;
         $name = '德汇教育';
         $page = $pageModel->find(9);
+        include_once(VIEW_ROOT.'App/Domain_wandaSquare.php');
+
+    }
+    function logistics(StaticPageModel $pageModel){
+        
+        $type = __FUNCTION__;
+        $name = '德汇物流';
+        $page = $pageModel->find(10);
         include_once(VIEW_ROOT.'App/Domain_wandaSquare.php');
 
     }

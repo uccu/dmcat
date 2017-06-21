@@ -9,6 +9,7 @@ use App\Doowin\Model\DevelopModel;
 use App\Doowin\Model\ChairmanPictureModel;
 use App\Doowin\Model\HonorModel;
 use App\Doowin\Model\CharitableModel;
+use App\Doowin\Model\MagazineModel;
 
 
 use Controller;
@@ -256,6 +257,69 @@ class EnterController extends Controller{
             $data = Request::getInstance()->request(['content','content_en']);
             $model->set($data)->save(3);
             AJAX::success();
+        }
+
+        function magazine_lists(MagazineModel $model,$page = 1,$limit = 30){
+
+            $out = [
+                'get'=>'/enter/magazine_get',
+                'upd'=>'/enter/magazine_upd',
+                'del'=>'/enter/magazine_del'
+            ];
+
+            $out['thead'] = [
+                '年份'=>['class'=>'tc'],
+                '标题'=>['class'=>'tc'],
+                '副标题'=>['class'=>'tc'],
+                '_opt'=>['class'=>'tc'],
+            ];
+            
+            $out['tbody'] = [
+                'year'=>['class'=>'tc'],
+                'title'=>['class'=>'tc'],
+                'small'=>['class'=>'tc'],
+                '_opt'=>['class'=>'tc'],
+            ];
+
+            $list = $model->where($where)->page($page,$limit)->order('year desc','top desc')->get()->toArray();
+
+            foreach($list as &$v){
+
+            }
+
+            $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
+            $out['page'] = $page;
+            $out['limit'] = $limit;
+
+            $out['list']  = $list;
+            AJAX::success($out);
+
+        }
+        function magazine_get(MagazineModel $model,$id){
+
+            !$id && AJAX::success(['info'=>[]]);
+            $out['info'] = $info = $model->find($id);
+            !$info && AJAX::error('没有数据！');
+            AJAX::success($out);
+
+        }
+        function magazine_upd($id,MagazineModel $model){
+
+            $data = Request::getInstance()->request(['year','pic','title','title_en','red','red_en','small','small','top','description','description_en']);
+            $data['year'] = floor($data['year']);
+            $data['top'] = floor($data['top']);
+            if(!$id)$id = $model->set($data)->add()->getStatus();
+            else $model->set($data)->save($id);
+
+            AJAX::success();
+
+        }
+        function magazine_del($id,MagazineModel $model){
+
+            !$id && AJAX::error('删除失败！');
+            $model->remove($id);
+            AJAX::success();
+
         }
 
     # 企业荣誉

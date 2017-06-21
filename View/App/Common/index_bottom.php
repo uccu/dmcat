@@ -29,7 +29,7 @@
         <div class="footer-body">
             <a href="javascript:void(0);"><?php echo lang('联系我们');?></a>
             <a href="javascript:void(0);"><?php echo lang('德汇招聘');?></a>
-            <a href="javascript:void(0);"><?php echo lang('招式公告');?></a>
+            <a href="javascript:void(0);"><?php echo lang('招标公告');?></a>
             <a href="javascript:void(0);"><?php echo lang('投诉及建议');?></a>
             <a href="javascript:void(0);"><?php echo lang('法律声明');?></a>
         </div>

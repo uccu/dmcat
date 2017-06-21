@@ -250,6 +250,7 @@ class NewsController extends Controller{
                 'ID'=>['class'=>'tc'],
                 '标题'=>['class'=>'tc'],
                 '优先级'=>['class'=>'tc'],
+                '推荐'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
             
@@ -257,6 +258,7 @@ class NewsController extends Controller{
                 'id'    =>['class'=>'tc'],
                 'title' =>['class'=>'tc'],
                 'top'   =>['class'=>'tc'],
+                'banner'=>['type'=>'checkbox','class'=>'tc'],
                 '_opt'  =>['class'=>'tc','updateLink'=>1],
             ];
 
@@ -287,9 +289,9 @@ class NewsController extends Controller{
         }
         function video_upd($id,NewsVideoModel $model){
 
-            $data = Request::getInstance()->request(['video','type','title_en','description_en','content_en','title','description','top','content','year','pic']);
+            $data = Request::getInstance()->request(['banner','video','type','title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
-            $data['top'] = floor($data['top']);
+            if(isset($data['top']))$data['top'] = floor($data['top']);
             if(!$id){
                 $data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();

@@ -43,16 +43,45 @@
                             %input.form-control(type="file" style="display:none")
                             %input.form-control(type="hidden" name="pic")
                         .form-group
-                            %label.col-sm-3.control-label 顺序序号
+                            %label.col-sm-3.control-label 年份
                             .col-sm-9
-                                %input.form-control(name="ord")
+                                %input.form-control(name="year")
                         .form-group
-                            %label.col-sm-3.control-label 超链接
+                            %label.col-sm-3.control-label 优先级
                             .col-sm-9
-                                %input.form-control(name="href")
-
-                    
-                    
+                                %input.form-control(name="top")
+                        .form-group
+                            %label.col-sm-3.control-label 标题
+                            .col-sm-9
+                                %input.form-control(name="title")
+                        .form-group
+                            %label.col-sm-3.control-label 标题(EN)
+                            .col-sm-9
+                                %input.form-control(name="title_en")
+                        .form-group
+                            %label.col-sm-3.control-label 副标题
+                            .col-sm-9
+                                %input.form-control(name="small")
+                        .form-group
+                            %label.col-sm-3.control-label 副标题(EN)
+                            .col-sm-9
+                                %input.form-control(name="small_en")
+                        .form-group
+                            %label.col-sm-3.control-label 红字
+                            .col-sm-9
+                                %input.form-control(name="red")
+                        .form-group
+                            %label.col-sm-3.control-label 红字(EN)
+                            .col-sm-9
+                                %input.form-control(name="red_en")
+                        .form-group
+                            %label.col-sm-3.control-label 描述
+                            .col-sm-9
+                                %textarea.form-control(name="description" style="resize:none;height:200px")
+                        .form-group
+                            %label.col-sm-3.control-label 描述(EN)
+                            .col-sm-9
+                                %textarea.form-control(name="description_en" style="resize:none;height:200px")
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close
                     %button.btn.btn-primary.save(type="button") Save
@@ -68,12 +97,10 @@
                 j('.pic_img')[0].src = '/pic/nopic.jpg'
             }
             gr.flesh = function(){
-                getList('/home/banner_lists')
+                getList('/enter/magazine_lists')
             }
-            upPic('/staff/upFile','input[type="file"]','input[name="pic"]','.pic_img');
-            j('.pic_img').click(function(){
-                j('input[type="file"]').click();
-            })
+            upPic('/staff/upPic','input[type="file"]','input[name="pic"]','.pic_img');
+
             gr.flesh();
         })
             
