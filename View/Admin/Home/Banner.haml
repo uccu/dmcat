@@ -70,7 +70,7 @@
             gr.flesh = function(){
                 getList('/home/banner_lists')
             }
-            upPic('/staff/upFile','input[type="file"]','input[name="pic"]','.pic_img');
+            upPic('/staff/upPic','input[type="file"]','input[name="pic"]','.pic_img');
             j('.pic_img').click(function(){
                 j('input[type="file"]').click();
             })
