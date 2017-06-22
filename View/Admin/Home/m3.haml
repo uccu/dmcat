@@ -13,32 +13,24 @@
                     .ibox-content
                         %form.form-horizontal.animated(method="post")
                             %input.form-control(type="hidden" name="id")
+
                             .form-group
-                                %label.col-sm-2.control-label 标题
-                                .col-sm-3
-                                    %input.form-control(name="title")
-                            .form-group
-                                %label.col-sm-2.control-label 标题(EN)
-                                .col-sm-3
-                                    %input.form-control(name="title_en")
-                            
-                            .form-group
-                                %label.col-sm-2.control-label 附件
+                                %label.col-sm-2.control-label 轮播图
                                 .col-sm-9.picArray
                                     %span.dib.clear
                                     %i.fa.fa-plus-square-o.cp
                                     %input.dn(type="file")
-                                    %input(type="hidden" name="file")
+                                    %input(type="hidden" name="pic")
                             .form-group
-                                %label.col-sm-2.control-label 详情
+                                %label.col-sm-2.control-label 描述
                                 .col-sm-9
-                                    .summernote(data-name="content")
+                                    %textarea.form-control.noresize(name="description" rows="4")
                             .form-group
-                                %label.col-sm-2.control-label 详情(EN)
+                                %label.col-sm-2.control-label 描述(EN)
                                 .col-sm-9
-                                    .summernote(data-name="content_en")
+                                    %textarea.form-control.noresize(name="description_en" rows="4")
                         .ibox-title
-                            %a.btn.btn-default(href="javascript:gotoTag('contact/moves',1)") Close
+                            
                             %button.btn.btn-primary.save(type="button") Save
     
 - block otherCss
@@ -72,7 +64,7 @@
                     for(var i=0;i<l;i++)pic.push(img.eq(i).attr('data-pic'));
 
 
-                    $('#modal_new [name="file"]').val(pic.join(';'));
+                    $('#modal_new [name="pic"]').val(pic.join(';'));
                 },dePic:function(){
                     var that = this;
                     curl_check(function(){
@@ -81,7 +73,7 @@
 
                 }
             }
-            upPic('/staff/upFile','input[type="file"]',function(g){
+            upPic('/staff/upPic','input[type="file"]',function(g){
                 $('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.apath,'data-pic':g.path}).click(vc.dePic));
                 vc.toPic()
             });
@@ -113,7 +105,7 @@
                 }
             })
 
-            cget('/contact/moves_get','#{id}','/contact/moves_upd',1);
+            cget('/home/m_get','3','/home/m_upd',1);
             // gr.flesh = function(){}
             // $('.click2edit').summernote('code');
 

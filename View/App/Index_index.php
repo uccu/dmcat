@@ -69,6 +69,7 @@
             <div class="banner-title">
                 
                 <style>
+                    .right-banner{    overflow: hidden;}
                     .banner-title a.checked:after{left: 47%;}
                     .banner-title a{width:auto;margin-left: 59px;}
                     .banner-title a[data-num="1"]{margin-left: 0px;}
@@ -82,8 +83,8 @@
                 
                 <a href="javascript:void(0);" class="checked" data-num="1"><?php echo lang('德汇宝贝广场');?></a>
                 <a href="javascript:void(0);" data-num="2"><?php echo lang('德汇万达广场');?></a>
-                <a href="javascript:void(0);" data-num="3"><?php echo lang('德汇物流');?></a>
-                <a href="javascript:void(0);" data-num="4"><?php echo lang('德汇特色小镇');?></a>
+                <a href="javascript:void(0);" data-num="3"><?php echo lang('德汇特色小镇');?></a>
+                <a href="javascript:void(0);" data-num="4"><?php echo lang('德汇物流');?></a>
                 <a href="javascript:void(0);" data-num="5"><?php echo lang('德汇金融');?></a>
                 
 
@@ -93,24 +94,13 @@
                 <div class="one-banner">
                     <div class="slider_1" id="slider_1">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
+                        <?php if($homeM[0]->pic)foreach(explode(';',$homeM[0]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
                         </div>
                         <!-- 如果需要分页器 -->
                         <div class="swiper-pagination"></div>
                         <div class="this-title"><?php echo lang('德汇宝贝广场');?></div>
                     </div>
-                    <h1>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。<a href="Domain/newWorld">【了解更多】</a></h1>
+                    <h1><?php echo langV($homeM[0],'description');?><a href="Domain/newWorld">【<?php echo lang('了解更多');?>】</a></h1>
                 </div>
                 <!-- 德汇新天地 结束 -->
 
@@ -118,87 +108,56 @@
                 <div class="one-banner">
                     <div class="slider_1" id="slider_2">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
+                            <?php if($homeM[1]->pic)foreach(explode(';',$homeM[1]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
                         </div>
                         <!-- 如果需要分页器 -->
                         <div class="swiper-pagination"></div>
                         <div class="this-title"><?php echo lang('德汇万达广场');?></div>
                     </div>
-                    <h1>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。<a href="Domain/wandaSquare">【了解更多】</a></h1>
+                    <h1><?php echo langV($homeM[1],'description');?><a href="Domain/wandaSquare">【<?php echo lang('了解更多');?>】</a></h1>
+
                 </div>
                 <!-- 万达广场 结束 -->
                 <!-- 亚欧新城 开始 -->
                 <div class="one-banner">
                     <div class="slider_1" id="slider_3">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
+                            <?php if($homeM[2]->pic)foreach(explode(';',$homeM[2]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
                         </div>
                         <!-- 如果需要分页器 -->
                         <div class="swiper-pagination"></div>
                         <div class="this-title"><?php echo lang('德汇特色小镇');?></div>
                     </div>
-                    <h1>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。<a href="Domain/logistics">【了解更多】</a></h1>
+                    <h1><?php echo langV($homeM[2],'description');?><a href="Domain/newCity">【<?php echo lang('了解更多');?>】</a></h1>
+
                 </div>
                 <!-- 亚欧新城 结束 -->
                 <!-- 德汇金融 开始 -->
                 <div class="one-banner">
                     <div class="slider_1" id="slider_4">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
+                            <?php if($homeM[3]->pic)foreach(explode(';',$homeM[3]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
                         </div>
                         <!-- 如果需要分页器 -->
                         <div class="swiper-pagination"></div>
                         <div class="this-title"><?php echo lang('德汇物流');?></div>
                     </div>
-                    <h1>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。<a href="Domain/newCity">【了解更多】</a></h1>
+                    <h1><?php echo langV($homeM[3],'description');?><a href="Domain/logistics">【<?php echo lang('了解更多');?>】</a></h1>
+
                 </div>
                 <!-- 德汇金融 结束 -->
                 <!-- 德汇金融 开始 -->
                 <div class="one-banner">
                     <div class="slider_1" id="slider_5">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
-                            <div class="swiper-slide top-banner">
-                                <img src="/Home/images/index/dhxtd.png" alt="">
-                            </div>
+                            <?php if($homeM[4]->pic)foreach(explode(';',$homeM[4]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
                         </div>
                         <!-- 如果需要分页器 -->
                         <div class="swiper-pagination"></div>
-                        <div class="this-title"><?php echo lang('德汇物流');?></div>
+                        <div class="this-title"><?php echo lang('德汇金融');?></div>
                     </div>
-                    <h1>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。<a href="Domain/finance">【了解更多】</a></h1>
+                    <h1><?php echo langV($homeM[4],'description');?><a href="Domain/finance">【<?php echo lang('了解更多');?>】</a></h1>
+
                 </div>
                 <!-- 德汇金融 结束 -->
                 

@@ -35,5 +35,29 @@ class HomeController extends Controller{
         View::hamlReader('home/Setting','Admin');
     }
 
+    function m1(){
+
+        View::hamlReader('home/m1','Admin');
+    }
+
+    function m2(){
+
+        View::hamlReader('home/m2','Admin');
+    }
+
+    function m3(){
+
+        View::hamlReader('home/m3','Admin');
+    }
+
+    function m4(){
+
+        View::hamlReader('home/m4','Admin');
+    }
+
+    function m5(){
+
+        View::hamlReader('home/m5','Admin');
+    }
 
 }

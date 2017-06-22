@@ -5,6 +5,7 @@ namespace App\Doowin\Controller;
 
 use App\Doowin\Model\HomeBannerModel;
 use App\Doowin\Model\ConfigModel;
+use App\Doowin\Model\HomeMModel;
 
 use Controller;
 use Request;
@@ -98,6 +99,34 @@ class HomeController extends Controller{
         function setting_upd($pic,$pic2,ConfigModel $model){
             $model->set(['value'=>$pic])->save(9);
             $model->set(['value'=>$pic2])->save(10);
+            AJAX::success();
+        }
+
+
+        function m_get(HomeMModel $model,$id){
+
+            !$id && AJAX::success(['info'=>[]]);
+            $out['info'] = $info = $model->find($id);
+            !$info && AJAX::error('没有数据！');
+            $info->picArray = [];
+            $info->pic2Array = [];
+            if($info->pic){
+                $pics = explode(';',$info->pic);
+                $info->pic2Array = $pics;
+                foreach($pics as &$v)$v = Func::fullPicAddr( $v );
+                $info->picArray = $pics;
+            }
+            AJAX::success($out);
+        }
+        function m_upd($id,HomeMModel $model){
+            $data = Request::getInstance()->request(['description','description_en','pic']);
+            unset ($data['id']);
+            
+            if(!$id){
+                AJAX::error();
+            }
+            else $model->set($data)->save($id);
+
             AJAX::success();
         }
 
