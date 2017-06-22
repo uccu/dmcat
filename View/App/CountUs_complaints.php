@@ -23,7 +23,7 @@
             <div class="content-title" style="font-weight: 600; margin-top: 30px;"><i id="icon-complaints"></i>在线投诉<span id="complaints-assess">注：带<em>“*”</em> 为必填项，必填项未填写完整则无法提交</span></div>
             <form id="complaints-form" method="post" onsubmit="return false;">
                 <table id="complaints-table">
-                    <tr>
+                    <!--tr>
                         <td style="width: 75px;"><em>*</em>类别：</td><td><select><option value="">请选择</option></select></td>
                         <td style="width: 75px;"><em>*</em>业态：</td><td><select><option value="">请选择</option></select></td>
                         <td style="width: 75px;"><em>*</em>类型：</td><td style="width: 200px;"><select><option value="">请选择</option></select></td>
@@ -32,7 +32,7 @@
                         <td><em></em>省份：</td><td><select><option value="">请选择</option></select></td>
                         <td><em></em>城市：</td><td><select><option value="">请选择</option></select></td>
                         <td><em>*</em>门店：</td><td><select><option value="">请选择</option></select></td>
-                    </tr>
+                    </tr-->
                     <tr>
                         <td>发生时间：</td><td><input type="text" id="select_data" readonly="readonly" placeholder="请选择"/></td>
                         <td>&nbsp;</td><td>&nbsp;</td>
@@ -60,7 +60,7 @@
                         <td>联系电话：</td><td><input type="number" placeholder="座机或其他联系电话"/></td>
                         <td>&nbsp;</td><td>&nbsp;</td>
                     </tr>
-                    <tr>
+                    <!--tr>
                         <td>附件：</td><td colspan="5"><a href="javascript:void(0);" class="upload_btn">上传文件</a></td>
                     </tr>
                     <tr>
@@ -73,7 +73,7 @@
                                 $(this)[0].src = '/user/captcha?e='+Math.random();
                             })
                         </script>
-                    </tr>
+                    </tr-->
                     <tr>
                         <td>&nbsp;</td><td colspan="5"><a href="javascript:void(0);" class="upload_btn submit_btn">提 交</a><a href="javascript:void(0);" class="upload_btn reset_btn" onclick="resetForm();">重 置</a></td>
                     </tr>

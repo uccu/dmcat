@@ -5,6 +5,7 @@ use App\Doowin\Tool\AJAX;
 use App\Doowin\Middleware\L;
 use App\Doowin\Model\ConfigModel;
 use App\Doowin\Model\MessageModel;
+use App\Doowin\Model\UploadModel;
 
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\LabelAlignment;
@@ -137,12 +138,19 @@ class Func{
         $upn = $upa = [];
         if(!is_dir(BASE_ROOT.'upload'))
                 !mkdir(BASE_ROOT.'upload',0777,true) && AJAX::error('文件夹权限不足，无法创建文件！');
+        $model = UploadModel::getInstance();
+        
         foreach($_FILES as $k=>$file){
             $upn[] = $k;
             if(!$name || $k==$name){
                 $upa[] = $k;
                 $paths[$k] = date('Ymd_His',TIME_NOW).'_'.$k.'.cache';
+                $data = [];
+                $data['path'] = $paths[$k];
+                $data['name'] = $file['name'];
+                $id = $model->set($data)->add()->getStatus();
                 move_uploaded_file($file['tmp_name'],BASE_ROOT."upload/".$paths[$k]);
+                $paths[$k] = $id;
             }
         }
         $data['upn'] = implode(',',$upn);

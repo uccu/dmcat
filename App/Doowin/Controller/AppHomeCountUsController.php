@@ -12,6 +12,7 @@ use App\Doowin\Model\StaticPageModel;
 use App\Doowin\Model\RecruitModel;
 use App\Doowin\Model\RecruitTypeModel;
 use App\Doowin\Model\MovesModel;
+use App\Doowin\Model\UploadModel;
 
 
 
@@ -69,6 +70,16 @@ class AppHomeCountUsController extends Controller{
         $name = '招标公告';
         $info = $model->find($id);
         !$info && Response::getInstance()->r302('/404.html');
+
+        $files = \str_replace(';',',',$info->file);
+        $files = UploadModel::getInstance()->where('id IN (%i)',$files)->get()->toArray();
+
+        $namee = '';
+        foreach($files as $k=>$file){
+            $namee .= ($k+1).'、'.$file->name;
+            $down .= '<a href="/download/file?id='.$file->id.'">'.$file->name.'</a><br>';
+        }
+
         include_once(VIEW_ROOT.'App/CountUs_movesInfo.php');
 
     }

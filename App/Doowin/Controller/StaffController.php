@@ -135,11 +135,11 @@ class StaffController extends Controller{
     }
     function upFile(){
         
-        $path = Func::upload('file');
-        if(!$path)AJAX::error('no file');
+        $id = Func::upload('file');
+        if(!$id)AJAX::error('no file');
 
-        $data['path'] = $path;
-        $id = UploadModel::getInstance()->set($data)->add();
+        
+        
 
         $out['path'] = $id;
         $out['fpath'] = '/pic/file.jpg';

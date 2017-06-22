@@ -20,8 +20,8 @@
             </div>
             <div class="downloadFile">
                 <h1>附件下载：</h1>
-                <h2>附件名：1、潜在新增供方登记表 &nbsp;&nbsp; 2、滑雪乐园冷库板供应及安装供方资格预审文件</h2>
-                <h3>点击下载：<a href="javascript:void(0);">附件1潜在新增供方登记表</a><br/><a href="javascript:void(0);">滑雪乐园冷库板供应及安装供方资格预审文件</a></h3>
+                <h2>附件名：<?php echo $namee;?></h2>
+                <h3>点击下载：<?php echo $down;?></h3>
             </div>
         </div>
         <div class="clear"></div>

@@ -83,6 +83,10 @@ class TestController extends Controller{
 
     }
 
+    function pull(){
+        system('git pull',$retval);
+
+    }
 
 
 }

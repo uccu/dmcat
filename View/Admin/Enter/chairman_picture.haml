@@ -47,8 +47,6 @@
                             %label.col-sm-3.control-label 图片/Picture
                             .col-sm-9.picArray
                                 %span.dib.clear
-
-                                    
                                 %i.fa.fa-plus-square-o.cp
                                 %input.dn(type="file")
                         .form-group
@@ -80,7 +78,7 @@
             }
 
             gr.flesh();
-            $('.fa-plus-square-o').click(function(){$('input[type="file"]').click()})
+            $('.fa-plus-square-o').click(function(){$('.picArray input[type="file"]').click()})
             var vc = {
                 toPic:function(){
                     var img = $('#modal_new .picArray span img');

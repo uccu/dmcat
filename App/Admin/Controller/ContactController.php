@@ -31,7 +31,8 @@ class ContactController extends Controller{
         function moves(){
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
-        function moves_detail(){
+        function moves_detail($id){
+            View::addData(['id'=>$id]);
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
 
