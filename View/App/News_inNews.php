@@ -23,7 +23,7 @@
             <div class="content-title"><?php echo lang($name);?></div>
             <?php if($first){?>
                     <div class="newsContent first" data-id="<?php echo $first->id;?>">
-                        <img src="/Home/images/index/jtyw.png">
+                        <img src="/pic/<?php echo $first->pic;?>">
                         <h1><?php echo langV($first,'title');?></h1>
                         <h2><?php echo langV($first,'description',140);?></h2>
                         <span><?php echo date('Y-m-d',$first->create_time);?></span>
@@ -34,7 +34,7 @@
 
                     
             <?php }else{?>
-                    <div class="newsContent" data-id="{$info.info_id}">
+                    <div class="newsContent" data-id="<?php echo $info->id;?>">
                         <em>●</em>
                         <h3><?php echo langV($info,'title');?></h3>
                         <span><?php echo date('m-d',$info->create_time);?></span></div>

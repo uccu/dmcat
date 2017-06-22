@@ -97,7 +97,7 @@ class EnterController extends Controller{
             AJAX::success();
 
         }
-        function group_del($id,IntroductionProductModel $model){
+        function introduction_product_del($id,IntroductionProductModel $model){
 
             !$id && AJAX::error('删除失败！');
             $model->remove($id);

@@ -5,7 +5,7 @@ use Lib\Core\Autoload;
 
 
 
-//error_reporting(0);
+error_reporting(0);
 
 //定义常量
 
