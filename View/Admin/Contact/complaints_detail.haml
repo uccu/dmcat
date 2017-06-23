@@ -1,0 +1,132 @@
+- extends "base.haml"
+
+
+
+- block body
+    
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                #modal_new.ibox.float-e-margins
+                    .ibox-title
+                        %h3 投诉与建议
+                    .ibox-content
+                        %form.form-horizontal.animated(method="post")
+                            %input.form-control(type="hidden" name="id")
+                            .form-group
+                                %label.col-sm-2.control-label 姓名
+                                .col-sm-3
+                                    %input.form-control(name="name" disabled)
+
+                           
+                            .form-group
+                                %label.col-sm-2.control-label 发生时间
+                                .col-sm-3
+                                    %input.form-control(name="date" disabled)
+                            .form-group
+                                %label.col-sm-2.control-label 称谓
+                                .col-sm-3
+                                    %input.form-control(name="sex" disabled)
+                            .form-group
+                                %label.col-sm-2.control-label 要求
+                                .col-sm-9
+                                    %input.form-control(name="requires" disabled)
+                            .form-group
+                                %label.col-sm-2.control-label 手机
+                                .col-sm-4
+                                    %input.form-control(name="mobile" disabled)
+                            .form-group
+                                %label.col-sm-2.control-label 联系电话
+                                .col-sm-4
+                                    %input.form-control(name="phone" disabled)
+                            .form-group
+                                %label.col-sm-2.control-label 内容
+                                .col-sm-9
+                                    %textarea.form-control.noresize(name="content" rows="4" disabled)
+                        .ibox-title
+                            %a.btn.btn-default(href="javascript:gotoTag('contact/complaints',1)") Close
+                            
+    
+- block otherCss
+    %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
+    %link(href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet")
+    :css
+        .picArray img{width:40px}
+        .fa-plus-square-o{font-size:45px}
+        .dn{display:none !important}
+                        
+
+
+
+- block otherScript
+    %script(src="/js/plugins/summernote/summernote.min.js")
+    %script(src="/js/plugins/summernote/summernote-zh-CN.js")
+    :javascript
+        $(function(j){
+            gr.updBefore = function(){
+                $('#modal_new .picArray span').html('');
+            }
+            gr.updFunction = function(g){
+                for(h in g.info.pic2Array)$('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.info.picArray[h],'data-pic':g.info.pic2Array[h]}).click(vc.dePic));
+            }
+            $('.fa-plus-square-o').click(function(){$('.picArray input[type="file"]').click()})
+            var vc = {
+                toPic:function(){
+                    var img = $('#modal_new .picArray span img');
+                    var l = img.length;
+                    var pic = [];
+                    for(var i=0;i<l;i++)pic.push(img.eq(i).attr('data-pic'));
+
+
+                    $('#modal_new [name="file"]').val(pic.join(';'));
+                },dePic:function(){
+                    var that = this;
+                    curl_check(function(){
+                        $(that).remove();vc.toPic()
+                    })
+
+                }
+            }
+            upPic('/staff/upFile','input[type="file"]',function(g){
+                $('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.apath,'data-pic':g.path}).click(vc.dePic));
+                vc.toPic()
+            });
+            var su = j(".summernote").summernote({
+                toolbar: [
+                    ['style', ['style']],
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname',['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['height', ['height']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['e',['picture','link']],
+                    ['o',['codeview']],
+                ],
+                height: 300,
+                minHeight: 300,
+                maxHeight: null,
+                focus: true,
+                lang:"zh-CN",
+                callbacks: {
+                    onImageUpload: function(files) {
+                        curl('/staff/upPic',packFormData(files),function(d){
+                            var imgNode = new Image
+                            imgNode.src = d.fpath
+                            su.summernote('insertNode', imgNode);
+                        },1);
+                    }
+                }
+            })
+            gr.saveAfter = function(){
+                location = $('.ibox-title a.btn.btn-default').attr('href')
+            }
+            cget('/contact/complaints_get','#{id}','/contact/complaints_upd',1);
+            // gr.flesh = function(){}
+            // $('.click2edit').summernote('code');
+
+        });
+
+
+    
+        

@@ -13,6 +13,7 @@ use App\Doowin\Model\RecruitModel;
 use App\Doowin\Model\RecruitTypeModel;
 use App\Doowin\Model\MovesModel;
 use App\Doowin\Model\UploadModel;
+use App\Doowin\Model\ComplaintsModel;
 
 
 
@@ -90,7 +91,23 @@ class AppHomeCountUsController extends Controller{
         include_once(VIEW_ROOT.'App/CountUs_complaints.php');
 
     }
+    # 投诉与建议
+    function send($date,$content,$requires,$name,$sex,$mobile,$phone,ComplaintsModel $model){
 
+        $data['date'] = $date;
+        $data['content'] = $content;
+        $data['requires'] = $requires;
+        $data['name'] = $name;
+        $data['sex'] = 2?'先生':'女士';
+        $data['mobile'] = $mobile;
+        $data['phone'] = $phone;
+        $data['create_time'] = TIME_NOW;
+        $model->set($data)->add();
+
+        AJAX::success();
+
+
+    }
     
     
 }

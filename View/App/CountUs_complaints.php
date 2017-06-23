@@ -34,30 +34,30 @@
                         <td><em>*</em>门店：</td><td><select><option value="">请选择</option></select></td>
                     </tr-->
                     <tr>
-                        <td>发生时间：</td><td><input type="text" id="select_data" readonly="readonly" placeholder="请选择"/></td>
+                        <td>发生时间：</td><td><input name="date" type="text" id="select_data" readonly="readonly" placeholder="请选择"/></td>
                         <td>&nbsp;</td><td>&nbsp;</td>
                         <td>&nbsp;</td><td>&nbsp;</td>
                     </tr>
                     <tr>
                         <td valign="top" style="padding-top: 12px;"><em>*</em>内容：</td>
                         <td colspan="5">
-                            <textarea placeholder="请输入内容说明" style="height: 80px;"></textarea>
+                            <textarea placeholder="请输入内容说明" name="content" style="height: 80px;"></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td valign="top" style="padding-top: 12px;"><em>*</em>要求：</td>
                         <td colspan="5">
-                            <textarea placeholder="请输入您的要求" style="height: 20px;"></textarea>
+                            <textarea placeholder="请输入您的要求" name="requires" style="height: 20px;"></textarea>
                         </td>
                     </tr>
                     <tr>
-                        <td><em>*</em>姓名：</td><td><input type="text" placeholder="您的真实姓名"/></td>
-                        <td><em>*</em>称谓：</td><td><select><option value="">请选择</option><option value="1">先生</option><option value="2">女士</option></select></td>
+                        <td><em>*</em>姓名：</td><td><input type="text" name="name" placeholder="您的真实姓名"/></td>
+                        <td><em>*</em>称谓：</td><td><select><option name="sex" value="">请选择</option><option value="1">先生</option><option value="2">女士</option></select></td>
                         <td>&nbsp;</td><td>&nbsp;</td>
                     </tr>
                     <tr>
-                        <td><em>*</em>手机号：</td><td><input type="number" placeholder="您的手机号码"/></td>
-                        <td>联系电话：</td><td><input type="number" placeholder="座机或其他联系电话"/></td>
+                        <td><em>*</em>手机号：</td><td><input type="number" name="mobile" placeholder="您的手机号码"/></td>
+                        <td>联系电话：</td><td><input type="number" name="phone" placeholder="座机或其他联系电话"/></td>
                         <td>&nbsp;</td><td>&nbsp;</td>
                     </tr>
                     <!--tr>
@@ -75,7 +75,7 @@
                         </script>
                     </tr-->
                     <tr>
-                        <td>&nbsp;</td><td colspan="5"><a href="javascript:void(0);" class="upload_btn submit_btn">提 交</a><a href="javascript:void(0);" class="upload_btn reset_btn" onclick="resetForm();">重 置</a></td>
+                        <td>&nbsp;</td><td colspan="5"><a class="upload_btn submit_btn">提 交</a><a href="javascript:void(0);" class="upload_btn reset_btn" onclick="resetForm();">重 置</a></td>
                     </tr>
                 </table>
             </form>
@@ -89,6 +89,17 @@
     function resetForm() {
         document.getElementById("complaints-form").reset();
     }
+    $('.submit_btn').click(function(){
+        
+            $.post('send',$('#complaints-form').serializeArray(),function(d){
+                if(d.code==200)alert('成功！')
+                else alert('失败！')
+            },'json')
+
+
+            return false;
+        
+    })
 
     function get_date(){
         var time = new Date();

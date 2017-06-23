@@ -41,7 +41,8 @@ class ContactController extends Controller{
         function complaints(){
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
-        function complaints_detail(){
+        function complaints_detail($id){
+            View::addData(['id'=>$id]);
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
 

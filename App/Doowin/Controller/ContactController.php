@@ -7,6 +7,7 @@ use App\Doowin\Model\StaticPageModel;
 use App\Doowin\Model\RecruitModel;
 use App\Doowin\Model\RecruitTypeModel;
 use App\Doowin\Model\MovesModel;
+use App\Doowin\Model\ComplaintsModel;
 
 
 
@@ -108,7 +109,7 @@ class ContactController extends Controller{
 
         }
 
-        /* 视频分类 */
+    # 招聘类型
         function recruit_type_lists(RecruitTypeModel $model,$page = 1,$limit = 30){
 
             $out = [
@@ -254,6 +255,74 @@ class ContactController extends Controller{
 
         }
         function moves_del($id,MovesModel $model){
+
+            !$id && AJAX::error('删除失败！');
+            $model->remove($id);
+            AJAX::success();
+
+        }
+    
+
+    # 投诉与建议
+        function complaints_lists(ComplaintsModel $model,$page = 1,$limit = 30){
+
+            $out = [
+                'get'=>'/contact/complaints_get',
+                'upd'=>'contact/complaints_detail',
+                'del'=>'/contact/complaints_del'
+            ];
+
+            $out['thead'] = [
+                '日期'=>['class'=>'tc'],
+                '名字'=>['class'=>'tc'],
+                '手机号'=>['class'=>'tc'],
+                '发布时间'=>['class'=>'tc'],
+                '_opt'=>['class'=>'tc'],
+            ];
+            
+            $out['tbody'] = [
+
+                'date'      =>['class'=>'tc'],
+                'name'      =>['class'=>'tc'],
+                'mobile'    =>['class'=>'tc'],
+                'create_date'=>['class'=>'tc'],
+                '_opt'      =>['class'=>'tc','updateLink'=>1],
+            ];
+
+
+            $list = $model->where($where)->page($page,$limit)->order('id desc')->get()->toArray();
+
+            foreach($list as &$v){
+
+                $v->create_date = date('Y-m-d',$v->create_time);
+            }
+
+            $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
+            $out['page'] = $page;
+            $out['limit'] = $limit;
+
+            $out['list']  = $list;
+            AJAX::success($out);
+
+        }
+        function complaints_get(ComplaintsModel $model,$id){
+
+            !$id && AJAX::success(['info'=>[]]);
+            $out['info'] = $info = $model->find($id);
+            !$info && AJAX::error('没有数据！');
+            $info->picArray = [];
+            $info->pic2Array = [];
+            if($info->file){
+                $pics = explode(';',$info->file);
+                $info->pic2Array = $pics;
+                foreach($pics as &$v)$v = Func::fullPicAddr( 'file.jpg' );
+                $info->picArray = $pics;
+            }
+            AJAX::success($out);
+
+        }
+        
+        function complaints_del($id,ComplaintsModel $model){
 
             !$id && AJAX::error('删除失败！');
             $model->remove($id);
