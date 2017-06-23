@@ -112,7 +112,9 @@
                     }
                 }
             })
-
+            gr.saveAfter = function(){
+                location = $('.ibox-title a.btn.btn-default').attr('href')
+            }
             cget('/contact/moves_get','#{id}','/contact/moves_upd',1);
             // gr.flesh = function(){}
             // $('.click2edit').summernote('code');

@@ -87,7 +87,9 @@
                     }
                 }
             })
-
+            gr.saveAfter = function(){
+                location = $('.ibox-title a.btn.btn-default').attr('href')
+            }
             cget('/enter/introduction_product_get','#{id}','/enter/introduction_product_upd',1);
             // gr.flesh = function(){}
             // $('.click2edit').summernote('code');

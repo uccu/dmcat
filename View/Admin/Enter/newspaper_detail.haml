@@ -116,6 +116,10 @@
                 }
             })
 
+            gr.saveAfter = function(){
+                location = $('.ibox-title a.btn.btn-default').attr('href')
+            }
+
             cget('/enter/newspaper_get','#{id}','/enter/newspaper_upd',1);
             // gr.flesh = function(){}
             // $('.click2edit').summernote('code');
