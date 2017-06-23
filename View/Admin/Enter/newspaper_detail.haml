@@ -1,0 +1,127 @@
+- extends "base.haml"
+
+
+- block body
+    
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                #modal_new.ibox.float-e-margins
+                    .ibox-title
+                        %h3 集团要闻
+                    .ibox-content
+                        %form.form-horizontal.animated(method="post")
+                            %input.form-control(type="hidden" name="id")
+                            .form-group
+                                %label.col-sm-2.control-label 标题
+                                .col-sm-6
+                                    %input.form-control(name="title")
+                            .form-group
+                                %label.col-sm-2.control-label 标题(EN)
+                                .col-sm-6
+                                    %input.form-control(name="title_en")
+                            .form-group
+                                %label.col-sm-2.control-label 封面图
+                                .col-sm-6.picArray2
+                                    %img.cp.pic_img(data-name="pic" src="/pic/nopic.jpg" style="max-width:100px;max-height:100px")
+                                    %input.form-control.picFile(type="file" style="display:none")
+                                    %input.form-control(type="hidden" name="pic")
+                            .form-group
+                                %label.col-sm-2.control-label 附件
+                                .col-sm-9.picArray
+                                    %span.dib.clear
+                                    %i.fa.fa-plus-square-o.cp
+                                    %input.dn(type="file")
+                                    %input(type="hidden" name="down")
+                            
+                        .ibox-title
+                            %a.btn.btn-default(href="javascript:gotoTag('enter/newspaper',1)") Close
+                            %button.btn.btn-primary.save(type="button") Save
+    
+- block otherCss
+    %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
+    %link(href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet")
+    :css
+        .picArray img{width:40px}
+        .fa-plus-square-o{font-size:45px}
+        .dn{display:none !important}
+                        
+
+
+
+- block otherScript
+    %script(src="/js/plugins/summernote/summernote.min.js")
+    %script(src="/js/plugins/summernote/summernote-zh-CN.js")
+    :javascript
+        $(function(j){
+            gr.updBefore = function(){
+                $('#modal_new .picArray span').html('');
+            }
+            gr.updFunction = function(g){
+                for(h in g.info.pic2Array)$('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.info.picArray[h],'data-pic':g.info.pic2Array[h]}).click(vc.dePic));
+            }
+            $('.fa-plus-square-o').click(function(){$('.picArray input[type="file"]').click()})
+            var vc = {
+                toPic:function(){
+                    var img = $('#modal_new .picArray span img');
+                    var l = img.length;
+                    var pic = [];
+                    for(var i=0;i<l;i++)pic.push(img.eq(i).attr('data-pic'));
+
+
+                    $('#modal_new .picArray [name="down"]').val(pic.join(';'));
+                },dePic:function(){
+                    var that = this;
+                    curl_check(function(){
+                        $(that).remove();vc.toPic()
+                    })
+
+                }
+            }
+            upPic('/staff/upFile','.picArray input[type="file"]',function(g){
+                $('#modal_new .picArray span').html($('<img>').addClass('cp fl').attr({src:g.apath,'data-pic':g.path}).click(vc.dePic));
+                vc.toPic()
+                curl_succ('success')
+            });
+            upPic('/staff/upPic','.picArray2 .picFile','.picArray2 input[name="pic"]','.picArray2 .pic_img');
+            j('.picArray2 .pic_img').click(function(){
+                j('.picArray2 .picFile').click();
+            })
+            
+            var su = j(".summernote").summernote({
+                toolbar: [
+                    ['style', ['style']],
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname',['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['height', ['height']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['e',['picture','link']],
+                    ['o',['codeview']],
+                ],
+                height: 300,
+                minHeight: 300,
+                maxHeight: null,
+                focus: true,
+                lang:"zh-CN",
+                callbacks: {
+                    onImageUpload: function(files) {
+                        curl('/staff/upPic',packFormData(files),function(d){
+                            var imgNode = new Image
+                            imgNode.src = d.fpath
+                            su.summernote('insertNode', imgNode);
+                        },1);
+                    }
+                }
+            })
+
+            cget('/enter/newspaper_get','#{id}','/enter/newspaper_upd',1);
+            // gr.flesh = function(){}
+            // $('.click2edit').summernote('code');
+
+        });
+
+
+    
+        

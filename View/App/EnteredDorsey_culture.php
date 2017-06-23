@@ -26,18 +26,14 @@
             </div>
             <div class="enterprise_info" style="display: none;">
                 <div class="picture_album">
-                    <div class="picture_content">
-                        <img src="/Home/images/dorsey/pic-huace1.png">
-                        <h1><?php echo lang('德汇企业形象广告画册');?></h1>
-                    </div>
-                    <div class="picture_content">
-                        <img src="/Home/images/dorsey/pic-huace2.png">
-                        <h1><?php echo lang('德汇企业宣传画册');?></h1>
-                    </div>
-                    <div class="picture_content">
-                        <img src="/Home/images/dorsey/pic-huace3.png">
-                        <h1><?php echo lang('德汇运营创新“产学研一体”画册');?></h1>
-                    </div>
+                    <?php foreach($newspaper as $v){
+
+                        echo '<a href="/download/watch?id='.$v->down.'" target="_blank"><div class="picture_content">
+                        <img src="/pic/'.$v->pic.'">
+                        <h1>'.langV($v,'title').'</h1>
+                    </div></a>';
+                    }?>
+                    
                 </div>
                 <div class="content-title" style="margin-top: 30px;"><?php echo lang('德汇刊报');?>
                     <div class="newspaper_years_p">

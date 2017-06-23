@@ -10,6 +10,7 @@ use App\Doowin\Model\ChairmanPictureModel;
 use App\Doowin\Model\HonorModel;
 use App\Doowin\Model\CharitableModel;
 use App\Doowin\Model\MagazineModel;
+use App\Doowin\Model\NewspaperModel;
 
 
 use Controller;
@@ -258,7 +259,7 @@ class EnterController extends Controller{
             $model->set($data)->save(3);
             AJAX::success();
         }
-
+    # 杂志
         function magazine_lists(MagazineModel $model,$page = 1,$limit = 30){
 
             $out = [
@@ -300,12 +301,20 @@ class EnterController extends Controller{
             !$id && AJAX::success(['info'=>[]]);
             $out['info'] = $info = $model->find($id);
             !$info && AJAX::error('没有数据！');
+            $info->picArray = [];
+            $info->pic2Array = [];
+            if($info->down){
+                $pics = explode(';',$info->down);
+                $info->pic2Array = $pics;
+                foreach($pics as &$v)$v = Func::fullPicAddr( 'file.jpg' );
+                $info->picArray = $pics;
+            }
             AJAX::success($out);
 
         }
         function magazine_upd($id,MagazineModel $model){
 
-            $data = Request::getInstance()->request(['year','pic','title','title_en','red','red_en','small','small','top','description','description_en']);
+            $data = Request::getInstance()->request(['down','year','pic','title','title_en','red','red_en','small','small','top','description','description_en']);
             $data['year'] = floor($data['year']);
             $data['top'] = floor($data['top']);
             if(!$id)$id = $model->set($data)->add()->getStatus();
@@ -321,6 +330,84 @@ class EnterController extends Controller{
             AJAX::success();
 
         }
+    # 报纸
+        function newspaper_lists(NewspaperModel $model,$page = 1,$limit = 30,$year = 0){
+
+            $out = [
+                'get'=>'/enter/newspaper_get',
+                'upd'=>'enter/newspaper_detail',
+                'del'=>'/enter/newspaper_del'
+            ];
+
+            $out['thead'] = [
+                'ID'=>['class'=>'tc'],
+                '标题'=>['class'=>'tc'],
+                '图片'=>['class'=>'tc'],
+                '_opt'=>['class'=>'tc'],
+            ];
+            
+            $out['tbody'] = [
+                'id'    =>['class'=>'tc'],
+                'title' =>['class'=>'tc'],
+                'pic'=>['type'=>'imga','class'=>'tc'],
+                '_opt'  =>['class'=>'tc','updateLink'=>1],
+            ];
+
+            if($year)$where['year'] = $year;
+
+            $list = $model->where($where)->page($page,$limit)->order('id')->get()->toArray();
+
+            foreach($list as &$v){
+                $v->pic = '/pic/'.$v->pic;
+
+            }
+
+            $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
+            $out['page'] = $page;
+            $out['limit'] = $limit;
+
+            $out['list']  = $list;
+            AJAX::success($out);
+
+        }
+        function newspaper_get(NewspaperModel $model,$id){
+
+            !$id && AJAX::success(['info'=>[]]);
+            $out['info'] = $info = $model->find($id);
+            !$info && AJAX::error('没有数据！');
+            $info->picArray = [];
+            $info->pic2Array = [];
+            if($info->down){
+                $pics = explode(';',$info->down);
+                $info->pic2Array = $pics;
+                foreach($pics as &$v)$v = Func::fullPicAddr( 'file.jpg' );
+                $info->picArray = $pics;
+            }
+            AJAX::success($out);
+
+        }
+        function newspaper_upd($id,NewspaperModel $model){
+
+            $data = Request::getInstance()->request(['title_en','title','pic','down']);
+            unset ($data['id']);
+            if(!$id){
+                AJAX::error();
+            }
+            else $model->set($data)->save($id);
+
+            AJAX::success();
+
+        }
+        function newspaper_del($id,NewspaperModel $model){
+
+            !$id && AJAX::error('删除失败！');
+            $model->remove($id);
+            AJAX::success();
+
+        }
+
+
+
 
     # 企业荣誉
         function honor_lists(HonorModel $model,$page = 1,$limit = 30){

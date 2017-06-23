@@ -47,6 +47,13 @@ class EnterController extends Controller{
         function culture(){
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
+        function newspaper(){
+            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+        }
+        function newspaper_detail($id){
+            View::addData(['id'=>$id]);
+            View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
+        }
         function magazine(){
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }

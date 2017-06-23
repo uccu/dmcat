@@ -161,7 +161,7 @@
             var u = packFormData(f)
             if(u)curl(url,u,function(d){
                 if(typeof i ==="function")i(d);
-                else if(i)j(i).val(d.path);
+                else if(i){j(i).val(d.path);curl_succ('success')}
                 if(p)j(p).attr('src',d.fpath);
             },1);
         })

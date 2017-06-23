@@ -38,7 +38,7 @@
                         .sk-rect5
                     %form.form-horizontal.animated(method="post")
                         %input.form-control(type="hidden" name="id")
-                        .form-group.tc
+                        .form-group.tc.picArray2
                             %img.center-block.cp.pic_img(data-name="pic" src="/pic/nopic.jpg" style="max-width:100px;max-height:100px")
                             %input.form-control(type="file" style="display:none")
                             %input.form-control(type="hidden" name="pic")
@@ -82,25 +82,64 @@
                             %label.col-sm-3.control-label 描述(EN)
                             .col-sm-9
                                 %textarea.form-control(name="description_en" style="resize:none;height:200px")
+                        .form-group
+                            %label.col-sm-2.control-label 附件
+                            .col-sm-9.picArray
+                                %span.dib.clear
+                                %i.fa.fa-plus-square-o.cp
+                                %input.dn(type="file")
+                                %input(type="hidden" name="down")
                 .modal-footer
                     %button.btn.btn-default(type="button" data-dismiss="modal") Close
                     %button.btn.btn-primary.save(type="button") Save
 
-                        
+- block otherCss
+    :css
+        .picArray img{width:40px}
+        .fa-plus-square-o{font-size:45px}
+        .dn{display:none !important}      
 
 
 - block otherScript
     :javascript
         $(function(j){
             gr.updBefore = function(){
-                j('input[name="pic"]').val('nopic.jpg')
-                j('.pic_img')[0].src = '/pic/nopic.jpg'
+                j('.picArray2 input[name="pic"]').val('nopic.jpg')
+                j('.picArray2 .pic_img')[0].src = '/pic/nopic.jpg'
+                $('#modal_new .picArray span').html('');
             }
+            gr.updFunction = function(g){
+                for(h in g.info.pic2Array)$('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.info.picArray[h],'data-pic':g.info.pic2Array[h]}).click(vc.dePic));
+            }
+            $('.fa-plus-square-o').click(function(){$('.picArray input[type="file"]').click()})
+            var vc = {
+                toPic:function(){
+                    var img = $('#modal_new .picArray span img');
+                    var l = img.length;
+                    var pic = [];
+                    for(var i=0;i<l;i++)pic.push(img.eq(i).attr('data-pic'));
+
+
+                    $('#modal_new .picArray [name="down"]').val(pic.join(';'));
+                },dePic:function(){
+                    var that = this;
+                    curl_check(function(){
+                        $(that).remove();vc.toPic()
+                    })
+
+                }
+            }
+            upPic('/staff/upFile','.picArray input[type="file"]',function(g){
+                $('#modal_new .picArray span').html($('<img>').addClass('cp fl').attr({src:g.apath,'data-pic':g.path}).click(vc.dePic));
+                vc.toPic()
+                curl_succ('success')
+            });
+
             gr.flesh = function(){
                 getList('/enter/magazine_lists')
             }
-            upPic('/staff/upPic','input[type="file"]','input[name="pic"]','.pic_img');
-
+            upPic('/staff/upPic','.picArray2 input[type="file"]','.picArray2 input[name="pic"]','.picArray2 .pic_img');
+            $('.picArray2 .pic_img').click(function(){$('.picArray2 input[type="file"]').click()})
             gr.flesh();
         })
             

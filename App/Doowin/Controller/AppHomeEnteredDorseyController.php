@@ -15,6 +15,7 @@ use App\Doowin\Model\ChairmanPictureModel;
 use App\Doowin\Model\HonorModel;
 use App\Doowin\Model\CharitableModel;
 use App\Doowin\Model\MagazineModel;
+use App\Doowin\Model\NewspaperModel;
 
 
 require_once(BASE_ROOT.'App/Doowin/Middleware/Lang.php');
@@ -74,11 +75,13 @@ class AppHomeEnteredDorseyController extends Controller{
         include_once(VIEW_ROOT.'App/EnteredDorsey_'.__FUNCTION__.'.php');
 
     }
-    function culture(StaticPageModel $pageModel,MagazineModel $magazineModel){
+    function culture(StaticPageModel $pageModel,MagazineModel $magazineModel,NewspaperModel $newspaperModel){
         $type = __FUNCTION__;
         $page = $pageModel->find(3);
 
         // $magazine = $magazineModel->where(['year'=>date('Y')])->order('top desc')->get()->toArray();
+        $newspaper = $newspaperModel->order('id')->get()->toArray();
+
 
         include_once(VIEW_ROOT.'App/EnteredDorsey_'.__FUNCTION__.'.php');
     }
@@ -86,13 +89,13 @@ class AppHomeEnteredDorseyController extends Controller{
 
         $magazine = $magazineModel->where(['year'=>$year])->order('top desc')->get()->toArray();
         foreach($magazine as $v){
-            echo '<div class="newspaper-one">
+            echo '<a href="/download/watch?id='.$v->down.'" target="_blank"><div class="newspaper-one">
                 <img src="/pic/'.$v->pic.'">
                 <h1>'.langV($v,'title').'</h1>
                 <h2>'.langV($v,'small').'</h2>
                 <h3>'.langV($v,'red').'</h3>
                 <h4>'.langV($v,'description').'</h4>
-            </div>';
+            </div></a>';
         }
 
     }
