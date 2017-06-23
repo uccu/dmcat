@@ -54,11 +54,11 @@
             <?php
                 foreach($newsVideo as $v){
                     echo 
-                        '<a href="News/videoPlay?id='.$v->id.'"><div class="one-video">
+                        '<div class="one-video">
                             <img src="/pic/'.$v->pic.'">
-                            <a href="javascript:void(0);" class="play_btn"></a>
+                            <a href="News/videoPlay?id='.$v->id.'" class="play_btn"></a>
                             <h4>'.langV($v,'title').'</h4>
-                        </div></a>';
+                        </div>';
                 }
             ?>
             <div class="clear"></div>
