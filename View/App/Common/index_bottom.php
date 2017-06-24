@@ -4,34 +4,35 @@
     <div class="w-1200">
         <div class="footer-body">
             <a href="javascript:void(0);"><?php echo lang('走进德汇');?></a>
-            <a href="javascript:void(0);"><?php echo lang('集团简介');?></a>
-            <a href="javascript:void(0);"><?php echo lang('董事长专区');?></a>
-            <a href="javascript:void(0);"><?php echo lang('发展历程');?></a>
-            <a href="javascript:void(0);"><?php echo lang('企业文化');?></a>
-            <a href="javascript:void(0);"><?php echo lang('企业荣誉');?></a>
-            <a href="javascript:void(0);"><?php echo lang('社会责任');?></a>
+            <a href="/Home/EnteredDorsey/profile"><?php echo lang('集团简介');?></a>
+            <a href="/Home/EnteredDorsey/chairman"><?php echo lang('董事长专区');?></a>
+            <a href="/Home/EnteredDorsey/develop"><?php echo lang('发展历程');?></a>
+            <a href="/Home/EnteredDorsey/culture"><?php echo lang('企业文化');?></a>
+            <a href="/Home/EnteredDorsey/honor"><?php echo lang('企业荣誉');?></a>
+            <a href="/Home/EnteredDorsey/blame"><?php echo lang('社会责任');?></a>
         </div>
         <div class="footer-body">
             <a href="javascript:void(0);"><?php echo lang('德汇产业');?></a>
-            <a href="javascript:void(0);"><?php echo lang('德汇新天地');?></a>
-            <a href="javascript:void(0);"><?php echo lang('万达广场');?></a>
-            <a href="javascript:void(0);"><?php echo lang('亚欧新城');?></a>
-            <a href="javascript:void(0);"><?php echo lang('德汇金融');?></a>
-            <a href="javascript:void(0);"><?php echo lang('德汇教育');?></a>
+            <a href="/Home/Domain/newWorld"><?php echo lang('德汇宝贝广场');?></a>
+            <a href="/Home/Domain/wandaSquare"><?php echo lang('德汇万达广场');?></a>
+            <a href="/Home/Domain/newCity"><?php echo lang('德汇特色小镇');?></a>
+            <a href="/Home/Domain/logistics"><?php echo lang('德汇物流');?></a>
+            <a href="/Home/Domain/finance"><?php echo lang('德汇金融');?></a>
+            
         </div>
         <div class="footer-body">
             <a href="javascript:void(0);"><?php echo lang('新闻中心');?></a>
-            <a href="javascript:void(0);"><?php echo lang('集团要闻');?></a>
-            <a href="javascript:void(0);"><?php echo lang('热点专题');?></a>
-            <a href="javascript:void(0);"><?php echo lang('媒体聚焦');?></a>
-            <a href="javascript:void(0);"><?php echo lang('视频中心');?></a>
+            <a href="/Home/News/inNews"><?php echo lang('集团要闻');?></a>
+            <a href="/Home/News/special"><?php echo lang('热点专题');?></a>
+            <a href="/Home/News/media"><?php echo lang('媒体聚焦');?></a>
+            <a href="/Home/News/video"><?php echo lang('视频中心');?></a>
         </div>
         <div class="footer-body">
             <a href="javascript:void(0);"><?php echo lang('联系我们');?></a>
-            <a href="javascript:void(0);"><?php echo lang('德汇招聘');?></a>
-            <a href="javascript:void(0);"><?php echo lang('招标公告');?></a>
-            <a href="javascript:void(0);"><?php echo lang('投诉及建议');?></a>
-            <a href="javascript:void(0);"><?php echo lang('法律声明');?></a>
+            <a href="/Home/CountUs/recruit"><?php echo lang('德汇招聘');?></a>
+            <a href="/Home/CountUs/moves"><?php echo lang('招标公告');?></a>
+            <a href="/Home/CountUs/complaints"><?php echo lang('投诉及建议');?></a>
+            <a href="/Home/CountUs/legalNotices"><?php echo lang('法律声明');?></a>
         </div>
         <div class="footer-body">
             <a href="javascript:void(0);"><?php echo lang('关注我们');?></a>
@@ -48,5 +49,10 @@
 </div>
 <div class="index-icp w-1200">
     <div class="logo">&copy; 2013-2018 &nbsp;&nbsp; 德汇集团版权所有 &nbsp;&nbsp; 新ICP备16002457号</div>
-    <div class="foot-right"><?php echo lang('联系我们');?><em>|</em><?php echo lang('法律声明');?><em>|</em><?php echo lang('投诉及建议');?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>新公网安备65010302000030号</span></div>
+    <div class="foot-right">
+    <a href="/Home/CountUs/complaints"><?php echo lang('联系我们');?></a>
+    <em>|</em>
+    <a href="/Home/CountUs/legalNotices"><?php echo lang('法律声明');?></a>
+    <em>|</em>
+    <a href="/Home/CountUs/complaints"><?php echo lang('投诉及建议');?></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>新公网安备65010302000030号</span></div>
 </div>

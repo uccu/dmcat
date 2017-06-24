@@ -19,44 +19,44 @@
 <div class="w-1200">
     <div class="left-body">
         <div class="index-left">
-            <div class="left-title"><?php echo lang('集团要闻');?> <a href="News/inNewsNews"><?php echo lang('查看更多');?>〉</a></div>
-            <a href="News/newsInfo?id=<?php echo $newsGroup[0]->id;?>"><div class="left-content first">
+            <div class="left-title"><?php echo lang('集团要闻');?> <a href="/Home/News/inNewsNews"><?php echo lang('查看更多');?>〉</a></div>
+            <a href="/Home/News/newsInfo?id=<?php echo $newsGroup[0]->id;?>"><div class="left-content first">
                 <img src="/pic/<?php echo $newsGroup[0]->pic;?>">
                 <h1 style="    max-height: 48px;"><?php echo langV($newsGroup[0],'title',40);?></h1>
                 <h2><?php echo langV($newsGroup[0],'description',70);?></h2>
             </div>
-            </a><a href="News/newsInfo?id=<?php echo $newsGroup[1]->id;?>">
+            </a><a href="/Home/News/newsInfo?id=<?php echo $newsGroup[1]->id;?>">
             <div class="left-content"><em>●</em><h3><?php echo langV($newsGroup[1],'title');?></h3><span><?php echo date('m-d',$newsGroup[1]->create_time);?></span></div>
-            </a><a href="News/newsInfo?id=<?php echo $newsGroup[2]->id;?>">
+            </a><a href="/Home/News/newsInfo?id=<?php echo $newsGroup[2]->id;?>">
             <div class="left-content"><em>●</em><h3><?php echo langV($newsGroup[2],'title');?></h3><span><?php echo date('m-d',$newsGroup[2]->create_time);?></span></div>
-            </a><a href="News/newsInfo?id=<?php echo $newsGroup[3]->id;?>">
+            </a><a href="/Home/News/newsInfo?id=<?php echo $newsGroup[3]->id;?>">
             <div class="left-content"><em>●</em><h3><?php echo langV($newsGroup[3],'title');?></h3><span><?php echo date('m-d',$newsGroup[3]->create_time);?></span></div>
             </a>
         </div>
         <div class="index-left">
-            <div class="left-title"><?php echo lang('热点专题');?> <a href="News/special"><?php echo lang('查看更多');?>〉</a></div>
-            <a href="News/specialInfo?id=<?php echo $newsHot[0]->id;?>"><div class="left-content"><em>●</em><h3><?php echo langV($newsHot[0],'title');?></h3><span><?php echo date('m-d',$newsHot[0]->create_time);?></span></div>
-            </a><a href="News/specialInfo?id=<?php echo $newsHot[1]->id;?>"><div class="left-content"><em>●</em><h3><?php echo langV($newsHot[1],'title');?></h3><span><?php echo date('m-d',$newsHot[1]->create_time);?></span></div>
-            </a><a href="News/specialInfo?id=<?php echo $newsHot[2]->id;?>"><div class="left-content"><em>●</em><h3><?php echo langV($newsHot[2],'title');?></h3><span><?php echo date('m-d',$newsHot[2]->create_time);?></span></div>
-            </a><a href="News/specialInfo?id=<?php echo $newsHot[3]->id;?>"><div class="left-content"><em>●</em><h3><?php echo langV($newsHot[3],'title');?></h3><span><?php echo date('m-d',$newsHot[3]->create_time);?></span></div>
+            <div class="left-title"><?php echo lang('热点专题');?> <a href="/Home/News/special"><?php echo lang('查看更多');?>〉</a></div>
+            <a href="/Home/News/specialInfo?id=<?php echo $newsHot[0]->id;?>"><div class="left-content"><em>●</em><h3><?php echo langV($newsHot[0],'title');?></h3><span><?php echo date('m-d',$newsHot[0]->create_time);?></span></div>
+            </a><a href="/Home/News/specialInfo?id=<?php echo $newsHot[1]->id;?>"><div class="left-content"><em>●</em><h3><?php echo langV($newsHot[1],'title');?></h3><span><?php echo date('m-d',$newsHot[1]->create_time);?></span></div>
+            </a><a href="/Home/News/specialInfo?id=<?php echo $newsHot[2]->id;?>"><div class="left-content"><em>●</em><h3><?php echo langV($newsHot[2],'title');?></h3><span><?php echo date('m-d',$newsHot[2]->create_time);?></span></div>
+            </a><a href="/Home/News/specialInfo?id=<?php echo $newsHot[3]->id;?>"><div class="left-content"><em>●</em><h3><?php echo langV($newsHot[3],'title');?></h3><span><?php echo date('m-d',$newsHot[3]->create_time);?></span></div>
             </a>
         </div>
         <div class="index-left">
-            <div class="left-title"><?php echo lang('媒体聚焦');?> <a href="News/media"><?php echo lang('查看更多');?>〉</a></div>
+            <div class="left-title"><?php echo lang('媒体聚焦');?> <a href="/Home/News/media"><?php echo lang('查看更多');?>〉</a></div>
             <?php
                 foreach($newsMedia as $v){
-                    echo '<a href="News/mediaInfo?id='.$v->id.'"><div class="left-content"><em>●</em><h3>'.langV($v,'title').'</h3><span>'.date('m-d',$v->create_time).'</span></div></a>';
+                    echo '<a href="/Home/News/mediaInfo?id='.$v->id.'"><div class="left-content"><em>●</em><h3>'.langV($v,'title').'</h3><span>'.date('m-d',$v->create_time).'</span></div></a>';
                 }
             ?>
         </div>
         <div class="index-left">
-            <div class="left-title"><?php echo lang('视频中心');?> <a href="News/video"><?php echo lang('查看更多');?>〉</a></div>
+            <div class="left-title"><?php echo lang('视频中心');?> <a href="/Home/News/video"><?php echo lang('查看更多');?>〉</a></div>
             <?php
                 foreach($newsVideo as $v){
                     echo 
                         '<div class="one-video">
                             <img src="/pic/'.$v->pic.'">
-                            <a href="News/videoPlay?id='.$v->id.'" class="play_btn"></a>
+                            <a href="/Home/News/videoPlay?id='.$v->id.'" class="play_btn"></a>
                             <h4>'.langV($v,'title').'</h4>
                         </div>';
                 }
