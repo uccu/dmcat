@@ -70,6 +70,10 @@ class AppHomeEnteredDorseyController extends Controller{
         $yearM = date('Y');
         $year = floor($year);
         if(!$year)$year = $yearM;
+
+        $years = $model->distinct()->order('year desc')->get_field('year');
+
+
         $where['year'] = $year;
         $list = $model->where($where)->order('month desc')->get()->toArray();
         include_once(VIEW_ROOT.'App/EnteredDorsey_'.__FUNCTION__.'.php');
@@ -104,6 +108,7 @@ class AppHomeEnteredDorseyController extends Controller{
         $yearM = date('Y');
         $year = floor($year);
         if(!$year)$year = $yearM;
+        $years = $model->distinct()->order('year desc')->get_field('year');
         $where['year'] = $year;
         $list = $model->where($where)->order('month desc')->get()->toArray();
         include_once(VIEW_ROOT.'App/EnteredDorsey_'.__FUNCTION__.'.php');

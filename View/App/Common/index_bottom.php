@@ -38,7 +38,7 @@
             <a href="javascript:void(0);"><?php echo lang('关注我们');?></a>
             <img src="/Home/images/index/code_two.png" style="width: 110px; height: 110px;"/>
         </div>
-        <div class="footer-body" style="float: right; width: 205px;">
+        <div class="footer-body" style="float: right; width: 210px;">
             <span class="phone"><?php echo lang('联系电话');?>：</span>
             <span class="phone-no">0991-7788916</span>
             <h1><?php echo lang('传真');?>：0991-5811770</h1>

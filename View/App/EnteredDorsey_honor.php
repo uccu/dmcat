@@ -21,7 +21,7 @@
                     <div id="develop_box">
                         <?php 
                             
-                            for($i = $yearM;$i>2000;$i--){
+                            foreach($years as $i){
                                 if($year == $i || (!$year && $i == $yearM))echo '<span class="checked">'.$i.'</span>';
                                 else echo '<span>'.$i.'</span>';
                             }

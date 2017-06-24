@@ -19,7 +19,7 @@
 <div class="w-1200">
     <div class="left-body">
         <div class="index-left">
-            <div class="left-title"><?php echo lang('集团要闻');?> <a href="/Home/News/inNewsNews"><?php echo lang('查看更多');?>〉</a></div>
+            <div class="left-title"><?php echo lang('集团要闻');?> <a href="/Home/News/inNews"><?php echo lang('查看更多');?>〉</a></div>
             <a href="/Home/News/newsInfo?id=<?php echo $newsGroup[0]->id;?>"><div class="left-content first">
                 <img src="/pic/<?php echo $newsGroup[0]->pic;?>">
                 <h1 style="    max-height: 48px;"><?php echo langV($newsGroup[0],'title',40);?></h1>
@@ -100,7 +100,7 @@
                         <div class="swiper-pagination"></div>
                         <div class="this-title"><?php echo lang('德汇宝贝广场');?></div>
                     </div>
-                    <h1><?php echo langV($homeM[0],'description');?><a href="Domain/newWorld">【<?php echo lang('了解更多');?>】</a></h1>
+                    <h1><?php echo langV($homeM[0],'description');?><a href="/Home/Domain/newWorld">【<?php echo lang('了解更多');?>】</a></h1>
                 </div>
                 <!-- 德汇新天地 结束 -->
 
@@ -114,7 +114,7 @@
                         <div class="swiper-pagination"></div>
                         <div class="this-title"><?php echo lang('德汇万达广场');?></div>
                     </div>
-                    <h1><?php echo langV($homeM[1],'description');?><a href="Domain/wandaSquare">【<?php echo lang('了解更多');?>】</a></h1>
+                    <h1><?php echo langV($homeM[1],'description');?><a href="/Home/Domain/wandaSquare">【<?php echo lang('了解更多');?>】</a></h1>
 
                 </div>
                 <!-- 万达广场 结束 -->
@@ -128,7 +128,7 @@
                         <div class="swiper-pagination"></div>
                         <div class="this-title"><?php echo lang('德汇特色小镇');?></div>
                     </div>
-                    <h1><?php echo langV($homeM[2],'description');?><a href="Domain/newCity">【<?php echo lang('了解更多');?>】</a></h1>
+                    <h1><?php echo langV($homeM[2],'description');?><a href="/Home/Domain/newCity">【<?php echo lang('了解更多');?>】</a></h1>
 
                 </div>
                 <!-- 亚欧新城 结束 -->
@@ -142,7 +142,7 @@
                         <div class="swiper-pagination"></div>
                         <div class="this-title"><?php echo lang('德汇物流');?></div>
                     </div>
-                    <h1><?php echo langV($homeM[3],'description');?><a href="Domain/logistics">【<?php echo lang('了解更多');?>】</a></h1>
+                    <h1><?php echo langV($homeM[3],'description');?><a href="/Home/Domain/logistics">【<?php echo lang('了解更多');?>】</a></h1>
 
                 </div>
                 <!-- 德汇金融 结束 -->
@@ -156,7 +156,7 @@
                         <div class="swiper-pagination"></div>
                         <div class="this-title"><?php echo lang('德汇金融');?></div>
                     </div>
-                    <h1><?php echo langV($homeM[4],'description');?><a href="Domain/finance">【<?php echo lang('了解更多');?>】</a></h1>
+                    <h1><?php echo langV($homeM[4],'description');?><a href="/Home/Domain/finance">【<?php echo lang('了解更多');?>】</a></h1>
 
                 </div>
                 <!-- 德汇金融 结束 -->

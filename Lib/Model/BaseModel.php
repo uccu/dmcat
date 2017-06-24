@@ -105,6 +105,7 @@ class BaseModel{
     public function distinct($distinct = true){
 
         $this->distinct = $distinct ? true : false;
+        return $this;
     }
 
     # 执行一次查询操作
