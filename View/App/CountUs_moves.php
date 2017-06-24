@@ -4,7 +4,7 @@
     <div class="content-top">
         <span><?php echo lang('联系我们');?></span>
         <form method="get" onsubmit="return false;">
-            <input type="search" placeholder="<?php echo lang('输入关键字');?>"/>
+            <!--input type="search" placeholder="<?php echo lang('输入关键字');?>"/-->
         </form>
     </div>
     <div class="this-address"><?php echo lang('首页');?> > <?php echo lang('联系我们');?> > <?php echo lang($name);?></div>

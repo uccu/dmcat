@@ -6,7 +6,7 @@
     <div class="content-top">
         <span>新闻中心</span>
         <form method="get" onsubmit="return false;">
-            <select>
+            <!--select>
                 <option value="">选择年份</option>
                 <option value="2017">2017</option>
                 <option value="2016">2016</option>
@@ -16,7 +16,7 @@
                 <option value="2012">2012</option>
                 <option value="2011">2011</option>
             </select>
-            <input type="search" placeholder="输入关键字"/>
+            <input type="search" placeholder="输入关键字"/-->
         </form>
     </div>
     <div class="this-address">首页 > 新闻中心 > 视频中心</div>

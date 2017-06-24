@@ -4,7 +4,7 @@
     <div class="content-top">
         <span><?php echo lang('新闻中心');?></span>
         <form method="get" onsubmit="return false;">
-            <select>
+            <!--select>
                 <option value=""><?php echo lang('选择年份');?></option>
                 <?php 
                     $yearM = date('Y');
@@ -13,7 +13,7 @@
                     }
                 ?>
             </select>
-            <input type="search" placeholder="<?php echo lang('输入关键字');?>"/>
+            <input type="search" placeholder="<?php echo lang('输入关键字');?>"/-->
         </form>
     </div>
     <div class="this-address"><?php echo lang('首页');?> > <?php echo lang('新闻中心');?> > <?php echo lang($name);?> > <?php echo langV($info,'title',50);?></div>
