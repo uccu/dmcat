@@ -38,7 +38,7 @@
                         <em>●</em>
                         <h3><?php echo langV($info,'title');?></h3>
                         <span><?php echo date('m-d',$info->create_time);?></span></div>
-                </if>
+
             <?php }}?>
             <div id="page_content">
                 <?php echo $this->getPageLink($page,$max,'',$limit);?>

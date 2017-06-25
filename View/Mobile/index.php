@@ -26,13 +26,15 @@
     <p class="fenge"></p>
     <div class="swiper-container index-banner">
         <div class="swiper-wrapper">
-            <?php
-            foreach($banner as $v){
-                if($v->href)echo '<div class="swiper-slide"><a href="'.$v->href.'"><img src="/pic/'.$v->pic.'"></a></div>';
-                else echo '<div class="swiper-slide"><img src="/pic/'.$v->pic.'"></div>';
-            }
-            ?>
-            
+            <div class="swiper-slide">
+                <img src="img/1.png" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img src="img/2.png" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img src="img/3.png" alt="">
+            </div>
         </div>
         <!-- 如果需要分页器 -->
         <div class="swiper-pagination"></div>
@@ -53,84 +55,104 @@
         </div>
     </div>
     <div class="main-box">
-        <ul class="tabchange">
-            <li class="tabchange-active">德汇宝贝广场</li>
-            <li>德汇万达广场</li>
-            <li>德汇特色小镇</li>
-            <li>德汇物流</li>
-        </ul>
+        <div class="tabchange-nav video-nav" style="overflow-x: scroll; overflow-y: hidden;">
+            <ul class="tabchange" >
+                <li class="tabchange-active">德汇宝贝广场</li>
+                <li>德汇万达广场</li>
+                <li>德汇特色小镇</li>
+                <li>德汇物流</li>
+                <li>德汇金融</li>
+            </ul>
+        </div>
         <div class="tabcontain" style="display: block;">
                 <div class="swiper-container tabslider" id="slider_1">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide top-banner">
-                        <img src="img/tabbanner.png">
-                    </div>
-                        <div class="swiper-slide top-banner">
-                            <img src="img/tabbanner.png">
-                        </div>
-                        <div class="swiper-slide top-banner">
-                            <img src="img/tabbanner.png">
-                        </div>
+                        <?php if($homeM[0]->pic)foreach(explode(';',$homeM[0]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
+                        
                     </div>
                     <!-- 如果需要分页器 -->
                     <div class="swiper-pagination tab-pagination"></div>
-                    <div class="this-title">德汇宝贝广场</div>
+                    <div class="this-title">
+                        <?php echo lang('德汇宝贝广场');?>
+                    </div>
                 </div>
-                <p>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。</p>
+                <p><?php echo langV($homeM[0],'description');?></p>
                 <div class="more-button">
-                    <a href="javascript:void(0)">了解更多</a>
+                    <a href="newWorld">了解更多</a>
                 </div>
         </div>
         <div class="tabcontain">
-            <div class="swiper-container tabslider" id="slider_2">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide top-banner">
-                        <img src="img/tabbanner.png">
+                <div class="swiper-container tabslider" id="slider_2">
+                    <div class="swiper-wrapper">
+                        <?php if($homeM[1]->pic)foreach(explode(';',$homeM[1]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
+                        
                     </div>
-                    <div class="swiper-slide top-banner">
-                        <img src="img/tabbanner.png">
-                    </div>
-                    <div class="swiper-slide top-banner">
-                        <img src="img/tabbanner.png">
+                    <!-- 如果需要分页器 -->
+                    <div class="swiper-pagination tab-pagination"></div>
+                    <div class="this-title">
+                        <?php echo lang('德汇万达广场');?>
                     </div>
                 </div>
-                <!-- 如果需要分页器 -->
-                <div class="swiper-pagination tab-pagination"></div>
-                <div class="this-title">德汇万达广场</div>
-            </div>
-            <p>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。</p>
-            <div class="more-button">
-                <a href="javascript:void(0)">了解更多</a>
-            </div>
+                <p><?php echo langV($homeM[1],'description');?></p>
+                <div class="more-button">
+                    <a href="wandaSquare">了解更多</a>
+                </div>
         </div>
         <div class="tabcontain">
-            <div class="swiper-container tabslider" id="slider_3">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide top-banner">
-                        <img src="img/tabbanner.png">
+                <div class="swiper-container tabslider" id="slider_3">
+                    <div class="swiper-wrapper">
+                        <?php if($homeM[2]->pic)foreach(explode(';',$homeM[2]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
+                        
                     </div>
-                    <div class="swiper-slide top-banner">
-                        <img src="img/tabbanner.png">
-                    </div>
-                    <div class="swiper-slide top-banner">
-                        <img src="img/tabbanner.png">
-                    </div>
-                    <div class="swiper-slide top-banner">
-                        <img src="img/tabbanner.png">
-                    </div>
-                    <div class="swiper-slide top-banner">
-                        <img src="img/tabbanner.png">
+                    <!-- 如果需要分页器 -->
+                    <div class="swiper-pagination tab-pagination"></div>
+                    <div class="this-title">
+                        <?php echo lang('德汇特色小镇');?>
                     </div>
                 </div>
-                <!-- 如果需要分页器 -->
-                <div class="swiper-pagination tab-pagination"></div>
-                <div class="this-title">德汇特色小镇</div>
-            </div>
-            <p>2015年12月，德汇集团与国际商业巨头万达集团达成战略合作协议，联手在全国建设十座“德汇万达广场”。目前，14万方的德汇万达广场将于2017年下半年开业，该项目是德汇新天地的超级单体主力店。</p>
-            <div class="more-button">
-                <a href="javascript:void(0)">了解更多</a>
-            </div>
+                <p><?php echo langV($homeM[2],'description');?></p>
+                <div class="more-button">
+                    <a href="newCity">了解更多</a>
+                </div>
         </div>
+
+        <div class="tabcontain">
+                <div class="swiper-container tabslider" id="slider_4">
+                    <div class="swiper-wrapper">
+                        <?php if($homeM[3]->pic)foreach(explode(';',$homeM[3]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
+                        
+                    </div>
+                    <!-- 如果需要分页器 -->
+                    <div class="swiper-pagination tab-pagination"></div>
+                    <div class="this-title">
+                        <?php echo lang('德汇物流');?>
+                    </div>
+                </div>
+                <p><?php echo langV($homeM[3],'description');?></p>
+                <div class="more-button">
+                    <a href="logistics">了解更多</a>
+                </div>
+        </div>
+
+        <div class="tabcontain">
+                <div class="swiper-container tabslider" id="slider_5">
+                    <div class="swiper-wrapper">
+                        <?php if($homeM[4]->pic)foreach(explode(';',$homeM[4]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
+                        
+                    </div>
+                    <!-- 如果需要分页器 -->
+                    <div class="swiper-pagination tab-pagination"></div>
+                    <div class="this-title">
+                        <?php echo lang('德汇金融');?>
+                    </div>
+                </div>
+                <p><?php echo langV($homeM[4],'description');?></p>
+                <div class="more-button">
+                    <a href="finance">了解更多</a>
+                </div>
+        </div>
+
+        
     </div>
     <div class="news-box">
         <ul class="news-box-title">
@@ -149,82 +171,63 @@
         </ul>
         <div class="news-tabcontain">
             <ul>
+                <?php foreach($newsHot as $v){?>
                 <li>
                     <em>.</em>
-                    <a href="javascript:void(0)">
-                        新德汇 新商业 新起点-——德汇四大产品线四大项目全新亮相
+                    <a href="specialInfo?id=<?php echo $v->id;?>">
+                        <?php echo langV($v,'title',36);?>
                     </a>
-                    <span>06-12</span>
-
+                    <span>
+                        <?php echo date('m-d',$v->create_time);?>
+                    </span>
                 </li>
-                <li>
-                    <em>.</em>
-                    <a href="javascript:void(0)">
-                        新德汇 新商业 新起点-——德汇四大产品线四大项目全新亮相
-                    </a>
-                    <span>06-12</span>
-
-                </li>
-                <li>
-                    <em>.</em>
-                    <a href="javascript:void(0)">
-                        新德汇 新商业 新起点-——德汇四大产品线四大项目全新亮相
-                    </a>
-                    <span>06-12</span>
-                </li>
+                <?php }?>
             </ul>
             <div class="more-button">
-                <a href="hottopic.html">查看更多</a>
+                <a href="special">查看更多</a>
             </div>
         </div>
         <div class="news-tabcontain" style="display: block">
             <div class="swiper-container swiper-container-horizontal new-flashSalebanner">
                 <div class="swiper-wrapper">
+                    <?php foreach($newsGroup as $v){?>
                     <div class="swiper-slide">
-                        <img src="img/bannerchild1.png"  class="main-img">
+                        <img src="/pic/<?php echo $v->pic;?>"  class="main-img">
                     </div>
-                    <div class="swiper-slide">
-                        <img src="img/bannerchild1.png"  class="main-img">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="img/banner.png"  class="main-img">
-                    </div>
+                    <?php }?>
                 </div>
+                <style>a{color:inherit}</style>
+                <?php foreach($newsGroup as $v){?>
+                    <div class="slider-text">
+                    <h1><a href="newsInfo?id=<?php echo $v->id;?>"><?php echo langV($v,'title');?></a></h1>
+                    <span></span>
+                    
+                </div>
+                <?php }?>
+                
+                <div class="more-button">
+                        <a href="inNews">查看更多</a>
+                    </div>
             </div>
-            <h1>德汇——中心项目助力产业升级 沙区政府领导莅临参观指导</h1>
-            <span>5月2日下午7点，沙依巴克区人民政府经发委、国税局、地税局、统计局、财务局等重点委办局一行领导莅临德汇集团，并召开座谈会。</span>
-            <div class="more-button">
-                <a href="groupnews.html">查看更多</a>
-            </div>
+
+
         </div>
         <div class="news-tabcontain">
             <ul>
+                <?php foreach($newsMedia as $v){?>
                 <li>
                     <em>.</em>
-                    <a href="javascript:void(0)">
-                        学习万达 强化管理————对违规违纪人员的通报
+                    <a href="specialInfo?id=<?php echo $v->id;?>">
+                        <?php echo langV($v,'title',36);?>
                     </a>
-                    <span>06-12</span>
-
+                    <span>
+                        <?php echo date('m-d',$v->create_time);?>
+                    </span>
                 </li>
-                <li>
-                    <em>.</em>
-                    <a href="javascript:void(0)">
-                        【趋势】德汇儿童体验式产业商业模式生命力旺盛地产巨头万达进军儿童产业
-                    </a>
-                    <span>06-12</span>
-
-                </li>
-                <li>
-                    <em>.</em>
-                    <a href="javascript:void(0)">
-                        专题报道：55万方城市生活中心+市中心最大城市公园=生态型商业产业群
-                    </a>
-                    <span>06-12</span>
-                </li>
+                <?php }?>
             </ul>
             <div class="more-button">
-                <a href="javascript:void(0)">查看更多</a>
+                <a href="media">查看更多</a>
             </div>
         </div>
 
@@ -233,11 +236,11 @@
         <h1>视频</h1>
         <h3>VIDEO</h3>
         <div class="index-video">
-            <a href="#" target="_blank"></a>
-            <img src="img/video1.png">
+            <a href="videoPlay?id=<?php echo $newsVideo[0]->id;?>" ></a>
+            <img src="/pic/<?php echo $newsVideo[0]->pic;?>">
         </div>
         <div class="more-button">
-            <a href="videos.html">查看更多</a>
+            <a href="video">查看更多</a>
         </div>
     </div>
     <footer>
@@ -293,10 +296,10 @@
                 新闻中心
             </h1>
             <ul>
-                <li><a href="groupnews.html">集团要闻</a></li>
-                <li><a href="hottopic.html">热点专题</a></li>
-                <li><a href="#">媒体聚焦</a></li>
-                <li><a href="videos.html">视频中心</a></li>
+                <li><a href="inNews">集团要闻</a></li>
+                <li><a href="special">热点专题</a></li>
+                <li><a href="media">媒体聚焦</a></li>
+                <li><a href="video">视频中心</a></li>
             </ul>
         </div>
         <div class="sidebar-main">
@@ -352,14 +355,16 @@
         //限时抢购轮播图
         var flashSwiper = new Swiper(".new-flashSalebanner", {
             slidesPerView: "auto",
-//            spaceBetween:30,
             loop : true,
             centeredSlides : true,
             watchSlidesProgress: !0,
             onSlideChangeStart: function(swiper){
+//                console.info(swiper.activeIndex)
                 $(".new-flashSalebanner .swiper-slide").eq(swiper.activeIndex+1).addClass('img').removeClass('imgs')
                 $(".new-flashSalebanner .swiper-slide").eq(swiper.activeIndex-1).addClass('img').removeClass('imgs')
                 $(".new-flashSalebanner .swiper-slide").eq(swiper.activeIndex).removeClass('img').addClass('imgs')
+                $('.slider-text').eq(swiper.activeIndex).css('display','block');
+                console.info($('.slider-text').index())
             },
             onProgress: function(swiper){
                 $(".new-flashSalebanner .swiper-slide").eq(swiper.activeIndex+1).addClass('img').removeClass('imgs')
@@ -367,6 +372,14 @@
                 $(".new-flashSalebanner .swiper-slide").eq(swiper.activeIndex).removeClass('img').addClass('imgs')
             },
         });
+
+        var htmlSize = parseFloat($('html').css("font-size"));
+        var obj = $(".tabchange");
+        var width = 0;
+        $(".tabchange li").each(function(){
+            width += parseFloat($(this).css("width")) + htmlSize * 0.6;
+        });
+        obj.css("width", width + "px");
 
     </script>
 </body>
