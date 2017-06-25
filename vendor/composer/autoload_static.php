@@ -19,6 +19,14 @@ class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
         array (
             'Monolog\\' => 8,
         ),
+        'L' => 
+        array (
+            'Lib\\' => 4,
+        ),
+        'A' => 
+        array (
+            'App\\' => 4,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -33,6 +41,14 @@ class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Lib\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Lib',
+        ),
+        'App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/App',
         ),
     );
 
@@ -53,12 +69,27 @@ class ComposerStaticInit8d7825f02b2489450e864082afca3a7c
         ),
     );
 
+    public static $classMap = array (
+        'AJAX' => __DIR__ . '/../..' . '/Lib/Base/AJAX.php',
+        'Config' => __DIR__ . '/../..' . '/Lib/Base/Config.php',
+        'Controller' => __DIR__ . '/../..' . '/Lib/Base/Controller.php',
+        'DB' => __DIR__ . '/../..' . '/Lib/Base/DB.php',
+        'E' => __DIR__ . '/../..' . '/Lib/Base/E.php',
+        'Middleware' => __DIR__ . '/../..' . '/Lib/Base/Middleware.php',
+        'Model' => __DIR__ . '/../..' . '/Lib/Base/Model.php',
+        'Request' => __DIR__ . '/../..' . '/Lib/Base/Request.php',
+        'Response' => __DIR__ . '/../..' . '/Lib/Base/Response.php',
+        'Route' => __DIR__ . '/../..' . '/Lib/Base/Route.php',
+        'View' => __DIR__ . '/../..' . '/Lib/Base/View.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit8d7825f02b2489450e864082afca3a7c::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit8d7825f02b2489450e864082afca3a7c::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit8d7825f02b2489450e864082afca3a7c::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit8d7825f02b2489450e864082afca3a7c::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -8,33 +8,7 @@ class Autoload{
 	private static $_tables  = array();
 	private static $_configs  = array();
 
-	public static function import($path,$force = true){
-
-		
-		if(isset(self::$_imports[$path]))return true;
-
-		if(is_file($path)){
-
-			require_once $path;
-			return self::$_imports[$path] = true;
-
-        }elseif($force)
-
-            return self::$_imports[$path] = false;
-
-		else{
-
-            $path = str_ireplace(BASE_ROOT,'',$path);
-            E::throwEx('file lost: '.$path,1);
-
-        }
-	}
-	public static function load($class,$force = false){
-		
-		
-        return self::import( BASE_ROOT.(strpos($class, '\\')?'':'Lib/Base/').str_replace('\\','/',$class).'.php',$force);
-        
-    }
+	
 
 	public static function table($class,$force = false,$pp = null){
 
@@ -42,12 +16,7 @@ class Autoload{
 
 		if(isset( self::$_tables[$class.':'.$pp] ))
 			return self::$_tables[$class.':'.$pp];
-		$z = self::load($class,$force);
 
-		if(!$z){
-			self::$_tables[$class.':'.$pp] = false;
-			return false;
-		}
 
 		self::$_tables[$class.':'.$pp] = new $class($pp);
 

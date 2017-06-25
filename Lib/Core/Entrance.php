@@ -27,8 +27,11 @@ define('OPTION_DEBUG',2);
 //主自动加载
 
 require_once LIB_ROOT.'Core/Autoload.php';
-spl_autoload_register( array('Lib\\Core\\Autoload', 'load'));
+// spl_autoload_register( array('Lib\\Core\\Autoload', 'load'));
 
+//composer依赖的自动加载
+
+require_once VENDOR_ROOT.'autoload.php';
 
 
 //错误机制
@@ -39,13 +42,10 @@ register_shutdown_function(array('E', 'handleShutdown'));
 
 
 
-//composer依赖的自动加载
-
-require_once VENDOR_ROOT.'autoload.php';
 
 //验证PHP扩展
 
-Autoload::extension_check();
+// Autoload::extension_check();
 
 
 
@@ -56,7 +56,10 @@ require_once LIB_ROOT.'Function/Core.php';
 
 //定义请求路径
 
-if(!$argc)define('REQUEST_PATH',$_SERVER['PATH_INFO']?substr($_SERVER['PATH_INFO'],1):($_SERVER['REQUEST_URI']?preg_replace('#\?.*$#','',substr($_SERVER['REQUEST_URI'],1)):''));
+if(!isset($argc))
+    define(
+        'REQUEST_PATH',
+        !empty($_SERVER['PATH_INFO'])?substr($_SERVER['PATH_INFO'],1):($_SERVER['REQUEST_URI']?preg_replace('#\?.*$#','',substr($_SERVER['REQUEST_URI'],1)):''));
 else define('REQUEST_PATH',$argv[1]);
 
 

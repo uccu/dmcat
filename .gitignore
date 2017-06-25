@@ -1,2 +1,5 @@
 .vscode
-Log/20*
+Log/*.log
+Public/pic
+composer.lock
+vendor
