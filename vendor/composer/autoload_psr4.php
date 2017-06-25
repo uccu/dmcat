@@ -9,4 +9,6 @@ return array(
     'cebe\\markdown\\' => array($vendorDir . '/cebe/markdown'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'Lib\\' => array($baseDir . '/Lib'),
+    'App\\' => array($baseDir . '/App'),
 );

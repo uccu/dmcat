@@ -17,6 +17,12 @@
         "cebe/markdown": "^1.1",
         "twig/twig": "1.26.1"
     },
+    "autoload": {
+		"psr-4": {
+            "Lib\\": "Lib",
+			"App\\": "App"
+		},"classmap": ["Lib/Base/"]
+	},
     "repositories": {
         "packagist": {
             "type": "composer",
