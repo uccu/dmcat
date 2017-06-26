@@ -413,8 +413,8 @@ class StudentController extends Controller{
             $data['teacher_id'] = $this->L->id;
             $commentModel->set($data)->add();
         }else{
-
-            if($this->L->userInfo->type == 3)AJAX::error('老师没有该执行权限，请提交删除申请！<br>teacher no permission');
+            
+            if($info->create_time+5*3600<TIME_NOW && $this->L->userInfo->type == 3)AJAX::error('老师没有该执行权限，请提交删除申请！<br>teacher no permission');
 
             $commentModel->set($data)->save($comment->id);
 
@@ -455,12 +455,19 @@ class StudentController extends Controller{
             $day = date('d',$time);
         }
 
+        $canUpdate = 0;
+        $canEdit = 0;
+
         if(!$month || !$day)$info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id])->order('month DESC','day DESC')->find();
         else 
         $info = $model->select('*','student.name','student.name_en','student.avatar')->where(['student_id'=>$id,'month'=>$month,'day'=>$day])->find();
 
-        if(!$info){
+        if($info && $info->create_time+5*3600>TIME_NOW){
+            $canUpdate = 1;
+        }
 
+        if(!$info){
+            $canEdit = 1;
             if(!$date){
                 $date = date('Y-m-d');
                 $time = strtotime($date);
@@ -504,7 +511,8 @@ class StudentController extends Controller{
         $info->adddate = Func::adddate($month.$day);
 
         $out['info'] = $info;
-
+        $out['canUpdate'] = $canUpdate;
+        $out['canEdit'] = $canEdit;
         
         
 

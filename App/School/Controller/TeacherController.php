@@ -63,6 +63,34 @@ class TeacherController extends Controller{
         AJAX::success();
 
     }
+    /* 更新点评 */
+
+    function upd_comment($id,$month,$day,$date,CommentModel $model){
+        $id = Request::getInstance()->cookie('student_id');
+        $data = Request::getInstance()->request($model->field);
+        unset($data['id']);
+        if($date){
+            $time = strtotime($date);
+            $data['month'] = $month = date('Ym',$time);
+            $data['day'] = $day = date('d',$time);
+        }
+
+
+        unset($data['id']);
+
+
+        $data['teacher_id'] = $this->L->id?$this->L->id:0;
+        $data['student_id'] = $id;
+        $where['student_id'] = $id;
+        $where['month'] = $month;
+        $where['day'] = $day;
+
+        $las = $model->where($where)->set($data)->save();
+
+
+        AJAX::success();
+
+    }
 
     function get_my_info($id ,UserModel $model){
 
