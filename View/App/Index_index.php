@@ -202,5 +202,7 @@
         });
     });
 </script>
+<script src="http://siteapp.baidu.com/static/webappservice/uaredirect.js" type="text/javascript"></script>
+<SCRIPT type=text/javascript>uaredirect("http://121.199.8.244:2334/mobile/index");</SCRIPT>
 <?php include(VIEW_ROOT.'App/Common/index_bottom.php');?>
 <?php include(VIEW_ROOT.'App/Common/footer.php');?>

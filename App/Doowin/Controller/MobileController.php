@@ -7,7 +7,7 @@ use AJAX;
 use App\Doowin\Middleware\L;
 use App\Doowin\Tool\Func;
 use Model;
-
+use Response;
 use App\Doowin\Model\HomeBannerModel;
 use App\Doowin\Model\NewsGroupModel;
 use App\Doowin\Model\NewsHotModel;

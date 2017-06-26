@@ -7,7 +7,7 @@ use AJAX;
 use App\Doowin\Middleware\L;
 use App\Doowin\Tool\Func;
 use Model;
-
+use Response;
 use App\Doowin\Model\StaticPageModel;
 use App\Doowin\Model\RecruitModel;
 use App\Doowin\Model\RecruitTypeModel;

@@ -167,6 +167,7 @@ class NewsController extends Controller{
 
         }
     
+    
     # 媒体聚焦
         function media_lists(NewsMediaModel $model,$page = 1,$limit = 30,$year = 0){
 
@@ -310,65 +311,72 @@ class NewsController extends Controller{
         }
 
 
-    /* 视频分类 */
-    function video_type_lists(NewsVideoTypeModel $model,$page = 1,$limit = 30){
+    # 视频分类
+        function video_type_lists(NewsVideoTypeModel $model,$page = 1,$limit = 30){
 
-        $out = [
-            'get'=>'/news/video_type_get',
-            'upd'=>'/news/video_type_upd',
-            'del'=>'/news/video_type_del'
-        ];
+            $out = [
+                'get'=>'/news/video_type_get',
+                'upd'=>'/news/video_type_upd',
+                'del'=>'/news/video_type_del'
+            ];
 
-        $out['thead'] = [
-            '顺序'=>['class'=>'tc'],
-            '名字'=>['class'=>'tc'],
-            '_opt'=>['class'=>'tc'],
-        ];
-        
-        $out['tbody'] = [
-            'ord'=>['class'=>'tc'],
-            'name'=>['class'=>'tc'],
-            '_opt'=>['class'=>'tc'],
-        ];
+            $out['thead'] = [
+                '顺序'=>['class'=>'tc'],
+                '名字'=>['class'=>'tc'],
+                '_opt'=>['class'=>'tc'],
+            ];
+            
+            $out['tbody'] = [
+                'ord'=>['class'=>'tc'],
+                'name'=>['class'=>'tc'],
+                '_opt'=>['class'=>'tc'],
+            ];
 
-        $list = $model->where($where)->page($page,$limit)->order('ord','id')->get()->toArray();
+            $list = $model->where($where)->page($page,$limit)->order('ord','id')->get()->toArray();
 
-        foreach($list as &$v){
+            foreach($list as &$v){
+
+            }
+
+            $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
+            $out['page'] = $page;
+            $out['limit'] = $limit;
+
+            $out['list']  = $list;
+            AJAX::success($out);
+
+        }
+        function video_type_get(NewsVideoTypeModel $model,$id){
+
+            !$id && AJAX::success(['info'=>[]]);
+            $out['info'] = $info = $model->find($id);
+            !$info && AJAX::error('没有数据！');
+            AJAX::success($out);
+
+        }
+        function video_type_upd($id,NewsVideoTypeModel $model){
+
+            $data = Request::getInstance()->request(['name_en','name','ord']);
+            unset ($data['id']);
+            $data['ord'] = floor($data['ord']);
+            if(!$id)$id = $model->set($data)->add()->getStatus();
+            else $model->set($data)->save($id);
+
+            AJAX::success();
+
+        }
+        function video_type_del($id,NewsVideoTypeModel $model){
+
+            !$id && AJAX::error('删除失败！');
+            $model->remove($id);
+            AJAX::success();
 
         }
 
-        $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
-        $out['page'] = $page;
-        $out['limit'] = $limit;
-
-        $out['list']  = $list;
-        AJAX::success($out);
-
-    }
-    function video_type_get(NewsVideoTypeModel $model,$id){
-
-        !$id && AJAX::success(['info'=>[]]);
-        $out['info'] = $info = $model->find($id);
-        !$info && AJAX::error('没有数据！');
-        AJAX::success($out);
-
-    }
-    function video_type_upd($id,NewsVideoTypeModel $model){
-
-        $data = Request::getInstance()->request(['name_en','name','ord']);
-        unset ($data['id']);
-        $data['ord'] = floor($data['ord']);
-        if(!$id)$id = $model->set($data)->add()->getStatus();
-        else $model->set($data)->save($id);
-
-        AJAX::success();
-
-    }
-    function video_type_del($id,NewsVideoTypeModel $model){
-
-        !$id && AJAX::error('删除失败！');
-        $model->remove($id);
-        AJAX::success();
-
+    # 搜索
+    function search($search,$type){
+        
+        Response::getInstance()->cookie('search',$search,'');
+        
     }
 }
