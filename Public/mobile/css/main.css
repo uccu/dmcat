@@ -81,7 +81,7 @@ footer p:nth-child(1) span:nth-child(1){line-height:0.5rem}
 .main-box .productline li h5{line-height:0.6rem;background:url("../img/group/bottom.png") no-repeat;background-position:5.3rem center;background-size:0.3rem;font-size:0.221rem;padding:0 0.25rem;color:#999999;}
 .main-box .productline-detail{display:none;padding:0;}
 .productline-detail img{height:5.888rem;width:100%}
-.main-box .productline-detail span{padding:0 0.256rem; display:block;line-height:0.4rem;font-size:0.221rem}
+.main-box .productline-detail span{}
 /*董事长专区*/
 .chairman-search{margin:0.2rem 0.256rem}
 .chairman-search input{display:block;font-size:0.221rem;width:5.488rem;height:0.5rem;line-height:0.5rem;border:none;border-radius: 0.1rem;padding:0 0.3rem;margin:auto;background:#ffffff url("../img/group/search.png") no-repeat;background-position:5.088rem center;background-size: 0.256rem}
