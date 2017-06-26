@@ -69,20 +69,24 @@ class NewsController extends Controller{
         }
         function group_get(NewsGroupModel $model,$id){
 
-            !$id && AJAX::success(['info'=>[]]);
-            $out['info'] = $info = $model->find($id);
+            !$id && AJAX::success(['info'=>['date'=>date('Y-m-d')]]);
+            $info = $model->find($id);
             !$info && AJAX::error('没有数据！');
+            $info->date = date('Y-m-d',$info->create_time);
+            $out['info'] = $info;
             AJAX::success($out);
 
         }
-        function group_upd($id,NewsGroupModel $model){
+        function group_upd($id,NewsGroupModel $model,$date){
 
             $data = Request::getInstance()->request(['title','description','title_en','description_en','content_en','top','content','year','pic']);
+            $data['create_time'] = strtotime( $date );
+            $data['year'] = date('Y',$data['create_time']);
             unset ($data['id']);
             $data['top'] = floor($data['top']);
             
             if(!$id){
-                $data['create_time'] = TIME_NOW;
+                // $data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();
             }
             else $model->set($data)->save($id);
@@ -140,9 +144,11 @@ class NewsController extends Controller{
         }
         function hot_get(NewsHotModel $model,$id){
 
-            !$id && AJAX::success(['info'=>[]]);
-            $out['info'] = $info = $model->find($id);
+            !$id && AJAX::success(['info'=>['date'=>date('Y-m-d')]]);
+            $info = $model->find($id);
             !$info && AJAX::error('没有数据！');
+            $info->date = date('Y-m-d',$info->create_time);
+            $out['info'] = $info;
             AJAX::success($out);
 
         }
@@ -150,9 +156,11 @@ class NewsController extends Controller{
 
             $data = Request::getInstance()->request(['title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
+            $data['create_time'] = strtotime( $date );
+            $data['year'] = date('Y',$data['create_time']);
             $data['top'] = floor($data['top']);
             if(!$id){
-                $data['create_time'] = TIME_NOW;
+                // $data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();
             }
             else $model->set($data)->save($id);
@@ -211,9 +219,11 @@ class NewsController extends Controller{
         }
         function media_get(NewsMediaModel $model,$id){
 
-            !$id && AJAX::success(['info'=>[]]);
-            $out['info'] = $info = $model->find($id);
+            !$id && AJAX::success(['info'=>['date'=>date('Y-m-d')]]);
+            $info = $model->find($id);
             !$info && AJAX::error('没有数据！');
+            $info->date = date('Y-m-d',$info->create_time);
+            $out['info'] = $info;
             AJAX::success($out);
 
         }
@@ -221,9 +231,11 @@ class NewsController extends Controller{
 
             $data = Request::getInstance()->request(['title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
+            $data['create_time'] = strtotime( $date );
+            $data['year'] = date('Y',$data['create_time']);
             $data['top'] = floor($data['top']);
             if(!$id){
-                $data['create_time'] = TIME_NOW;
+                // $data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();
             }
             else $model->set($data)->save($id);
@@ -283,9 +295,11 @@ class NewsController extends Controller{
         }
         function video_get(NewsVideoModel $model,$id){
 
-            !$id && AJAX::success(['info'=>[]]);
-            $out['info'] = $info = $model->find($id);
+            !$id && AJAX::success(['info'=>['date'=>date('Y-m-d')]]);
+            $info = $model->find($id);
             !$info && AJAX::error('没有数据！');
+            $info->date = date('Y-m-d',$info->create_time);
+            $out['info'] = $info;
             AJAX::success($out);
 
         }
@@ -293,9 +307,11 @@ class NewsController extends Controller{
 
             $data = Request::getInstance()->request(['banner','video','type','title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
+            $data['create_time'] = strtotime( $date );
+            $data['year'] = date('Y',$data['create_time']);
             if(isset($data['top']))$data['top'] = floor($data['top']);
             if(!$id){
-                $data['create_time'] = TIME_NOW;
+                // $data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();
             }
             else $model->set($data)->save($id);
