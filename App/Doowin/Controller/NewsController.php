@@ -11,6 +11,7 @@ use App\Doowin\Model\NewsVideoTypeModel;
 
 use Controller;
 use Request;
+use Response;
 use AJAX;
 use App\Doowin\Middleware\L;
 use App\Doowin\Tool\Func;
@@ -376,7 +377,23 @@ class NewsController extends Controller{
     # 搜索
     function search($search,$type){
         
-        Response::getInstance()->cookie('search',$search,'');
-        
+        Response::getInstance()->cookie('search',$search,0);
+        switch($type){
+            case 1:
+                AJAX::success(null,200,'/Home/News/inNewsSearch');
+                break;
+            case 2:
+                AJAX::success(null,200,'/Home/News/specialSearch');
+                break;
+            case 3:
+                AJAX::success(null,200,'/Home/News/mediaSearch');
+                break;
+            case 4:
+                AJAX::success(null,200,'/Home/News/videoSearch');
+                break;
+            default:
+                break;
+        }
+
     }
 }

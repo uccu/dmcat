@@ -5,19 +5,23 @@
 <div class="w-1200">
     <div class="content-top">
         <span>新闻中心</span>
-        <form method="get" onsubmit="return false;">
-            <!--select>
-                <option value="">选择年份</option>
-                <option value="2017">2017</option>
-                <option value="2016">2016</option>
-                <option value="2015">2015</option>
-                <option value="2014">2014</option>
-                <option value="2013">2013</option>
-                <option value="2012">2012</option>
-                <option value="2011">2011</option>
+        <form id="search" method="post" onsubmit="return false;">
+            <select name="type">
+                <option value="1"><?php echo lang('集团要闻');?></option>
+                <option value="2"><?php echo lang('热点专题');?></option>
+                <option value="3"><?php echo lang('媒体聚焦');?></option>
+                <option value="4"><?php echo lang('视频中心');?></option>
             </select>
-            <input type="search" placeholder="输入关键字"/-->
+            <input type="search" name="search" value="" placeholder="<?php echo lang('输入关键字');?>"/>
         </form>
+        <script>
+            $('form#search').submit(function(){
+                $.post('/news/search',$(this).serialize(),function(d){
+                    if(d.url)location = d.url
+                },'json')
+                return false
+            })
+        </script>
     </div>
     <div class="this-address">首页 > 新闻中心 > 视频中心</div>
     <div class="main-content">

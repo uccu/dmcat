@@ -3,18 +3,23 @@
 <div class="w-1200">
     <div class="content-top">
         <span><?php echo lang('新闻中心');?></span>
-        <form method="get" onsubmit="return false;">
-            <!--select>
-                <option value=""><?php echo lang('选择年份');?></option>
-                <?php 
-                    $yearM = date('Y');
-                    for($i = $yearM;$i>2000;$i--){
-                        echo '<option value="'.$i.'">'.$i.'</option>';
-                    }
-                ?>
+        <form id="search" method="post" onsubmit="return false;">
+            <select name="type">
+                <option value="1"><?php echo lang('集团要闻');?></option>
+                <option value="2"><?php echo lang('热点专题');?></option>
+                <option value="3"><?php echo lang('媒体聚焦');?></option>
+                <option value="4"><?php echo lang('视频中心');?></option>
             </select>
-            <input type="search" placeholder="<?php echo lang('输入关键字');?>"/-->
+            <input type="search" name="search" value="" placeholder="<?php echo lang('输入关键字');?>"/>
         </form>
+        <script>
+            $('form#search').submit(function(){
+                $.post('/news/search',$(this).serialize(),function(d){
+                    if(d.url)location = d.url
+                },'json')
+                return false
+            })
+        </script>
     </div>
     <div class="this-address"><?php echo lang('首页');?> > <?php echo lang('新闻中心');?> > <?php echo lang($name);?></div>
     <div class="main-content" style="min-height:700px">
