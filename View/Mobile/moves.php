@@ -25,7 +25,7 @@
 </header>
 <p class="fenge"></p>
 <div class="chairman-search">
-    <input type="search" placeholder="输入关键字">
+    <!--input type="search" placeholder="输入关键字"-->
 </div>
 <div class="main-box" style="margin-bottom: 0">
     <h1>招标公告</h1>
@@ -66,7 +66,7 @@
             if (!id) {
                 return false;
             }
-            window.open("/Home/CountUs/movesInfo?id=" + id);
+            window.open("movesInfo?id=" + id);
         });
     });
 </script>
