@@ -19,7 +19,7 @@
 </head>
 <body>
     <header>
-        <div class="header-left index-header-left" onclick="redirect('seacher.html')"></div>
+        <div class="header-left index-header-left" style="background:transparent !important;" onclick="redirect('searcher')"></div>
         <div class="header-center"></div>
         <div class="header-right"></div>
     </header>

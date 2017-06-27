@@ -383,4 +383,10 @@ class MobileController extends Controller{
 
 
     }
+
+    function searcher(){
+
+        include_once(VIEW_ROOT.'Mobile/searcher.php');
+
+    }
 }
