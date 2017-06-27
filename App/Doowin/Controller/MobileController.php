@@ -25,6 +25,12 @@ use App\Doowin\Model\CharitableModel;
 use App\Doowin\Model\MagazineModel;
 use App\Doowin\Model\NewspaperModel;
 
+use App\Doowin\Model\RecruitModel;
+use App\Doowin\Model\RecruitTypeModel;
+use App\Doowin\Model\MovesModel;
+use App\Doowin\Model\UploadModel;
+use App\Doowin\Model\ComplaintsModel;
+
 require_once(BASE_ROOT.'App/Doowin/Middleware/Lang.php');
 
 class MobileController extends Controller{
@@ -250,4 +256,131 @@ class MobileController extends Controller{
         include_once(VIEW_ROOT.'Mobile/'.__FUNCTION__.'.php');
     }
 
+
+    function newWorld(StaticPageModel $pageModel){
+        
+        $type = __FUNCTION__;
+        $name = '德汇宝贝广场';
+        $page = $pageModel->find(5);
+        include_once(VIEW_ROOT.'Mobile/Domain_wandaSquare.php');
+
+    }
+    function wandaSquare(StaticPageModel $pageModel){
+        
+        $type = __FUNCTION__;
+        $name = '德汇万达广场';
+        $page = $pageModel->find(6);
+        include_once(VIEW_ROOT.'Mobile/Domain_wandaSquare.php');
+
+    }
+    function newCity(StaticPageModel $pageModel){
+        
+        $type = __FUNCTION__;
+        $name = '德汇特色小镇';
+        $page = $pageModel->find(7);
+        include_once(VIEW_ROOT.'Mobile/Domain_wandaSquare.php');
+
+    }
+    function finance(StaticPageModel $pageModel){
+        
+        $type = __FUNCTION__;
+        $name = '德汇金融';
+        $page = $pageModel->find(8);
+        include_once(VIEW_ROOT.'Mobile/Domain_wandaSquare.php');
+
+    }
+    function edu(StaticPageModel $pageModel){
+        
+        $type = __FUNCTION__;
+        $name = '德汇教育';
+        $page = $pageModel->find(9);
+        include_once(VIEW_ROOT.'Mobile/Domain_wandaSquare.php');
+
+    }
+    function logistics(StaticPageModel $pageModel){
+        
+        $type = __FUNCTION__;
+        $name = '德汇物流';
+        $page = $pageModel->find(10);
+        include_once(VIEW_ROOT.'Mobile/Domain_wandaSquare.php');
+
+    }
+
+
+    function recruit(RecruitModel $recruitModel,RecruitTypeModel $recruitTypeModel,$page = 1){
+        
+        $type = __FUNCTION__;
+        $name = '德汇招聘';
+        $recruitType = $recruitTypeModel->order('ord')->get()->toArray();
+        $typez = Request::getInstance()->cookie('recruit_type',0);
+        if(!$typez)$typez = $recruitType[0]->id;
+        $limit = 16;
+        $where['type'] = $typez;
+        $recruit = $recruitModel->where($where)->order('top desc','time desc')->page($page,$limit)->get()->toArray();
+        $max = $recruitModel->select('COUNT(*) as c','RAW')->where($where)->find()->c;
+
+        include_once(VIEW_ROOT.'Mobile/recruit.php');
+
+    }
+    function legalNotices(StaticPageModel $pageModel){
+        
+        $type = __FUNCTION__;
+        $name = '法律声明';
+        $page = $pageModel->find(11);
+        include_once(VIEW_ROOT.'Mobile/legalNotices.php');
+
+    }
+    function moves(MovesModel $model,$page = 1){
+        
+        $type = __FUNCTION__;
+        $name = '招标公告';
+        $limit = 16;
+        $list = $model->page($page,$limit)->order('top desc','id desc')->get()->toArray();
+        $max = $model->select('COUNT(*) as c','RAW')->find()->c;
+        include_once(VIEW_ROOT.'Mobile/moves.php');
+
+    }
+    function movesInfo(MovesModel $model,$id = 0){
+        
+        $type = 'moves';
+        $name = '招标公告';
+        $info = $model->find($id);
+        !$info && Response::getInstance()->r302('/404.html');
+
+        $files = \str_replace(';',',',$info->file);
+        $files = UploadModel::getInstance()->where('id IN (%i)',$files)->get()->toArray();
+
+        $namee = '';
+        foreach($files as $k=>$file){
+            $namee .= ($k+1).'、'.$file->name;
+            $down .= '<a href="/download/file?id='.$file->id.'">'.$file->name.'</a><br>';
+        }
+
+        include_once(VIEW_ROOT.'Mobile/movesInfo.php');
+
+    }
+    function complaints(){
+        
+        $type = __FUNCTION__;
+        $name = '投诉及建议';
+        include_once(VIEW_ROOT.'Mobile/complaints.php');
+
+    }
+    # 投诉与建议
+    function send($date,$content,$requires,$name,$sex,$mobile,$phone,ComplaintsModel $model){
+
+        $data['date'] = $date;
+        $data['content'] = $content;
+        $data['requires'] = $requires;
+        $data['name'] = $name;
+        $data['sex'] = 2?'先生':'女士';
+        $data['mobile'] = $mobile;
+        $data['phone'] = $phone;
+        $data['create_time'] = TIME_NOW;
+        $model->set($data)->add();
+
+        AJAX::success();
+
+
+    }
 }

@@ -85,12 +85,6 @@ footer p:nth-child(1) span:nth-child(1){line-height:0.5rem}
 /*董事长专区*/
 .chairman-search{margin:0.2rem 0.256rem}
 .chairman-search input{display:block;font-size:0.221rem;width:5.488rem;height:0.5rem;line-height:0.5rem;border:none;border-radius: 0.1rem;padding:0 0.3rem;margin:auto;background:#ffffff url("../img/group/search.png") no-repeat;background-position:5.088rem center;background-size: 0.256rem}
-.main-box .chairman-resume{margin:0 0.256rem 0.2rem}
-.main-box .chairman-resume .chairman-resumeName{}
-.main-box .chairman-resume .chairman-resumeName h4{line-height:0.256rem;font-size:0.256rem;background:url("../img/group/c1.png") no-repeat;background-size:0.256rem;background-position:left center;padding-left:0.512rem;}
-.main-box .chairman-resume .chairman-resumeName p{border-left: 1px solid #dedede;line-height:0.4rem;font-size:0.15rem;padding:0.1rem 0 0.2rem 0.256rem;margin:0rem 0 0rem 0.128rem}
-.main-box .chairman-resume .chairman-resumeName p span{display:block;text-indent:0.4rem;}
-.main-box .chairman-resume .chairman-resumeName p span em{display:inline-block;margin-right:0.2rem;text-align:left;width:1.5rem;}
 
 .main-box .chairman-picture .chairman-picturehead {margin: 0 0.156rem;}
 .main-box .chairman-picture .chairman-picturehead li{margin: 0.1rem 0.1rem;width:1.829rem;float: left;}

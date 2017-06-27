@@ -9,7 +9,7 @@
     <meta content="telephone=no" name="format-detection">
     <meta content="email=no" name="format-detection">
     <meta name="format-detection" content="telephone=no">
-    <title>发展历程</title>
+    <title>德汇产业</title>
     <link rel="stylesheet" href="css/swiper.min.css">
     <link href="css/reset.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/main.css">
@@ -18,8 +18,10 @@
     <script src="js/swiper.jquery.min.js"></script>
 </head>
 <style>
-    .news-box ul li h1,.news-box ul li h3{padding: 0}
-    .news-box ul li h3{font-size:10px}
+    /*.news-box ul li h1,.news-box ul li h3{padding: 0}*/
+    /*.news-box ul li h3{font-size:10px}*/
+    .response-listbox{min-height: 1.275rem}
+
 </style>
 <body>
 <header>
@@ -29,25 +31,13 @@
 </header>
 <p class="fenge"></p>
 <!--div class="group-banner">
-    <img src="img/group/culturalbanner.png">
-</div>
-<div class="chairman-search">
-    <input type="search" placeholder="输入关键字">
+    <img src="img/group/sbanner.png">
 </div-->
-<div class="news-box cultural-title">
-    <ul>
-        
-        <li>
-            <h1 class="news-active">文化体系</h1>
-            <h3>CULTURAL SYSTEM</h3>
-        </li>
-        
-    </ul>
-    <div style="padding:5px">
-        <?php echo langV($page,'content');?>
-    </div>
+<div class="response-top products-top">
+    <p><?php echo lang($name);?></p>
+    <?php echo langV($page,'content');?>
 </div>
-<?php include('side_slider.php');?>
 
+<?php include('side_slider.php');?>
 </body>
 </html>

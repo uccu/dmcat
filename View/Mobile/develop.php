@@ -9,7 +9,7 @@
     <meta content="telephone=no" name="format-detection">
     <meta content="email=no" name="format-detection">
     <meta name="format-detection" content="telephone=no">
-    <title>发展历程</title>
+    <title>企业荣誉</title>
     <link rel="stylesheet" href="css/swiper.min.css">
     <link href="css/reset.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/main.css">
@@ -28,12 +28,11 @@
     <img src="img/group/banner1.png">
 </div>
 <div class="chairman-search">
-    <input type="search" placeholder="输入关键字">
+    <!input type="search" placeholder="输入关键字"-->
 </div>
-<div class="main-box" style="margin-bottom: 0">
-    <h1>企业荣誉</h1>
-    <h3>ENTERPRISE HONOR</h3>
-
+<div class="main-box" style="margin-bototm:0">
+    <h1>发展历程</h1>
+    <h3>DEVELOPMENT HISTORY</h3>
     <div class="develop-nav">
         <a href="javascript:void(0);" class="develop-nav-left" onclick="navMove(1);"></a>
         <div class="develop-nav-box">
@@ -49,8 +48,7 @@
         </div>
         <a href="javascript:void(0);" class="develop-nav-right" onclick="navMove(-1);"></a>
     </div>
-
-
+    
 </div>
 <div class="develop-content development-history">
                     <?php
@@ -59,88 +57,14 @@
                             echo '<div class="develop-one-month">
                             <span>'.$v->month.'月</span>
                             <div>
-                                <h1>'.langV($v,'title').'</h1>
-                                <h2>'.langV($v,'description').'</h2>
+                                <h1>'.langV($v,'description').'</h1>
+                                
                             </div></div>';
 
                         }
 
                     ?>
 </div>
-<footer>
-    <p>
-        <span>
-            <img src="img/footerlogo.png" alt="">
-            ©2013-2018
-        </span>
-        <span>德汇集团版权所有</span>
-    </p>
-    <p>
-        <span>电话： 0991-7788916</span>
-        <span>传真： 0991-5811770</span>
-        <span>地址： 中国乌鲁木齐市奇台路658号</span>
-    </p>
-</footer>
-
-<!--侧边栏-->
-<div class="sidebar-box">
-    <div class="sidebar-header">
-        <img src="img/celogo.png" onclick="redirect('index.html')">
-    </div>
-    <div class="sidebar-main">
-        <h1>
-            <span>+</span>
-            走进德汇
-        </h1>
-        <ul>
-            <li><a href="groupProfile.html">集团简介</a></li>
-            <li><a href="chairman.html">董事长专区</a></li>
-            <li><a href="development.html">发展历程</a></li>
-            <li><a href="cultural.html">企业文化</a></li>
-            <li><a href="honor.html">企业荣誉</a></li>
-            <li><a href="responsibility.html">社会责任</a></li>
-        </ul>
-    </div>
-    <div class="sidebar-main">
-        <h1>
-            <span>+</span>
-            德汇产业
-        </h1>
-        <ul>
-            <li><a href="#">德汇宝贝广场</a></li>
-            <li><a href="#">德汇万达广场</a></li>
-            <li><a href="#">德汇特色小镇</a></li>
-            <li><a href="#">德汇物流</a></li>
-            <li><a href="#">德汇金融</a></li>
-            <li><a href="#">德汇教育</a></li>
-        </ul>
-    </div>
-    <div class="sidebar-main">
-        <h1>
-            <span>+</span>
-            新闻中心
-        </h1>
-        <ul>
-            <li><a href="groupnews.html">集团要闻</a></li>
-            <li><a href="hottopic.html">热点专题</a></li>
-            <li><a href="#">媒体聚焦</a></li>
-            <li><a href="videos.html">视频中心</a></li>
-        </ul>
-    </div>
-    <div class="sidebar-main">
-        <h1>
-            <span>+</span>
-            联系我们
-        </h1>
-        <ul>
-            <li><a href="contentus.html">德汇招聘</a></li>
-            <li><a href="tenders.html">招标公告</a></li>
-            <li><a href="advice.html">投诉与建议</a></li>
-            <li><a href="eval.html">法律声明</a></li>
-        </ul>
-    </div>
-</div>
-<script src="js/sidebar.js"></script>
 <script type="text/javascript">
     var obj_width = 84;
     var num = $("#develop_box > span").length;
@@ -174,6 +98,6 @@
         obj.css("margin-left", left + (obj_width * type) + "px");
     }
 </script>
-
+<?php include('side_slider.php');?>
 </body>
 </html>
