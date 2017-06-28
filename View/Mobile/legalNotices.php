@@ -25,7 +25,7 @@
 </header>
 <p class="fenge"></p>
 <div class="main-box advice-box" style="margin-top: 0">
-    <<?php echo langV($page,'content');?>
+    <?php echo langV($page,'content');?>
 </div>
 <?php include('side_slider.php');?>
 
