@@ -141,7 +141,6 @@ footer p:nth-child(1) span:nth-child(1){line-height:0.5rem}
 .response-top{background:#ffffff;}
 .response-top p{font-size: 0.256rem;line-height:0.6rem;text-align: center;width: 100%}
 .response-top p em{color:#a97e49;display: inline-block;margin-left:0.3rem}
-.response-top span{font-size:0.2rem;color:#999999;text-align: center;line-height:0.4rem;display: block;margin:0 0.256rem}
 .response-list h1{line-height: 0.6rem;height:0.6rem;font-size:0.256rem;text-align: left;margin: 0 0.256rem;}
 .response-list .response-listbox{padding: 0 0.256rem;border-top: 1px solid #ededed;overflow: hidden;position: relative}
 .response-list .response-listbox img{display: block;width:1.538rem;height:1.02rem;float: left;position: absolute;top:50%;margin-top: -0.51rem;}

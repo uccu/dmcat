@@ -57,7 +57,7 @@
                             echo '<div class="develop-one-month">
                             <span>'.$v->month.'月</span>
                             <div>
-                                <h1>'.langV($v,'description').'</h1>
+                                <h1>'.langV($v,'title').'</h1>
                                 
                             </div></div>';
 
