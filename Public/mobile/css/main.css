@@ -59,7 +59,7 @@ footer p:nth-child(1) span:nth-child(1){margin-right:0.2rem}
 footer p span{display:inline-block;font-size: 0.221rem;color:#666666}
 footer p:nth-child(1) span:nth-child(1){line-height:0.5rem}
 /*侧边栏*/
-.sidebar-box{display:none;background:#666666;width:3.18rem;position:absolute;right:-3.18rem;top:0.85rem;z-index: 999;}
+.sidebar-box{display:none;background:#666666;width:3.18rem;position:fixed;right:-3.18rem;top:0.85rem;z-index: 999;}
 .sidebar-box .sidebar-header{width:100%;text-align:center;line-height:1rem}
 .sidebar-box .sidebar-main{border-bottom: 1px solid #ffffff}
 .sidebar-box .sidebar-main h1{color:#ffffff;font-size:0.3rem;padding-left:0.45rem;line-height:0.8rem}
@@ -325,6 +325,9 @@ form{background: #ffffff;font-size: 0.2rem}
  position: absolute;
  left: 0.256rem;
  top: 0.25rem;
+
 }
+
+img{height:auto !important}
 
 .news-tabcontain span{font-size: 0.221rem;color: #999999;padding:0 0.256rem;line-height: 0.4rem;display:block}

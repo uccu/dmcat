@@ -16,6 +16,8 @@
     <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="js/common.js"></script>
     <script src="js/swiper.jquery.min.js"></script>
+    <link rel="stylesheet" href="/Home/css/swiper.min.css">
+    <script type="text/javascript" src="/Home/js/swiper.jquery.min.js"></script>
 </head>
 <body>
 <header>
@@ -44,90 +46,75 @@
     <h3>CHAIRMAN PICTURE</h3>
     <div class="chairman-picture">
         <ul class="chairman-picturehead">
-            <li>
-                <div class="chairman-pictureimg">
-                    <img src="img/group/chairman1.png">
-                    <span>5张</span>
-                </div>
-                <h2>钱金耐董事长肖像</h2>
-            </li>
-            <li>
-                <div class="chairman-pictureimg">
-                    <img src="img/group/chairman2.png">
-                    <span>5张</span>
-                </div>
-                <h2>钱金耐董事长肖像</h2>
-            </li>
-            <li>
-                <div class="chairman-pictureimg">
-                    <img src="img/group/chairman3.png">
-                    <span>5张</span>
-                </div>
-                <h2>钱金耐董事长肖像</h2>
-            </li>
-        </ul>
-        <ul class="chairman-picturehead">
-            <li>
-                <div class="chairman-pictureimg2">
-                    <img src="img/group/chairman4.png">
-                    <span>5张</span>
-                </div>
-                <p>致力打造新疆纺织服装产业新高地;德汇集团董事长钱金耐媒体见面会访谈</p>
 
-            </li>
-            <li>
-                <div class="chairman-pictureimg2">
-                    <img src="img/group/chairman5.png">
-                    <span>5张</span>
+                <?php 
+                    foreach($chairmanPicture as $v){
+
+                        echo '<li>
+                <div class="chairman-pictureimg">
+                    <img src="/pic/'.$v->first.'">
+                    <span data-image="'.$v->picArray.'">'.$v->count.' 张</span>
                 </div>
-                <p>钱金耐在自治区工商联（总商会）十届执行委员会一次会议上当选副主席</p>
-            </li>
-            <li>
-                <div class="chairman-pictureimg2">
-                    <img src="img/group/chairman6.png">
-                    <span>5张</span>
-                </div>
-                <p>钱金耐在德汇火灾原址重建大楼"德汇名品广场"试营业仪式上发表讲话</p>
-            </li>
-            <li>
-                <div class="chairman-pictureimg2">
-                    <img src="img/group/chairman7.png">
-                    <span>5张</span>
-                </div>
-                <p>钱金耐在第二届亚欧丝绸之路服装节上接受记者采访</p>
-            </li>
-            <li>
-                <div class="chairman-pictureimg2">
-                    <img src="img/group/chairman8.png">
-                    <span>5张</span>
-                </div>
-                <p>钱金耐在2014年亚欧丝绸之路服装节接收专访</p>
-            </li>
-            <li>
-                <div class="chairman-pictureimg2">
-                    <img src="img/group/chairman9.png">
-                    <span>5张</span>
-                </div>
-                <p>钱金耐在德汇集团召开2013年上半年工作总结表彰大会上发表讲话</p>
-            </li>
+                <h2>'.langV($v,'description',16).'</h2>
+            </li>';
+                    }
+                
+                ?>
+            
         </ul>
+        
+    </div>
+</div>
+<style>
+    .chairman_info{font-size: 12px; color: #676767; margin-top: 15px; line-height: 26px; padding-bottom: 40px; border-bottom: 1px solid #DEDEDE;}
+    .chairman_box{position: relative; width: 268px; height: 188px; border: 1px solid #DEDEDE; padding: 10px; margin: 0 15px 60px; float: left;}
+    .chairman_box .table{width: 100%; height: 100%; display: table;}
+    .chairman_box .table .table-cell{display: table-cell; width: 100%; height: 100%; text-align: center; vertical-align: middle;}
+    .chairman_box h1{position: absolute; height: 40px; line-height: 20px; text-align: center; width: 268px; bottom: -46px; overflow: hidden;}
+    .chairman_box span{display: block; width: 50px; height: 20px; font-size: 12px; line-height: 20px; background: rgb(233, 103, 125); color: #FFF; text-align: center; position: absolute; border-radius: 14px; right: 15px; bottom: 15px; cursor: pointer;}
+    .chairman-images-scan{width: 100%; height: 526px; overflow: hidden; position: relative; top: 50%; margin: -263px auto 0;}
+    .chairman-scan-box.chairman_box{padding: 0; height: 526px; width: 800px; margin: 0 auto; border: none;}
+    .chairman-scan-box.chairman_box img{border: 3px solid #F4F4F4;}
+    .dialog{z-index:10000;position: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.4); left: 0; top: 0;}
+    .dialog .dialog-close{display: block; background: #F4F4F4; padding: 4px 10px; position: absolute; right: 0; top: 0; color: #666; cursor: pointer;}
+</style>
+<div class="dialog" style="display: none;">
+    <div class="dialog-close" onclick="$('.dialog').hide();">✕ 关闭</div>
+    <div class="chairman-images-scan">
+        <div class="swiper-wrapper">
+        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
     </div>
 </div>
 <?php include('side_slider.php');?>
 <script>
-    $('.productline').find('h5').click(function(){
-        var that = $(this).parent();
-        that.find('.productline-detail').toggle('100',function(){
-            var obj = $(this);
-            if (obj.css("display") == "none") {
-                obj.siblings("h5").css({'background':'url("img/group/bottom.png") no-repeat','background-position':'5.3rem center','background-size':'0.3rem'});
-            } else {
-                obj.siblings("h5").css({'background':'url("img/group/sanjiao1.png") no-repeat','background-position':'5.3rem center','background-size':'0.3rem'});
-
+    $(document).ready(function () {
+        $(".chairman-pictureimg>span").click(function () {
+            var data = $(this).attr("data-image");
+            if (data == "") {
+                return false;
             }
-        });
 
-    })
+            data = data.split(";");
+            var html = '';
+            $.each(data, function (i, v) {
+                html += '<div class="chairman-scan-box chairman_box swiper-slide">'+
+                        '<div class="table">'+
+                        '<div class="table-cell">'+
+                        '<img src="' + v + '">'+
+                        '</div></div></div>';
+            });
+            $(".swiper-wrapper").html(html);
+            $(".dialog").show();
+            new Swiper('.chairman-images-scan', {
+                effect: 'flip',
+                grabCursor: true,
+                nextButton: '.swiper-button-next',
+                prevButton: '.swiper-button-prev'
+            });
+        });
+    });
 </script>
 </body>
 </html>

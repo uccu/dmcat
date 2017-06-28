@@ -18,6 +18,9 @@
     <script src="js/swiper.jquery.min.js"></script>
 </head>
 <body>
+    <style>
+        /*.index-banner img{height:100%}*/
+    </style>
     <header>
         <div class="header-left index-header-left" style="background:transparent !important;" onclick="redirect('searcher')"></div>
         <div class="header-center"></div>
@@ -26,15 +29,13 @@
     <p class="fenge"></p>
     <div class="swiper-container index-banner">
         <div class="swiper-wrapper">
-            <div class="swiper-slide">
-                <img src="img/1.png" alt="">
-            </div>
-            <div class="swiper-slide">
-                <img src="img/2.png" alt="">
-            </div>
-            <div class="swiper-slide">
-                <img src="img/3.png" alt="">
-            </div>
+            <?php
+            foreach($banner as $v){
+                echo '<div class="swiper-slide">
+                <img style="height:100%" src="/pic/'.$v->pic.'" alt="">
+            </div>';
+            }
+            ?>
         </div>
         <!-- 如果需要分页器 -->
         <div class="swiper-pagination"></div>
