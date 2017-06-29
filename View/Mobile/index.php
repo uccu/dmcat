@@ -253,12 +253,16 @@
                 autoplay: 3000,
                 pagination: '.swiper-pagination',
             })
+            var width = $(window).width();
             for (var i = 1; i <= 5; i++) {
                 var swiper = new Swiper('#slider_' + i, {
                     direction: 'horizontal',
                     loop: true,
-                    autoplay:1500,
-                    pagination: '.tab-pagination',//分页显示设置
+                    pagination: '.swiper-pagination',//分页显示设置
+                    autoplay: 6000,
+                    width: width,
+                    paginationClickable: true,
+                    nested:true,
                     paginationBulletRender: function (swiper, index, className) {
                         return '<span class="' + className + '">' + (index + 1) + '</span>';
                     }
