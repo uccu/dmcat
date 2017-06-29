@@ -25,12 +25,12 @@
 </header>
 <p class="fenge"></p>
 <div class="choose">
-    <select name="" class="slect-year">
+    <!--select name="" class="slect-year">
         <option value="">选择年份</option>
         <option value="">1985</option>
         <option value="">1986</option>
     </select>
-    <input type="search" class="seach" placeholder="输入关键字">
+    <input type="search" class="seach" placeholder="输入关键字"-->
 </div>
 <div class="main-box" style="margin-bottom: 0">
     <h1>集团要闻</h1>
