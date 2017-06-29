@@ -31,7 +31,7 @@
                     <div class="special-left"><?php echo date('m-d',$info->create_time);?><em><?php echo date('Y',$info->create_time);?></em></div>
                     <img src="/pic/<?php echo $info->pic;?>">
                     <div class="special-right">
-                        <a href="/Home/News/mediaInfo?id=1"><h1><?php echo langV($info,'title');?></h1></a>
+                        <a href="/Home/News/mediaInfo?id=<?php echo $info->id;?>"><h1><?php echo langV($info,'title');?></h1></a>
                         <h2><?php echo langV($info,'description',150);?></h2>
                     </div>
                 </div>
