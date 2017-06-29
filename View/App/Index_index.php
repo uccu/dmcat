@@ -190,7 +190,7 @@
             }
         });
     }
-    $(document).ready(function () {
+    (function () {
         $(".banner-title a").click(function () {
             var obj = $(this);
             if (obj.hasClass("checked")) {
@@ -200,7 +200,7 @@
             var num = parseInt(obj.attr("data-num")) - 1;
             $(".banner-box").css("margin-left", - 670 * num + "px");
         });
-    });
+    })();
 </script>
 <script src="http://siteapp.baidu.com/static/webappservice/uaredirect.js" type="text/javascript"></script>
 <SCRIPT type=text/javascript>uaredirect("http://121.199.8.244:2334/mobile/index");</SCRIPT>
