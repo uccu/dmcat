@@ -132,11 +132,11 @@ footer p:nth-child(1) span:nth-child(1){line-height:0.5rem}
  position: absolute;
  left: 0.7rem;
  top: 0;}
-.main-box .development-history .development-mounth p{line-height:0.4rem;font-size:0.15rem;padding:0.3rem 0 0.2rem 0.256rem;margin:0rem 0 0rem 0.118rem;text-indent:0.4rem;}
+.main-box .development-history .development-mounth p{line-height:0.4rem;font-size:0.15rem;padding:0.3rem 0 0.2rem 0.256rem;margin:0rem 0 0rem 0.118rem;}
 /*文化体系*/
 .cultural-list{margin: auto;width:5.888rem}
 .cultural-list p{font-size: 0.256rem;line-height:0.6rem;}
-.cultural-list span{text-indent:0.4rem;color:#999999;font-size: 0.15rem;display:block;}
+.cultural-list span{color:#999999;font-size: 0.15rem;display:block;}
 /*社会责任*/
 .response-top{background:#ffffff;}
 .response-top p{font-size: 0.256rem;line-height:0.6rem;text-align: center;width: 100%}
@@ -199,7 +199,7 @@ footer p:nth-child(1) span:nth-child(1){line-height:0.5rem}
 .news-detail .new-detail-img{margin-top:0.3rem;}
 .news-detail .new-detail-img img{height:3.91rem;width:100%;display: block;}
 .news-detail .new-detail-img h1{font-size:0.2rem;color:#999999;text-align: center;width:100%;line-height:0.6rem;}
-.news-detail p{text-indent: 0.5rem;font-size: 0.2rem;line-height:0.3rem;color:#999999;margin-bottom:0.4rem}
+.news-detail p{font-size: 0.2rem;line-height:0.3rem;color:#999999;margin-bottom:0.4rem}
 .news-detail-share{position:relative;padding:0 0.256rem;border-top:1px solid #dedede;background: #ffffff}
 .prevNext{font-size: 0.221rem;line-height:0.6rem;color:#999999;clear: both;overflow: hidden;}
 .prevNext a{color:#de0025;width:2rem;display: inline-block;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;}
