@@ -175,6 +175,7 @@
     <div class="clear"></div>
 </div>
 <script type="text/javascript">
+    $(".slider li").css({width: 1200, height: 400})
     $(".slider").yxMobileSlider({width: 1200, height: 400, during:6000});
     for (var i = 1; i <= 5; i++) {
         var swiper = new Swiper('#slider_' + i, {
@@ -190,7 +191,7 @@
             }
         });
     }
-    (function () {
+    $(document).ready(function () {
         $(".banner-title a").click(function () {
             var obj = $(this);
             if (obj.hasClass("checked")) {
@@ -200,7 +201,7 @@
             var num = parseInt(obj.attr("data-num")) - 1;
             $(".banner-box").css("margin-left", - 670 * num + "px");
         });
-    })();
+    });
 </script>
 <script src="http://siteapp.baidu.com/static/webappservice/uaredirect.js" type="text/javascript"></script>
 <SCRIPT type=text/javascript>uaredirect("http://121.199.8.244:2334/mobile/index");</SCRIPT>
