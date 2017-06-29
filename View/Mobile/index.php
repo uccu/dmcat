@@ -32,7 +32,7 @@
             <?php
             foreach($banner as $v){
                 echo '<div class="swiper-slide">
-                <img style="height:100%" src="/pic/'.$v->pic.'" alt="">
+                <img style="height:100% !important" src="/pic/'.$v->pic.'" alt="">
             </div>';
             }
             ?>
@@ -194,7 +194,7 @@
                 <div class="swiper-wrapper">
                     <?php foreach($newsGroup as $v){?>
                     <div class="swiper-slide">
-                        <img src="/pic/<?php echo $v->pic;?>"  class="main-img">
+                        <img style="height:100% !important" src="/pic/<?php echo $v->pic;?>"  class="main-img">
                     </div>
                     <?php }?>
                 </div>
