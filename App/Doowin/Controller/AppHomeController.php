@@ -34,6 +34,12 @@ class AppHomeController extends Controller{
         HomeMModel $homeMModel
         ){
 
+        if(strpos($_SERVER['HTTP_USER_AGENT'], 'iPhone')||strpos($_SERVER['HTTP_USER_AGENT'], 'Android')){
+            header('Location:/mobile/index');exit();
+        }
+                
+        
+
         $banner = $bannerModel->order('ord','id')->get()->toArray();
         $newsGroup = $newsGroupModel->limit(4)->order('top desc','id desc')->get()->toArray();
         $newsHot = $newsHotModel->limit(4)->order('top desc','id desc')->get()->toArray();
