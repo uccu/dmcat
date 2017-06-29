@@ -123,7 +123,7 @@
         <div class="tabcontain">
                 <div class="swiper-container tabslider" id="slider_5">
                     <div class="swiper-wrapper">
-                        <?php if($homeM[4]->pic)foreach(explode(';',$homeM[4]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img src="/pic/'.$pic.'" alt=""></div>';}?>
+                        <?php if($homeM[4]->pic)foreach(explode(';',$homeM[4]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 4.6rem !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
                         
                     </div>
                     <!-- 如果需要分页器 -->
