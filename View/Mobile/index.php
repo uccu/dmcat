@@ -174,27 +174,24 @@
             </div>
         </div>
         <div class="news-tabcontain" style="display: block">
-            <div class="swiper-container swiper-container-horizontal new-flashSalebanner">
-                <!--div class="swiper-wrapper">
-                    <?php foreach($newsGroup as $v){?>
-                    <div class="swiper-slide">
-                        <img style="height:100% !important" src="/pic/<?php echo $v->pic;?>"  class="main-img">
-                    </div>
-                    <?php }?>
-                </div-->
-                <style>a{color:inherit}</style>
+            <ul>
                 <?php foreach($newsGroup as $v){?>
-                    <div class="slider-text">
-                    <h1><a href="newsInfo?id=<?php echo $v->id;?>"><?php echo langV($v,'title');?></a></h1>
-                    <span></span>
-                    
-                </div>
+                <li>
+                    <em>.</em>
+                    <a href="newsInfo?id=<?php echo $v->id;?>">
+                        <?php echo langV($v,'title',36);?>
+                    </a>
+                    <span>
+                        <?php echo date('m-d',$v->create_time);?>
+                    </span>
+                </li>
                 <?php }?>
+            </ul>
                 
                 <div class="more-button">
-                        <a href="inNews">查看更多</a>
-                    </div>
-            </div>
+                    <a href="inNews">查看更多</a>
+                </div>
+
 
 
         </div>
