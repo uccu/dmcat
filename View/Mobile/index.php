@@ -191,13 +191,13 @@
         </div>
         <div class="news-tabcontain" style="display: block">
             <div class="swiper-container swiper-container-horizontal new-flashSalebanner">
-                <div class="swiper-wrapper">
+                <!--div class="swiper-wrapper">
                     <?php foreach($newsGroup as $v){?>
                     <div class="swiper-slide">
                         <img style="height:100% !important" src="/pic/<?php echo $v->pic;?>"  class="main-img">
                     </div>
                     <?php }?>
-                </div>
+                </div-->
                 <style>a{color:inherit}</style>
                 <?php foreach($newsGroup as $v){?>
                     <div class="slider-text">
@@ -219,7 +219,7 @@
                 <?php foreach($newsMedia as $v){?>
                 <li>
                     <em>.</em>
-                    <a href="specialInfo?id=<?php echo $v->id;?>">
+                    <a href="mediaInfo?id=<?php echo $v->id;?>">
                         <?php echo langV($v,'title',36);?>
                     </a>
                     <span>
