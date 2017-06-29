@@ -41,11 +41,7 @@
         <div class="swiper-pagination"></div>
     </div>
 
-    <div class="main-box">
-        <h1>社会责任</h1>
-        <h3>SOCIAL RESPONSIBILITY</h3>
-        <img src="/pic/<?php echo $this->L->config->home_social_responsibility;?>" onclick="redirect('blame')">
-    </div>
+    
     <div class="main-box">
         <h1>发展历程</h1>
         <h3>DEVELOPMENT HISTORY</h3>
@@ -54,6 +50,11 @@
         <div class="more-button">
             <a href="develop">查看更多</a>
         </div>
+    </div>
+    <div class="main-box">
+        <h1>社会责任</h1>
+        <h3>SOCIAL RESPONSIBILITY</h3>
+        <img src="/pic/<?php echo $this->L->config->home_social_responsibility;?>" onclick="redirect('blame')">
     </div>
     <div class="main-box">
         <div class="tabchange-nav video-nav" style="overflow-x: scroll; overflow-y: hidden;">
