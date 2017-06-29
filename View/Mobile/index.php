@@ -239,7 +239,7 @@
         <h3>VIDEO</h3>
         <div class="index-video">
             <a href="videoPlay?id=<?php echo $newsVideo[0]->id;?>" ></a>
-            <img src="/pic/<?php echo $newsVideo[0]->pic;?>">
+            <img style="height: 4rem !important;" src="/pic/<?php echo $newsVideo[0]->pic;?>">
         </div>
         <div class="more-button">
             <a href="video">查看更多</a>
