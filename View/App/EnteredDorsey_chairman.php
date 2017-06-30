@@ -25,7 +25,7 @@
                         echo '<div class="chairman_box" style="cursor:pointer">
                     <div class="table">
                         <div class="table-cell">
-                            <img src="/pic/'.$v->first.'" style="height:210px">
+                            <img src="/pic/'.$v->first.'" style="height: 190px;">
                         </div>
                     </div>
                     <span data-image="'.$v->picArray.'">'.$v->count.' 张</span>
