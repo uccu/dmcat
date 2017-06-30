@@ -34,7 +34,7 @@
     <img src="img/group/sbanner.png">
 </div-->
 <div class="response-top products-top news-detail">
-    <div class="moves-title">
+    <div class="news-detail-title">
         <h1><?php echo lang($name);?></h1>
         
     </div>
