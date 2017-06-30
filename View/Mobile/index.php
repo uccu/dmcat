@@ -245,7 +245,8 @@
     
     <?php include('side_slider.php');?>
     <script>
-        $('.index-banner').height($(window).height()/3)
+        $('.index-banner').height($(window).width()/3)
+        $('.tabslider').height($(window).width()*46/67)
         window.onload = function(){
             var mySwiper = new Swiper ('.index-banner', {
                 direction: 'horizontal',
