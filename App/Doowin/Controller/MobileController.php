@@ -177,7 +177,7 @@ class MobileController extends Controller{
 
         $page = $pageModel->find(2);
 
-        $chairmanPicture = $chairmanPictureModel->order('year desc','month desc')->get()->toArray();
+        $chairmanPicture = $chairmanPictureModel->order('top desc','id desc')->get()->toArray();
 
         foreach($chairmanPicture as &$v){
 
