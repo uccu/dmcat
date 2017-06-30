@@ -127,18 +127,22 @@ class EnterController extends Controller{
 
             $out['thead'] = [
                 '描述'=>['class'=>'tl'],
+                '优先级'=>['class'=>'tc'],
+                '提交日期'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
             
             $out['tbody'] = [
                 'description'=>['class'=>'tl'],
+                'top'=>['class'=>'tc'],
+                'create_date'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
 
-            $list = $model->where($where)->page($page,$limit)->order('year desc','month desc')->get()->toArray();
+            $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
 
             foreach($list as &$v){
-
+                $v->create_date = date('Y-m-d',$v->create_time);
             }
 
             $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
@@ -168,9 +172,9 @@ class EnterController extends Controller{
         }
         function chairman_picture_upd($id,ChairmanPictureModel $model){
 
-            $data = Request::getInstance()->request(['pic','description','description_en']);
-            $data['year'] = floor($data['year']);
-            $data['month'] = floor($data['month']);
+            $data = Request::getInstance()->request(['pic','description','description_en','top']);
+            $data['top'] = floor($data['top']);
+            $data['create_time'] = TIME_NOW;
             if(!$id)$id = $model->set($data)->add()->getStatus();
             else $model->set($data)->save($id);
 
