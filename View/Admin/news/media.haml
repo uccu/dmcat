@@ -33,11 +33,17 @@
 - block otherScript
     :javascript
         $(function(j){
+            var search = '';
+            j('.topw form').bind('submit',function(e){
+                e.preventDefault()
+                search = j(this).find('input').val()
+                gr.flesh();
+            });
             gr.updBefore = function(){
                 
             }
             gr.flesh = function(){
-                getList('/news/media_lists')
+                getList('/news/media_lists',{search:search})
             }
             
             gr.flesh();
