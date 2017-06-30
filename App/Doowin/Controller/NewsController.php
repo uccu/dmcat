@@ -38,14 +38,16 @@ class NewsController extends Controller{
 
             $out['thead'] = [
                 'ID'=>['class'=>'tc'],
-                '标题'=>['class'=>'tc'],
+                '标题'=>['class'=>'tl'],
+                '提交日期'=>['class'=>'tc'],
                 '优先级'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
             
             $out['tbody'] = [
                 'id'    =>['class'=>'tc'],
-                'title' =>['class'=>'tc'],
+                'title' =>['class'=>'tl'],
+                'create_date'=>['class'=>'tc'],
                 'top'   =>['class'=>'tc'],
                 '_opt'  =>['class'=>'tc','updateLink'=>1],
             ];
@@ -57,7 +59,7 @@ class NewsController extends Controller{
 
             foreach($list as &$v){
 
-
+                $v->create_date = date('Y-m-d',$v->create_time);
             }
 
             $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
@@ -114,14 +116,16 @@ class NewsController extends Controller{
 
             $out['thead'] = [
                 'ID'=>['class'=>'tc'],
-                '标题'=>['class'=>'tc'],
+                '标题'=>['class'=>'tl'],
+                '提交日期'=>['class'=>'tc'],
                 '优先级'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
             
             $out['tbody'] = [
                 'id'    =>['class'=>'tc'],
-                'title' =>['class'=>'tc'],
+                'title' =>['class'=>'tl'],
+                'create_date'=>['class'=>'tc'],
                 'top'   =>['class'=>'tc'],
                 '_opt'  =>['class'=>'tc','updateLink'=>1],
             ];
@@ -133,7 +137,7 @@ class NewsController extends Controller{
 
             foreach($list as &$v){
 
-
+                $v->create_date = date('Y-m-d',$v->create_time);
             }
 
             $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
@@ -190,14 +194,16 @@ class NewsController extends Controller{
 
             $out['thead'] = [
                 'ID'=>['class'=>'tc'],
-                '标题'=>['class'=>'tc'],
+                '标题'=>['class'=>'tl'],
+                '提交日期'=>['class'=>'tc'],
                 '优先级'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
             
             $out['tbody'] = [
                 'id'    =>['class'=>'tc'],
-                'title' =>['class'=>'tc'],
+                'title' =>['class'=>'tl'],
+                'create_date'=>['class'=>'tc'],
                 'top'   =>['class'=>'tc'],
                 '_opt'  =>['class'=>'tc','updateLink'=>1],
             ];
@@ -209,7 +215,7 @@ class NewsController extends Controller{
 
             foreach($list as &$v){
 
-
+                $v->create_date = date('Y-m-d',$v->create_time);
             }
 
             $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
@@ -266,6 +272,7 @@ class NewsController extends Controller{
             $out['thead'] = [
                 'ID'=>['class'=>'tc'],
                 '标题'=>['class'=>'tc'],
+                '提交日期'=>['class'=>'tc'],
                 '优先级'=>['class'=>'tc'],
                 '推荐'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
@@ -274,6 +281,7 @@ class NewsController extends Controller{
             $out['tbody'] = [
                 'id'    =>['class'=>'tc'],
                 'title' =>['class'=>'tc'],
+                'create_date'=>['class'=>'tc'],
                 'top'   =>['class'=>'tc'],
                 'banner'=>['type'=>'checkbox','class'=>'tc'],
                 '_opt'  =>['class'=>'tc','updateLink'=>1],
@@ -286,7 +294,7 @@ class NewsController extends Controller{
 
             foreach($list as &$v){
 
-
+                $v->create_date = date('Y-m-d',$v->create_time);
             }
 
             $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
