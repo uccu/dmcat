@@ -34,7 +34,11 @@
     <img src="img/group/sbanner.png">
 </div-->
 <div class="response-top products-top">
-    <p><?php echo lang($name);?></p>
+    <div class="moves-title">
+        <h1><?php echo lang($name);?></h1>
+        
+    </div>
+
     <?php echo langV($page,'content');?>
 </div>
 
