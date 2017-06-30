@@ -13,9 +13,13 @@
                 .ibox.float-e-margins
                     .ibox-content.topw
                         .row
-                            .col-sm-1
+                            .col-xs-1
                                 %a.btn.btn-primary.btn-outline.newOne new
-
+                            .col-sm-3.col-xs-8
+                                %form.input-group
+                                    %input.form-control
+                                    %span.input-group-btn
+                                        %button.btn.btn-primary.search.t(type="submit") 搜索
                 .sk-spinner.sk-spinner-wave.animated
                     .sk-rect1
                     .sk-rect2
@@ -71,11 +75,17 @@
 - block otherScript
     :javascript
         $(function(j){
+            var search = '';
+            j('.topw form').bind('submit',function(e){
+                e.preventDefault()
+                search = j(this).find('input').val()
+                gr.flesh();
+            });
             gr.updBefore = function(){
                 $('#modal_new .picArray span').html('');
             }
             gr.flesh = function(){
-                getList('/enter/chairman_picture_lists')
+                getList('/enter/chairman_picture_lists',{search:search})
             }
             gr.updFunction = function(g){
                 for(h in g.info.pic2Array)$('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.info.picArray[h],'data-pic':g.info.pic2Array[h]}).click(vc.dePic));

@@ -117,7 +117,7 @@ class EnterController extends Controller{
             AJAX::success();
         }
 
-        function chairman_picture_lists(ChairmanPictureModel $model,$page = 1,$limit = 30){
+        function chairman_picture_lists(ChairmanPictureModel $model,$page = 1,$limit = 30,$search = ''){
 
             $out = [
                 'get'=>'/enter/chairman_picture_get',
@@ -138,7 +138,7 @@ class EnterController extends Controller{
                 'create_date'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
-
+            if($search)$where['search'] = ['description LIKE %n','%'.$search.'%'];
             $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
 
             foreach($list as &$v){
