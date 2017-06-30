@@ -33,7 +33,7 @@
 <!--div class="group-banner">
     <img src="img/group/sbanner.png">
 </div-->
-<div class="response-top products-top">
+<div class="response-top products-top news-detail">
     <div class="moves-title">
         <h1><?php echo lang($name);?></h1>
         
