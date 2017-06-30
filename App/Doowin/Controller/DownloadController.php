@@ -64,7 +64,7 @@ class DownloadController extends Controller{
 
     function upload(){
     //insert into dw_news_group (title,description,content,create_time,pic,browse) select info_title as title,info_s_content as description, info_content,UNIX_TIMESTAMP(info_time) as create_time,info_picture as pic,info_hit as browse from dw_info where channel_id = 72
-        header('Location:http://f.hualip.com/'.REQUEST_PATH);
+        header('Location:http://www.doowin.com/'.REQUEST_PATH);
     }
     
 
