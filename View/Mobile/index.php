@@ -53,7 +53,7 @@
         <div class="tabcontain" style="display: block;">
                 <div class="swiper-container tabslider" id="slider_1">
                     <div class="swiper-wrapper">
-                        <?php if($homeM[0]->pic)foreach(explode(';',$homeM[0]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 4.6rem !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
+                        <?php if($homeM[0]->pic)foreach(explode(';',$homeM[0]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
                         
                     </div>
                     <!-- 如果需要分页器 -->
@@ -70,7 +70,7 @@
         <div class="tabcontain">
                 <div class="swiper-container tabslider" id="slider_2">
                     <div class="swiper-wrapper">
-                        <?php if($homeM[1]->pic)foreach(explode(';',$homeM[1]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 4.6rem !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
+                        <?php if($homeM[1]->pic)foreach(explode(';',$homeM[1]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
                         
                     </div>
                     <!-- 如果需要分页器 -->
@@ -87,7 +87,7 @@
         <div class="tabcontain">
                 <div class="swiper-container tabslider" id="slider_3">
                     <div class="swiper-wrapper">
-                        <?php if($homeM[2]->pic)foreach(explode(';',$homeM[2]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 4.6rem !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
+                        <?php if($homeM[2]->pic)foreach(explode(';',$homeM[2]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
                         
                     </div>
                     <!-- 如果需要分页器 -->
@@ -105,7 +105,7 @@
         <div class="tabcontain">
                 <div class="swiper-container tabslider" id="slider_4">
                     <div class="swiper-wrapper">
-                        <?php if($homeM[3]->pic)foreach(explode(';',$homeM[3]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 4.6rem !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
+                        <?php if($homeM[3]->pic)foreach(explode(';',$homeM[3]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
                         
                     </div>
                     <!-- 如果需要分页器 -->
@@ -123,7 +123,7 @@
         <div class="tabcontain">
                 <div class="swiper-container tabslider" id="slider_5">
                     <div class="swiper-wrapper">
-                        <?php if($homeM[4]->pic)foreach(explode(';',$homeM[4]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 4.6rem !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
+                        <?php if($homeM[4]->pic)foreach(explode(';',$homeM[4]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
                         
                     </div>
                     <!-- 如果需要分页器 -->
