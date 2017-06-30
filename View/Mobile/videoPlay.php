@@ -52,6 +52,10 @@
         <h1><?php echo langV($info,'title');?></h1>
         <style>
             .content p{color:#fff !important}
+            .video-one-banner iframe{
+                width: 100%;
+                height: 100%;
+            }
         </style>
         <div class="content" style>
             <?php echo langV($info,'content');?>
