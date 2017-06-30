@@ -31,8 +31,8 @@
         <div class="swiper-wrapper">
             <?php
             foreach($banner as $v){
-                echo '<div class="swiper-slide" style="background:url(/pic/'.$v->pic.');background-position:center;background-size:cover">
-                
+                echo '<div class="swiper-slide" style="background:url()">
+                <img style="height:100% !important" src="/pic/'.$v->pic.'" alt="">
             </div>';
             }
             ?>
@@ -245,7 +245,7 @@
     
     <?php include('side_slider.php');?>
     <script>
-
+        $('.index-banner').height($(window).height()/3)
         window.onload = function(){
             var mySwiper = new Swiper ('.index-banner', {
                 direction: 'horizontal',
