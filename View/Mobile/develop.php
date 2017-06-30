@@ -58,7 +58,7 @@
                             <span>'.$v->month.'月</span>
                             <div>
                                 <h1>'.langV($v,'title').'</h1>
-                                
+                                <h2>'.langV($v,'description').'</h2>
                             </div></div>';
 
                         }
