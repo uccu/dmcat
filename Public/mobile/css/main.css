@@ -199,7 +199,7 @@ footer p:nth-child(1) span:nth-child(1){line-height:0.5rem}
 .news-detail .new-detail-img{margin-top:0.3rem;}
 .news-detail .new-detail-img img{height:3.91rem;width:100%;display: block;}
 .news-detail .new-detail-img h1{font-size:0.2rem;color:#999999;text-align: center;width:100%;line-height:0.6rem;}
-.news-detail p{font-size: 0.2rem;line-height:0.3rem;color:#999999;margin-bottom:0.4rem}
+.news-detail p{font-size: 0.2rem;line-height:0.3rem;margin-bottom:0.4rem}
 .news-detail-share{position:relative;padding:0 0.256rem;border-top:1px solid #dedede;background: #ffffff}
 .prevNext{font-size: 0.221rem;line-height:0.6rem;color:#999999;clear: both;overflow: hidden;}
 .prevNext a{color:#de0025;width:2rem;display: inline-block;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;}
