@@ -80,7 +80,7 @@ class NewsController extends Controller{
             AJAX::success($out);
 
         }
-        function group_upd($id,NewsGroupModel $model,$date){
+        function group_upd($id,NewsGroupModel $model,$date = ''){
 
             $data = Request::getInstance()->request(['title','description','title_en','description_en','content_en','top','content','year','pic']);
             $data['create_time'] = strtotime( $date );
@@ -89,7 +89,7 @@ class NewsController extends Controller{
             $data['top'] = floor($data['top']);
             
             if(!$id){
-                // $data['create_time'] = TIME_NOW;
+                if(!$date)$data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();
             }
             else $model->set($data)->save($id);
@@ -158,7 +158,7 @@ class NewsController extends Controller{
             AJAX::success($out);
 
         }
-        function hot_upd($id,NewsHotModel $model){
+        function hot_upd($id,NewsHotModel $model,$date){
 
             $data = Request::getInstance()->request(['title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
@@ -166,7 +166,7 @@ class NewsController extends Controller{
             $data['year'] = date('Y',$data['create_time']);
             $data['top'] = floor($data['top']);
             if(!$id){
-                // $data['create_time'] = TIME_NOW;
+                if(!$date)$data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();
             }
             else $model->set($data)->save($id);
@@ -236,7 +236,7 @@ class NewsController extends Controller{
             AJAX::success($out);
 
         }
-        function media_upd($id,NewsMediaModel $model){
+        function media_upd($id,NewsMediaModel $model,$date=''){
 
             $data = Request::getInstance()->request(['title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
@@ -244,7 +244,7 @@ class NewsController extends Controller{
             $data['year'] = date('Y',$data['create_time']);
             $data['top'] = floor($data['top']);
             if(!$id){
-                // $data['create_time'] = TIME_NOW;
+                if(!$date)$data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();
             }
             else $model->set($data)->save($id);
@@ -271,7 +271,7 @@ class NewsController extends Controller{
 
             $out['thead'] = [
                 'ID'=>['class'=>'tc'],
-                '标题'=>['class'=>'tc'],
+                '标题'=>['class'=>'tl'],
                 '提交日期'=>['class'=>'tc'],
                 '优先级'=>['class'=>'tc'],
                 '推荐'=>['class'=>'tc'],
@@ -280,7 +280,7 @@ class NewsController extends Controller{
             
             $out['tbody'] = [
                 'id'    =>['class'=>'tc'],
-                'title' =>['class'=>'tc'],
+                'title' =>['class'=>'tl'],
                 'create_date'=>['class'=>'tc'],
                 'top'   =>['class'=>'tc'],
                 'banner'=>['type'=>'checkbox','class'=>'tc'],
@@ -315,7 +315,7 @@ class NewsController extends Controller{
             AJAX::success($out);
 
         }
-        function video_upd($id,NewsVideoModel $model){
+        function video_upd($id,NewsVideoModel $model,$date = ''){
 
             $data = Request::getInstance()->request(['banner','video','type','title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
@@ -323,7 +323,7 @@ class NewsController extends Controller{
             $data['year'] = date('Y',$data['create_time']);
             if(isset($data['top']))$data['top'] = floor($data['top']);
             if(!$id){
-                // $data['create_time'] = TIME_NOW;
+                if(!$date)$data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();
             }
             else $model->set($data)->save($id);
