@@ -22,7 +22,7 @@
                 <?php 
                     foreach($chairmanPicture as $v){
 
-                        echo '<div class="chairman_box">
+                        echo '<div class="chairman_box" style="cursor:pointer">
                     <div class="table">
                         <div class="table-cell">
                             <img src="/pic/'.$v->first.'" style="height:210px">
@@ -56,8 +56,9 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $(".chairman_box > span").click(function () {
-            var data = $(this).attr("data-image");
+        $('.chairman_box').click(function(){
+            
+            var data = $(this).find('span').attr("data-image");
             if (data == "") {
                 return false;
             }
