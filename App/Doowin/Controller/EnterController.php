@@ -126,12 +126,12 @@ class EnterController extends Controller{
             ];
 
             $out['thead'] = [
-                '描述'=>['class'=>'tc'],
+                '描述'=>['class'=>'tl'],
                 '_opt'=>['class'=>'tc'],
             ];
             
             $out['tbody'] = [
-                'description'=>['class'=>'tc'],
+                'description'=>['class'=>'tl'],
                 '_opt'=>['class'=>'tc'],
             ];
 

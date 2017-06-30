@@ -43,6 +43,9 @@
     </div>
 </div>
 <!-- 预览 -->
+<style>
+.dialog .table img{max-height:532px}
+</style>
 <div class="dialog" style="display: none;">
     <div class="dialog-close" onclick="$('.dialog').hide();">✕ 关闭</div>
     <div class="chairman-images-scan">
