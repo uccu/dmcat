@@ -28,7 +28,7 @@ class NewsController extends Controller{
 
 
     # 集团要闻
-        function group_lists(NewsGroupModel $model,$page = 1,$limit = 30,$year = 0){
+        function group_lists(NewsGroupModel $model,$page = 1,$limit = 30,$year = 0,$search = ''){
 
             $out = [
                 'get'=>'/news/group_get',
@@ -51,6 +51,7 @@ class NewsController extends Controller{
             ];
 
             if($year)$where['year'] = $year;
+            if($search)$where['search'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
 
             $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
 
@@ -103,7 +104,7 @@ class NewsController extends Controller{
         }
     
     # 热点专题
-        function hot_lists(NewsHotModel $model,$page = 1,$limit = 30,$year = 0){
+        function hot_lists(NewsHotModel $model,$page = 1,$limit = 30,$year = 0,$search = ''){
 
             $out = [
                 'get'=>'/news/hot_get',
@@ -126,6 +127,7 @@ class NewsController extends Controller{
             ];
 
             if($year)$where['year'] = $year;
+            if($search)$where['search'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
 
             $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
 
@@ -178,7 +180,7 @@ class NewsController extends Controller{
     
     
     # 媒体聚焦
-        function media_lists(NewsMediaModel $model,$page = 1,$limit = 30,$year = 0){
+        function media_lists(NewsMediaModel $model,$page = 1,$limit = 30,$year = 0,$search = ''){
 
             $out = [
                 'get'=>'/news/media_get',
@@ -201,6 +203,7 @@ class NewsController extends Controller{
             ];
 
             if($year)$where['year'] = $year;
+            if($search)$where['search'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
 
             $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
 
@@ -252,7 +255,7 @@ class NewsController extends Controller{
         }
 
     # 视频中心
-        function video_lists(NewsVideoModel $model,$page = 1,$limit = 30,$year = 0){
+        function video_lists(NewsVideoModel $model,$page = 1,$limit = 30,$year = 0,$search = ''){
 
             $out = [
                 'get'=>'/news/video_get',
@@ -277,6 +280,7 @@ class NewsController extends Controller{
             ];
 
             if($year)$where['year'] = $year;
+            if($search)$where['search'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
 
             $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
 
