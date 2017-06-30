@@ -1,5 +1,8 @@
 <?php include(VIEW_ROOT.'App/Common/header.php');?>
 <?php include(VIEW_ROOT.'App/Common/navigation.php');?>
+<style>
+.video-box iframe{width:100%;height:100%}
+</style>
 <div class="video-box">
     <?php echo $info->video;?>
 </div>
