@@ -336,7 +336,7 @@ class TestController extends Controller{
         // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         $json = curl_exec($ch);
-        $json=gzdecode($json);
+        // $json=gzdecode($json);
         curl_close($ch);
         if($json)$json = json_decode($json);
         else{
