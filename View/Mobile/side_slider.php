@@ -11,6 +11,11 @@
             <span>电话： 0991-7788916</span>
             <span>传真： 0991-5811770</span>
             <span>地址： 中国乌鲁木齐市奇台路658号</span>
+            <!--span><a class="toCn">中文</a> <a class="toEn">English</a></span-->
+            <script>
+                $('.toCn').click(function(){$.post('/user/language',{l:'cn'},function(){location.reload()})})
+                $('.toEn').click(function(){$.post('/user/language',{l:'en'},function(){location.reload()})})
+            </script>
         </p>
     </footer>
 <!--侧边栏-->

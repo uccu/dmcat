@@ -64,7 +64,7 @@
                 </div>
                 <p><?php echo langV($homeM[0],'description');?></p>
                 <div class="more-button">
-                    <a href="newWorld">了解更多</a>
+                    <a href="newWorld"><?php echo lang('了解更多');?></a>
                 </div>
         </div>
         <div class="tabcontain">
@@ -81,7 +81,7 @@
                 </div>
                 <p><?php echo langV($homeM[1],'description');?></p>
                 <div class="more-button">
-                    <a href="wandaSquare">了解更多</a>
+                    <a href="wandaSquare"><?php echo lang('了解更多');?></a>
                 </div>
         </div>
         <div class="tabcontain">
@@ -98,7 +98,7 @@
                 </div>
                 <p><?php echo langV($homeM[2],'description');?></p>
                 <div class="more-button">
-                    <a href="newCity">了解更多</a>
+                    <a href="newCity"><?php echo lang('了解更多');?></a>
                 </div>
         </div>
 
@@ -116,7 +116,7 @@
                 </div>
                 <p><?php echo langV($homeM[3],'description');?></p>
                 <div class="more-button">
-                    <a href="logistics">了解更多</a>
+                    <a href="logistics"><?php echo lang('了解更多');?></a>
                 </div>
         </div>
 
@@ -134,7 +134,7 @@
                 </div>
                 <p><?php echo langV($homeM[4],'description');?></p>
                 <div class="more-button">
-                    <a href="finance">了解更多</a>
+                    <a href="finance"><?php echo lang('了解更多');?></a>
                 </div>
         </div>
 
