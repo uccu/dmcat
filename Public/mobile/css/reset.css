@@ -12,7 +12,7 @@ caption, th { text-align: left; }
 h1, h2, h3, h4, h5, h6 { font-size: 100%; font-weight: normal; }
 q:before, q:after { content: ''; }
 input, textarea, select { font-family: inherit; font-size: inherit; font-weight: inherit;outline: none }
-img, object { max-width: 100%; }
+img, object { max-width: 100%; height:auto;}
 
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, footer, header, menu, nav, section {display: block;}

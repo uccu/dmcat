@@ -219,7 +219,7 @@
     <div class="main-box">
         <h1>发展历程</h1>
         <h3>DEVELOPMENT HISTORY</h3>
-        <img src="<?php echo $this->L->config->home_development_history;?>" onclick="redirect('develop')">
+        <img src="/pic/<?php echo $this->L->config->home_development_history;?>" onclick="redirect('develop')">
         <!--P>一部商业文明的现代经注始于1985年，从中国东部 出发的年轻人，奔赴西边边陲，开始创业之路。</P-->
         <div class="more-button">
             <a href="develop">查看更多</a>

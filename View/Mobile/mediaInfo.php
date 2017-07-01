@@ -46,7 +46,7 @@
     </div>
     
 </div>
-<div class="news-detail-share" style="padding-top:30px">
+<div class="news-detail-share" style="padding-top:0.8rem">
     <!--div class="prevNext">
         <span>上一篇: </span><span href="#">暂无内容</span>
     </div>

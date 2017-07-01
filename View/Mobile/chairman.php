@@ -90,8 +90,8 @@
 <?php include('side_slider.php');?>
 <script>
     $(document).ready(function () {
-        $(".chairman-pictureimg>span").click(function () {
-            var data = $(this).attr("data-image");
+        $(".chairman-pictureimg").click(function () {
+            var data = $(this).find('span').attr("data-image");
             if (data == "") {
                 return false;
             }

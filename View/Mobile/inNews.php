@@ -38,7 +38,7 @@
 </div>
 <div class="group-newsbox">
     <?php if($first){?>
-    <div class="group-nearnews" onclick="redirect('newsdetail.html')">
+    <div class="group-nearnews" onclick="redirect('newsInfo?id=<?php echo $first->id;?>')">
         <div class="group-nearnewstop">
             <img src="/pic/<?php echo $first->pic;?>">
             <p>
@@ -53,7 +53,7 @@
 
                     
     <?php }else{?>
-    <div class="newsContent" onclick="redirect('newsdetail.html')">
+    <div class="newsContent" onclick="redirect('newsInfo?id=<?php echo $info->id;?>')">
         <em>.</em>
         <h3><a href="newsInfo?id=<?php echo $info->id;?>"><?php echo langV($info,'title');?></a></h3>
         <span><?php echo date('m-d',$info->create_time);?></span>
