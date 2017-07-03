@@ -49,12 +49,12 @@ class MobileController extends Controller{
         NewsVideoModel $newsVideoModel,
         HomeMModel $homeMModel
         ){
-
+        $where['status'] = 1;
         $banner = $bannerModel->order('ord','id')->get()->toArray();
-        $newsGroup = $newsGroupModel->limit(4)->order('top desc','id desc')->get()->toArray();
-        $newsHot = $newsHotModel->limit(4)->order('top desc','id desc')->get()->toArray();
-        $newsMedia = $newsMediaModel->limit(4)->order('top desc','id desc')->get()->toArray();
-        $newsVideo = $newsVideoModel->limit(2)->order('top desc','id desc')->get()->toArray();
+        $newsGroup = $newsGroupModel->where($where)->limit(4)->order('top desc','id desc')->get()->toArray();
+        $newsHot = $newsHotModel->where($where)->limit(4)->order('top desc','id desc')->get()->toArray();
+        $newsMedia = $newsMediaModel->where($where)->limit(4)->order('top desc','id desc')->get()->toArray();
+        $newsVideo = $newsVideoModel->where($where)->limit(2)->order('top desc','id desc')->get()->toArray();
         $homeM = $homeMModel->limit(5)->order('id')->get()->toArray();
         include_once(VIEW_ROOT.'Mobile/'. __FUNCTION__ .'.php');
 
@@ -65,8 +65,9 @@ class MobileController extends Controller{
         $type = __FUNCTION__;
         $name = '集团要闻';
         $limit = 16;
-        $list = $model->page($page,$limit)->order('top desc','id desc')->get()->toArray();
-        $max = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $where['status'] = 1;
+        $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
+        $max = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
         if($page == 1){
             $first = $list[0];
             unset($list[0]);
@@ -93,8 +94,9 @@ class MobileController extends Controller{
         $type = __FUNCTION__;
         $name = '热点专题';
         $limit = 16;
-        $list = $model->page($page,$limit)->order('top desc','id desc')->get()->toArray();
-        $max = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $where['status'] = 1;
+        $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
+        $max = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
         include_once(VIEW_ROOT.'Mobile/'. __FUNCTION__ .'.php');
 
     }
@@ -114,8 +116,9 @@ class MobileController extends Controller{
         $type = __FUNCTION__;
         $name = '媒体聚焦';
         $limit = 16;
-        $list = $model->page($page,$limit)->order('top desc','id desc')->get()->toArray();
-        $max = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $where['status'] = 1;
+        $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
+        $max = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
         include_once(VIEW_ROOT.'Mobile/'. __FUNCTION__ .'.php');
 
     }
@@ -136,7 +139,8 @@ class MobileController extends Controller{
         $name = '视频中心';
         $limit = 16;
         $video_type = Request::getInstance()->cookie('video_type',0);
-        if($video_type)$where = ['type'=>$video_type];
+        $where['status'] = 1;
+        if($video_type)$where['type']=$video_type;
         $newsVideoType = $newsVideoTypeModel->order('ord','id')->get()->toArray();
         $newsVideo = $newsVideoModel->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
         $where2 = $where;

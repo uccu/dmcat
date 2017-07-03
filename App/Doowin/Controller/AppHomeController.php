@@ -39,12 +39,12 @@ class AppHomeController extends Controller{
         }
                 
         
-
+        $where['status'] = 1;
         $banner = $bannerModel->order('ord','id')->get()->toArray();
-        $newsGroup = $newsGroupModel->limit(4)->order('top desc','id desc')->get()->toArray();
-        $newsHot = $newsHotModel->limit(4)->order('top desc','id desc')->get()->toArray();
-        $newsMedia = $newsMediaModel->limit(4)->order('top desc','id desc')->get()->toArray();
-        $newsVideo = $newsVideoModel->limit(2)->order('top desc','id desc')->get()->toArray();
+        $newsGroup = $newsGroupModel->where($where)->limit(4)->order('top desc','id desc')->get()->toArray();
+        $newsHot = $newsHotModel->where($where)->limit(4)->order('top desc','id desc')->get()->toArray();
+        $newsMedia = $newsMediaModel->where($where)->limit(4)->order('top desc','id desc')->get()->toArray();
+        $newsVideo = $newsVideoModel->where($where)->limit(2)->order('top desc','id desc')->get()->toArray();
         $homeM = $homeMModel->limit(5)->order('id')->get()->toArray();
         include_once(VIEW_ROOT.'App/Index_index.php');
 

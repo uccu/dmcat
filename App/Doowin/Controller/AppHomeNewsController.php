@@ -32,8 +32,9 @@ class AppHomeNewsController extends Controller{
         $type = __FUNCTION__;
         $name = '集团要闻';
         $limit = 16;
-        $list = $model->page($page,$limit)->order('top desc','id desc')->get()->toArray();
-        $max = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $where['status'] = 1;
+        $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
+        $max = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
         if($page == 1){
             $first = $list[0];
             unset($list[0]);
@@ -47,6 +48,7 @@ class AppHomeNewsController extends Controller{
         $type = 'inNews';
         $name = '集团要闻';
         $limit = 16;
+        $where['status'] = 1;
         $search && $where['title'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
         
         $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
@@ -77,8 +79,9 @@ class AppHomeNewsController extends Controller{
         $type = __FUNCTION__;
         $name = '热点专题';
         $limit = 16;
-        $list = $model->page($page,$limit)->order('top desc','id desc')->get()->toArray();
-        $max = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $where['status'] = 1;
+        $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
+        $max = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
         include_once(VIEW_ROOT.'App/News_'. __FUNCTION__ .'.php');
 
     }
@@ -87,6 +90,7 @@ class AppHomeNewsController extends Controller{
         $type = 'special';
         $name = '热点专题';
         $limit = 16;
+        $where['status'] = 1;
         $search = Request::getInstance()->cookie('search','');
         $search && $where['title'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
         $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
@@ -110,8 +114,9 @@ class AppHomeNewsController extends Controller{
         $type = __FUNCTION__;
         $name = '媒体聚焦';
         $limit = 16;
-        $list = $model->page($page,$limit)->order('top desc','id desc')->get()->toArray();
-        $max = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $where['status'] = 1;
+        $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
+        $max = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
         include_once(VIEW_ROOT.'App/News_'. __FUNCTION__ .'.php');
 
     }
@@ -120,6 +125,7 @@ class AppHomeNewsController extends Controller{
         $type = 'media';
         $name = '媒体聚焦';
         $limit = 16;
+        $where['status'] = 1;
         $search = Request::getInstance()->cookie('search','');
         $search && $where['title'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
         $list = $model->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
@@ -144,7 +150,8 @@ class AppHomeNewsController extends Controller{
         $name = '视频中心';
         $limit = 16;
         $video_type = Request::getInstance()->cookie('video_type',0);
-        if($video_type)$where = ['type'=>$video_type];
+        $where['status'] = 1;
+        if($video_type)$where['type']=$video_type;
         $newsVideoType = $newsVideoTypeModel->order('ord','id')->get()->toArray();
         $newsVideo = $newsVideoModel->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
         $where2 = $where;
@@ -161,7 +168,8 @@ class AppHomeNewsController extends Controller{
         $name = '视频中心';
         $limit = 16;
         $video_type = Request::getInstance()->cookie('video_type',0);
-        if($video_type)$where = ['type'=>$video_type];
+        $where['status'] = 1;
+        if($video_type)$where['type']=$video_type;
         $newsVideoType = $newsVideoTypeModel->order('ord','id')->get()->toArray();
         $newsVideo = $newsVideoModel->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
         $where2 = $where;

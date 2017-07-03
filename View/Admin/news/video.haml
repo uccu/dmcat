@@ -43,8 +43,13 @@
                 
             }
             gr.getListAfter = function(d){
-                $('input.i-checks').on('ifChanged',function(){
+                $('.bannerC input.i-checks').on('ifChanged',function(){
                     curl('/news/video_upd',{id:$(this).parent().parent().attr('data-id'),banner:this.checked?1:0},function(d){
+                        curl_succ('success!');
+                    });
+                });
+                $('.statusC input.i-checks').on('ifChanged',function(){
+                    curl('/news/video_upd',{id:$(this).parent().parent().attr('data-id'),status:this.checked?1:0},function(d){
                         curl_succ('success!');
                     });
                 });

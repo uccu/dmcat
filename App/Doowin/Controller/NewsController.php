@@ -41,6 +41,7 @@ class NewsController extends Controller{
                 '标题'=>['class'=>'tl'],
                 '提交日期'=>['class'=>'tc'],
                 '优先级'=>['class'=>'tc'],
+                '显示'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
             
@@ -49,9 +50,10 @@ class NewsController extends Controller{
                 'title' =>['class'=>'tl'],
                 'create_date'=>['class'=>'tc'],
                 'top'   =>['class'=>'tc'],
+                'status'=>['type'=>'checkbox','class'=>'tc statusC'],
                 '_opt'  =>['class'=>'tc','updateLink'=>1],
             ];
-
+            
             if($year)$where['year'] = $year;
             if($search)$where['search'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
 
@@ -82,11 +84,11 @@ class NewsController extends Controller{
         }
         function group_upd($id,NewsGroupModel $model,$date = ''){
 
-            $data = Request::getInstance()->request(['title','description','title_en','description_en','content_en','top','content','year','pic']);
-            $data['create_time'] = strtotime( $date );
-            $data['year'] = date('Y',$data['create_time']);
+            $data = Request::getInstance()->request(['status','title','description','title_en','description_en','content_en','top','content','year','pic']);
+            if($date)$data['create_time'] = strtotime( $date );
+            if($date)$data['year'] = date('Y',$data['create_time']);
             unset ($data['id']);
-            $data['top'] = floor($data['top']);
+            if(isset($data['top']))$data['top'] = floor($data['top']);
             
             if(!$id){
                 if(!$date)$data['create_time'] = TIME_NOW;
@@ -119,6 +121,7 @@ class NewsController extends Controller{
                 '标题'=>['class'=>'tl'],
                 '提交日期'=>['class'=>'tc'],
                 '优先级'=>['class'=>'tc'],
+                '显示'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
             
@@ -127,9 +130,10 @@ class NewsController extends Controller{
                 'title' =>['class'=>'tl'],
                 'create_date'=>['class'=>'tc'],
                 'top'   =>['class'=>'tc'],
+                'status'=>['type'=>'checkbox','class'=>'tc statusC'],
                 '_opt'  =>['class'=>'tc','updateLink'=>1],
             ];
-
+            
             if($year)$where['year'] = $year;
             if($search)$where['search'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
 
@@ -160,11 +164,11 @@ class NewsController extends Controller{
         }
         function hot_upd($id,NewsHotModel $model,$date){
 
-            $data = Request::getInstance()->request(['title_en','description_en','content_en','title','description','top','content','year','pic']);
+            $data = Request::getInstance()->request(['status','title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
-            $data['create_time'] = strtotime( $date );
-            $data['year'] = date('Y',$data['create_time']);
-            $data['top'] = floor($data['top']);
+            if($date)$data['create_time'] = strtotime( $date );
+            if($date)$data['year'] = date('Y',$data['create_time']);
+            if(isset($data['top']))$data['top'] = floor($data['top']);
             if(!$id){
                 if(!$date)$data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();
@@ -197,6 +201,7 @@ class NewsController extends Controller{
                 '标题'=>['class'=>'tl'],
                 '提交日期'=>['class'=>'tc'],
                 '优先级'=>['class'=>'tc'],
+                '显示'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
             
@@ -205,9 +210,10 @@ class NewsController extends Controller{
                 'title' =>['class'=>'tl'],
                 'create_date'=>['class'=>'tc'],
                 'top'   =>['class'=>'tc'],
+                'status'=>['type'=>'checkbox','class'=>'tc statusC'],
                 '_opt'  =>['class'=>'tc','updateLink'=>1],
             ];
-
+            
             if($year)$where['year'] = $year;
             if($search)$where['search'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
 
@@ -238,11 +244,11 @@ class NewsController extends Controller{
         }
         function media_upd($id,NewsMediaModel $model,$date=''){
 
-            $data = Request::getInstance()->request(['title_en','description_en','content_en','title','description','top','content','year','pic']);
+            $data = Request::getInstance()->request(['status','title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
-            $data['create_time'] = strtotime( $date );
-            $data['year'] = date('Y',$data['create_time']);
-            $data['top'] = floor($data['top']);
+            if($date)$data['create_time'] = strtotime( $date );
+            if($date)$data['year'] = date('Y',$data['create_time']);
+            if(isset($data['top']))$data['top'] = floor($data['top']);
             if(!$id){
                 if(!$date)$data['create_time'] = TIME_NOW;
                 $id = $model->set($data)->add()->getStatus();
@@ -274,6 +280,7 @@ class NewsController extends Controller{
                 '标题'=>['class'=>'tl'],
                 '提交日期'=>['class'=>'tc'],
                 '优先级'=>['class'=>'tc'],
+                '显示'=>['class'=>'tc'],
                 '推荐'=>['class'=>'tc'],
                 '_opt'=>['class'=>'tc'],
             ];
@@ -283,10 +290,11 @@ class NewsController extends Controller{
                 'title' =>['class'=>'tl'],
                 'create_date'=>['class'=>'tc'],
                 'top'   =>['class'=>'tc'],
-                'banner'=>['type'=>'checkbox','class'=>'tc'],
+                'status'=>['type'=>'checkbox','class'=>'tc statusC'],
+                'banner'=>['type'=>'checkbox','class'=>'tc bannerC'],
                 '_opt'  =>['class'=>'tc','updateLink'=>1],
             ];
-
+            
             if($year)$where['year'] = $year;
             if($search)$where['search'] = ['title LIKE %n OR description LIKE %n','%'.$search.'%','%'.$search.'%'];
 
@@ -317,10 +325,10 @@ class NewsController extends Controller{
         }
         function video_upd($id,NewsVideoModel $model,$date = ''){
 
-            $data = Request::getInstance()->request(['banner','video','type','title_en','description_en','content_en','title','description','top','content','year','pic']);
+            $data = Request::getInstance()->request(['status','banner','video','type','title_en','description_en','content_en','title','description','top','content','year','pic']);
             unset ($data['id']);
-            $data['create_time'] = strtotime( $date );
-            $data['year'] = date('Y',$data['create_time']);
+            if($date)$data['create_time'] = strtotime( $date );
+            if($date)$data['year'] = date('Y',$data['create_time']);
             if(isset($data['top']))$data['top'] = floor($data['top']);
             if(!$id){
                 if(!$date)$data['create_time'] = TIME_NOW;
