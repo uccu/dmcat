@@ -179,15 +179,15 @@ class MobileController extends Controller{
 
         $chairmanPicture = $chairmanPictureModel->order('top desc','id desc')->get()->toArray();
 
-        foreach($chairmanPicture as &$v){
+                foreach($chairmanPicture as $k=>$v){
 
-            if($v->pic){
-                $pics = explode(';',$v->pic);
-                $v->pic2Array = $pics;
-                $v->count = count($v->pic2Array);
+            if($chairmanPicture[$k]->pic){
+                $pics = explode(';',$chairmanPicture[$k]->pic);
+                $chairmanPicture[$k]->pic2Array = $pics;
+                $chairmanPicture[$k]->count = count($chairmanPicture[$k]->pic2Array);
                 foreach($pics as &$v2)$v2 = Func::fullPicAddr( $v2 );
-                $v->picArray = implode(';',$pics);
-                $v->first = $v->pic2Array[0];
+                $chairmanPicture[$k]->picArray = implode(';',$pics);
+                $chairmanPicture[$k]->first = $chairmanPicture[$k]->pic2Array[0];
             }
 
         }
