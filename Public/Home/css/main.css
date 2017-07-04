@@ -113,7 +113,7 @@ select { padding-left: 0.1rem; background-size: 0.3rem; padding-right: 0.4rem;}
 .content-top span{font-size: 24px; line-height: 28px; font-weight: 600;}
 .content-top form{float: right;}
 .content-top form input{width: 240px; height: 28px; padding: 0 30px 0 5px; background: url("../images/fang.png") no-repeat 215px 50%; background-size: 14px; color: #676767;}
-.content-top form select{width: 140px; height: 28px; padding: 0 20px 0 5px; background: url("../images/brow_foot.png") no-repeat 122px 50%; background-size: 9px; margin-right: 20px; color: #676767;}
+.content-top form select{width: 140px; height: 28px; padding: 0 20px 0 5px;  background-size: 9px; margin-right: 20px; color: #676767;}
 .this-address{line-height: 40px; color: #787878;}
 .main-content{width: 100%; margin-top: 20px; min-height: 100px;}
 .content-left-nav{width: 186px; float: left;}
