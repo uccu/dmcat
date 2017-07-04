@@ -21,7 +21,7 @@
 <!--侧边栏-->
 <div class="sidebar-box">
     <div class="sidebar-header">
-        <img src="img/celogo.png" onclick="redirect('index')">
+        <img src="img/logo.png" width="80" onclick="redirect('index')">
     </div>
     <div class="sidebar-main">
         <h1>
