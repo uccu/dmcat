@@ -55,6 +55,7 @@
     var obj_width = 84;
     var num = $("#develop_box > span").length;
     $("#develop_box").css("width", num * obj_width + "px");
+    $('#develop_box').css({'margin-left':-$('.develop-nav-box span.checked').index()*84})
     var no_move = true;
 
     $(document).ready(function () {
