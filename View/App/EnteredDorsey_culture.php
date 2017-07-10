@@ -18,7 +18,7 @@
             <div class="content-title"><?php echo lang('企业文化');?>
                 <div class="video-nav">
                     <a href="javascript:void(0);" class="checked" onclick="changeType(this, 1);"><?php echo lang('文化体系');?></a>
-                    <a href="javascript:void(0);" onclick="changeType(this, 2);"><?php echo lang('企业内刊');?></a>
+                    <!--a href="javascript:void(0);" onclick="changeType(this, 2);"><?php echo lang('企业内刊');?></a-->
                 </div>
             </div>
             <div class="culture_content">
