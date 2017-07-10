@@ -84,7 +84,7 @@ class Format{
 
             '(10|1|4|7|一|四|七|十)月(新番|泡面)?\b','剧场版','新番','生肉','合集\b','外传','预告',
 
-            'OVA','OAD','(the )?MOVIE','\w+TV\b','MBS\b','\bcn\b','\bjap\b',
+            '\bOVA\b','\bOAD\b','(the )?MOVIE','\w+TV\b','MBS\b','\bcn\b','\bjap\b',
 
             'h264\b','x26\d\b','10-?bit\b','8-?bit\b','HardSub','ACC\b','AAC\b','AC3\b','FLAC\b','HEVC\b','Main10p\b','VFR\b','Web(Rip)?\b',
             
