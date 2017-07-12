@@ -332,7 +332,7 @@
             $('#modal_new').modal();
             $('#modal_new .sk-spinner').removeClass('fadeOutDown');
             $('#modal_new form').removeClass('fadeInDown').addClass('dn');
-            $.post('/user/my_info',function(g){
+            $.post('/user/my_info',{x:0},function(g){
                 if(g.code==400)alert(g.message);
                 g = g.data;
                 $('#modal_new .sk-spinner').addClass('fadeOutDown');
