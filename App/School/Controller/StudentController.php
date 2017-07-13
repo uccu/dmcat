@@ -568,9 +568,12 @@ class StudentController extends Controller{
     }
 
     /* 请假 */
-    function ask_leave($student_id = 0,$proposer,$date,$type,$content,AttendanceModel $model){
+    function ask_leave($student_id = 0,$proposer,$date,$fdate,$type,$content,AttendanceModel $model){
 
         $time  = strtotime($date);
+        $ftime = strtotime($fdate);
+
+        $days = ($ftime-$time)/(3600*24);
 
         $ltime = strtotime( date('Ymd',$time) );
 
@@ -581,20 +584,39 @@ class StudentController extends Controller{
 
         !$student_id && AJAX::error('没有找到学生/student not find');
         
-        $reason = '['.$type.']'.$proposer." : ".$content;
+        $reason = $type.' , '.$proposer." , ".$content;
 
-        $data['student_id'] = $student_id;
-        $data['month'] = date('Ym',$time);
-        $data['day'] = date('d',$time);
+        for($i=0;$i<=$days;$i++){
+
+            $data = [];
+
+            $ntime = $time + 3600*24*$i;
+
+            $data['student_id'] = $student_id;
+            $data['month'] = date('Ym',$ntime);
+            $data['day'] = date('d',$ntime);
+            
+            if($id = $model->where($data)->find()){
+
+                $data['update_time'] = TIME_NOW;
+                $data['status'] = 0;
+                $data['reason'] = $reason;
+                $model->set($data)->where()->save($id);
+
+            }else{
+
+                $data['create_time'] = $data['update_time'] = TIME_NOW;
+                $data['status'] = 0;
+                $data['reason'] = $reason;
+                $model->set($data)->add();
+            }
         
-        $model->where($data)->find() && AJAX::error('已经请过假了/has asked');
-    
-        $data['create_time'] = $data['update_time'] = TIME_NOW;
-        $data['status'] = 0;
-        $data['reason'] = $reason;
+            
 
+            
 
-        $model->set($data)->add();
+        }
+        
 
         Func::add_message($this->L->id,'您已成功提交了一条请假（'.$date.'）<br><small>You have successfully asked for leave</small>');
 
