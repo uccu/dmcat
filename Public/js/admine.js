@@ -21,9 +21,15 @@
         var d = w.top.$('.gotoTag a').text(name).attr('href',addr).click();
     }
     w.pagement = function(page,max,e){
+        page = parseInt(page);
+        max = parseInt(max);
         var p = j('<div>').addClass('btn-group page');
         var pa = [];
-        if(max<5)for(var i=1;i<=max;i++)pa.push(i);else if(page<3)for(var i=1;i<=5;i++)pa.push(i);else if(page+2>max)for(var i=max-4;i<=max;i++)pa.push(i);else for(var i=page-2;i<=page+2;i++)pa.push(i);
+        if(max<5)for(var i=1;i<=max;i++)pa.push(i);
+        else if(page<3)for(var i=1;i<=5;i++)pa.push(i);
+        else if(page+2>max)for(var i=max-4;i<=max;i++)pa.push(i);
+        else for(var i=page-2;i<=page+2;i++)pa.push(i);
+        console.log(page+2,max)
         j('<div>').addClass('btn btn-white').attr('type','button').append('<i class="fa fa-chevron-left"></i>').on('click',function(){e(1)}).appendTo(p);
         for(r in pa){
             var q = pa[r],y = j('<div>').addClass('btn btn-white').attr('data-id',q);
