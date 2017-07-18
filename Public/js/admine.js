@@ -30,6 +30,8 @@ function gotoNewTag(addr,name){
     var d = window.top.$('.gotoTag a').text(name).attr('href',addr).click();
 }
 function pagement(page,max,e){
+    page = parseInt(page);
+    max = parseInt(max);
     var p = $('<div>').addClass('btn-group page');
     var pa = [];
     if(max<5)for(var i=1;i<=max;i++)pa.push(i);
