@@ -11,7 +11,12 @@
             <span>电话： 0991-7788916</span>
             <span>传真： 0991-5811770</span>
             <span>地址： 中国乌鲁木齐市奇台路658号</span>
-            <!--span><a class="toCn">中文</a> <a class="toEn">English</a></span-->
+        </p>
+        <p>
+        <style>
+        .no-check{color:#ccc}
+        </style>
+            <span><a class="toCn<?php echo $this->L->lang=='cn'?'':' no-check"';?>">中文</a> <a class="toEn<?php echo $this->L->lang=='en'?'':' no-check"';?>">English</a></span>
             <script>
                 $('.toCn').click(function(){$.post('/user/language',{l:'cn'},function(){location.reload()})})
                 $('.toEn').click(function(){$.post('/user/language',{l:'en'},function(){location.reload()})})
@@ -75,5 +80,6 @@
             <li><a href="legalNotices">法律声明</a></li>
         </ul>
     </div>
+    
 </div>
 <script src="js/sidebar.js"></script>
