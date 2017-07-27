@@ -2,7 +2,7 @@
 namespace App\Lawyer\Middleware;
 use Middleware;
 use Request;
-use App\Inax\Tool\Func;
+use App\Lawyer\Tool\Func;
 use Config;
 
 use Response;
@@ -41,7 +41,7 @@ class L extends Middleware{
 
         /*处理user_token*/
         $user_token = substr($this->user_token,1);
-        $user_token = Func::aes_decode($user_token);
+        $user_token = Func::aes_decode($user_token,$this->config->AES_SECRECT_KEY);
         $user_token = substr($user_token,1);
         list($hash,$id,$time) = explode('|',base64_decode($user_token));
         if(!$hash||!$id||!$time){

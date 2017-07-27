@@ -6,6 +6,7 @@ use Controller;
 use AJAX;
 use DB;
 use stdClass;
+use Response;
 # Model
 use App\Lawyer\Model\UserModel;
 use App\Lawyer\Middleware\L;

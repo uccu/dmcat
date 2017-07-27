@@ -5,7 +5,7 @@ use AJAX;
 use App\Lawyer\Middleware\L;
 use App\Lawyer\Model\ConfigModel;
 use App\Lawyer\Model\MessageModel;
-// use App\Doowin\Model\UploadModel;
+// use App\Lawyer\Model\UploadModel;
 
 
 class Func{

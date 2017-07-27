@@ -1,0 +1,116 @@
+- extends "base.haml"
+
+
+
+- block body
+    
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                #modal_new.ibox.float-e-margins
+                    .ibox-title
+                        %h3 招标公告
+                    .ibox-content
+                        %form.form-horizontal.animated(method="post")
+                            %input.form-control(type="hidden" name="id")
+
+                            .form-group
+                                %label.col-sm-2.control-label 轮播图
+                                .col-sm-9.picArray
+                                    %span.dib.clear
+                                    %i.fa.fa-plus-square-o.cp
+                                    %input.dn(type="file")
+                                    %input(type="hidden" name="pic")
+                            .form-group
+                                %label.col-sm-2.control-label 描述
+                                .col-sm-9
+                                    %textarea.form-control.noresize(name="description" rows="4")
+                            .form-group
+                                %label.col-sm-2.control-label 描述(EN)
+                                .col-sm-9
+                                    %textarea.form-control.noresize(name="description_en" rows="4")
+                        .ibox-title
+                            
+                            %button.btn.btn-primary.save(type="button") Save
+    
+- block otherCss
+    %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
+    %link(href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet")
+    :css
+        .picArray img{width:40px}
+        .fa-plus-square-o{font-size:45px}
+        .dn{display:none !important}
+                        
+
+
+
+- block otherScript
+    %script(src="/js/plugins/summernote/summernote.min.js")
+    %script(src="/js/plugins/summernote/summernote-zh-CN.js")
+    :javascript
+        $(function(j){
+            gr.updBefore = function(){
+                $('#modal_new .picArray span').html('');
+            }
+            gr.updFunction = function(g){
+                for(h in g.info.pic2Array)$('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.info.picArray[h],'data-pic':g.info.pic2Array[h]}).click(vc.dePic));
+            }
+            $('.fa-plus-square-o').click(function(){$('.picArray input[type="file"]').click()})
+            var vc = {
+                toPic:function(){
+                    var img = $('#modal_new .picArray span img');
+                    var l = img.length;
+                    var pic = [];
+                    for(var i=0;i<l;i++)pic.push(img.eq(i).attr('data-pic'));
+
+
+                    $('#modal_new [name="pic"]').val(pic.join(';'));
+                },dePic:function(){
+                    var that = this;
+                    curl_check(function(){
+                        $(that).remove();vc.toPic()
+                    })
+
+                }
+            }
+            upPic('/staff/upPic','input[type="file"]',function(g){
+                $('#modal_new .picArray span').append($('<img>').addClass('cp fl').attr({src:g.apath,'data-pic':g.path}).click(vc.dePic));
+                vc.toPic()
+            });
+            var su = j(".summernote").summernote({
+                toolbar: [
+                    ['style', ['style']],
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname',['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['height', ['height']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['e',['picture','link']],
+                    ['o',['codeview']],
+                ],
+                height: 300,
+                minHeight: 300,
+                maxHeight: null,
+                focus: true,
+                lang:"zh-CN",
+                callbacks: {
+                    onImageUpload: function(files) {
+                        curl('/staff/upPic',packFormData(files),function(d){
+                            var imgNode = new Image
+                            imgNode.src = d.fpath
+                            su.summernote('insertNode', imgNode);
+                        },1);
+                    }
+                }
+            })
+
+            cget('/home/m_get','2','/home/m_upd',1);
+            // gr.flesh = function(){}
+            // $('.click2edit').summernote('code');
+
+        });
+
+
+    
+        

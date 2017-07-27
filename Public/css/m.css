@@ -12,4 +12,7 @@
 .pr{position:relative}.pf{position:fixed}.pa{position:absolute}.ps{position:static}
 .ofh{overflow:hidden}
 a:focus, a:hover{text-decoration: none}
-.clear::after{clear: both;display:block;}
+.clear::after{clear:both;display:block}
+.noresize{resize: none}
+
+input[type=file]{border:0}
