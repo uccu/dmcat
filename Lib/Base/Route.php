@@ -1,8 +1,8 @@
 <?php
 
 use Lib\Sharp\SingleInstance;
-use Lib\Traits\InstanceTrait;
-
+use Uccu\DmcatTool\Traits\InstanceTrait;
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
 Class Route{
 
     use InstanceTrait;
@@ -11,7 +11,7 @@ Class Route{
 
     function __construct(){
 
-        $this->request = Request::getInstance();
+        $this->request = Request::getSingleInstance();
 
     }
     
@@ -56,7 +56,7 @@ Class Route{
     public function parse($route = ''){
 
         /* 获取路由设置 */
-        !$route && $route = conf('Route')->ROUTE;
+        !$route && $route = Config::route()->ROUTE;
         if(!$route)return;
 
 
@@ -93,16 +93,21 @@ Class Route{
                     $app = $matches[3];
                     $controller = $pathArray[0];
                     if(!$controller)continue;
-                    $controller = table($matches[3].'\\'.ucfirst($controller).'Controller');
+                    $class = $matches[3].'\\'.ucfirst($controller).'Controller';
+                    $controller = $class::getSingleInstance();
                     $method = $pathArray[1];
+
                 }elseif($matches[1] == 'controller'){
 
-                    $controller = table($matches[3]);
+                    $class = $matches[3];
+                    $controller = $class::getSingleInstance();
                     $method = $pathArray[0];
+
                 }elseif($matches[1] == 'method'){
 
                     $where = strripos($matches[3], "\\");
-                    $controller = table( substr( $matches[3],0,$where ));
+                    $class = substr( $matches[3],0,$where );
+                    $controller = $class::getSingleInstance();
                     $method = substr( $matches[3],$where+1 );
 
                 }
@@ -157,14 +162,14 @@ Class Route{
             $name = $paramReflection->getName();
             if($class = $paramReflection->getClass()){
                 $class = $class->name;
-                if(method_exists($class,'getInstance')){
+                if(method_exists($class,'getSingleInstance')){
 
                     if($class=='Model'){
-                        $params[] = $class::getInstance($name);
+                        $params[] = $class::copyMutiInstance($name);
                         continue;
                     }
 
-                    $params[] = $class::getInstance();
+                    $params[] = $class::getSingleInstance();
                     continue;
                 }
             }

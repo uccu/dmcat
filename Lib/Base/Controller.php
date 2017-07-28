@@ -1,16 +1,9 @@
 <?php
 
-use Lib\Sharp\SingleInstance;
+use Uccu\DmcatTool\Traits\InstanceTrait;
 
-class Controller implements SingleInstance{
+class Controller{
 
-    
-    public static function getInstance(){
+    use InstanceTrait;
 
-        return table(get_called_class());
-
-    }
-
-
-    
 }

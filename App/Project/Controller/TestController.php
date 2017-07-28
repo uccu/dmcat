@@ -33,16 +33,16 @@ class TestController extends Controller{
 
     function main($cc){
 
-        $cc = Request::getInstance()->get('cc','s');
+        $cc = Request::getSingleInstance()->get('cc','s');
         var_dump($cc);
  
     }
 
-    function ec(){
+    function ec(UserModel $model){
 
+        // $model = UserModel::copyMutiInstance();
         
-        
-        echo 'ok';
+        echo $model->select('friendsTable.friend_id')->find();
         
        
 
@@ -56,7 +56,7 @@ class TestController extends Controller{
         //var_dump(func_get_args());
         //echo '123';
 
-        echo Lession::getInstance()->where('id=%d',1)->get();
+        echo Lession::copyMutiInstance()->where('id=%d',1)->get();
 
     }
 
@@ -73,7 +73,7 @@ class TestController extends Controller{
 
         // if(!isset($e))echo 1;
 
-        $model = UserModel::getInstance();
+        $model = UserModel::copyMutiInstance();
 
         $user = $model->find(null);
 

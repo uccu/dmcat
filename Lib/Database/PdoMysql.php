@@ -2,13 +2,14 @@
 namespace Lib\Database;
 
 use E;
-use Lib\Traits;
+use Uccu\DmcatTool\Traits\InstanceTrait;
 use PDO;
 use PDOStatement;
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
 
 class PdoMysql
 {
-	use Traits\InstanceTrait;
+	use InstanceTrait;
 
 	public 	$prefix;
 	private $_connection;
@@ -63,7 +64,7 @@ class PdoMysql
 	private function init_config($name){
 
 		if(!$name)$name = end(explode('\\',__CLASS__));
-		$this->_config = conf($name);
+		$this->_config = Config::pdoMysql();
 		$this->prefix = $this->_config->PREFIX;
 		return $this;
 

@@ -17,7 +17,7 @@ class Container implements ArrayAccess{
 
         $model->clean();
         
-        $this->__tool = Using::getInstance();
+        $this->__tool = Using::getSingleInstance();
 
         $cmd = trim(strtoupper(substr($model->sql, 0, strpos($model->sql, ' '))));
 
