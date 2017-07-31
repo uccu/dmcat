@@ -12,7 +12,7 @@ use App\Project\Model\UserModel;
 use App\Project\Model\LessionModel as Lession;
 use Model;
 
-
+use Uccu\DmcatTool\Tool\LocalConfig;
 
 
 use View;
@@ -42,7 +42,7 @@ class TestController extends Controller{
 
         // $model = UserModel::copyMutiInstance();
         
-        echo $model->select('friendsTable.friend_id')->find();
+        echo LocalConfig::pdoMysql()->PREFIX;
         
        
 
