@@ -1,5 +1,5 @@
 <?php
-
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
 
 class AJAX{
 

@@ -24,14 +24,14 @@ class L extends Middleware{
 
 
         /*获取所有的参数*/
-        $this->config = ConfigModel::getInstance()->get_field('value','name');
+        $this->config = ConfigModel::copyMutiInstance()->get_field('value','name');
 
 
         /*获取干扰码*/
         $salt = $this->config->SITE_SALT;
 
 
-        $this->request = Request::getInstance();
+        $this->request = Request::getSingleInstance();
 
         /*获取user_token*/
         $this->user_token = $this->request->request('user_token');
@@ -45,16 +45,16 @@ class L extends Middleware{
         $user_token = substr($user_token,1);
         list($hash,$id,$time) = explode('|',base64_decode($user_token));
         if(!$hash||!$id||!$time){
-            Response::getInstance()->cookie('user_token','',-3600);
+            Response::getSingleInstance()->cookie('user_token','',-3600);
             return;
         }
 
 
         /*查询需要验证登陆的用户信息*/
-        $user = UserModel::getInstance();
+        $user = UserModel::copyMutiInstance();
         $info = $user->find($id);
         if(!$info){
-            Response::getInstance()->cookie('user_token','',-3600);
+            Response::getSingleInstance()->cookie('user_token','',-3600);
             return;
         }
 
@@ -66,7 +66,7 @@ class L extends Middleware{
         }
 
         /*其他情况*/
-        Response::getInstance()->cookie('user_token','',-3600);
+        Response::getSingleInstance()->cookie('user_token','',-3600);
     }
     
 }

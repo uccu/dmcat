@@ -22,7 +22,7 @@ class Field{
         if(!is_string($field))E::throwEx('Undefined Field\'s Name',1);
 
         //加载工具库
-        $this->tool = Using::getInstance();
+        $this->tool = Using::getSingleInstance();
 
         
         $fields = explode('.',$field);
@@ -35,7 +35,7 @@ class Field{
 
                 $field = $fields[$i];
                 $model = $model->$field;
-                if(!$model)E::throwEx('Table Link`'.$field.'` Not Defined',2);
+                if(!$model)E::throwEx('Table Link `'.$field.'` Not Defined',2);
             }
 
         }

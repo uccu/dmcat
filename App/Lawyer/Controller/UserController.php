@@ -17,7 +17,7 @@ class UserController extends Controller{
 
     function __construct(){
 
-        $this->L = L::getInstance();
+        $this->L = L::getSingleInstance();
         $this->salt = $this->L->config->SITE_SALT;
 
     }
@@ -50,7 +50,7 @@ class UserController extends Controller{
 
         
 
-        $model = UserModel::getInstance();
+        $model = UserModel::copyMutiInstance();
         if($model->where(['phone'=>$info->phone])->find()){
             AJAX::error('手机号已存在');
         }
@@ -75,7 +75,7 @@ class UserController extends Controller{
      * @return mixed 
      */
     function logout(){
-        Response::getInstance()->cookie('user_token','',-3600);
+        Response::getSingleInstance()->cookie('user_token','',-3600);
         header('Location:/admin/login');
     }
 
@@ -126,7 +126,7 @@ class UserController extends Controller{
 
         !$code && AJAX::error('未知的第三方登录标示！');
 
-        $model = UserModel::getInstance();
+        $model = UserModel::copyMutiInstance();
         $userInfo = $model->where([$type=>$code])->find();
 
         !$userInfo && AJAX::error('用户不存在！');
@@ -144,7 +144,7 @@ class UserController extends Controller{
         
         $user_token = $this->encrypt_token($info);
         
-        $this->cookie && Response::getInstance()->cookie('user_token',$user_token,0);
+        $this->cookie && Response::getSingleInstance()->cookie('user_token',$user_token,0);
         
         $out = [
             'user_token'=>$user_token,
@@ -206,7 +206,7 @@ class UserController extends Controller{
         
         Func::check_phone_captcha($phone,$phone_captcha);
 
-        $model = UserModel::getInstance();
+        $model = UserModel::copyMutiInstance();
         if($userInfo = $model->where(['phone'=>$phone])->find()){
         
             $userInfo->$type && AJAX::error('已绑定该第三方登录，请解绑后重新绑定！');
@@ -251,7 +251,7 @@ class UserController extends Controller{
 
         Func::check_phone_captcha($phone,$phone_captcha);
 
-        $model = UserModel::getInstance();
+        $model = UserModel::copyMutiInstance();
         if(!$userInfo = $model->where(['phone'=>$phone])->find()){
 
             AJAX::error('用户不存在！');

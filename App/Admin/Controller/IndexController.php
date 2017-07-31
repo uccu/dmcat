@@ -12,7 +12,7 @@ class IndexController extends Controller{
 
     function __construct(){
 
-        $this->L = L::getInstance();
+        $this->L = L::getSingleInstance();
 
         if(!$this->L->id || $this->L->userInfo->type<1){
             header('Location:/user/logout');
@@ -29,7 +29,7 @@ class IndexController extends Controller{
 
     private function getMenu(){
 
-        $model = AdminMenuModel::getInstance();
+        $model = AdminMenuModel::copyMutiInstance();
         $all = $model->order('id')->get()->toArray();
 
         $auth = $this->L->userInfo->type;

@@ -57,14 +57,14 @@ class Func{
      */
     /*AES转码*/
     static public function aes_encode( $str , $key = null){
-        if(!$key)$key = L::getInstance()->config->AES_SECRECT_KEY;
+        if(!$key)$key = L::getSingleInstance()->config->AES_SECRECT_KEY;
         $key = md5($key);
         $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128,MCRYPT_MODE_ECB),MCRYPT_RAND);  
         return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $str, MCRYPT_MODE_ECB, $iv));  
     }  
     /*AES解码*/
     static public function aes_decode( $str , $key = null){
-        if(!$key)$key = L::getInstance()->config->AES_SECRECT_KEY;
+        if(!$key)$key = L::getSingleInstance()->config->AES_SECRECT_KEY;
         $key = md5($key);
         $str = base64_decode($str);
         $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128,MCRYPT_MODE_ECB),MCRYPT_RAND);  
@@ -118,7 +118,7 @@ class Func{
         $upn = $upa = [];
         if(!is_dir(BASE_ROOT.'upload'))
                 !mkdir(BASE_ROOT.'upload',0777,true) && AJAX::error('文件夹权限不足，无法创建文件！');
-        // $model = UploadModel::getInstance();
+        // $model = UploadModel::copyMutiInstance();
         
         foreach($_FILES as $k=>$file){
             $upn[] = $k;
@@ -159,7 +159,7 @@ class Func{
         $data['succ'] = ($name?$paths[$name]:$paths) ? 1 : 0;
         $data['ctime'] = TIME_NOW;
         
-        // LogUploadModel::getInstance()->set($data)->add();
+        // LogUploadModel::copyMutiInstance()->set($data)->add();
         return $name?$paths[$name]:$paths;
     }
     /* 处理上传图片 */
@@ -261,7 +261,7 @@ class Func{
 
     
     static function add_message($user_id,$message,$url = ''){
-        $model = MessageModel::getInstance();
+        $model = MessageModel::copyMutiInstance();
         if(!$user_id || !$message)return;
         if(!is_array($user_id))$user_id = [$user_id];
         $data['content'] = $message;

@@ -1,19 +1,13 @@
 <?php
 
-use Lib\Sharp\SingleInstance;
+use Uccu\DmcatTool\Traits\InstanceTrait;
 
-class Response implements SingleInstance{
+class Response{
+
+    use InstanceTrait;
 
     function __construct(){
         
-    }
-
-
-
-    public static function getInstance(){
-        static $object;
-		if(empty($object))$object = new self();
-		return $object;
     }
 
 

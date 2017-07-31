@@ -1,11 +1,12 @@
 <?php
 namespace Lib\Database;
 use E;
-use Lib\Traits;
+use Uccu\DmcatTool\Traits\InstanceTrait;
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
 
 class Mysqli
 {
-	use Traits\InstanceTrait;
+	use InstanceTrait;
 
 	private $mysqli;
 	private $config;
@@ -117,7 +118,7 @@ class Mysqli
 	private function init_config(){
 
 
-		$this->config = conf('Mysqli');
+		$this->config = Config::mysqli();
 		$this->prefix = $this->config->PREFIX;
 		return $this;
 

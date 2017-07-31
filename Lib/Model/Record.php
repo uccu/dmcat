@@ -13,7 +13,7 @@ class Record{
 
     function __construct(array $data,$key = null){
 
-        $this->_null = Using::getInstance()->model_null;
+        $this->_null = Using::getSingleInstance()->model_null;
 
         if($key instanceof Model)$this->_model = $key;
 
@@ -46,8 +46,8 @@ class Record{
         $modelName = get_class( $this->_model );
 
         if($modelName=='Model'){
-            $model = clone table($modelName,$this->_model->rawTable);
-        }else $model = clone table($modelName);
+            $model = $modelName::copyMutiInstance($this->_model->rawTable);
+        }else $model = $modelName::copyMutiInstance();
         return $model->set($this)->save($this->{$model->primary});
         
     }
@@ -59,8 +59,8 @@ class Record{
         $modelName = get_class( $this->_model );
 
         if($modelName=='Model'){
-            $model = clone table($modelName,$this->_model->rawTable);
-        }else $model = clone table($modelName);
+            $model = $modelName::copyMutiInstance($this->_model->rawTable);
+        }else $model = $modelName::copyMutiInstance();
 
         return $model->remove($this->{$model->primary});
         

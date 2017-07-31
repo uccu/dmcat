@@ -3,11 +3,15 @@
 namespace Lib\Model;
 use E;
 
-use Config;
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
 use Lib\Model\Container;
 use Lib\Model\Using;
 
+use Uccu\DmcatTool\Traits\InstanceTrait;
+
 class BaseModel{
+
+    use InstanceTrait;
 
     public      $table;     //表名
     public      $rawTable;  //设定的别名
@@ -36,7 +40,7 @@ class BaseModel{
 
     public function __construct($tableName = null){
 
-        $this->tool = Using::getInstance();
+        $this->tool = Using::getSingleInstance();
 
         $tableName && $this->table = $tableName;
 
@@ -561,7 +565,7 @@ class BaseModel{
     }
     protected function join($class,$forign = null,$key = null,$join = 'INNER'){
  
-        $c = clone table($class);
+        $c = clone $class::copyMutiInstance();
 
         if(!$forign)$forign = $this->rawTable.'_id';
 
@@ -608,18 +612,7 @@ class BaseModel{
         $this->join[$method] = $this->$method();
 
     }
-    public static function getInstance(){
 
-        if($name = func_get_args()){
-            $name = $name[0];
-            return clone table(get_called_class(),$name);
-
-
-        }
-
-        return clone table(get_called_class());
-
-    }
 
 
 

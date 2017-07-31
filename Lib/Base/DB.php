@@ -6,17 +6,17 @@ class DB{
 
     static function start(){
 
-        return Using::getInstance()->start();
+        return Using::getSingleInstance()->start();
     }
 
     static function commit(){
 
-        return Using::getInstance()->commit();
+        return Using::getSingleInstance()->commit();
     }
 
     static function rollback(){
 
-        return Using::getInstance()->rollback();
+        return Using::getSingleInstance()->rollback();
     }
 
     

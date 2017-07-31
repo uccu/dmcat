@@ -12,7 +12,7 @@ class LoginController extends Controller{
 
     function __construct(){
 
-        $this->L = L::getInstance();
+        $this->L = L::getSingleInstance();
         
         $array = [1];
 

@@ -4,8 +4,11 @@ use MtHaml\Environment;
 use MtHaml\Support\Twig\Loader;
 use MtHaml\Support\Twig\Extension;
 use Lib\Sharp\SingleInstance;
-
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
+use Uccu\DmcatTool\Traits\InstanceTrait;
 class View implements SingleInstance{
+
+    use InstanceTrait;
 
     private $data = [];
 
@@ -15,15 +18,9 @@ class View implements SingleInstance{
 
     }
 
-    public static function getInstance(){
-        static $object;
-		if(empty($object))$object = new self();
-		return $object;
-    }
-
     public static function addData($data = []){
 
-        $obj = self::getInstance();
+        $obj = self::getSingleInstance();
 
         $obj->data = array_merge($obj->data,$data);
 
@@ -51,7 +48,7 @@ class View implements SingleInstance{
 
         $twig->addExtension(new Extension());
 
-        $obj = self::getInstance();
+        $obj = self::getSingleInstance();
 
         $obj->data = array_merge($obj->data,$data);
 

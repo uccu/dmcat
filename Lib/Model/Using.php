@@ -1,13 +1,15 @@
 <?php
 
 namespace Lib\Model;
-use Config;
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
 use E;
 use Model;
 
-use Lib\Sharp\SingleInstance;
+use Uccu\DmcatTool\Traits\InstanceTrait;
 
-class Using implements SingleInstance{
+class Using{
+
+    use InstanceTrait;
 
     # 缓存sql，重复利用查询
     private $sqls = [];
@@ -211,11 +213,6 @@ class Using implements SingleInstance{
 		return $ret;
 	}
 
-    public static function getInstance(){
-        static $object;
-		if(empty($object))$object = new self();
-		return $object;
-    }
 
 
 

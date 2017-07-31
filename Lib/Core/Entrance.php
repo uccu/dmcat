@@ -54,6 +54,10 @@ register_shutdown_function(array('E', 'handleShutdown'));
 
 require_once LIB_ROOT.'Function/Core.php';
 
+// Config设置
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
+Config::$_CONFIG_ROOT = CONFIG_ROOT;
+
 //定义请求路径
 
 if(!isset($argc))
@@ -64,6 +68,7 @@ else define('REQUEST_PATH',$argv[1]);
 
 
 
+
 //设置时区
 date_default_timezone_set(Config::get('TIMEZONE'));
 
@@ -71,6 +76,7 @@ define('TIME_NOW', time());
 define('TIME_TODAY', strtotime(date('Y-m-d',TIME_NOW)));
 define('DATE_TODAY', date('Ymd'));
 define('TIME_YESTERDAY', TIME_TODAY-3600*24);
+
 
 
 

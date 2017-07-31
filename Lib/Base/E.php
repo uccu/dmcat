@@ -2,7 +2,7 @@
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
 class E extends Exception{
 
 	
