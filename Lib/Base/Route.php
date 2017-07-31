@@ -1,6 +1,5 @@
 <?php
 
-use Lib\Sharp\SingleInstance;
 use Uccu\DmcatTool\Traits\InstanceTrait;
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
 Class Route{

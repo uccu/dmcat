@@ -3,10 +3,9 @@
 use MtHaml\Environment;
 use MtHaml\Support\Twig\Loader;
 use MtHaml\Support\Twig\Extension;
-use Lib\Sharp\SingleInstance;
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
 use Uccu\DmcatTool\Traits\InstanceTrait;
-class View implements SingleInstance{
+class View{
 
     use InstanceTrait;
 
