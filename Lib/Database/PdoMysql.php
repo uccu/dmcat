@@ -63,7 +63,6 @@ class PdoMysql
 	# 设置参数
 	private function init_config($name){
 
-		if(!$name)$name = end(explode('\\',__CLASS__));
 		$this->_config = Config::pdoMysql();
 		$this->prefix = $this->_config->PREFIX;
 		return $this;

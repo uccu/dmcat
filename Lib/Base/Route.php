@@ -92,7 +92,7 @@ Class Route{
 
                     $app = $matches[3];
                     $controller = $pathArray[0];
-                    if(!$controller)continue;
+                    if(!$controller || !preg_match('#^[a-z0-9]+$#i',$controller))continue;
                     $class = $matches[3].'\\'.ucfirst($controller).'Controller';
                     $controller = $class::getSingleInstance();
                     $method = $pathArray[1];
