@@ -5,7 +5,7 @@ use AJAX;
 use App\Lawyer\Middleware\L;
 use App\Lawyer\Model\ConfigModel;
 use App\Lawyer\Model\MessageModel;
-// use App\Lawyer\Model\UploadModel;
+use App\Lawyer\Model\CaptchaModel;
 
 
 class Func{
@@ -275,20 +275,48 @@ class Func{
     }
     
 
+    /** 验证手机号是否合法
+     * check_phone
+     * @param mixed $phone 
+     * @return mixed 
+     */
     static public function check_phone($phone){
 
         if(!$phone)AJAX::error('手机号不能为空！');
 
-        if(!preg_match('#1\d{10}#',$phone)){
-
-            AJAX::error('手机号格式错误');
-        }
+        // if(!preg_match('#1\d{10}#',$phone)){
+        //     AJAX::error('手机号格式错误');
+        // }
 
         return true;
 
     }
 
-    /**
+    /** 发送验证码
+     * msm
+     * @param mixed $phone 
+     * @return mixed 
+     */
+    static public function msm($phone){
+
+        if(!$phone)AJAX::error('手机号不能为空！');
+
+        $rand = self::randWord(4,3);
+
+        $data['captcha'] = $rand;
+        $data['time'] = TIME_NOW + 300;
+        $data['create_time'] = TIME_NOW;
+        $data['phone'] = $phone;
+
+        CaptchaModel::copyMutiInstance()->set($data)->add();
+        CaptchaModel::copyMutiInstance()->where(['time'=>'time < %n',TIME_NOW])->remove();
+
+        return true;
+
+    }
+
+
+    /** 验证验证码
      *
      * 手机验证码的验证
      * @author pzcat
@@ -298,10 +326,14 @@ class Func{
      * @return boolean
      *
      */
-    static public function check_phone_captcha( $phone,$word,$user_id = 0 ){
+    static public function check_phone_captcha( $phone,$word){
 
+        $captcha = CaptchaModel::copyMutiInstance()->where(['phone'=>$phone])->order('create_time desc')->find();
         
-        
+        !$captcha && AJAX::error('请发发送验证码！');
+
+        $captcha->time < TIME_NOW && AJAX::error('验证码已过期，请重新发送验证码！');
+        $captcha->captcha != $word && AJAX::error('验证码错误，请输入正确的验证码！');
 
         return true;
         

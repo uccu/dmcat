@@ -3,14 +3,18 @@
 namespace App\Lawyer\Controller;
 
 use Controller;
+
+# Tool
 use AJAX;
 use DB;
 use stdClass;
 use Response;
-# Model
-use App\Lawyer\Model\UserModel;
 use App\Lawyer\Middleware\L;
 use App\Lawyer\Tool\Func;
+# Model
+use App\Lawyer\Model\UserModel;
+use App\Lawyer\Model\CaptchaModel;
+
 
 class UserController extends Controller{
 
@@ -63,7 +67,8 @@ class UserController extends Controller{
         !$info->id && AJAX::error('新用户创建失败');
         
         $info = $model->find($info->id);
-
+        $info->name = '用户'.Func::add_zero($info->id,6);
+        $info->save();
 
         DB::commit();
         
@@ -265,6 +270,51 @@ class UserController extends Controller{
 
     }
 
+
+    /** 解除第三方绑定
+     * unlink
+     * @param mixed $type 
+     * @return mixed 
+     */
+    function unlink($type){
+
+        !$this->L->id && AJAX::error('未登录！');
+        !in_array($type,['wx','wb','qq']) && AJAX::error('不支持的登录方式！');
+
+        $this->L->userInfo->$type = '';
+        $this->L->userInfo->save();
+
+        AJAX::success();
+
+    }
+
+
+    /** 更换手机号
+     * change_phone
+     * @param mixed $phone 手机号
+     * @param mixed $phone_captcha 手机验证码 
+     * @return mixed 
+     */
+    function change_phone($phone,$phone_captcha){
+
+        !$this->L->id && AJAX::error('未登录！');
+        Func::check_phone_captcha($phone,$phone_captcha);
+
+        $phone == $this->L->userInfo->phone && AJAX::error('修改的手机号与原手机号一致！');
+
+        $model = UserModel::copyMutiInstance();
+        $model->where([
+            'phone'=>$phone
+        ])->find() && AJAX::error('该手机号已经注册！');
+
+        $this->L->userInfo->phone = $phone;
+        $this->L->userInfo->save();
+
+        AJAX::success();
+
+
+    }
+
     
     /** 发送手机验证码
      * captcha
@@ -275,6 +325,8 @@ class UserController extends Controller{
     function captcha($phone,$out = 1) {
 
         Func::check_phone($phone);
+        Func::msm($phone);
+
 
         if($out)AJAX::success();
 
