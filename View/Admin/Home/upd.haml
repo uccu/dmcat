@@ -8,23 +8,13 @@
             .col-sm-12
                 #modal_new.ibox.float-e-margins
                     .ibox-title
-                        %h3 设置
+                        %h3 
                     .ibox-content
                         %form.form-horizontal.animated(method="post")
-                            .form-group
-                                %label.col-sm-3.control-label 发展历程首页封面图
-                                .col-sm-6
-                                    %img.cp.pic_img(data-name="pic" src="/pic/nopic.jpg" style="max-width:100px;max-height:100px")
-                                    %input.form-control.picFile(type="file" style="display:none")
-                                    %input.form-control(type="hidden" name="pic")
-                            .form-group
-                                %label.col-sm-3.control-label 社会责任首页封面图
-                                .col-sm-6
-                                    %img.cp.pic_img2(data-name="pic2" src="/pic/nopic.jpg" style="max-width:100px;max-height:100px")
-                                    %input.form-control.picFile2(type="file" style="display:none")
-                                    %input.form-control(type="hidden" name="pic2")
+                            
                         .ibox-title
-                            %button.btn.btn-primary.save(type="button") Save
+                            %button.btn.btn-primary.flesh(type="button" onclick="location.reload()") 刷新
+
     
 - block otherCss
     %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
@@ -39,14 +29,7 @@
     %script(src="/js/plugins/summernote/summernote-zh-CN.js")
     :javascript
         $(function(j){
-            upPic('/staff/upPic','.picFile','input[name="pic"]','.pic_img');
-            j('.pic_img').click(function(){
-                j('.picFile').click();
-            })
-            upPic('/staff/upPic','.picFile2','input[name="pic2"]','.pic_img2');
-            j('.pic_img2').click(function(){
-                j('.picFile2').click();
-            })
+            
             var su = j(".summernote").summernote({
                 toolbar: [
                     ['style', ['style']],
@@ -75,9 +58,7 @@
                 }
             })
 
-            cget('/home/setting_get','#{id}','/home/setting_upd',1);
-            // gr.flesh = function(){}
-            // $('.click2edit').summernote('code');
+            
 
         });
 

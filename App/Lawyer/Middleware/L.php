@@ -9,6 +9,7 @@ use Response;
 
 use App\Lawyer\Model\ConfigModel;
 use App\Lawyer\Model\UserModel;
+use App\Lawyer\Model\AdminMenuModel;
 
 
 class L extends Middleware{
@@ -67,6 +68,20 @@ class L extends Middleware{
 
         /*其他情况*/
         Response::getSingleInstance()->cookie('user_token','',-3600);
+    }
+
+
+
+    function adminPermissionCheck($id){
+
+        !$this->id && AJAX::error('未登录');
+        $type = $this->userInfo->type;
+        $auth = AdminMenuModel::copyMutiInstance()->find($id)->auth;
+        $auth = $auth ? explode(',',$auth) : [];
+        
+        !in_array($type,$auth) && AJAX::error('没有权限，请与超级管理员联系！');
+
+        return true;
     }
     
 }

@@ -101,6 +101,23 @@ class Func{
             return date('Y-m-d',$time);
             
         }
+    }
+
+    /**
+     *
+     * 人性化时间转换
+     * @author pzcat
+     * @param number $time 10位数字的时间戳
+     * 
+     * @return string 
+     */
+    static public function time_zcalculate( $time ){
+        if($time == 0 )return '秒回';
+        if($time < 60 )return $time.'秒';
+        if($time < 3600 )return (floor($time/60) + 1).'分钟';
+        if($time < 3600 * 24 )return (floor($time/3600) + 1).'小时';
+        return (floor($time/3600/24) + 1).'天';
+        
     }  
     
     /* 密码安全性验证 */
