@@ -22,7 +22,9 @@
     :javascript
         $(function(){
             var e = new Dmcat.admin('/home/admin_banner')
-            
+            window.flesh = function(){
+                e.flesh()
+            }
         })
             
         

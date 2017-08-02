@@ -8,6 +8,7 @@ use Model;
 class BannerModel extends Model{
 
     public $table = 'banner';
+    public $field;
 
 
 }

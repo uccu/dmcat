@@ -8,7 +8,7 @@ use App\Lawyer\Model\MessageModel;
 use App\Lawyer\Model\CaptchaModel;
 
 
-class Func{
+class Func {
     /**
      *
      * 验证是否是合法的邮箱 

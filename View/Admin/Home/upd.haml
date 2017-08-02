@@ -12,8 +12,9 @@
                     .ibox-content
                         %form.form-horizontal.animated(method="post")
                             
-                        .ibox-title
-                            %button.btn.btn-primary.flesh(type="button" onclick="location.reload()") 刷新
+                        .ibox-title.optBox
+                            
+                            %button.btn.btn-success.flesh(type="button" onclick="location.reload()") 刷新
 
     
 - block otherCss
@@ -30,34 +31,18 @@
     :javascript
         $(function(j){
             
-            var su = j(".summernote").summernote({
-                toolbar: [
-                    ['style', ['style']],
-                    ['style', ['bold', 'italic', 'underline', 'clear']],
-                    ['fontname',['fontname']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['height', ['height']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['e',['picture','link']],
-                    ['o',['codeview']],
-                ],
-                height: 300,
-                minHeight: 300,
-                maxHeight: null,
-                focus: true,
-                lang:"zh-CN",
-                callbacks: {
-                    onImageUpload: function(files) {
-                        curl('/staff/upPic',packFormData(files),function(d){
-                            var imgNode = new Image
-                            imgNode.src = d.fpath
-                            su.summernote('insertNode', imgNode);
-                        },1);
-                    }
-                }
-            })
+            
 
+            var wget = function(d){
+                var p =new URL(location);
+                return p.searchParams.get(d);
+            }
+
+            var get = wget('get');
+            var id = wget('id');
+            var e = new Dmcat.admin(get,{id:id},'info');
+
+            var su = 1
             
 
         });

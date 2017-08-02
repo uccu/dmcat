@@ -6,8 +6,10 @@ use Controller;
 use AJAX;
 use Response;
 use View;
+use Request;
 use App\Lawyer\Middleware\L;
 use App\Lawyer\Tool\Func;
+use App\Lawyer\Tool\AdminFunc;
 
 # Model
 use App\Lawyer\Model\LawyerModel;
@@ -66,6 +68,16 @@ class HomeController extends Controller{
 
         View::hamlReader('h5','App');
 
+
+    }
+
+    function uploadPic(){
+
+        $out['path'] = Func::uploadFiles('file');
+        if(!$out['path'])AJAX::error('no image');
+        $out['fpath'] = '/pic/'.$out['path'];
+        $out['apath'] = Func::fullPicAddr($out['path']);
+        AJAX::success($out);
 
     }
     
@@ -148,6 +160,98 @@ class HomeController extends Controller{
 
         AJAX::success($out);
 
+    }
+
+    
+    function admin_banner_get(BannerModel $model,$id){
+
+        $this->L->adminPermissionCheck(12);
+
+        $name = '轮播图';
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/home/admin_banner_get',
+                'upd'   => '/home/admin_banner_upd',
+                'back'  => 'home/banner',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/home/admin_banner_del',
+
+            ];
+        $tbody = 
+            [
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'title' =>  '顺序',
+                    'name'  =>  'ord',
+                    'size'  =>  '2',
+                    'default'=> '0',
+                ],
+                [
+                    'title' =>  '图片',
+                    'name'  =>  'pic',
+                    'type'  =>  'pic',
+                ],
+                [
+                    'title' =>  '跳转类型',
+                    'name'  =>  'type',
+                    'type'  =>  'select',
+                    'option'=>  [
+                        '0' =>  '无跳转',
+                        '1' =>  '内部H5',
+                        '2' =>  '外部链接',
+                    ]
+                ],
+                [
+                    'title' =>  '外部链接',
+                    'name'  =>  'href',
+                ],
+                [
+                    'title' =>  '内部h5',
+                    'name'  =>  'content',
+                    'type'  =>  'h5',
+                ]
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+
+
+    function admin_banner_upd(BannerModel $model,$id){
+        $this->L->adminPermissionCheck(12);
+
+        $name = '轮播图';
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+        
+        $upd = AdminFunc::upd($model,$id,$data);
+
+        $out['upd'] = $upd;
+        
+        AJAX::success($out);
     }
 
 }
