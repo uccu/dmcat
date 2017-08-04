@@ -66,6 +66,18 @@
                                                     - if m.fa_ico
                                                         %i(class="fa fa-#{m.fa_ico}")
                                                     %span.nav-label = m.name
+                                                    - if m.list
+                                                        %span.fa.arrow
+                                                - if m.list
+                                                    %ul.nav.nav-third-level
+                                                        - for k,s in m.list
+                                                            %li
+                                                                %a.J_menuItem(href="#{s.href}" data-index="#{s.id}")
+                                                                    - if s.fa_ico
+                                                                        %i(class="fa fa-#{s.fa_ico}")
+                                                                    %span.nav-label = s.name
+                                    
+                                    
                         %li.hidden.gotoTag
                             %a.J_menuItem(href="#")
                                 %span.nav-label
@@ -131,7 +143,7 @@
                         %button.close(type="button" data-dismiss="modal" aria-label="Close")
                             %span(aria-hidden="true") &times;
                             %span.sr-only Close
-                        %h4.modal-title 我的信息/my info
+                        %h4.modal-title 修改密码
                         %small.font-bold
                     .modal-body
                         .sk-spinner.sk-spinner-wave.animated.fadeOutDown
@@ -146,26 +158,11 @@
                                 %img.img-circle.center-block.cp.avatar_img(data-name="avatar" src="/pic/noavatar.png" style="max-width:100px;max-height:100px")
                                 %input.form-control(type="file" style="display:none")
                                 %input.form-control(type="hidden" name="avatar")
+                            
                             .form-group
-                                %label.col-sm-3.control-label 中文名
+                                %label.col-sm-3.control-label 修改密码
                                 .col-sm-9
-                                    %input.form-control(name="name")
-                            .form-group
-                                %label.col-sm-3.control-label 用户名
-                                .col-sm-9
-                                    %input.form-control(name="user_name")
-                            .form-group
-                                %label.col-sm-3.control-label 邮箱
-                                .col-sm-9
-                                    %input.form-control(type="email" name="email")
-                            .form-group
-                                %label.col-sm-3.control-label 手机
-                                .col-sm-9
-                                    %input.form-control(name="phone")
-                            .form-group
-                                %label.col-sm-3.control-label 密码
-                                .col-sm-9
-                                    %input.form-control(name="raw_password")
+                                    %input.form-control(name="pwd")
                             
                     .modal-footer
                         %button.btn.btn-default(type="button" data-dismiss="modal") Close
@@ -190,6 +187,7 @@
                 },success:function(d){
                     if(d.code != 200)alert(d.message);
                     else if(typeof func == 'function')func(d.data);
+                    else if(d.url)location=d.url
                 }
             };
             if(raw){
@@ -222,10 +220,7 @@
                 },1);
             })
         }
-        upPic('/staff/upPic','input[type="file"]','input[name="avatar"]','.avatar_img');
-        $('.avatar_img').bind('click',function(){
-            $('input[type="file"]').click();
-        })
+        
         $('.changeMy').click(function(){
             $('#modal_new').modal();
             $('#modal_new .sk-spinner').removeClass('fadeOutDown');
@@ -243,7 +238,7 @@
                         }
                 }
                 $('#modal_new .save').unbind('click').bind('click',function(){
-                    curl('/staff/upd',$('#modal_new form').serialize(),function(b){
+                    curl('/user/change_password',$('#modal_new form').serialize(),function(b){
                         location.reload()
                     })
                 });

@@ -4,6 +4,7 @@ namespace App\Admin\Controller;
 
 use Controller;
 use View;
+use AJAX;
 use App\Lawyer\Middleware\L;
 use App\Lawyer\Model\AdminMenuModel;
 
@@ -30,7 +31,7 @@ class IndexController extends Controller{
     private function getMenu(){
 
         $model = AdminMenuModel::copyMutiInstance();
-        $all = $model->order('id')->get()->toArray();
+        $all = $model->order('id')->get('id')->toArray();
 
         $auth = $this->L->userInfo->type;
         $id = $this->L->id;
@@ -46,7 +47,14 @@ class IndexController extends Controller{
 
             $v->list = [];
             if(!$v->top){
-                $tops[$v->id] = $v;unset($all[$k]);
+                $tops[$v->id] = $v;
+                unset($all[$k]);
+            }
+        }
+        foreach($all as $k=>$v){
+
+            if($all[$v->top]){
+                $all[$v->top]->list[] = $v;
             }
         }
         
@@ -57,7 +65,7 @@ class IndexController extends Controller{
                 $tops[$v->top]->list[] = $v;
             }
         }
-
+        // AJAX::success($tops);
         return $tops;
 
     }

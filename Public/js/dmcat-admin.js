@@ -47,10 +47,10 @@
         if(!file[0])return;
         return typeof x==='function'?x(form):form
     }
-    var upPic = function(f,i){
+    var upPic = function(f,n,i){
         f.on('change',function(){
             var u = packFormData(f)
-            if(u)curl('/home/uploadPic',u,function(d){
+            if(u)curl(n,u,function(d){
                 f.parent().find('.picText').val(d.path)
                 f.parent().find('img').attr('src',d.fpath)
                 if(i instanceof Function)i(d)
@@ -87,7 +87,7 @@
                     j('#modal_new form .summernote[data-name]').each(function(){data.push({name:j(this).attr('data-name'),value:j(this).summernote('code')})})
                     curl(m.opt.upd,data,function(b){
                         curl_succ('success!');
-                        setTimeout(function(){gotoTag(m.opt.back,1)},1000)
+                        m.opt.back && setTimeout(function(){gotoTag(m.opt.back,1)},1000)
                     })
                 })
             }
@@ -96,8 +96,14 @@
                 switch(para.type){
                     
                     case 'pic':
-                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><img class="cp picImg" src="/pic/'+(m.info[para.name]||para.default||'nopic.jpg')+'" style="max-width:100%;max-height:100px"><input class="picFile" type="file" accept="image/*" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(para.default||'nopic.jpg')+'"></div></div>')
-                        upPic(pa.find('.picFile'))
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><img class="cp picImg" src="/pic/'+(m.info[para.name]||para.default||'nopic.jpg')+'" style="max-width:100%;max-height:100px"><input class="picFile" type="file" accept="image/*" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'nopic.jpg')+'"></div></div>')
+                        upPic(pa.find('.picFile'),'/home/uploadPic')
+                        pa.find('.picImg').on('click',function(){j(this).parent().find('.picFile').click()})
+
+                        break;
+                    case 'avatar':
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><img class="cp picImg img-circle" src="/pic/'+(m.info[para.name]||para.default||'noavatar.png')+'" style="max-width:100%;max-height:100px"><input class="picFile" type="file" accept="image/*" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'noavatar.png')+'"></div></div>')
+                        upPic(pa.find('.picFile'),'/home/upAvatar')
                         pa.find('.picImg').on('click',function(){j(this).parent().find('.picFile').click()})
 
                         break;
@@ -263,6 +269,7 @@
                                     curl_check(function(){
                                         curl(that.opt.del,data,function(){
                                             curl_succ('success!');
+                                            that.flesh()
                                         });
                                     })
                                 })
@@ -271,7 +278,7 @@
                             break;
                         case 'pic':
                             var ti = this.list[g][t.name];
-                            var img = j('<img>').attr('src',ti).css('max-height','50px');
+                            var img = j('<img>').attr('src',ti).css('max-height',(t.size||50)+'px');
                             if(t.href)td.html(j('<a href="'+ti+'" target="_blank">').html(img));
                             else td.html(img);
                             break;

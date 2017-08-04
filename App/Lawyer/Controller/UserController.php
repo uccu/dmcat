@@ -7,10 +7,12 @@ use Controller;
 # Tool
 use AJAX;
 use DB;
+use Request;
 use stdClass;
 use Response;
 use App\Lawyer\Middleware\L;
 use App\Lawyer\Tool\Func;
+use App\Lawyer\Tool\AdminFunc;
 # Model
 use App\Lawyer\Model\UserModel;
 use App\Lawyer\Model\CaptchaModel;
@@ -270,6 +272,17 @@ class UserController extends Controller{
 
     }
 
+    function change_password($pwd){
+        !$this->L->id && AJAX::error('未登录');
+        !$this->L->userInfo->type && AJAX::error('嘿嘿嘿');
+
+        $this->L->userInfo->password = $this->encrypt_password($pwd,$this->L->userInfo->salt);
+        $this->L->userInfo->save();
+
+        Response::getSingleInstance()->cookie('user_token','',-3600);
+        AJAX::success(null,200,'/admin/login');
+    }
+
 
     /** 解除第三方绑定
      * unlink
@@ -330,6 +343,372 @@ class UserController extends Controller{
 
         if($out)AJAX::success();
 
+    }
+
+
+
+    function admin_user(UserModel $model,$page = 1,$limit = 10){
+        
+        $this->L->adminPermissionCheck(68);
+
+        $name = '用户';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/user/admin_user_get',
+                'upd'   => '/user/admin_user_upd',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/user/admin_user_del',
+
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '用户ID',
+                '手机号',
+                '名字',
+                '启用',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'id',
+                'phone',
+                'name',
+                [
+                    'name'=>'active',
+                    'type'=>'checkbox',
+                ],
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        $where['type'] = 0;
+
+        $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_user_get(UserModel $model,$id){
+
+        $this->L->adminPermissionCheck(68);
+        $model->find($id)->type > 0 && AJAX::error('无权限！');
+        $name = '用户管理';
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/user/admin_user_get',
+                'upd'   => '/user/admin_user_upd',
+                'back'  => 'staff/user',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/user/admin_user_del',
+
+            ];
+        $tbody = 
+            [
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'title' =>  '手机号',
+                    'name'  =>  'phone',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '名字',
+                    'name'  =>  'name',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '头像',
+                    'name'  =>  'avatar',
+                    'type'  =>  'avatar',
+                ],
+                [
+                    'title' =>  '微信第三方标示',
+                    'name'  =>  'wx',
+                ],
+                [
+                    'title' =>  '微博第三方标示',
+                    'name'  =>  'wb',
+                ],
+                [
+                    'title' =>  'QQ第三方标示',
+                    'name'  =>  'qq',
+                ],
+                [
+                    'title' =>  '修改密码',
+                    'name'  =>  'pwd',
+                    'size'  =>  '4',
+                ],
+                
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_user_upd(UserModel $model,$id,$pwd){
+        $this->L->adminPermissionCheck(68);
+        $model->find($id)->type > 0 && AJAX::error('无权限！');
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['type']);
+        unset($data['salt']);
+        unset($data['id']);
+
+        $model->where('phone = %n AND id != %d',$data['phone'],$id)->find() && AJAX::error('手机号已存在，请更改为其他手机号！');
+
+        if(!$id){
+            $data['salt'] = Func::randWord(6);
+            $data['password'] = $this->encrypt_password($pwd,$data['salt']);
+        }elseif($pwd){
+            $salt = $model->find($id)->salt;
+            $data['password'] = $this->encrypt_password($pwd,$salt);
+        }
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_user_del(UserModel $model,$id){
+        $this->L->adminPermissionCheck(68);
+        $model->find($id)->type > 0 && AJAX::error('无权限！');
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+    function admin_master(UserModel $model,$page = 1,$limit = 10){
+        
+        $this->L->adminPermissionCheck(67);
+
+        $name = '管理员';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/user/admin_master_get',
+                'upd'   => '/user/admin_master_upd',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/user/admin_master_del',
+
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '用户ID',
+                '账号',
+                '名字',
+                '启用',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'id',
+                'phone',
+                'name',
+                [
+                    'name'=>'active',
+                    'type'=>'checkbox',
+                ],
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        $where['type'] = 1;
+
+        $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_master_get(UserModel $model,$id){
+
+        $this->L->adminPermissionCheck(67);
+
+        $name = '用户管理';
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/user/admin_master_get',
+                'upd'   => '/user/admin_master_upd',
+                'back'  => 'staff/master',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/user/admin_master_del',
+
+            ];
+        $tbody = 
+            [
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'title' =>  '账号',
+                    'name'  =>  'phone',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '名字',
+                    'name'  =>  'name',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '头像',
+                    'name'  =>  'avatar',
+                    'type'  =>  'avatar',
+                ],
+                [
+                    'title' =>  '修改密码',
+                    'name'  =>  'pwd',
+                    'size'  =>  '4',
+                ],
+                
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_master_upd(UserModel $model,$id,$pwd){
+        $this->L->adminPermissionCheck(67);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['type']);
+        unset($data['salt']);
+        unset($data['id']);
+
+        $model->where('phone = %n AND id != %d',$data['phone'],$id)->find() && AJAX::error('账号已存在，请更改为其他账号！');
+
+        $data['type'] = 1;
+        if(!$id){
+            $data['salt'] = Func::randWord(6);
+            $data['password'] = $this->encrypt_password($pwd,$data['salt']);
+        }elseif($pwd){
+            $salt = $model->find($id)->salt;
+            $data['password'] = $this->encrypt_password($pwd,$salt);
+        }
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_master_del(UserModel $model,$id){
+        $this->L->adminPermissionCheck(67);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
     }
 
 }

@@ -18,15 +18,17 @@ class StaffController extends Controller{
     }
 
     /* 管理员 */
-    function admin(){
+    function master(){
 
-        View::hamlReader('staff/'.__FUNCTION__,'Admin');
+        View::addData(['getList'=>'/user/admin_master']);
+        View::hamlReader('home/list','Admin');
     }
 
     /*  用户 */
     function user(){
 
-        View::hamlReader('staff/'.__FUNCTION__,'Admin');
+        View::addData(['getList'=>'/user/admin_user']);
+        View::hamlReader('home/list','Admin');
     }
     
 

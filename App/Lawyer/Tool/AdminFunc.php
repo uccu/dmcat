@@ -25,9 +25,24 @@ class AdminFunc{
     }
 
 
-    static function upd(Model $model,$id,$data){
+    static function upd(Model $model,$id,$data,$add = true){
 
+        if(!$data)return 0;
+
+        if($add && !$id){
+
+            return $model->set($data)->add()->getStatus();
+
+        }
+
+        
         return $model->set($data)->save($id)->getStatus();
+
+    }
+
+    static function del(Model $model,$id){
+
+        return $model->remove($id)->getStatus();
 
     }
 }

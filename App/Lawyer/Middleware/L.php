@@ -4,7 +4,7 @@ use Middleware;
 use Request;
 use App\Lawyer\Tool\Func;
 use Config;
-
+use AJAX;
 use Response;
 
 use App\Lawyer\Model\ConfigModel;
@@ -58,6 +58,8 @@ class L extends Middleware{
             Response::getSingleInstance()->cookie('user_token','',-3600);
             return;
         }
+
+        !$info->active && AJAX::error('账号已被禁用，请联系管理员！');
 
         /*验证登陆合法性*/
         if($hash === sha1($info->password.$salt.$time)){

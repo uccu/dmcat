@@ -21,7 +21,7 @@
 - block otherScript
     :javascript
         $(function(){
-            var e = new Dmcat.admin('/home/admin_banner')
+            var e = new Dmcat.admin('#{getList}')
             window.flesh = function(){
                 e.flesh()
             }

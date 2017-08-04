@@ -8,6 +8,6 @@ use Model;
 class UserModel extends Model{
 
     public $table = 'user';
-
+    public $field;
 
 }

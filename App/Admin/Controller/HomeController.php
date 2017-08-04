@@ -16,30 +16,31 @@ class HomeController extends Controller{
 
     function test(){
 
-        View::hamlReader('Home','Admin');
+        View::hamlReader('home','Admin');
     }
 
     function upd(){
 
-        View::hamlReader('Home/upd','Admin');
+        View::hamlReader('home/upd','Admin');
     }
 
 
     function index(){
 
-        View::hamlReader('Home','Admin');
+        View::hamlReader('home','Admin');
     }
 
     function banner(){
 
-        View::hamlReader('Home/Banner','Admin');
+        View::addData(['getList'=>'/home/admin_banner']);
+        View::hamlReader('home/list','Admin');
     }
 
     
 
     function setting(){
 
-        View::hamlReader('home/Setting','Admin');
+        View::hamlReader('home/setting','Admin');
     }
 
     

@@ -71,6 +71,15 @@ class HomeController extends Controller{
 
     }
 
+    function upAvatar(){
+
+        $out['path'] = Func::uploadFiles('file',100,100);
+        if(!$out['path'])AJAX::error('no image');
+        $out['fpath'] = '/pic/'.$out['path'];
+        $out['apath'] = Func::fullPicAddr($out['path']);
+        AJAX::success($out);
+    }
+
     function uploadPic(){
 
         $out['path'] = Func::uploadFiles('file');
@@ -80,6 +89,12 @@ class HomeController extends Controller{
         AJAX::success($out);
 
     }
+    
+
+
+
+
+
     
     /** 获取banner设置参数以及列表
      * admin_banner
@@ -161,8 +176,6 @@ class HomeController extends Controller{
         AJAX::success($out);
 
     }
-
-    
     function admin_banner_get(BannerModel $model,$id){
 
         $this->L->adminPermissionCheck(12);
@@ -201,6 +214,7 @@ class HomeController extends Controller{
                     'title' =>  '跳转类型',
                     'name'  =>  'type',
                     'type'  =>  'select',
+                    'default'=> '0',
                     'option'=>  [
                         '0' =>  '无跳转',
                         '1' =>  '内部H5',
@@ -235,12 +249,8 @@ class HomeController extends Controller{
         AJAX::success($out);
 
     }
-
-
     function admin_banner_upd(BannerModel $model,$id){
         $this->L->adminPermissionCheck(12);
-
-        $name = '轮播图';
 
         !$model->field && AJAX::error('字段没有公有化！');
 
@@ -251,6 +261,12 @@ class HomeController extends Controller{
 
         $out['upd'] = $upd;
         
+        AJAX::success($out);
+    }
+    function admin_banner_del(BannerModel $model,$id){
+        $this->L->adminPermissionCheck(12);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
         AJAX::success($out);
     }
 
