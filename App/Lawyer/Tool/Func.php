@@ -327,7 +327,11 @@ class Func {
         $data['phone'] = $phone;
 
         CaptchaModel::copyMutiInstance()->set($data)->add();
-        CaptchaModel::copyMutiInstance()->where(['time'=>'time < %n',TIME_NOW])->remove();
+        CaptchaModel::copyMutiInstance()->where(
+            [
+                'time'=>['time < %n',TIME_NOW]
+            ]
+        )->remove();
 
         return true;
 
