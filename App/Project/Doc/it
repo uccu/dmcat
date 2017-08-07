@@ -71,10 +71,56 @@ phone 手机号
 {}
 
 
+1.10 获取我的资料
+user/getMyInfo
+{"data":{"info":{"id":"1","avatar":"noavatar.png","name":"cat","phone":"cat"}},"code":200,"url":"","message":""}
+{id:用户ID,avatar:头像,name:用户名,phone:手机号}
+
+
+1.11 修改用户名
+user/change_name
+name 修改后的用户名
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+1.12 修改头像
+user/change_avatar
+avatar 头像文件的二进制流
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+1.13 绑定第三方
+user/bind
+type 类型(wx,wb,qq)
+code 第三方标示
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
 2.1 获取首页内容
 home/index
 {"data":{"banner":[{"id":"1","type":"1","pic":"noavatar.png","href":"","active":"1","ord":"1","ehref":"http:\/\/d.baka\/home\/banner_h5?id=1"},{"id":"12","type":"0","pic":"nopic.jpg","href":"","active":"1","ord":"2","ehref":"http:\/\/d.baka\/home\/banner_h5?id=12"},{"id":"2","type":"0","pic":"nopic.jpg","href":"1235","active":"1","ord":"3","ehref":"http:\/\/d.baka\/home\/banner_h5?id=2"}],"lawyer":{"0":{"id":"1","name":"\u5f20\u5f8b\u5e08","description":"","avatar":"","type":"2","feedback_star":"4.0","average_reply":"\u79d2\u56de"},"1":{"id":"2","name":"\u7406\u5f8b\u5e08","description":"","avatar":"","type":"1","feedback_star":"4.0","average_reply":"2\u5206\u949f"},"2":{"id":"4","name":"\u90fd\u5f8b\u5e08","description":"","avatar":"","type":"1","feedback_star":"4.4","average_reply":"\u79d2\u56de"},"3":{"id":"3","name":"\u662f\u5f8b\u5e08","description":"","avatar":"","type":"1","feedback_star":"5.0","average_reply":"\u79d2\u56de"}},"introduction":"http:\/\/d.baka\/home\/h5?id=1"},"code":200,"url":"","message":""}
-{banner.id:轮播图ID,banner.type:轮播图类型(0无跳转，1内部链接，2外部链接),banner.pic:轮播图图片,banner.href:外部全链接,banner.href:内部全链接,lawyer.id:律师ID,lawyer.type:律师类型（1法律2留学转学3签证）,lawyer.avatar:头像,lawyer.description:描述,lawyer.name:名字,lawyer.fee_star:收费星级,lawyer.feedback_star:星级,lawyer.average_reply:平均回复时长,introduction:学院介绍h5链接}
+{banner.id:轮播图ID,banner.type:轮播图类型(0无跳转，1内部链接，2外部链接),banner.pic:轮播图图片,banner.href:外部全链接,banner.ehref:内部全链接,lawyer.id:律师ID,lawyer.type:律师类型（1法律2留学转学3签证）,lawyer.avatar:头像,lawyer.description:描述,lawyer.name:名字,lawyer.fee_star:收费星级,lawyer.feedback_star:星级,lawyer.average_reply:平均回复时长,introduction:学院介绍h5链接}
+
+
+2.2 学院介绍h5链接
+home/h5?id=1
+{}
+{}
+
+
+2.3 关于我们
+home/h5?id=2
+{}
+{}
+
+
+2.4 会员权益
+home/h5?id=3
+{}
+{}
 
 
 3.1 获取律师列表

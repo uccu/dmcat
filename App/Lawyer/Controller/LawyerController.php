@@ -16,6 +16,7 @@ use DB;
 use App\Lawyer\Model\LawyerModel;
 use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\ConsultModel;
+use App\Lawyer\Model\FastQuestionModel;
 
 
 
@@ -170,6 +171,21 @@ class LawyerController extends Controller{
         DB::commit();
 
         AJAX::success();
+
+    }
+
+
+    /** 获取法律快速提问列表
+     * FastQuestionList
+     * @return mixed 
+     */
+    function fastQuestionList(FastQuestionModel $model){
+
+        $list = $model->get()->order('top desc')->toArray();
+
+        $out['list'] = $list;
+
+        AJAX::success($out);
 
     }
 

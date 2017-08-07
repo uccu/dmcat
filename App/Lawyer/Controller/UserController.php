@@ -344,6 +344,95 @@ class UserController extends Controller{
     }
 
 
+    /** 获取我的资料
+     * getMyInfo
+     * @return mixed 
+     */
+    function getMyInfo(){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $out['info']['id'] = $this->L->id;
+        $out['info']['avatar'] = $this->L->userInfo->avatar;
+        $out['info']['name'] = $this->L->userInfo->name;
+        $out['info']['phone'] = $this->L->userInfo->phone;
+        $out['info']['wx'] = $this->L->userInfo->wx;
+        $out['info']['wb'] = $this->L->userInfo->wb;
+        $out['info']['qq'] = $this->L->userInfo->qq;
+
+        AJAX::success($out);
+
+    }
+
+
+    /** 修改用户名
+     * change_name
+     * @param mixed $name 
+     * @return mixed 
+     */
+    function change_name($name){
+        !$this->L->id && AJAX::error('未登录！');
+        !$name && AJAX::error('昵称不能为空！');
+
+        $this->L->userInfo->name = $name;
+        $this->L->userInfo->save();
+
+        AJAX::success();
+
+    }
+
+
+    /** 修改头像
+     * change_avatar
+     * @return mixed 
+     */
+    function change_avatar(){
+        !$this->L->id && AJAX::error('未登录！');
+
+        $path = Func::uploadFiles('avatar',100,100);
+        !$path && AJAX::error('上传失败，没有找到上传文件！');
+        
+        $this->L->userInfo->avatar = $path;
+        $this->L->userInfo->save();
+
+        AJAX::success();
+
+    }
+
+
+
+    /** 绑定第三方
+     * other_register
+     * @param mixed $type 
+     * @param mixed $code 
+     * @param mixed $phone 
+     * @param mixed $phone_captcha 
+     * @param mixed $cookie 
+     * @return mixed 
+     */
+    function bind($type,$code){
+        !$this->L->id && AJAX::error('未登录！');
+        !in_array($type,['wx','wb','qq']) && AJAX::error('不支持的登录方式！');
+        
+
+        $model = UserModel::copyMutiInstance();
+        $userInfo = $this->L->userInfo;
+        
+        $userInfo->$type && AJAX::error('已绑定该第三方登录，请解绑后重新绑定！');
+        !$code && AJAX::error('未知的第三方登录标示！');
+
+        $model->where([$type=>$code])->find() && AJAX::error('已绑定账号，请直接登录！');
+
+        $userInfo->$type = $code;
+        $userInfo->save();
+
+        AJAX::success();
+        
+        
+
+        
+    }
+
 
     function admin_user(UserModel $model,$page = 1,$limit = 10){
         
