@@ -167,10 +167,8 @@ class UserController extends Controller{
      * register
      * @param mixed $password 
      * @param mixed $phone 
-     * @param mixed $captcha 
      * @param mixed $phone_captcha 
      * @param mixed $cookie 
-     * @param mixed $parent 
      * @return mixed 
      */
     function register($password,$phone,$phone_captcha,$cookie = false){

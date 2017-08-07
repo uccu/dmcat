@@ -1,6 +1,72 @@
+1.1 登录
+user/login
+phone 手机号
+password 密码
+{"data":{"user_token":"ewGEeCfcFXMbvaFXAfWEQzTdMRFoHEKyMbl3O99ECC6Lrf7Lm2B4VW5uPddZxObAqxM7kovZoNcffNqPqHXwvqkiJQ0tLeYuGdFRr9u4f5p0=","id":"1"},"code":200,"url":"","message":""}
+{user_token:用户TOKEN,id:用户ID}
 
-上传头像
-http://weixin.ivy-china.com/staff/upPic
-file 图片文件
-{"data":{"path":"20170426\/1493191297.jpg","fpath":"\/pic\/20170426\/1493191297.jpg","apath":"http:\/\/d.baka\/pic\/20170426\/1493191297.jpg"},"code":200,"url":"","message":""}
+
+1.2 第三方登录
+user/other_login
+type 类型(wx,wb,qq)
+code 第三方标示
+{"data":{"user_token":"ewGEeCfcFXMbvaFXAfWEQzTdMRFoHEKyMbl3O99ECC6Lrf7Lm2B4VW5uPddZxObAqxM7kovZoNcffNqPqHXwvqkiJQ0tLeYuGdFRr9u4f5p0=","id":"1"},"code":200,"url":"","message":""}
+{user_token:用户TOKEN,id:用户ID}
+
+
+1.3 注册
+user/register
+password 密码
+phone 手机号
+phone_captcha 手机验证码
+{"data":{"user_token":"ewGEeCfcFXMbvaFXAfWEQzTdMRFoHEKyMbl3O99ECC6Lrf7Lm2B4VW5uPddZxObAqxM7kovZoNcffNqPqHXwvqkiJQ0tLeYuGdFRr9u4f5p0=","id":"1"},"code":200,"url":"","message":""}
+{user_token:用户TOKEN,id:用户ID}
+
+
+1.4 第三方注册
+user/other_register
+type 类型(wx,wb,qq)
+code 第三方标示
+phone 手机号
+phone_captcha 手机验证码
+{"data":{"user_token":"ewGEeCfcFXMbvaFXAfWEQzTdMRFoHEKyMbl3O99ECC6Lrf7Lm2B4VW5uPddZxObAqxM7kovZoNcffNqPqHXwvqkiJQ0tLeYuGdFRr9u4f5p0=","id":"1"},"code":200,"url":"","message":""}
+{user_token:用户TOKEN,id:用户ID}
+
+
+1.5 忘记密码
+user/forget_password
+new_password 新的密码
+phone 手机号
+phone_captcha 手机验证码
+{"data":{"user_token":"ewGEeCfcFXMbvaFXAfWEQzTdMRFoHEKyMbl3O99ECC6Lrf7Lm2B4VW5uPddZxObAqxM7kovZoNcffNqPqHXwvqkiJQ0tLeYuGdFRr9u4f5p0=","id":"1"},"code":200,"url":"","message":""}
+{user_token:用户TOKEN,id:用户ID}
+
+
+1.6 修改密码(需登录)
+user/change_password
+pwd 密码
+{"data":{"user_token":"ewGEeCfcFXMbvaFXAfWEQzTdMRFoHEKyMbl3O99ECC6Lrf7Lm2B4VW5uPddZxObAqxM7kovZoNcffNqPqHXwvqkiJQ0tLeYuGdFRr9u4f5p0=","id":"1"},"code":200,"url":"","message":""}
+{user_token:用户TOKEN,id:用户ID}
+
+
+1.7 解除第三方绑定(需登录)
+user/unlink
+type 类型(wx,wb,qq)
+{"data":{},"code":200,"url":"","message":""}
 {}
+
+
+1.8 更换手机号
+user/change_phone
+phone 手机号
+phone_captcha 手机验证码
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+1.9 发送手机验证码
+user/captcha
+phone 手机号
+{"data":{},"code":200,"url":"","message":""}
+{}
+
