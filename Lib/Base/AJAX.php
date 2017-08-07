@@ -63,7 +63,7 @@ class AJAX{
 
         $data = array();
 
-        $req = json_decode($_REQUEST);
+        $req = json_encode($_REQUEST);
         ErrorApiModel::copyMutiInstance()->set([
             'request'=>$res,'output'=>$message,'date'=>date('Y-m-d H:i:s')
         ])->add();
