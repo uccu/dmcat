@@ -30,6 +30,14 @@ class StaffController extends Controller{
         View::addData(['getList'=>'/user/admin_user']);
         View::hamlReader('home/list','Admin');
     }
+
+
+    /*  律师 */
+    function lawyer(){
+
+        View::addData(['getList'=>'/lawyer/admin_lawyer']);
+        View::hamlReader('home/list','Admin');
+    }
     
 
     

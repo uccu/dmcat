@@ -190,4 +190,218 @@ class LawyerController extends Controller{
     }
 
 
+
+
+
+
+
+
+
+    function admin_lawyer(LawyerModel $model,$page = 1,$limit = 10){
+        
+        $this->L->adminPermissionCheck(75);
+
+        $name = '管理员';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/lawyer/admin_lawyer_get',
+                'upd'   => '/lawyer/admin_lawyer_upd',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/lawyer/admin_lawyer_del',
+
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '律师ID',
+                '类型',
+                '名字',
+                '启用',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'id',
+                'typeName',
+                'name',
+                [
+                    'name'=>'active',
+                    'type'=>'checkbox',
+                ],
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+
+        $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+
+        $types = ['','法律','留学转学','签证'];
+
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->typeName = $types[$v->type];
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_lawyer_get(LawyerModel $model,$id){
+
+        $this->L->adminPermissionCheck(75);
+
+        $name = '用户管理';
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/lawyer/admin_lawyer_get',
+                'upd'   => '/lawyer/admin_lawyer_upd',
+                'back'  => 'staff/lawyer',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/lawyer/admin_lawyer_del',
+
+            ];
+        $tbody = 
+            [
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'title' =>  '类型',
+                    'name'  =>  'type',
+                    'type'  =>  'select',
+                    'default'=> '1',
+                    'option'=>  [
+                        '1' =>  '法律',
+                        '2' =>  '留学转学',
+                        '3' =>  '签证',
+                    ]
+                ],
+                [
+                    'title' =>  '名字',
+                    'name'  =>  'name',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '头像',
+                    'name'  =>  'avatar',
+                    'type'  =>  'avatar',
+                ],
+                [
+                    'title' =>  '在线时间',
+                    'name'  =>  'online_time',
+                ],
+                [
+                    'title' =>  '优先级',
+                    'name'  =>  'top',
+                    'size'  =>  '2',
+                    'default'=> '0'	
+                ],
+                [
+                    'title' =>  '公司推荐',
+                    'name'  =>  'company',
+                ],
+                [
+                    'title' =>  '资质政府网站',
+                    'name'  =>  'site',
+                ],
+                [
+                    'title' =>  '平均回复时间(秒)',
+                    'name'  =>  'average_reply',
+                    'default'=> '0'	,
+                    'size'  =>  '2',
+                ],
+                [
+                    'title' =>  '星级',
+                    'name'  =>  'feedback_star',
+                    'size'  =>  '2',             	
+                ],
+                [
+                    'title' =>  '修改密码',
+                    'name'  =>  'pwd',
+                    'size'  =>  '4',
+                ],
+                
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_lawyer_upd(LawyerModel $model,$id,$pwd){
+        $this->L->adminPermissionCheck(75);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+
+        if(!$id){
+            $data['password'] = UserController::getSingleInstance()->encrypt_password($pwd,'');
+        }elseif($pwd){
+            $data['password'] = UserController::getSingleInstance()->encrypt_password($pwd,'');
+        }
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_lawyer_del(LawyerModel $model,$id){
+        $this->L->adminPermissionCheck(75);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+    
+
 }

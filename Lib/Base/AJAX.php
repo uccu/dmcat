@@ -1,6 +1,9 @@
 <?php
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
 
+
+use App\Lawyer\Model\ErrorApiModel;
+
 class AJAX{
 
 
@@ -59,6 +62,12 @@ class AJAX{
         if(!$message)$message = 'Undefined Error';
 
         $data = array();
+
+        $req = json_decode($_REQUEST);
+        ErrorApiModel::copyMutiInstance()->set([
+            'request'=>$res,'output'=>$message,'date'=>date('Y-m-d H:i:s')
+        ])->add();
+
 
         self::outPut($code ,$data ,$message ,$url);
  

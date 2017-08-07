@@ -34,7 +34,7 @@ class UserController extends Controller{
      * @param mixed $salt 
      * @return mixed 
      */
-    private function encrypt_password($password,$salt){
+    public function encrypt_password($password,$salt){
         return sha1($this->salt.md5($password).$salt);
     }
     /** 生成登录TOKEN
@@ -70,6 +70,7 @@ class UserController extends Controller{
         
         $info = $model->find($info->id);
         $info->name = '用户'.Func::add_zero($info->id,6);
+        $info->avatar = 'noavatar.png';
         $info->save();
 
         DB::commit();
@@ -156,6 +157,8 @@ class UserController extends Controller{
         $out = [
             'user_token'=>$user_token,
             'id'=>$info->id,
+            'avatar'=>$info->avatar,
+            'name'=>$info->name
             
         ];
         

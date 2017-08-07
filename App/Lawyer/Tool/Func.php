@@ -318,7 +318,8 @@ class Func {
 
         if(!$phone)AJAX::error('手机号不能为空！');
 
-        $rand = self::randWord(4,3);
+        // $rand = self::randWord(4,3);
+        $rand = '1234';
 
         $data['captcha'] = $rand;
         $data['time'] = TIME_NOW + 300;

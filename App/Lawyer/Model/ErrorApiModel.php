@@ -5,9 +5,10 @@ namespace App\Lawyer\Model;
 use Model;
 
 
-class LawyerModel extends Model{
+class ErrorApiModel extends Model{
 
-    public $table = 'lawyer';
+    public $table = 'error_api';
     public $field;
+
 
 }
