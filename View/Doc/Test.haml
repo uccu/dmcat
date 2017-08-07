@@ -1,0 +1,48 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+  %title #{g.title}
+  %meta(name="keywords" content="#{g.keywords}")
+  %meta(name="description" content="#{g.description}")
+
+
+- block body
+  .jumbotron
+    .container
+      %h1 Test
+
+
+  .container
+    
+    .form-group
+      %label(for="p1") URL
+      %input.form-control.url
+    .form-group
+      %button.add_parameter.btn.btn-success 添加参数
+    .parameter-box
+      -# .form-group
+      -#   .form-inline
+      -#     .form-group
+      -#       %label(for="p1") Name
+      -#       %input.form-control(id="p1")
+      -#     .form-group
+      -#       %label(for="p1") Value
+      -#       %input.form-control(id="v1")
+    .form-group
+      %button.submit.btn.btn-success 提交
+
+
+    %form(action="/my/test2211" method="post" enctype="multipart/form-data")
+      %input(type="file" name="avatar")
+      %button.submit.btn.btn-success 提交
+
+  %script(src="/js/doc/test.js")
+    
+
+
+
+  
+
+  

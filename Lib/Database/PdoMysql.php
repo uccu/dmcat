@@ -76,21 +76,21 @@ class PdoMysql
 	}
 
 	# 执行sql语句并返回PDOStatement的实例
-	function query(String $sql){
+	function query($sql){
 
 		$this->setResults($this->_connection->query($sql));
 		return $this;
 	}
 
 	# 准备执行sql语句并返回PDOStatement的实例
-	function prepare (String $sql){
+	function prepare ($sql){
 
 		$this->serResults($this->_connection->prepare($sql));
 		return $this;
 	}
 
 	# 执行sql、语句并返回影响的行数
-	function exec(String $sql){
+	function exec($sql){
 
 		$this->_effectsNumber = $this->_connection->exec($sql);
 		return $this->_effectsNumber;
@@ -115,7 +115,7 @@ class PdoMysql
 	}
 	
 	# 获取最后插入行的ID或序列值
-	function insert_id(string $name = NULL ){
+	function insert_id($name = NULL ){
 
 		return $this->_connection->lastInsertId($name);
 	}
