@@ -34,10 +34,17 @@ class HomeController extends Controller{
      */
     function index(LawyerModel $lawyerModel,BannerModel $bannerModel){
 
-        $banner = $bannerModel->where(['active'=>1])->order('ord')->get();
+        $banner = $bannerModel->selectExcept('content')->where(['active'=>1])->order('ord')->get()->toArray();
+
+        foreach($banner as &$b){
+
+            $b->ehref = Func::fullAddr('home/banner_h5?id='.$b->id);
+
+        }
+
 
         $lawyer = $lawyerModel->select(
-            'id','name','description','avatar','type','feedback_star','feedback_star','average_reply'
+            'id','name','description','avatar','type','fee_star','feedback_star','average_reply'
         )->where(['active'=>1])->order('top desc,rand()','RAW')->limit(10)->get();
 
         foreach($lawyer as &$l){
@@ -46,10 +53,27 @@ class HomeController extends Controller{
 
         $data['banner'] = $banner;
         $data['lawyer'] = $lawyer;
-        $data['introduction'] = 'home/h5?id=1';
+        $data['introduction'] = Func::fullAddr('home/h5?id=1');
         
 
         AJAX::success($data);
+
+    }
+
+    /** banner h5页面模板
+     * h5
+     * @param mixed $id 
+     * @return mixed 
+     */
+    function banner_h5($id,BannerModel $model){
+        
+        $h5 = $model->find($id);
+        !$h5 && Response::r302('/404');
+        
+        View::addData(['data'=>$h5->content]);
+
+        View::hamlReader('h5','App');
+
 
     }
 

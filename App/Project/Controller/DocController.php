@@ -12,6 +12,8 @@ class DocController  extends Controller{
     private function _format_json($json, $html = true) {
 
         $json = preg_replace('#\\\/#','/',$json);
+        $json = preg_replace('#<#','&lt;',$json);
+        $json = preg_replace('#>#','&gt;',$json);
 
         $json = preg_replace_callback('#\\\u\w\w\w\w#',function($e){
             $t = json_decode('{"d":"'.$e[0].'"}');
