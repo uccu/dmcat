@@ -25,6 +25,10 @@ class VisaController extends Controller{
     }
 
 
+    function submit($lawyer_id,$type){
+        
+    }
+
     # 工作签证
     function getWork(VisaWorkModel $model){
         
@@ -49,4 +53,9 @@ class VisaController extends Controller{
         
 
     }
+
+
+
+
+
 }

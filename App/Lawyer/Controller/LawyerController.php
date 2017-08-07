@@ -252,7 +252,7 @@ class LawyerController extends Controller{
 
         $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
 
-        $types = ['','法律','留学转学','签证'];
+        $types = ['法律','留学转学','签证'];
 
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
@@ -309,11 +309,11 @@ class LawyerController extends Controller{
                     'title' =>  '类型',
                     'name'  =>  'type',
                     'type'  =>  'select',
-                    'default'=> '1',
+                    'default'=> '0',
                     'option'=>  [
-                        '1' =>  '法律',
-                        '2' =>  '留学转学',
-                        '3' =>  '签证',
+                        '0' =>  '法律',
+                        '1' =>  '留学转学',
+                        '2' =>  '签证',
                     ]
                 ],
                 [

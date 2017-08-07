@@ -44,7 +44,7 @@ class HomeController extends Controller{
 
 
         $lawyer = $lawyerModel->select(
-            'id','name','description','avatar','type','fee_star','feedback_star','average_reply'
+            'id','name','description','avatar','type','fee_star','feedback_star','average_reply','online_time'
         )->where(['active'=>1])->order('top desc,rand()','RAW')->limit(10)->get()->toArray();
 
         foreach($lawyer as &$l){
@@ -146,6 +146,7 @@ class HomeController extends Controller{
             [
 
                 '显示顺序',
+                '标题',
                 '预览图片',
                 '是否显示',
 
@@ -157,6 +158,7 @@ class HomeController extends Controller{
             [
 
                 'ord',
+                'title',
                 [
                     'name'=>'fullPic',
                     'type'=>'pic',
@@ -222,6 +224,10 @@ class HomeController extends Controller{
                 [
                     'type'  =>  'hidden',
                     'name'  =>  'id',
+                ],
+                [
+                    'title' =>  '标题',
+                    'name'  =>  'title',
                 ],
                 [
                     'title' =>  '顺序',
