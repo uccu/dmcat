@@ -40,9 +40,11 @@
         return p;
     }
     var packFormData = function(file,v,x){
+        
         var form = new FormData();
         if(typeof v==="object")for(d in v)if(typeof v[d]==="object")form.append(v[d].name,v[d].value);else form.append(d,v[d]);
-        file = file[0].files;
+        if(file instanceof FileList);
+        else file = file[0].files;
         if(file.length)form.append("file",file[0]);else{toastr['error']('error image');return}
         if(!file[0])return;
         return typeof x==='function'?x(form):form
