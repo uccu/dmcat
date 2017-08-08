@@ -35,7 +35,7 @@
         <p>删除申请 <br><span>Apply</span></p>
     </div>
     <div class="parent-child scan">
-        <a href="javascript:ef();"></a>
+        <a href="scan"></a>
         <p>扫码 <br><span>Scan</span></p>
     </div>
     <div class="parent-child message">

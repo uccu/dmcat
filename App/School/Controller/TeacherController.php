@@ -11,6 +11,7 @@ use App\School\Model\StudentModel;
 use App\School\Model\CommentModel;
 use App\School\Model\UserClassesModel;
 use App\School\Model\MessageModel;
+use App\School\Model\AttendanceModel;
 use App\School\Model\ClassesMessageModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
@@ -207,6 +208,36 @@ class TeacherController extends Controller{
         include VIEW_ROOT.'App/Teacher/'.__FUNCTION__.'.php';
     }
 
+    function scan(StudentModel $studentModel,UserClassesModel $userClassesModel,AttendanceModel $attendanceModel){
+
+        $sss = Func::getSignature();
+
+        $data['appId'] = $appId = $this->L->config->wc_appid;
+        $data['timestamp'] = $timestamp = $sss['timestamp'];
+        $data['nonceStr'] = $nonceStr = $sss['noncestr'];
+        $data['signature'] = $signature = $sss['sign'];
+
+        $id = $this->L->id;
+        if(!$id)Response::getInstance()->r302('/home/login');
+
+        $classes_id = $userClassesModel->where(['user_id'=>$id])->find()->classes_id;
+        if(!$classes_id)die('没有管理的班级！');
+
+        $studentModel->where(['classes_id'=>$classes_id])->get()->toArray();
+
+        $where['student.classes_id'] = $classes_id;
+        $where['month'] = date('Ym');
+        $where['day'] = date('d');
+        $list = $attendanceModel->select('*','student.name','student.name_en')->where($where)->order('attend_time desc')->get()->toArray();
+
+        $data['id'] = $id;
+        $data['date'] = date('Y-m-d');
+        $data['list'] = $list;
+        
+        View::addData($data);
+        View::hamlReader('Teacher/'.__FUNCTION__,'App');
+    }
+
     function apply(){
 
         $id = $this->L->id;
@@ -253,6 +284,21 @@ class TeacherController extends Controller{
         View::addData(['lang'=>$lang]);
         View::hamlReader('Teacher/'.__FUNCTION__,'App');
     }
+    
 
+
+    function sendMessage($user_id,$message,UserClassesModel $userClassesModel,StudentModel $studentModel){
+
+        $id = $this->L->id;
+        if(!$id)AJAX::error('没有管理的班级');
+
+        if(!$user_id){
+            $classes_id = $userClassesModel->where(['user_id'=>$id])->find()->classes_id;
+            if(!$classes_id)AJAX::error('没有管理的班级');
+
+            $studentModel->where(['classes_id'=>$classes_id])->get_field('parent.id');
+        }
+
+    }
 
 }

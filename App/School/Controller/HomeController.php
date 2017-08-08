@@ -43,7 +43,7 @@ class HomeController extends Controller{
     function code(){
 
         if($this->L->userInfo->type == 3){
-            header('Location:/teacher/index');
+            header('Location:/teacher/scan');
         }else{
             header('Location:/home/doctor');
         }

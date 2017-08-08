@@ -9,7 +9,7 @@
 </head>
 <body>
 <textarea placeholder="回复内容/Reply Content"></textarea>
-<a href="javascript:void (0)">回复/Reply</a>
+<a href="javascript:void (0)" class="submitrefer">回复/Reply</a>
 <script src="/app/js/main.js"></script>
 <script src="/app/js/jquery-1.8.3.min.js"></script>
 <script>

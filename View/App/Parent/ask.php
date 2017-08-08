@@ -15,8 +15,12 @@
     <input type="text" class="pro">
 </div>
 <div class="proposer">
-    <p><span>请假时间</span><span>Start Time</span></p>
+    <p><span>开始时间</span><span>Start Time</span></p>
     <p class="datep" id="stardatep"><input class="datainp" id="dateinfo" type="text" placeholder="请选择请假时间"  readonly></p>
+</div>
+<div class="proposer">
+    <p><span>结束时间</span><span>Start Time</span></p>
+    <p class="datep" id="enddatep"><input class="datainp" id="enddateinfo" type="text" placeholder="请选择请假时间"  readonly></p>
 </div>
 <!--<div class="proposer">-->
     <!--<p><span>结束时间</span><span>end time</span></p>-->
@@ -46,6 +50,14 @@
         isClear: false, //是否显示清空
         minDate: jeDate.now(0),
     })
+    jeDate({
+        dateCell:"#enddateinfo",
+        format:"YYYY-MM-DD",
+//        isinitVal:true,
+        isTime:false, //isClear:false,
+        isClear: false, //是否显示清空
+        minDate: jeDate.now(0),
+    })
 //    jeDate({
 //        dateCell:"#enddateinfo",
 //        format:"YYYY-MM-DD",
@@ -60,9 +72,9 @@
         $(".submitask").click(function(){
             var pro=$(".pro").val();
             var startime = $("#dateinfo").val();
-//        var endtime = $("#enddateinfo").val();
+            var endtime = $("#enddateinfo").val();
 //            var leavetype = $('select').val();
-            console.info($('select').val())
+            // console.info($('select').val())
             var reason = $(".reason").val();
             var type = ''
             if ($('select').val() == 1){
@@ -77,6 +89,7 @@
                     student_id:<?php echo $id;?>,
                     proposer:pro,
                     date:startime,
+                    fdate:endtime,
                     type:type,
                     content:reason
                 },

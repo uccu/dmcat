@@ -1,0 +1,83 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+    %title 学生列表/Student list
+
+- block body
+    :css
+        .scan{
+            margin:30px;
+            border:solid 1px #666;
+            color:#666;
+            font-size:15px;
+            padding:15px;
+            background:#fff;
+        }
+        .green{
+            border-radius:50%;
+            width:10px;
+            height:10px;
+            background:green;
+            margin:5px 0;
+        }
+        .red{
+            border-radius:50%;
+            width:10px;
+            height:10px;
+            background:red;
+            margin:5px 0;
+        }
+        .yellow{
+            border-radius:50%;
+            width:10px;
+            height:10px;
+            background:yellow;
+            margin:5px 0;
+        }
+        .row{
+            margin-top:20px
+        }
+    %h2.tc.title = date
+
+    .tc
+        %a(href="javascript:ef();")
+            %button.scan scan
+    
+    - for k,s in list
+        .tc.row
+            .col-xs-3
+                #{s.name} 
+            .col-xs-3
+                #{s.name_en} 
+            .col-xs-3
+                - if s.status
+                    .green
+                - else
+                    .yellow
+            .col-xs-3
+                - if s.leave_time
+                    .green
+                - else
+                    .red
+    %script(src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js")
+    :javascript
+        wx.config({
+            debug: false,
+            appId: '#{appId}',
+            timestamp: #{timestamp},
+            nonceStr: '#{nonceStr}',
+            signature: '#{signature}',
+            jsApiList: ['scanQRCode']
+        });
+        var ef = function(){
+            wx.scanQRCode({
+                needResult: 1,
+                scanType: ["qrCode","barCode"],
+                success: function (res) {
+
+                    location = '/home/attend?code=' + res.resultStr
+                }
+            });
+        }
