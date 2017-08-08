@@ -214,10 +214,11 @@ class UserController extends Controller{
         Func::check_password($password);
         
         Func::check_phone_captcha($phone,$phone_captcha);
-
+        
+        $model = UserModel::copyMutiInstance();
         $model->where([$type=>$code])->find() && AJAX::error('已绑定账号，请直接登录！');
 
-        $model = UserModel::copyMutiInstance();
+        
         if($userInfo = $model->where(['phone'=>$phone])->find()){
         
             $userInfo->$type && AJAX::error('已绑定该第三方登录，请解绑后重新绑定！');
