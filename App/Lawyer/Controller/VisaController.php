@@ -43,7 +43,7 @@ class VisaController extends Controller{
     # 工作签证
     function getWork(VisaWorkModel $model){
         
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         $info = AdminFunc::get($model,$this->L->id);
 
         $out['info'] = $info;
@@ -51,7 +51,7 @@ class VisaController extends Controller{
     }
     function updWork(VisaWorkModel $model){
 
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         !$model->field && AJAX::error('字段没有公有化！');
 
         $data = Request::getSingleInstance()->request($model->field);
@@ -68,7 +68,7 @@ class VisaController extends Controller{
     # 家庭团聚签证
     function getFamily(VisaFamilyModel $model){
         
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         $info = AdminFunc::get($model,$this->L->id);
 
         $out['info'] = $info;
@@ -76,7 +76,7 @@ class VisaController extends Controller{
     }
     function updFamily(VisaFamilyModel $model){
 
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         !$model->field && AJAX::error('字段没有公有化！');
 
         $data = Request::getSingleInstance()->request($model->field);
@@ -94,7 +94,7 @@ class VisaController extends Controller{
     # 拒签上诉
     function getRefuse(VisaRefuseModel $model){
         
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         $info = AdminFunc::get($model,$this->L->id);
 
         $out['info'] = $info;
@@ -102,7 +102,7 @@ class VisaController extends Controller{
     }
     function updRefuse(VisaRefuseModel $model){
 
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         !$model->field && AJAX::error('字段没有公有化！');
 
         $data = Request::getSingleInstance()->request($model->field);
@@ -119,7 +119,7 @@ class VisaController extends Controller{
     # 旅游签证
     function getTravel(VisaTravelModel $model){
         
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         $info = AdminFunc::get($model,$this->L->id);
 
         $out['info'] = $info;
@@ -127,7 +127,7 @@ class VisaController extends Controller{
     }
     function updTravel(VisaTravelModel $model){
 
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         !$model->field && AJAX::error('字段没有公有化！');
 
         $data = Request::getSingleInstance()->request($model->field);
@@ -145,7 +145,7 @@ class VisaController extends Controller{
     # 配偶签证
     function getMarry(VisaMarryModel $model){
         
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         $info = AdminFunc::get($model,$this->L->id);
 
         $out['info'] = $info;
@@ -153,7 +153,7 @@ class VisaController extends Controller{
     }
     function updMarry(VisaMarryModel $model){
 
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         !$model->field && AJAX::error('字段没有公有化！');
 
         $data = Request::getSingleInstance()->request($model->field);
@@ -175,7 +175,7 @@ class VisaController extends Controller{
     # 学生毕业签证
     function getGraduate(VisaGraduateModel $model){
         
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         $info = AdminFunc::get($model,$this->L->id);
 
         $out['info'] = $info;
@@ -183,7 +183,7 @@ class VisaController extends Controller{
     }
     function updGraduate(VisaGraduateModel $model){
 
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         !$model->field && AJAX::error('字段没有公有化！');
 
         $data = Request::getSingleInstance()->request($model->field);
@@ -201,7 +201,7 @@ class VisaController extends Controller{
     # 学生签证/陪读
     function getStudent(VisaStudentModel $model){
         
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         $info = AdminFunc::get($model,$this->L->id);
 
         $out['info'] = $info;
@@ -209,7 +209,7 @@ class VisaController extends Controller{
     }
     function updStudent(VisaStudentModel $model){
 
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         !$model->field && AJAX::error('字段没有公有化！');
 
         $data = Request::getSingleInstance()->request($model->field);
@@ -226,7 +226,7 @@ class VisaController extends Controller{
     # 永久签证
     function getPerpetual(VisaPerpetualModel $model){
         
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         $info = AdminFunc::get($model,$this->L->id);
 
         $out['info'] = $info;
@@ -234,7 +234,7 @@ class VisaController extends Controller{
     }
     function updPerpetual(VisaPerpetualModel $model){
 
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
         !$model->field && AJAX::error('字段没有公有化！');
 
         $data = Request::getSingleInstance()->request($model->field);

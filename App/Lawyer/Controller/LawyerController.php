@@ -84,7 +84,7 @@ class LawyerController extends Controller{
         $limitModel = UserConsultLimitModel::copyMutiInstance();
         $consultModel = ConsultModel ::copyMutiInstance();
 
-        !$this->L->id && AJAX::error('请登录后重试！');
+        !$this->L->id && AJAX::error('未登录');
 
         $where['id'] = $id;
         $where['active'] = 1;
@@ -140,7 +140,7 @@ class LawyerController extends Controller{
      */
     function sendQuestionToLawyer($id,$message,LawyerModel $lawyerModel,ConsultModel $consultModel){
         
-        !$this->L->id && AJAX::error('请登录！');
+        !$this->L->id && AJAX::error('未登录');
 
         $mee = $this->checkLawyerAuth($id,false);
 

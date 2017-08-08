@@ -296,7 +296,7 @@ class UserController extends Controller{
      */
     function unlink($type){
 
-        !$this->L->id && AJAX::error('未登录！');
+        !$this->L->id && AJAX::error('未登录');
         !in_array($type,['wx','wb','qq']) && AJAX::error('不支持的登录方式！');
 
         $this->L->userInfo->$type = '';
@@ -315,7 +315,7 @@ class UserController extends Controller{
      */
     function change_phone($phone,$phone_captcha){
 
-        !$this->L->id && AJAX::error('未登录！');
+        !$this->L->id && AJAX::error('未登录');
         Func::check_phone_captcha($phone,$phone_captcha);
 
         $phone == $this->L->userInfo->phone && AJAX::error('修改的手机号与原手机号一致！');
@@ -378,7 +378,7 @@ class UserController extends Controller{
      * @return mixed 
      */
     function change_name($name){
-        !$this->L->id && AJAX::error('未登录！');
+        !$this->L->id && AJAX::error('未登录');
         !$name && AJAX::error('昵称不能为空！');
 
         $this->L->userInfo->name = $name;
@@ -394,7 +394,7 @@ class UserController extends Controller{
      * @return mixed 
      */
     function change_avatar(){
-        !$this->L->id && AJAX::error('未登录！');
+        !$this->L->id && AJAX::error('未登录');
 
         $out['path'] = $path = Func::uploadFiles('avatar',100,100);
         !$path && AJAX::error('上传失败，没有找到上传文件！');
@@ -418,7 +418,7 @@ class UserController extends Controller{
      * @return mixed 
      */
     function bind($type,$code){
-        !$this->L->id && AJAX::error('未登录！');
+        !$this->L->id && AJAX::error('未登录');
         !in_array($type,['wx','wb','qq']) && AJAX::error('不支持的登录方式！');
         
 
