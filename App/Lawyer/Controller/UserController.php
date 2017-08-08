@@ -475,7 +475,7 @@ class UserController extends Controller{
 
         $where['rule.type'] = 0;
         $info = $model->where($where)->find();
-        if(!$info || $info->word_count == 0 || $info->question_count == 0 || $info->death_time < TIME_NOW)$out[0]['vip'] = '0';
+        if(!$info || $info->word_count == 0 || $info->question_count == 0 || $info->death_time < TIME_NOW)$out['vip0']['vip'] = '0';
         else{
             $out['vip0']['vip'] = '1';
             $out['vip0']['vipInfo'] = $info;
