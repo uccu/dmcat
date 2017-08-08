@@ -114,9 +114,9 @@ class Func {
     static public function time_zcalculate( $time ){
         if($time == 0 )return '秒回';
         if($time < 60 )return $time.'秒';
-        if($time < 3600 )return (floor($time/60) + 1).'分钟';
-        if($time < 3600 * 24 )return (floor($time/3600) + 1).'小时';
-        return (floor($time/3600/24) + 1).'天';
+        if($time < 3600 )return (floor(($time-1)/60) + 1).'分钟';
+        if($time < 3600 * 24 )return (floor(($time-1)/3600) + 1).'小时';
+        return (floor(($time-1)/3600/24) + 1).'天';
         
     }  
     
