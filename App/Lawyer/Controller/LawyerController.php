@@ -357,7 +357,8 @@ class LawyerController extends Controller{
                 ],
                 [
                     'title' =>  '简介',
-                    'name'  =>  'description',          	
+                    'name'  =>  'description',
+                    'type'  =>  'textarea'         	
                 ],
                 [
                     'title' =>  '修改密码',
