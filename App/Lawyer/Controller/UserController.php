@@ -204,13 +204,14 @@ class UserController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function other_register($type,$code,$phone,$phone_captcha,$cookie = false){
+    function other_register($password,$type,$code,$phone,$phone_captcha,$cookie = false){
 
         //是否储存登录信息到cookie
         if($cookie)$this->cookie = true;
 
         !in_array($type,['wx','wb','qq']) && AJAX::error('不支持的登录方式！');
 
+        Func::check_password($password);
         
         Func::check_phone_captcha($phone,$phone_captcha);
 
@@ -221,6 +222,9 @@ class UserController extends Controller{
             !$code && AJAX::error('未知的第三方登录标示！');
 
             $model->where([$type=>$code])->find() && AJAX::error('已绑定账号，请直接登录！');
+
+            $encryptedPassword = $this->encrypt_password($password,$userInfo->salt);
+            if($encryptedPassword != $userInfo->password)AJAX::error('密码错误');
 
             $userInfo->$type = $code;
             $userInfo->save();

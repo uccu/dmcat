@@ -87,7 +87,7 @@ name 修改后的用户名
 1.12 修改头像
 user/change_avatar
 avatar 头像文件的二进制流
-{"data":{},"code":200,"url":"","message":""}
+{"data":{"path":"xxx.jpg"},"code":200,"url":"","message":""}
 {}
 
 
