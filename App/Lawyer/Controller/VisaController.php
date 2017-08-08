@@ -24,7 +24,7 @@ use App\Lawyer\Model\VisaPerpetualModel;
 
 
 use App\Lawyer\Model\UserConsultLimitModel;
-
+use App\Lawyer\Model\H5Model;
 
 class VisaController extends Controller{
 
@@ -291,17 +291,25 @@ class VisaController extends Controller{
                 [
                     'title' =>  '总字数',
                     'name'  =>  'word_count',
-                    'size'  =>  '2'
+                    'size'  =>  '2',
+                    'description'=>'*-1为无限'
                 ],
                 [
                     'title' =>  '总问题数',
                     'name'  =>  'question_count',
-                    'size'  =>  '2'
+                    'size'  =>  '2',
+                    'description'=>'*-1为无限'
                 ],
                 [
                     'title' =>  '有效期限（天）',
                     'name'  =>  'expiry',
-                    'size'  =>  '2'
+                    'size'  =>  '2',
+                    'description'=>'*-1为无限'
+                ],
+                [
+                    'title' =>  '会员权益',
+                    'name'  =>  'content',
+                    'type'  =>  'h5'
                 ],
                 
                 
@@ -312,6 +320,8 @@ class VisaController extends Controller{
 
 
         $info = AdminFunc::get($model,$id);
+
+        $info->content = H5Model::copyMutiInstance()->find($id+2)->content;
 
         $out = 
             [
@@ -324,12 +334,15 @@ class VisaController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_limit_upd(ConsultPayRuleModel $model,$id,$pwd){
+    function admin_limit_upd(ConsultPayRuleModel $model,$id,$pwd,$content){
         $this->L->adminPermissionCheck(70);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
         
         unset($data['id']);
+        unset($data['content']);
+
+        H5Model::copyMutiInstance()->set(['content'=>$content])->save($id+2);
 
 
         $upd = AdminFunc::upd($model,$id,$data);

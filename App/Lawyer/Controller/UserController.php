@@ -16,6 +16,7 @@ use App\Lawyer\Tool\AdminFunc;
 # Model
 use App\Lawyer\Model\UserModel;
 use App\Lawyer\Model\CaptchaModel;
+use App\Lawyer\Model\UserConsultLimitModel;
 
 
 class UserController extends Controller{
@@ -459,6 +460,44 @@ class UserController extends Controller{
         $exist = $userInfo ? '1' : '0';
 
         AJAX::success(['exist'=>$exist]);
+
+    }
+
+
+
+
+    function getMyVip(UserConsultLimitModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $where['user_id'] = $this->L->id;
+
+
+        $where['rule.type'] = 0;
+        $info = $model->where($where)->find();
+        if(!$info || $info->word_count == 0 || $info->question_count == 0 || $info->death_time < TIME_NOW)$out[0]['vip'] = '0';
+        else{
+            $out['vip0']['vip'] = '1';
+            $out['vip0']['vipInfo'] = $info;
+        }
+
+        $where['rule.type'] = 1;
+        $info = $model->where($where)->find();
+        if(!$info || $info->word_count == 0 || $info->question_count == 0 || $info->death_time < TIME_NOW)$out['vip1']['vip'] = '0';
+        else{
+            $out['vip1']['vip'] = '1';
+            $out['vip1']['vipInfo'] = $info;
+        }
+
+        $where['rule.type'] = 2;
+        $info = $model->where($where)->find();
+        if(!$info || $info->word_count == 0 || $info->question_count == 0 || $info->death_time < TIME_NOW)$out['vip2']['vip'] = '0';
+        else{
+            $out['vip2']['vip'] = '1';
+            $out['vip2']['vipInfo'] = $info;
+        }
+
+        AJAX::success($out);
 
     }
 
