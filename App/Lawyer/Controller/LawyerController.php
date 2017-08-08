@@ -353,11 +353,11 @@ class LawyerController extends Controller{
                 [
                     'title' =>  '星级',
                     'name'  =>  'feedback_star',
+                    'size'  =>  '2',             	
                 ],
                 [
                     'title' =>  '简介',
-                    'name'  =>  'description',
-                    'size'  =>  '2',             	
+                    'name'  =>  'description',          	
                 ],
                 [
                     'title' =>  '修改密码',
