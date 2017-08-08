@@ -151,6 +151,10 @@
                     case 'hidden':
                         var pa = j('<input type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'">')
                         break;
+                    case 'textarea':
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><textarea class="form-control" name="'+para.name+'" style="resize:none;height:200px"></textarea></div></div>')
+                        pa.find('textarea').val(m.info[para.name]||para.default||'')
+                        break;
                     default:
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label">'+para.description+'</label>':'')+'</div>')
                         break;
