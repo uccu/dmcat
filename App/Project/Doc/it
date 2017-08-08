@@ -145,3 +145,150 @@ lawyer/getLawyerInfo
 id 律师ID
 {"data":{"info":{"avatar":"","name":"\u5f20\u5f8b\u5e08","description":"","company":"","site":"","fee_star":"5.0","average_reply":"\u79d2\u56de","feedback_star":"4.0","type":"2","online_time":""}},"code":200,"url":"","message":""}
 {id:律师ID,type:律师类型（1法律2留学转学3签证）,avatar:头像,description:描述,name:名字,fee_star:收费星级,feedback_star:星级,average_reply:平均回复时长,company:公司,site:网站,online_time:在线时间}
+
+
+
+4.1 更新工作签证
+visa/updWork
+age 年龄
+education 学历
+profession 专业
+english_results 英语成绩
+social 是否有社保/养老金
+history 签证历史
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+4.2 获取工作签证
+visa/getWork
+{"data":{"info":{"id":"1","update_time":"1502095428","age":"2","education":"","profession":"","english_results":"","social":"0","history":""}},"code":200,"url":"","message":""}
+{见4.1}
+
+
+
+4.3 更新家庭团聚签证
+visa/updFamily
+histrory 历史签证
+bondsman 担保人
+vouchee 被担保人
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+4.4 获取家庭团聚签证
+visa/getFamily
+{"data":{"info":{"id":"","update_time":"","histrory":"","bondsman":"","vouchee":""}},"code":200,"url":"","message":""}
+{见4.3}
+
+
+4.5 更新拒签上诉
+visa/updRefuse
+type 拒签签证
+reason 被拒理由
+my 为什么觉得不合理
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+4.6 获取拒签上诉
+visa/getRefuse
+{"data":{"info":{"id":"","update_time":"","type":"","reason":"","my":""}},"code":200,"url":"","message":""}
+{见4.5}
+
+
+
+4.7 更新旅游签证
+visa/updTravel
+age 年龄
+sex 性别
+education 学历
+deposit 存款
+house 房产
+residence 户口所在地
+study 读书/在职情况
+hostory 历史签证
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+4.8 获取旅游签证
+visa/getTravel
+{"data":{"info":{"id":"","update_time":"","age":"","sex":"","education":"","deposit":"","house":"","residence":"","study":"","hostory":""}},"code":200,"url":"","message":""}
+{见4.7}
+
+
+
+4.9 更新配偶签证
+visa/updMarry
+marry 双方婚史
+money 共同财产
+story 爱情故事
+child 子女情况
+history 签证历史
+图片 证明材料，不同字段的图片二进制里即可
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+4.10 获取配偶签证
+visa/getMarry
+{"data":{"info":{"id":"","update_time":"","marry":"","money":"","story":"","child":"","history":"","pic":""}},"code":200,"url":"","message":""}
+{见4.9}
+
+
+
+
+4.11 更新学生毕业签证
+visa/updGraduate
+school 毕业学校
+profession 专业
+date 毕业时间
+result 成绩
+assessment 是否有评估
+history 签证历史
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+4.12 获取学生毕业签证
+visa/getGraduate
+{"data":{"info":{"id":"","update_time":"","school":"","profession":"","date":"","result":"","assessment":"","history":""}},"code":200,"url":"","message":""}
+{见4.11}
+
+
+
+4.13 更新学生签证/陪读签证
+visa/updStudent
+school 申请学校
+target 目标大学
+background 教育背景
+result 英语成绩
+profession 就读专业
+parent 父母陪同
+history 签证历史
+work 工作经历
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+4.14 获取学生签证/陪读签证
+visa/getStudent
+{"data":{"info":{"id":"","update_time":"","school":"","target":"","background":"","result":"","profession":"","parent":"","history":"","work":""}},"code":200,"url":"","message":""}
+{见4.13}
+
+
+
+4.15 更新永久签证
+visa/updPerpetual
+date 绿卡获取时间
+time 在境内多久
+relation 关系
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+4.16 获取永久签证
+visa/getPerpetual
+{"data":{"info":{"id":"","update_time":"","date":"","time":"","relation":""}},"code":200,"url":"","message":""}
+{见4.15}

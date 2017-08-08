@@ -140,7 +140,7 @@ class UserController extends Controller{
         !$userInfo && AJAX::error('用户不存在！');
 
         //输出登录返回信息
-        $this->_out_info($info);
+        $this->_out_info($userInfo);
     }
 
     /** 输出用户登录信息
@@ -214,7 +214,7 @@ class UserController extends Controller{
         Func::check_password($password);
         
         Func::check_phone_captcha($phone,$phone_captcha);
-        
+
         $model = UserModel::copyMutiInstance();
         $model->where([$type=>$code])->find() && AJAX::error('已绑定账号，请直接登录！');
 

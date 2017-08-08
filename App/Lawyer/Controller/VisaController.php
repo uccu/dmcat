@@ -20,6 +20,7 @@ use App\Lawyer\Model\VisaMarryModel;
 use App\Lawyer\Model\VisaGraduateModel;
 use App\Lawyer\Model\VisaStudentModel;
 use App\Lawyer\Model\ConsultPayRuleModel;
+use App\Lawyer\Model\VisaPerpetualModel;
 
 
 use App\Lawyer\Model\UserConsultLimitModel;
@@ -222,7 +223,7 @@ class VisaController extends Controller{
 
     }
 
-    # 学生签证/陪读
+    # 永久签证
     function getPerpetual(VisaPerpetualModel $model){
         
         !$this->L->id && AJAX::error('请登录！');
