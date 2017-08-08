@@ -436,6 +436,29 @@ class UserController extends Controller{
         
     }
 
+    
+    /** 查看是否有绑定的账号
+     * checkBind
+     * @param mixed $type 
+     * @param mixed $code 
+     * @return mixed 
+     */
+    function checkBind($type,$code){
+
+        !in_array($type,['wx','wb','qq']) && AJAX::error('不支持的登录方式！');
+
+        !$code && AJAX::error('未知的第三方登录标示！');
+
+        $model = UserModel::copyMutiInstance();
+        $userInfo = $model->where([$type=>$code])->find();
+
+        $exist = $userInfo ? '1' : '0';
+
+        AJAX::success(['exist'=>$exist]);
+
+    }
+
+
 
     function admin_user(UserModel $model,$page = 1,$limit = 10){
         

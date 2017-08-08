@@ -19,7 +19,10 @@ use App\Lawyer\Model\VisaTravelModel;
 use App\Lawyer\Model\VisaMarryModel;
 use App\Lawyer\Model\VisaGraduateModel;
 use App\Lawyer\Model\VisaStudentModel;
-use App\Lawyer\Model\VisaPerpetualModel;
+use App\Lawyer\Model\ConsultPayRuleModel;
+
+
+use App\Lawyer\Model\UserConsultLimitModel;
 
 
 class VisaController extends Controller{
@@ -242,6 +245,95 @@ class VisaController extends Controller{
         AJAX::success($out);
         
 
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function admin_limit_get(ConsultPayRuleModel $model,$id){
+
+        $this->L->adminPermissionCheck(70);
+
+        $names = ['','法律会员','留学转学会员','签证会员'];
+
+        $name = $names[$id];
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/visa/admin_limit_get',
+                'upd'   => '/visa/admin_limit_upd',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+
+            ];
+        $tbody = 
+            [
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'title' =>  '多少小时之后没回复可切换律师',
+                    'name'  =>  'hours',
+                    'size'  =>  '2'
+                ],
+                [
+                    'title' =>  '总字数',
+                    'name'  =>  'word_count',
+                    'size'  =>  '2'
+                ],
+                [
+                    'title' =>  '总问题数',
+                    'name'  =>  'question_count',
+                    'size'  =>  '2'
+                ],
+                [
+                    'title' =>  '有效期限（天）',
+                    'name'  =>  'expiry',
+                    'size'  =>  '2'
+                ],
+                
+                
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_limit_upd(ConsultPayRuleModel $model,$id,$pwd){
+        $this->L->adminPermissionCheck(70);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        
+        unset($data['id']);
+
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
     }
 
 }
