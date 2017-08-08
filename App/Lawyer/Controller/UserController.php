@@ -215,13 +215,13 @@ class UserController extends Controller{
         
         Func::check_phone_captcha($phone,$phone_captcha);
 
+        $model->where([$type=>$code])->find() && AJAX::error('已绑定账号，请直接登录！');
+
         $model = UserModel::copyMutiInstance();
         if($userInfo = $model->where(['phone'=>$phone])->find()){
         
             $userInfo->$type && AJAX::error('已绑定该第三方登录，请解绑后重新绑定！');
             !$code && AJAX::error('未知的第三方登录标示！');
-
-            $model->where([$type=>$code])->find() && AJAX::error('已绑定账号，请直接登录！');
 
             $encryptedPassword = $this->encrypt_password($password,$userInfo->salt);
             if($encryptedPassword != $userInfo->password)AJAX::error('密码错误');
@@ -237,6 +237,7 @@ class UserController extends Controller{
             $info->phone    = $phone;
             $info->name     = $phone;
             $info->salt     = Func::randWord(6);
+            $info->$type    = $code;
             $info->password = $this->encrypt_password($password,$info->salt);
 
             $this->_add_user($info);
