@@ -392,13 +392,13 @@ class UserController extends Controller{
     function change_avatar(){
         !$this->L->id && AJAX::error('未登录！');
 
-        $path = Func::uploadFiles('avatar',100,100);
+        $out['path'] = $path = Func::uploadFiles('avatar',100,100);
         !$path && AJAX::error('上传失败，没有找到上传文件！');
         
         $this->L->userInfo->avatar = $path;
         $this->L->userInfo->save();
 
-        AJAX::success();
+        AJAX::success($out);
 
     }
 

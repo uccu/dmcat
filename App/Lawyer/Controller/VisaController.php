@@ -13,6 +13,10 @@ use App\Lawyer\Tool\AdminFunc;
 
 # Model
 use App\Lawyer\Model\VisaWorkModel;
+use App\Lawyer\Model\VisaFamilyModel;
+use App\Lawyer\Model\VisaRefuseModel;
+use App\Lawyer\Model\VisaTravelModel;
+use App\Lawyer\Model\VisaMarryModel;
 
 
 class VisaController extends Controller{
@@ -54,8 +58,111 @@ class VisaController extends Controller{
 
     }
 
+    # 家庭团聚签证
+    function getFamily(VisaFamilyModel $model){
+        
+        !$this->L->id && AJAX::error('请登录！');
+        $info = AdminFunc::get($model,$this->L->id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+    function updFamily(VisaFamilyModel $model){
+
+        !$this->L->id && AJAX::error('请登录！');
+        !$model->field && AJAX::error('字段没有公有化！');
+
+        $data = Request::getSingleInstance()->request($model->field);
+        $data['id'] = $this->L->id;
+        $data['update_time'] = TIME_NOW;
+        
+        $model->set($data)->add(true);
+        
+        AJAX::success($out);
+        
+
+    }
 
 
+    # 拒签上诉
+    function getRefuse(VisaRefuseModel $model){
+        
+        !$this->L->id && AJAX::error('请登录！');
+        $info = AdminFunc::get($model,$this->L->id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+    function updRefuse(VisaRefuseModel $model){
+
+        !$this->L->id && AJAX::error('请登录！');
+        !$model->field && AJAX::error('字段没有公有化！');
+
+        $data = Request::getSingleInstance()->request($model->field);
+        $data['id'] = $this->L->id;
+        $data['update_time'] = TIME_NOW;
+        
+        $model->set($data)->add(true);
+        
+        AJAX::success($out);
+        
+
+    }
+
+    # 旅游签证
+    function getTravel(VisaTravelModel $model){
+        
+        !$this->L->id && AJAX::error('请登录！');
+        $info = AdminFunc::get($model,$this->L->id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+    function updTravel(VisaTravelModel $model){
+
+        !$this->L->id && AJAX::error('请登录！');
+        !$model->field && AJAX::error('字段没有公有化！');
+
+        $data = Request::getSingleInstance()->request($model->field);
+        $data['id'] = $this->L->id;
+        $data['update_time'] = TIME_NOW;
+        
+        $model->set($data)->add(true);
+        
+        AJAX::success($out);
+        
+
+    }
+
+
+    # 配偶签证
+    function getMarry(VisaMarryModel $model){
+        
+        !$this->L->id && AJAX::error('请登录！');
+        $info = AdminFunc::get($model,$this->L->id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+    function updMarry(VisaMarryModel $model){
+
+        !$this->L->id && AJAX::error('请登录！');
+        !$model->field && AJAX::error('字段没有公有化！');
+
+        $data = Request::getSingleInstance()->request($model->field);
+        $data['id'] = $this->L->id;
+        $data['update_time'] = TIME_NOW;
+
+        $paths = Func::uploadFiles();
+        
+        $data['pic'] = implode(',',$paths);
+        
+        $model->set($data)->add(true);
+        
+        AJAX::success($out);
+        
+
+    }
 
 
 }
