@@ -233,8 +233,6 @@ class UserController extends Controller{
 
         }else{
     
-            $password = '';
-
             $info           = new stdClass;
             $info->phone    = $phone;
             $info->name     = $phone;
