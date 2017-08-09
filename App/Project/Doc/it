@@ -292,6 +292,7 @@ money 共同财产
 story 爱情故事
 child 子女情况
 history 签证历史
+date 结婚日期
 图片 证明材料，不同字段的图片二进制里即可
 {"data":{},"code":200,"url":"","message":""}
 {}
@@ -299,7 +300,7 @@ history 签证历史
 
 4.10 获取配偶签证
 visa/getMarry
-{"data":{"info":{"id":"","update_time":"","marry":"","money":"","story":"","child":"","history":"","pic":""}},"code":200,"url":"","message":""}
+{"data":{"info":{"id":"","update_time":"","marry":"","money":"","story":"","child":"","history":"","pic":"","date":""}},"code":200,"url":"","message":""}
 {见4.9}
 
 
