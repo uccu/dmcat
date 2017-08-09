@@ -17,7 +17,7 @@ use App\Lawyer\Model\LawyerModel;
 use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\ConsultModel;
 use App\Lawyer\Model\FastQuestionModel;
-
+use App\Lawyer\Model\VisaSendModel;
 
 
 class LawyerController extends Controller{
@@ -82,8 +82,8 @@ class LawyerController extends Controller{
 
         $model = LawyerModel::copyMutiInstance();
         $limitModel = UserConsultLimitModel::copyMutiInstance();
-        $consultModel = ConsultModel ::copyMutiInstance();
-
+        $consultModel = ConsultModel::copyMutiInstance();
+        $visaSendModel = VisaSendModel::copyMutiInstance();
         !$this->L->id && AJAX::error('未登录');
 
         $where['id'] = $id;
@@ -117,6 +117,14 @@ class LawyerController extends Controller{
         }
 
 
+        $visaSend = $visaSendModel->where(['user_id'=>$this->L->id,'lawyer_id'=>$id])->order('create_time')->find();
+        if($visaSend){
+
+            $visaSend->create_time + 3600 * $auth->hours > TIME_NOW && AJAX::error('律师已绑定，'.$auth->hours.'小时后未回复可以更换律师！');
+
+        }
+
+
         $ajax && AJAX::success();
 
         if(!$ajax){
@@ -127,6 +135,36 @@ class LawyerController extends Controller{
             return $obj;
         }
         
+    }
+
+
+    /** 发送签证给律师
+     * sendVisaToLawyer
+     * @param mixed $lawyer_id 
+     * @param mixed $type 
+     * @return mixed 
+     */
+    function sendVisaToLawyer($lawyer_id,$type,VisaSendModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $this->checkLawyerAuth($lawyer_id,false);
+
+        $this->L->userInfo->lawyer_id = $lawyer_id;
+        $this->L->userInfo->save();
+        
+        !in_array($type,['work','family','refuse','travel','marry','graduate','student','perpetual','technology','business']) && AJAX::error('未知的签证类型！');
+        
+        $data['create_time'] = TIME_NOW;
+        $data['user_id'] = $this->L->id;
+        $data['lawyer_id'] = $lawyer_id;
+        $data['type'] = $type;
+
+        $model->set($data)->add();
+
+        AJAX::success();
+
+
     }
 
 

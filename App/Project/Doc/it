@@ -199,6 +199,15 @@ limit 每页限制数量
 {which:0用户回复1律师回复,user_avatar:用户头像,lawyer_avatar:律师头像,create_time:创建时间,content:内容}
 
 
+
+3.7 发送给律师签证资料
+lawyer/sendVisaToLawyer
+lawyer_id 律师ID
+type 签证类型
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
 4.5 快速问题列表
 lawyer/fastQuestionList
 {"data":{"list":[{"id":"1","content":"\u6211\u4e3a\u4ec0\u4e48\u8fd9\u4e48\u5e05\uff1f","top":"0"}]},"code":200,"url":"","message":""}
