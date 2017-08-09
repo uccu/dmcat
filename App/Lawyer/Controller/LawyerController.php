@@ -181,7 +181,7 @@ class LawyerController extends Controller{
      */
     function fastQuestionList(FastQuestionModel $model){
 
-        $list = $model->get()->order('top desc')->toArray();
+        $list = $model->order('top desc')->get()->toArray();
 
         $out['list'] = $list;
 
