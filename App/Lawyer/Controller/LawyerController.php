@@ -212,6 +212,23 @@ class LawyerController extends Controller{
     }
 
 
+    /** 我的咨询列表
+     * getChatList
+     * @return mixed 
+     */
+    function getMyChat(ConsultModel $consultModel){
+
+        !$this->L->id && AJAX::error('未登录');
+        
+        $where['user_id'] = $this->L->id;
+
+        $list = $consultModel->select(['%F,%F,%F,MAX(%F)','lawyer_id','lawyer.name','lawyer.avatar','create_time'],'RAW')->where($where)->group('lawyer_id')->order('create_time desc')->get()->toArray();
+
+        $out['list'] = $list;
+
+        AJAX::success($out);
+
+    }
 
 
 
