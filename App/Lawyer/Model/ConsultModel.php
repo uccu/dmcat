@@ -13,5 +13,9 @@ class ConsultModel extends Model{
 
         return $this->join(LawyerModel::class,'id','lawyer_id');
     }
+    public function user(){
+
+        return $this->join(UserModel::class,'id','user_id');
+    }
 
 }

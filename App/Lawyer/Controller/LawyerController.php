@@ -203,7 +203,7 @@ class LawyerController extends Controller{
         $where['user_id'] = $this->L->id;
         $where['lawyer_id'] = $id;
 
-        $list = $consultModel->where($where)->order('create_time')->get()->toArray();
+        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->order('create_time')->get()->toArray();
 
         $out['list'] = $list;
 
@@ -221,8 +221,15 @@ class LawyerController extends Controller{
         !$this->L->id && AJAX::error('未登录');
         
         $where['user_id'] = $this->L->id;
+        $consultModel->distinct();
 
-        $list = $consultModel->select(['%F,%F,%F,MAX(%F)','lawyer_id','lawyer.name','lawyer.avatar','create_time'],'RAW')->where($where)->group('lawyer_id')->order('create_time desc')->get()->toArray();
+        $lawyer_list = $consultModel->where($where)->get_field('lawyer_id')->toArray();
+        
+        $list = [];
+        foreach($lawyer_list as $v){
+
+            $list[] = $consultModel->select('content','create_time','lawyer_id','lawyer.name','lawyer.avatar')->where($where)->where(['lawyer_id'=>$v])->order('create_time desc')->find();
+        }
 
         $out['list'] = $list;
 

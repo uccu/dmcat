@@ -182,6 +182,21 @@ message 问题
 {}
 
 
+
+3.5 我的咨询律师列表
+lawyer/getMyChat
+{"data":{"list":[{"content":"9","create_time":"1500831209","lawyer_id":"1","name":"\u623f\u5f8b\u5e08","avatar":"20170807\/17.28.29.431535.jpg"},{"content":"9","create_time":"1500831209","lawyer_id":"2","name":"\u7406\u5f8b\u5e08","avatar":"20170808\/10.43.53.435840.jpg"}]},"code":200,"url":"","message":""}
+{lawyer_id:律师ID,create_time:创建时间,name:律师名字,avatar:头像,content:内容}
+
+
+
+3.6 聊天记录
+lawyer/getChatList
+id 律师ID
+{"data":{"list":[{"id":"5","user_id":"1","lawyer_id":"2","which":"0","create_time":"1500831208","content":"1","word_count":"3","lawyer_avatar":"20170808\/10.43.53.435840.jpg","user_avatar":""},{"id":"6","user_id":"1","lawyer_id":"2","which":"0","create_time":"1500831208","content":"2","word_count":"3","lawyer_avatar":"20170808\/10.43.53.435840.jpg","user_avatar":""},{"id":"7","user_id":"1","lawyer_id":"2","which":"0","create_time":"1500831209","content":"9","word_count":"3","lawyer_avatar":"20170808\/10.43.53.435840.jpg","user_avatar":""}]},"code":200,"url":"","message":""}
+{which:0用户回复1律师回复,user_avatar:用户头像,lawyer_avatar:律师头像,create_time:创建时间,content:内容}
+
+
 4.5 快速问题列表
 lawyer/fastQuestionList
 {"data":{"list":[{"id":"1","content":"\u6211\u4e3a\u4ec0\u4e48\u8fd9\u4e48\u5e05\uff1f","top":"0"}]},"code":200,"url":"","message":""}
