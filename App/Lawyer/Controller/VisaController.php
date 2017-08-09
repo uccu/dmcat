@@ -166,9 +166,9 @@ class VisaController extends Controller{
         $data['id'] = $this->L->id;
         $data['update_time'] = TIME_NOW;
 
-        $paths = Func::uploadFiles();
+        // $paths = Func::uploadFiles();
         
-        $data['pic'] = implode(',',$paths);
+        // $data['pic'] = implode(',',$paths);
         
         $model->set($data)->add(true);
         

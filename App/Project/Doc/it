@@ -150,6 +150,14 @@ home/h5?id=5
 
 
 
+2.7 上传图片
+home/uploadPic
+file 图片二进制流
+{"data":{"path":"xxx.jpg"},"code":200,"url":"","message":""}
+{}
+
+
+
 3.1 获取律师列表
 lawyer/getLawyerList
 type 律师类型，1法律2留学转学3签证
@@ -293,7 +301,7 @@ story 爱情故事
 child 子女情况
 history 签证历史
 date 结婚日期
-图片 证明材料，不同字段的图片二进制里即可
+pic 证明材料
 {"data":{},"code":200,"url":"","message":""}
 {}
 
