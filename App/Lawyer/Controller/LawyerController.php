@@ -205,7 +205,7 @@ class LawyerController extends Controller{
 
         $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->page($page,$limit)->order('create_time desc')->get('create_time')->toArray();
         
-        krsort($list);
+        ksort($list);
 
         $out['list'] = array_values($list);
 
