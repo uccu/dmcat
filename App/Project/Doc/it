@@ -167,6 +167,13 @@ id 律师ID
 
 
 
+3.3 检查vip权限
+lawyer/checkLawyerAuth
+id 律师ID
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
 4.1 更新工作签证
 visa/updWork
 age 年龄
