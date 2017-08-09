@@ -21,6 +21,12 @@ use App\Lawyer\Model\VisaGraduateModel;
 use App\Lawyer\Model\VisaStudentModel;
 use App\Lawyer\Model\ConsultPayRuleModel;
 use App\Lawyer\Model\VisaPerpetualModel;
+use App\Lawyer\Model\VisaSelectModel;
+use App\Lawyer\Model\VisaSelectOptionModel;
+use App\Lawyer\Model\VisaTechnologyModel;
+use App\Lawyer\Model\VisaTechnologyOptionModel;
+use App\Lawyer\Model\VisaBusinessModel;
+use App\Lawyer\Model\VisaBusinessOptionModel;
 
 
 use App\Lawyer\Model\UserConsultLimitModel;
@@ -248,11 +254,186 @@ class VisaController extends Controller{
 
     }
 
+    # 技术移民签证
+    function getTechnology(
+        VisaTechnologyModel $model,
+        VisaTechnologyOptionModel $optionModel,
+        VisaSelectModel $visaSelectModel
+        ){
+
+        !$this->L->id && AJAX::error('未登录');
+        $info = $model->find($this->L->id);
+
+        if($info){
+
+            $option = $optionModel->where(['technology_id'=>$info->id])->get('select_id')->toArray();
+        }
+
+        $select = $visaSelectModel->select([
+            'id,name,GROUP_CONCAT(%F) AS `option`','option.name'
+        ],'RAW')->where(['type'=>1])->group('id')->order('ord')->get()->toArray();
+
+        foreach($select as &$v){
+            $v->option = explode(',',$v->option);
+            if($info){
+                $v->value = $option[$v->id]->value;
+                if(!$v->value)$v->value = '';
+            }else{
+                $v->value = '';
+            }
+        }
+
+        $info = AdminFunc::get($model,$this->L->id);
+
+        $out['info'] = $info;
+        $out['select'] = $select;
+        AJAX::success($out);
+
+    }
+    function updTechnology(
+        VisaTechnologyModel $model,
+        VisaTechnologyOptionModel $optionModel,
+        $json
+        ){
+
+        !$this->L->id && AJAX::error('未登录');
+        !$model->field && AJAX::error('字段没有公有化！');
+
+        $data2['id'] = $this->L->id;
+        $data2['update_time'] = TIME_NOW;
+
+        DB::start();
+        
+        $model->set($data2)->add(true);
+
+        $optionModel->where(['technology_id'=>$this->L->id])->remove();
+
+        $obj = json_decode($json);
+        !$obj && AJAX::error('json参数格式错误！');
+        
+        foreach($obj as $k=>$v){
+
+            $data['technology_id'] = $this->L->id;
+            $data['select_id'] = $k;
+            $data['value'] = $v;
+            $optionModel->set($data)->add();
+        }
+
+        DB::commit();
+
+        
+        AJAX::success();
+        
+
+    }
+
+    # 商业签证
+    function getBusiness(
+        VisaBusinessModel $model,
+        VisaBusinessOptionModel $optionModel,
+        VisaSelectModel $visaSelectModel
+        ){
+
+        !$this->L->id && AJAX::error('未登录');
+        $info = $model->find($this->L->id);
+
+        if($info){
+
+            $option = $optionModel->where(['technology_id'=>$info->id])->get('select_id')->toArray();
+        }
+
+        $select = $visaSelectModel->select([
+            'id,name,GROUP_CONCAT(%F) AS `option`','option.name'
+        ],'RAW')->where(['type'=>2])->group('id')->order('ord')->get()->toArray();
+
+        foreach($select as &$v){
+            $v->option = explode(',',$v->option);
+            if($info){
+                $v->value = $option[$v->id]->value;
+                if(!$v->value)$v->value = '';
+            }else{
+                $v->value = '';
+            }
+        }
+
+        $info = AdminFunc::get($model,$this->L->id);
+
+        $out['info'] = $info;
+        $out['select'] = $select;
+        AJAX::success($out);
+
+    }
+    function updBusiness(VisaBusinessModel $model,VisaBusinessOptionModel $optionModel){
 
 
+        !$this->L->id && AJAX::error('未登录');
+        !$model->field && AJAX::error('字段没有公有化！');
 
+        $data2['id'] = $this->L->id;
+        $data2['update_time'] = TIME_NOW;
 
+        DB::start();
+        
+        $model->set($data2)->add(true);
 
+        $optionModel->where(['technology_id'=>$this->L->id])->remove();
+
+        $obj = json_decode($json);
+        !$obj && AJAX::error('json参数格式错误！');
+        
+        foreach($obj as $k=>$v){
+
+            $data['technology_id'] = $this->L->id;
+            $data['select_id'] = $k;
+            $data['value'] = $v;
+            $optionModel->set($data)->add();
+        }
+
+        DB::commit();
+
+        
+        AJAX::success();
+        
+
+    }
+    
+    private function _getVisa(&$data,$model,$type){
+
+        if($info = $model->select('id','update_time')->find($this->L->id)){
+            $info->type = $type;
+            $g['k'.$info->update_time] = $info;
+            $data = array_merge($data,$g);
+            
+
+        }
+    
+    
+    }
+    function getVisa(){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $data = [];
+
+        $this->_getVisa($data,VisaWorkModel::copyMutiInstance(),'work');
+        $this->_getVisa($data,VisaFamilyModel::copyMutiInstance(),'family');
+        $this->_getVisa($data,VisaRefuseModel::copyMutiInstance(),'refuse');
+        $this->_getVisa($data,VisaTravelModel::copyMutiInstance(),'travel');
+        $this->_getVisa($data,VisaMarryModel::copyMutiInstance(),'marry');
+        $this->_getVisa($data,VisaGraduateModel::copyMutiInstance(),'graduate');
+        $this->_getVisa($data,VisaStudentModel::copyMutiInstance(),'student');
+        $this->_getVisa($data,VisaPerpetualModel::copyMutiInstance(),'perpetual');
+        $this->_getVisa($data,VisaTechnologyModel::copyMutiInstance(),'technology');
+        $this->_getVisa($data,VisaBusinessModel::copyMutiInstance(),'business');
+
+        krsort($data);
+
+        $out['list'] = array_values( $data );
+
+        AJAX::success($out);
+        
+
+    }
 
 
 

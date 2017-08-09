@@ -182,6 +182,10 @@ message 问题
 {}
 
 
+4.5 快速问题列表
+lawyer/fastQuestionList
+
+
 4.1 更新工作签证
 visa/updWork
 age 年龄
@@ -326,3 +330,36 @@ relation 关系
 visa/getPerpetual
 {"data":{"info":{"id":"","update_time":"","date":"","time":"","relation":""}},"code":200,"url":"","message":""}
 {见4.15}
+
+
+4.17 更新技术移民签证
+visa/updTechnology
+json json格式化后的键值对，键为选择ID，值为选择的内定，例如"{\"1\":\"幼年\"}"
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+4.18 获取技术移民签证
+visa/getTechnology
+{"data":{"info":{"id":"","update_time":""},"select":[{"id":"1","name":"\u5e74\u9f84\u5206","option":["\u5e7c\u5e74","\u5c11\u5e74"],"value":""}]},"code":200,"url":"","message":""}
+{info.id:签证ID（用户ID）,info.update_time最后更新时间,select.id:选择ID,select.name:选择标题,select.option:选择的内容的数组,select.value:用户保存的选择的内容，空字符串表示未选择}
+
+
+4.19 更新商业签证
+visa/updBusiness
+json json格式化后的键值对，键为选择ID，值为选择的内定，例如"{\"1\":\"幼年\"}"
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+4.20 获取商业签证
+visa/getBusiness
+{"data":{"info":{"id":"","update_time":""},"select":[{"id":"1","name":"\u5e74\u9f84\u5206","option":["\u5e7c\u5e74","\u5c11\u5e74"],"value":""}]},"code":200,"url":"","message":""}
+{info.id:签证ID（用户ID）,info.update_time最后更新时间,select.id:选择ID,select.name:选择标题,select.option:选择的内容的数组,select.value:用户保存的选择的内容，空字符串表示未选择}
+
+
+
+4.21 获取我的签证
+visa/getVisa
+{"data":{"list":[{"id":"1","update_time":"1502095428","type":"work"}]},"code":200,"url":"","message":""}
+{update_time:更新时间,type:类型{work工作签证,family家庭团聚签证,refuse拒签上诉,travel旅游签证,marry配偶签证,graduate学生毕业签证,student学生签证/陪读,perpetual永久签证,technology技术移民签证,business商业签证}}

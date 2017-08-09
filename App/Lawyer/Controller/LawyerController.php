@@ -60,7 +60,7 @@ class LawyerController extends Controller{
 
         $where['id'] = $id;
         $where['active'] = 1;
-        $info = $model->select('avatar','name','description','company','site','fee_star','average_reply','feedback_star','type','online_time')->where($where)->find();
+        $info = $model->select('id','avatar','name','description','company','site','fee_star','average_reply','feedback_star','type','online_time')->where($where)->find();
         !$info && AJAX::error('律师不存在！');
 
         $info->average_reply = Func::time_zcalculate($info->average_reply);
@@ -190,6 +190,26 @@ class LawyerController extends Controller{
     }
 
 
+    /** 获取聊天记录
+     * getChatList
+     * @param mixed $id 
+     * @param mixed $consultModel 
+     * @return mixed 
+     */
+    function getChatList($id,ConsultModel $consultModel){
+
+        !$this->L->id && AJAX::error('未登录');
+        
+        $where['user_id'] = $this->L->id;
+        $where['lawyer_id'] = $id;
+
+        $list = $consultModel->where($where)->order('create_time')->get()->toArray();
+
+        $out['list'] = $list;
+
+        AJAX::success($out);
+
+    }
 
 
 
