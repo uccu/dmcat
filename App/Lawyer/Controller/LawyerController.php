@@ -230,7 +230,7 @@ class LawyerController extends Controller{
         $list = [];
         foreach($lawyer_list as $v){
 
-            $list[] = $consultModel->select('content','create_time','lawyer_id','lawyer.name','lawyer.avatar')->where($where)->where(['lawyer_id'=>$v])->order('create_time desc')->find();
+            $list[] = $consultModel->select('content','create_time','lawyer_id','lawyer.name','lawyer.avatar','lawyer.type')->where($where)->where(['lawyer_id'=>$v])->order('create_time desc')->find();
         }
 
         $out['list'] = $list;
@@ -361,6 +361,11 @@ class LawyerController extends Controller{
                         '1' =>  '留学转学',
                         '2' =>  '签证',
                     ]
+                ],
+                [
+                    'title' =>  '账号',
+                    'name'  =>  'phone',
+                    'size'  =>  '4',
                 ],
                 [
                     'title' =>  '名字',
