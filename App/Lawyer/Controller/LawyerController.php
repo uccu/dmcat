@@ -196,16 +196,18 @@ class LawyerController extends Controller{
      * @param mixed $consultModel 
      * @return mixed 
      */
-    function getChatList($id,ConsultModel $consultModel){
+    function getChatList($id,ConsultModel $consultModel,$page = 1,$limit = 10){
 
         !$this->L->id && AJAX::error('未登录');
         
         $where['user_id'] = $this->L->id;
         $where['lawyer_id'] = $id;
 
-        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->order('create_time')->get()->toArray();
+        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->page($page,$limit)->order('create_time desc')->get('create_time')->toArray();
+        
+        krsort($list);
 
-        $out['list'] = $list;
+        $out['list'] = array_values($list);
 
         AJAX::success($out);
 

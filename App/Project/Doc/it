@@ -193,6 +193,8 @@ lawyer/getMyChat
 3.6 聊天记录
 lawyer/getChatList
 id 律师ID
+page 页数
+limit 每页限制数量
 {"data":{"list":[{"id":"5","user_id":"1","lawyer_id":"2","which":"0","create_time":"1500831208","content":"1","word_count":"3","lawyer_avatar":"20170808\/10.43.53.435840.jpg","user_avatar":""},{"id":"6","user_id":"1","lawyer_id":"2","which":"0","create_time":"1500831208","content":"2","word_count":"3","lawyer_avatar":"20170808\/10.43.53.435840.jpg","user_avatar":""},{"id":"7","user_id":"1","lawyer_id":"2","which":"0","create_time":"1500831209","content":"9","word_count":"3","lawyer_avatar":"20170808\/10.43.53.435840.jpg","user_avatar":""}]},"code":200,"url":"","message":""}
 {which:0用户回复1律师回复,user_avatar:用户头像,lawyer_avatar:律师头像,create_time:创建时间,content:内容}
 
