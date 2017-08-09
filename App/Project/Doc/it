@@ -208,7 +208,7 @@ type 签证类型
 {}
 
 
-4.5 快速问题列表
+3.8 快速问题列表
 lawyer/fastQuestionList
 {"data":{"list":[{"id":"1","content":"\u6211\u4e3a\u4ec0\u4e48\u8fd9\u4e48\u5e05\uff1f","top":"0"}]},"code":200,"url":"","message":""}
 {content:问题内容}
