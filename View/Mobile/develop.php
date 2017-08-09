@@ -9,7 +9,7 @@
     <meta content="telephone=no" name="format-detection">
     <meta content="email=no" name="format-detection">
     <meta name="format-detection" content="telephone=no">
-    <title>企业荣誉</title>
+    <title>发展历程</title>
     <link rel="stylesheet" href="css/swiper.min.css">
     <link href="css/reset.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/main.css">
@@ -28,7 +28,7 @@
     <img src="img/group/banner1.png">
 </div>
 <div class="chairman-search">
-    <!input type="search" placeholder="输入关键字"-->
+    <!--input type="search" placeholder="输入关键字"-->
 </div>
 <div class="main-box" style="margin-bototm:0">
     <h1>发展历程</h1>
@@ -72,10 +72,15 @@
     var no_move = true;
 
     $(document).ready(function () {
+        var checkedIndex = $('.checked').index()
+        $("#develop_box").css("margin-left", -(checkedIndex * $('#develop_box > span').width()) + "px");
+
         $("#develop_box > span").click(function () {
             var obj = $(this);
-            location = location.pathname+'?year='+obj.text();
+            location = location.pathname+'?year='+obj.text();        
         });
+
+
     });
 
     function navMove(type) {

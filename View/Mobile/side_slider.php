@@ -82,4 +82,35 @@
     </div>
     
 </div>
+<div class="toTop" style="
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    color: #ccc;
+    background: #fff;
+    padding: 10px 20px;
+    border: solid #ccc 1px;
+    display:none;
+"><p>返回</p><p>顶部</p></div>
 <script src="js/sidebar.js"></script>
+<script>
+$('.header-center').click(function(){
+    location = '/mobile/index'
+})
+
+$(document).bind('scroll',function(){
+
+    if($('body').scrollTop() != 0){
+        $('.toTop').fadeIn();
+    }else{
+        $('.toTop').fadeOut();
+    }
+})
+$('.toTop').click(function(){
+    $('body').animate({scrollTop:0})
+    $('.toTop').fadeOut();
+})
+$('body').click(function(){
+    if($('.sidebar-box').css('display') == 'block' && !$('.sidebar-box').is(":animated"))$(".sidebar-box").toggle(1000).css('right','0')
+})
+</script>

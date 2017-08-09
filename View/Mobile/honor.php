@@ -9,7 +9,7 @@
     <meta content="telephone=no" name="format-detection">
     <meta content="email=no" name="format-detection">
     <meta name="format-detection" content="telephone=no">
-    <title>发展历程</title>
+    <title>企业荣誉</title>
     <link rel="stylesheet" href="css/swiper.min.css">
     <link href="css/reset.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/main.css">
@@ -17,6 +17,11 @@
     <script type="text/javascript" src="js/common.js"></script>
     <script src="js/swiper.jquery.min.js"></script>
 </head>
+<style type="text/css">
+    .development-history .develop-one-month div h2{
+        margin-top:0;
+    }
+</style>
 <body>
 <header>
     <div class="header-left" onclick="getBackShuaXin()"></div>
@@ -69,12 +74,14 @@
 </div>
 <?php include('side_slider.php');?>
 <script type="text/javascript">
-    var obj_width = 84;
+    var obj_width = 124;
     var num = $("#develop_box > span").length;
     $("#develop_box").css("width", num * obj_width + "px");
     var no_move = true;
 
     $(document).ready(function () {
+        var checkedIndex = $('.checked').index()
+        $("#develop_box").css("margin-left", -(checkedIndex * $('#develop_box > span').width()) + "px");
         $("#develop_box > span").click(function () {
             var obj = $(this);
             location = location.pathname+'?year='+obj.text();
@@ -101,6 +108,5 @@
         obj.css("margin-left", left + (obj_width * type) + "px");
     }
 </script>
-
 </body>
 </html>

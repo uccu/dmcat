@@ -9,9 +9,9 @@ header{height:0.85rem;padding:0 0.256rem;background: #de0025;clear: both;overflo
 
 .index-banner{width:100%;height:2.95rem;margin-bottom:0.4rem}
 .index-banner img{width:100%}
-.index-banner .swiper-pagination{text-align:right;bottom:25px !important;right:20px !important;width:100%;}
-.index-banner .swiper-pagination-bullet{background:url("../img/banner-swiper2.png") no-repeat;background-size:100%;width:0.20rem;height:0.20rem;opacity:1}
-.index-banner .swiper-pagination-bullet-active{background:url("../img/banner-swiper1.png") no-repeat;background-size:100%;width:0.23rem;height:0.23rem;}
+.index-banner .swiper-pagination{text-align:right;bottom:0px !important;right:20px !important;width:100%;}
+.index-banner .swiper-pagination-bullet{background:url("../img/banner-swiper2.png") no-repeat;background-size:100%;width:0.14rem;height:0.14rem;opacity:1}
+.index-banner .swiper-pagination-bullet-active{background:url("../img/banner-swiper1.png") no-repeat;background-size:100%;width:0.16rem;height:0.16rem;}
  .swiper-container-horizontal>.index-banner .swiper-pagination-bullets, .swiper-pagination-custom, .swiper-pagination-fraction,.swiper-pagination-custom, .swiper-pagination-fraction{bottom:25px !important;right:20px !important;width:100%;}
 
 .main-box{background: #ffffff; width:100%;margin:0.2rem 0;overflow: hidden}
@@ -68,7 +68,7 @@ footer p:nth-child(1) span:nth-child(1){line-height:0.5rem}
 .sidebar-box .sidebar-main ul li{border-top:1px solid #ffffff;}
 .sidebar-box .sidebar-main ul li a{display:block;font-size:0.221rem;color:#999999;line-height:0.5rem;text-align: center}
 /*集团简介*/
-.group-banner{height:2.21rem;width:100%}
+.group-banner{/*height:2.21rem;*/width:100%}
 .group-banner img{height:100%;width:100%}
 .choose{margin:0.2rem 0.256rem;overflow: hidden;}
 .slect-year{display:block;float:left;border:none;width:2.55rem;height:0.5rem;background:#ffffff url("../img/group/bottom.png") no-repeat;background-position:5.3rem center;background-size:0.3rem;}
@@ -110,7 +110,7 @@ footer p:nth-child(1) span:nth-child(1){line-height:0.5rem}
 
 .development-history{padding-top:0.2rem;background: #ffffff}
 .development-history .develop-one-month{position: relative;padding-left:1.2rem;padding-right:0.256rem}
-.development-history .develop-one-month span{display: block; position: absolute; line-height: 0.4rem; font-size: 0.2rem; color: #333; width: 0.6rem; left: 0.256rem;}
+.development-history .develop-one-month span{display: block; position: absolute; /*line-height: 0.4rem; */font-size: 0.2rem; color: #333; width: 0.6rem; left: 0.256rem;}
 .development-history .develop-one-month div{padding-left: 0.2rem; border-left: 1px solid #DEDEDE; padding-bottom: 0.4rem;}
 .development-history .develop-one-month div h1{ font-size: 0.256rem; color: #333; position: relative; top:0;}
 .development-history .develop-one-month div h1:before{content: ""; display: block; width:0.2rem; height: 0.2rem; background: #BDBDBD; border-radius: 100%; position: absolute; left: -0.32rem; top:0;}

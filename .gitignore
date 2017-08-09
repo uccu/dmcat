@@ -5,4 +5,5 @@ upload
 composer.lock
 Public/Home/images
 Public/mobile/img
+vendor
 
