@@ -86,7 +86,7 @@
                 save.appendTo('.optBox')
                 save.on('click',function(){
                     var data = j('#modal_new form').serializeArray(),k
-                    j('#modal_new form .summernote[data-name]').each(function(){data.push({name:j(this).attr('data-name'),value:j(this).summernote('code')})})
+                    j('#modal_new form .summernote[data-name]').each(function(){data.push({name:j(this).attr('data-name'),value:j(this).summernote('code').replace(/<xml>[\s\S]*<\/xml>/ig,'')})})
                     curl(m.opt.upd,data,function(b){
                         curl_succ('success!');
                         m.opt.back && setTimeout(function(){gotoTag(m.opt.back,1)},1000)
