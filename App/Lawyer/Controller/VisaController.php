@@ -65,7 +65,7 @@ class VisaController extends Controller{
         $data['update_time'] = TIME_NOW;
         
         $model->set($data)->add(true);
-        
+        $out['type'] = 'work';
         AJAX::success($out);
         
 
@@ -90,7 +90,7 @@ class VisaController extends Controller{
         $data['update_time'] = TIME_NOW;
         
         $model->set($data)->add(true);
-        
+        $out['type'] = 'family';
         AJAX::success($out);
         
 
@@ -116,7 +116,7 @@ class VisaController extends Controller{
         $data['update_time'] = TIME_NOW;
         
         $model->set($data)->add(true);
-        
+        $out['type'] = 'refuse';
         AJAX::success($out);
         
 
@@ -141,7 +141,7 @@ class VisaController extends Controller{
         $data['update_time'] = TIME_NOW;
         
         $model->set($data)->add(true);
-        
+        $out['type'] = 'travel';
         AJAX::success($out);
         
 
@@ -171,7 +171,7 @@ class VisaController extends Controller{
         // $data['pic'] = implode(',',$paths);
         
         $model->set($data)->add(true);
-        
+        $out['type'] = 'marry';
         AJAX::success($out);
         
 
@@ -197,7 +197,7 @@ class VisaController extends Controller{
         $data['update_time'] = TIME_NOW;
         
         $model->set($data)->add(true);
-        
+        $out['type'] = 'graduate';
         AJAX::success($out);
         
 
@@ -223,7 +223,7 @@ class VisaController extends Controller{
         $data['update_time'] = TIME_NOW;
         
         $model->set($data)->add(true);
-        
+        $out['type'] = 'student';
         AJAX::success($out);
         
 
@@ -248,7 +248,7 @@ class VisaController extends Controller{
         $data['update_time'] = TIME_NOW;
         
         $model->set($data)->add(true);
-        
+        $out['type'] = 'perpetual';
         AJAX::success($out);
         
 
@@ -321,8 +321,8 @@ class VisaController extends Controller{
 
         DB::commit();
 
-        
-        AJAX::success();
+        $out['type'] = 'technology';
+        AJAX::success($out);
         
 
     }
@@ -339,7 +339,7 @@ class VisaController extends Controller{
 
         if($info){
 
-            $option = $optionModel->where(['technology_id'=>$info->id])->get('select_id')->toArray();
+            $option = $optionModel->where(['business_id'=>$info->id])->get('select_id')->toArray();
         }
 
         $select = $visaSelectModel->select([
@@ -376,14 +376,14 @@ class VisaController extends Controller{
         
         $model->set($data2)->add(true);
 
-        $optionModel->where(['technology_id'=>$this->L->id])->remove();
+        $optionModel->where(['business_id'=>$this->L->id])->remove();
 
         $obj = json_decode($json);
         !$obj && AJAX::error('json参数格式错误！');
         
         foreach($obj as $k=>$v){
 
-            $data['technology_id'] = $this->L->id;
+            $data['business_id'] = $this->L->id;
             $data['select_id'] = $k;
             $data['value'] = $v;
             $optionModel->set($data)->add();
@@ -391,8 +391,8 @@ class VisaController extends Controller{
 
         DB::commit();
 
-        
-        AJAX::success();
+        $out['type'] = 'business';
+        AJAX::success($out);
         
 
     }
