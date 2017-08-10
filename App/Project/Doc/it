@@ -422,3 +422,32 @@ pay/fake_play
 type 会员类型0法律，1留学转学，2签证
 {"data":{},"code":200,"url":"","message":""}
 {}
+
+
+
+6.1 登录
+web/login
+{"data":{"user_token":"ewGEeCfcFXMbvaFXAfWEQzTdMRFoHEKyMbl3O99ECC6Lrf7Lm2B4VW5uPddZxObAqxM7kovZoNcffNqPqHXwvqkiJQ0tLeYuGdFRr9u4f5p0=","id":"1"},"code":200,"url":"","message":""}
+{user_token:用户TOKEN,id:用户ID}
+
+
+
+6.2 获取聊天记录
+web/getChatList
+{"data":{"list":[{"id":"8","user_id":"1","lawyer_id":"1","which":"1","create_time":"1502265141","content":"123","word_count":"3","lawyer_avatar":"20170810\/00.15.07.887701.jpg","user_avatar":""},{"id":"1","user_id":"1","lawyer_id":"1","which":"0","create_time":"1500831208","content":"111","word_count":"3","lawyer_avatar":"20170810\/00.15.07.887701.jpg","user_avatar":""}]},"code":200,"url":"","message":""}
+{见3.6}
+
+
+6.3 获取咨询我的用户
+web/getMyChat
+{"data":{"list":[{"content":"123","create_time":"1502265141","user_id":"1","name":"cat","avatar":""},{"content":"5","create_time":"1502266768","user_id":"10","name":"\u5c0f\u706c\u6770\u4e28","avatar":"20170809\/17.56.07.699961.jpg"}]},"code":200,"url":"","message":""}
+{见3.5,user:用户ID}
+
+
+
+6.4 回复用户
+web/sendQuestionToUser
+id 用户ID
+message 内容
+{"data":{},"code":200,"url":"","message":""}
+{}

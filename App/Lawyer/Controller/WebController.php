@@ -141,7 +141,7 @@ class WebController extends Controller{
         $list = [];
         foreach($lawyer_list as $v){
 
-            $list[] = $consultModel->select('content','create_time','lawyer_id','user.name','user.avatar')->where($where)->where(['user_id'=>$v])->order('create_time desc')->find();
+            $list[] = $consultModel->select('content','create_time','user_id','user.name','user.avatar')->where($where)->where(['user_id'=>$v])->order('create_time desc')->find();
         }
 
         $out['list'] = $list;
@@ -153,12 +153,12 @@ class WebController extends Controller{
 
 
     /** 回复问题
-     * sendQuestionToLawyer
+     * sendQuestionToUser
      * @param mixed $id 
      * @param mixed $message 
      * @return mixed 
      */
-    function sendQuestionToLawyer($id,$message,LawyerModel $lawyerModel,ConsultModel $consultModel){
+    function sendQuestionToUser($id,$message,ConsultModel $consultModel){
         
         !$this->L->id && AJAX::error('未登录');
 

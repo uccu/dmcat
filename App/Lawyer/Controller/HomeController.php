@@ -322,7 +322,7 @@ class HomeController extends Controller{
                     'name'  =>  'id',
                 ],
                 [
-                    'title' =>  '内部h5',
+                    'title' =>  '',
                     'name'  =>  'content',
                     'type'  =>  'h5',
                 ]
