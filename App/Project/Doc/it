@@ -400,3 +400,18 @@ visa/getBusiness
 visa/getVisa
 {"data":{"list":[{"id":"1","update_time":"1502095428","type":"work"}]},"code":200,"url":"","message":""}
 {update_time:更新时间,type:类型{work工作签证,family家庭团聚签证,refuse拒签上诉,travel旅游签证,marry配偶签证,graduate学生毕业签证,student学生签证/陪读,perpetual永久签证,technology技术移民签证,business商业签证}}
+
+
+
+5.1 获取支付金额
+pay/getPrice
+type 会员类型0法律，1留学转学，2签证
+{"data":{"price":"200.00","type":"0"},"code":200,"url":"","message":""}
+{price:金额,type:会员类型}
+
+
+5.2 模拟支付
+pay/fake_play
+type 会员类型0法律，1留学转学，2签证
+{"data":{},"code":200,"url":"","message":""}
+{}

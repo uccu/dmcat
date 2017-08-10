@@ -17,6 +17,7 @@ use App\Lawyer\Tool\AdminFunc;
 use App\Lawyer\Model\UserModel;
 use App\Lawyer\Model\CaptchaModel;
 use App\Lawyer\Model\UserConsultLimitModel;
+use App\Lawyer\Model\UserSchoolModel;
 
 
 class UserController extends Controller{
@@ -496,6 +497,21 @@ class UserController extends Controller{
             $out['vip2']['vip'] = '1';
             $out['vip2']['vipInfo'] = $info;
         }
+
+        AJAX::success($out);
+
+    }
+
+
+    /** 我的学校列表
+     * mySchool
+     * @return mixed 
+     */
+    function mySchool(UserSchoolModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+        $list = $model->select('school.name','school.id>school_id','school.pic','school.description','id')->where(['user_id'=>$this->L->id])->get()->toArray();
+        $out['list'] = $list;
 
         AJAX::success($out);
 
