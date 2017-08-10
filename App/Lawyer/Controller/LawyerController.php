@@ -40,7 +40,7 @@ class LawyerController extends Controller{
 
         $where['type'] = $type;
         $where['active'] = 1;
-        $list = $model->select('id','avatar','name','description','company','site','fee_star','average_reply','feedback_star','type','online_time')->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
+        $list = $model->select('id','avatar','name','star','description','company','site','fee_star','average_reply','feedback_star','type','online_time')->where($where)->page($page,$limit)->order('top desc','id desc')->get()->toArray();
         foreach($list as &$l){
             $l->average_reply = Func::time_zcalculate($l->average_reply);
         }
@@ -60,7 +60,7 @@ class LawyerController extends Controller{
 
         $where['id'] = $id;
         $where['active'] = 1;
-        $info = $model->select('id','avatar','name','description','company','site','fee_star','average_reply','feedback_star','type','online_time')->where($where)->find();
+        $info = $model->select('id','avatar','star','name','description','company','site','fee_star','average_reply','feedback_star','type','online_time')->where($where)->find();
         !$info && AJAX::error('律师不存在！');
 
         $info->average_reply = Func::time_zcalculate($info->average_reply);

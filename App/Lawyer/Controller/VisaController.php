@@ -10,7 +10,7 @@ use Request;
 use App\Lawyer\Middleware\L;
 use App\Lawyer\Tool\Func;
 use App\Lawyer\Tool\AdminFunc;
-
+use DB;
 # Model
 use App\Lawyer\Model\VisaWorkModel;
 use App\Lawyer\Model\VisaFamilyModel;
