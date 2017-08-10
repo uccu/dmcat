@@ -44,7 +44,7 @@ class HomeController extends Controller{
 
 
         $lawyer = $lawyerModel->select(
-            'id','name','description','avatar','type','fee_star','feedback_star','average_reply','online_time'
+            'star','id','name','description','avatar','type','fee_star','feedback_star','average_reply','online_time'
         )->where(['active'=>1])->order('top desc,rand()','RAW')->limit(10)->get()->toArray();
 
         foreach($lawyer as &$l){

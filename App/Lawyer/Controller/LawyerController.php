@@ -440,9 +440,16 @@ class LawyerController extends Controller{
                     'size'  =>  '2',
                 ],
                 [
-                    'title' =>  '星级',
+                    'title' =>  '反馈星级',
                     'name'  =>  'feedback_star',
-                    'size'  =>  '2',             	
+                    'size'  =>  '2',
+                    'default'=> '0',
+                ],
+                [
+                    'title' =>  '专家星级',
+                    'name'  =>  'star',
+                    'size'  =>  '2',
+                    'default'=> '0',        	
                 ],
                 [
                     'title' =>  '简介',
