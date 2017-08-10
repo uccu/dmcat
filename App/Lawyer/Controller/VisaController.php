@@ -488,10 +488,17 @@ class VisaController extends Controller{
                     'description'=>'*-1为无限'
                 ],
                 [
+                    'title' =>  '会员金额',
+                    'name'  =>  'price',
+                    'size'  =>  '2',
+                    'default'=> '0.00',
+                ],
+                [
                     'title' =>  '会员权益',
                     'name'  =>  'content',
                     'type'  =>  'h5'
                 ],
+                
                 
                 
 
