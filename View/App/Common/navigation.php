@@ -1,6 +1,6 @@
 <div id="navigation">
     <div class="w-1200">
-        <div class="logo"></div>
+        <div class="logo" style="cursor:pointer" onclick="location='/'"></div>
         <div class="zh_en">
             <a href="javascript:void(0);"<?php echo $this->L->lang=='cn'?'':' class="no-check toCn"';?>>中文</a>
             <em>|</em>

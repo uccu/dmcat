@@ -82,7 +82,9 @@
         if (type == 1 && left >= 0) {
             return false;
         }
-        obj.css("margin-left", left + (obj_width * type) + "px");
+        
+        if(left + (obj_width * type * 10)>=0)obj.css("margin-left",  "0px");
+        else obj.css("margin-left", left + (obj_width * type * 10) + "px");
     }
 </script>
 <?php include(VIEW_ROOT.'App/Common/common_footer.php');?>

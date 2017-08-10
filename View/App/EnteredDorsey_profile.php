@@ -14,12 +14,14 @@
         <div class="content-right" style="min-height:700px">
             <div class="content-title"><?php echo lang('集团简介');?></div>
             <?php echo langV($page,'content');?>
-
+            <style> 
+                .product_content p{height:auto}
+            </style>
             <?php
                 foreach($introductionProduct as $v){
 
                     echo '<div class="product_title">'.langV($v,'title').'</div>
-                    <div class="product_content">
+                    <div class="product_content" style="height:370px">
                         <img src="/pic/'.$v->pic.'">
                         <h1>'.langV($v,'title').'</h1>';
                     echo langV($v,'content');

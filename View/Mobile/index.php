@@ -40,14 +40,14 @@
         <!-- 如果需要分页器 -->
         <div class="swiper-pagination"></div>
     </div>
-    <div class="main-box">
+    <div class="main-boxs">
         <div class="tabchange-nav video-nav" style="overflow-x: scroll; overflow-y: hidden;">
             <ul class="tabchange" >
-                <li class="tabchange-active">德汇宝贝广场</li>
-                <li>德汇万达广场</li>
-                <li>德汇特色小镇</li>
-                <li>德汇物流</li>
-                <li>德汇金融</li>
+                <li data-num="1" class="tabchange-active">德汇宝贝广场</li>
+                <li data-num="2">德汇万达广场</li>
+                <li data-num="3">德汇特色小镇</li>
+                <li data-num="4">德汇物流</li>
+                <li data-num="5">德汇金融</li>
             </ul>
         </div>
         <div class="tabcontain" style="display: block;">
@@ -269,14 +269,44 @@
                     }
                 });
             }
+
+
+
+        // $(".tabchange").find('li').click(function () {
+        //     var obj = $(this);
+        //     var bodyW = $('body').width();
+        //     $(this).addClass('tabchange-active');
+        //     $(this).siblings().removeClass('tabchange-active');
+        //     var num = parseInt(obj.attr("data-num")) - 1;
+        //     console.info(-bodyW * num + "px");
+        //     $('.tabcontain').eq($(this).index()).css("margin-left", -bodyW * num + "px");
+        
+
+
+        // });
+
+
+
+        $(".tabcontain").removeClass('hid').addClass('hid')
+            $(".tabchange").find('li').click(function(){
+                $(".tabcontain").css('display','none');
+                $(this).addClass('tabchange-active');
+                $(this).siblings().removeClass('tabchange-active')
+                $('.tabcontain').eq($(this).index()).css('display','block')
+            })
+
+
+
+
+
+
+
+
+
+
+
         }
-        // $(".tabcontain").removeClass('hid').addClass('hid')
-        $(".tabchange").find('li').click(function(){
-            // $(".tabcontain").css('display','none');
-            $(this).addClass('tabchange-active');
-            $(this).siblings().removeClass('tabchange-active')
-            $('.tabcontain').eq($(this).index()).css('display','block')
-        })
+        
 
         $(".news-box-title").find('li').click(function(){
             $(this).find("h1").addClass("news-active");
