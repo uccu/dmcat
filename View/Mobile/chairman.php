@@ -44,6 +44,9 @@
 <div class="main-box">
     <h1>董事长图片</h1>
     <h3>CHAIRMAN PICTURE</h3>
+    <style>
+    .main-box .chairman-picture .chairman-picturehead li{height:160px}
+    </style>
     <div class="chairman-picture">
         <ul class="chairman-picturehead">
 
@@ -55,7 +58,7 @@
                     <img src="/pic/'.$v->first.'">
                     <span data-image="'.$v->picArray.'">'.$v->count.' 张</span>
                 </div>
-                <h2>'.langV($v,'description',16).'</h2>
+                <h2>'.langV($v,'description',40).'</h2>
             </li>';
                     }
                 

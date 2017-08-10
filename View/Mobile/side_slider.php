@@ -91,6 +91,8 @@
     padding: 10px 20px;
     border: solid #ccc 1px;
     display:none;
+    cursor:pointer;
+    z-index: 100;
 "><p>返回</p><p>顶部</p></div>
 <script src="js/sidebar.js"></script>
 <script>
@@ -111,7 +113,7 @@ $('.toTop').click(function(){
     $('.toTop').fadeOut();
 })
 $('body').click(function(e){
-    if(e.offsetX>$('.sidebar-box').offset().left && e.offsetY>$('.sidebar-box').offset().top && e.offsetY < $('.sidebar-box').offset().top + $('.sidebar-box').height())
+    if(e.clientX<$('.sidebar-box').offset().left || (e.clientY<$('.sidebar-box').offset().top - $('body').scrollTop() || e.clientY > $('.sidebar-box').offset().top - $('body').scrollTop() + $('.sidebar-box').height()))
     if($('.sidebar-box').css('display') == 'block' && !$('.sidebar-box').is(":animated"))$(".sidebar-box").toggle(1000).css('right','0')
 })
 </script>
