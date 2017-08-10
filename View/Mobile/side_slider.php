@@ -110,7 +110,8 @@ $('.toTop').click(function(){
     $('body').animate({scrollTop:0})
     $('.toTop').fadeOut();
 })
-$('body').click(function(){
+$('body').click(function(e){
+    if(e.offsetX>$('.sidebar-box').offset().left && e.offsetY>$('.sidebar-box').offset().top && e.offsetY < $('.sidebar-box').offset().top + $('.sidebar-box').height())
     if($('.sidebar-box').css('display') == 'block' && !$('.sidebar-box').is(":animated"))$(".sidebar-box").toggle(1000).css('right','0')
 })
 </script>

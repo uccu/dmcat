@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -100,7 +100,7 @@
         if (type == 1 && left >= 0) {
             return false;
         }
-        obj.css("margin-left", left + (obj_width * type) + "px");
+        obj.css("margin-left", left + (2.9*obj_width * type) + "px");
     }
 </script>
 <?php include('side_slider.php');?>

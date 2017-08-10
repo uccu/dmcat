@@ -270,9 +270,9 @@
                 });
             }
         }
-        $(".tabcontain").removeClass('hid').addClass('hid')
+        // $(".tabcontain").removeClass('hid').addClass('hid')
         $(".tabchange").find('li').click(function(){
-            $(".tabcontain").css('display','none');
+            // $(".tabcontain").css('display','none');
             $(this).addClass('tabchange-active');
             $(this).siblings().removeClass('tabchange-active')
             $('.tabcontain').eq($(this).index()).css('display','block')
@@ -285,7 +285,7 @@
             $(".news-tabcontain").eq($(this).index()).css("display","block")
         })
 
-        //限时抢购轮播图
+        //发展历程轮播图
         var flashSwiper = new Swiper(".new-flashSalebanner", {
             slidesPerView: "auto",
             loop : true,

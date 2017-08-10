@@ -85,6 +85,7 @@
         loop: true,
         pagination: '.swiper-pagination',//分页显示设置
         autoplay: 6000,
+        autoHeight:true,
         paginationClickable: true,
         nested:true,
     });
