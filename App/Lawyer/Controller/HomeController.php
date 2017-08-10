@@ -300,4 +300,65 @@ class HomeController extends Controller{
         AJAX::success($out);
     }
 
+
+    function admin_h5_get(H5Model $model,$id){
+        $this->L->adminPermissionCheck(74);
+
+        
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/home/admin_h5_get',
+                'upd'   => '/home/admin_h5_upd',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+
+            ];
+        $tbody = 
+            [
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'title' =>  '内部h5',
+                    'name'  =>  'content',
+                    'type'  =>  'h5',
+                ]
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+        $name = $info->title;
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_h5_upd(H5Model $model,$id){
+        $this->L->adminPermissionCheck(74);
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+        
+        $upd = AdminFunc::upd($model,$id,$data);
+
+        $out['upd'] = $upd;
+        
+        AJAX::success($out);
+    }
 }
