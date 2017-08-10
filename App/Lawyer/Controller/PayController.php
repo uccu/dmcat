@@ -15,6 +15,7 @@ use DB;
 
 use App\Lawyer\Model\PaymentModel;
 use App\Lawyer\Model\UserConsultLimitModel;
+use App\Lawyer\Model\ConsultPayRuleModel;
 
 class PayController extends Controller{
 
