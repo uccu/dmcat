@@ -13,6 +13,7 @@ use App\School\Model\UserClassesModel;
 use App\School\Model\MessageModel;
 use App\School\Model\AttendanceModel;
 use App\School\Model\ClassesMessageModel;
+use App\School\Model\NoticeModel;
 use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
@@ -286,19 +287,131 @@ class TeacherController extends Controller{
     }
     
 
-
-    function sendMessage($user_id,$message,UserClassesModel $userClassesModel,StudentModel $studentModel){
-
+    # 老师发送通知
+    function sendNotice(
+        $title,
+        $content,
+        $short_message,
+        $student_id,
+        NoticeModel $noticeModel,
+        UserClassesModel $userClassesModel,
+        StudentModel $studentModel
+        ){
         $id = $this->L->id;
-        if(!$id)AJAX::error('没有管理的班级');
+        if(!$id)AJAX::error('not login');
 
-        if(!$user_id){
+        if($student_id){
+
+            $data['title'] = $title;
+            $data['short_message'] = $short_message;
+            $data['content'] = $content;
+            $data['create_time'] = TIME_NOW;
+            $data['student_id'] = $student_id;
+            $data['user_id'] =$this->L->id;
+            $data['type'] = 1;
+            $out['l'] = $noticeModel->set($data)->add()->getStatus();
+
+        }else{
             $classes_id = $userClassesModel->where(['user_id'=>$id])->find()->classes_id;
-            if(!$classes_id)AJAX::error('没有管理的班级');
+            if(!$classes_id)AJAX::error('没有管理的班级！');
+            $data['title'] = $title;
+            $data['short_message'] = $short_message;
+            $data['content'] = $content;
+            $data['create_time'] = TIME_NOW;
+            $data['classes_id'] = $classes_id;
+            $data['user_id'] =$this->L->id;
+            $data['type'] = 2;
+            $out['l'] = $noticeModel->set($data)->add()->getStatus();
 
-            $studentModel->where(['classes_id'=>$classes_id])->get_field('parent.id');
         }
 
+        
+        AJAX::success($out);
+
+
+    }
+
+
+    # 老师历史通知
+    function MyClassesNotice(NoticeModel $noticeModel){
+        
+        $id = $this->L->id;
+        if(!$id)AJAX::error('not login');
+
+        $where['user_id'] = $this->L->id;
+        $where['type'] = 2;
+        $list = $noticeModel->where($where)->order('create_time','DESC')->get()->toArray();
+
+        $out['list'] = $list;
+
+        AJXA::success($out);
+
+    }
+
+    # 老师历史通知
+    function MyStudentNotice(NoticeModel $noticeModel){
+        
+        $id = $this->L->id;
+        if(!$id)AJAX::error('not login');
+
+        $where['user_id'] = $this->L->id;
+        $where['type'] = 1;
+        $list = $noticeModel->where($where)->order('create_time','DESC')->get()->toArray();
+
+        $out['list'] = $list;
+
+        AJXA::success($out);
+
+    }
+
+
+    function post(){
+
+        View::hamlReader('Teacher/'.__FUNCTION__,'App');
+    }
+    function send(UserClassesModel $userClassesModel,StudentModel $studentModel){
+        $id = $this->L->id;
+        if(!$id)header('Location:/home/login');
+        $classes_id = $userClassesModel->where(['user_id'=>$id])->find()->classes_id;
+
+        $student = $studentModel->where(['classes_id'=>$classes_id])->get()->toArray();
+
+        View::addData(['student'=>$student]);
+
+        View::hamlReader('Teacher/'.__FUNCTION__,'App');
+    }
+    function history_student(NoticeModel $noticeModel){
+
+        $where['user_id'] = $this->L->id;
+        $where['type'] = 1;
+        $list = $noticeModel->select('*','student.name','student.name_en')->where($where)->order('create_time','DESC')->get()->toArray();
+
+        foreach($list as &$v){
+            $v->date = date('Y-m-d',$v->create_time);
+        }
+
+        View::addData(['list'=>$list]);
+        View::hamlReader('Teacher/'.__FUNCTION__,'App');
+    }
+
+
+
+    function history_all(NoticeModel $noticeModel){
+
+        $id = $this->L->id;
+        if(!$id)header('Location:/home/login');
+
+        $where['user_id'] = $this->L->id;
+        $where['type'] = 2;
+        $list = $noticeModel->where($where)->order('create_time','DESC')->get()->toArray();
+
+        foreach($list as &$v){
+            $v->date = date('Y-m-d',$v->create_time);
+        }
+
+        View::addData(['list'=>$list]);
+
+        View::hamlReader('Teacher/'.__FUNCTION__,'App');
     }
 
 }

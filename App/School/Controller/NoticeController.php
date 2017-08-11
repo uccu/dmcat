@@ -301,8 +301,21 @@ class NoticeController extends Controller{
     
 
 
-    function get_notice_lists(NoticeModel $model){
-        $out['list'] = $model->select('*','user.avatar','user.name','user.name_en')->where(['isshow'=>1])->order('id','DESC')->get()->toArray();
+    function get_notice_lists(NoticeModel $model,StudentModel $smodel){
+
+        $student_id = Request::getInstance()->cookie('student_id');
+
+        $ssM = $smodel->find($student_id);
+
+        $model->where('(type=0 OR (type=1 AND student_id=%n) OR (type=2 AND classes_id=%n))',$student_id,$ssM->classes_id);
+
+        $list = $model->selectExcept('content')->where(['isshow'=>1])->order('create_time','DESC')->get()->toArray();
+
+        
+        foreach($list as &$v){
+            $v->create_date = date('Y-m-d',$v->create_time);
+        }
+        $out['list'] = $list;
         AJAX::success($out);
     }
     function get_notice_info(NoticeModel $model,$id = 0){

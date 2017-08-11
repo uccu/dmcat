@@ -39,8 +39,8 @@
         <p>扫码 <br><span>Scan</span></p>
     </div>
     <div class="parent-child message">
-        <a href="message"></a>
-        <p>消息 <br><span>Message</span></p>
+        <a href="post"></a>
+        <p>发送通知 <br><span>Announcements</span></p>
     </div>
 </div>
 

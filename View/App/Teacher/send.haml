@@ -1,0 +1,65 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+    %title Send
+
+- block body
+    :css
+        button,a{
+            border: #ccc solid 1px;
+            padding: 8px;
+            font-size: 12px;
+            display: block;
+            text-align: center;
+            background: #fff;
+            width: 100%;
+        }
+        
+
+    .main.container
+        %form.form-horizontal.animated(style="margin-top:30px" method="post" onsubmit="return j('form .save').click(),false")
+            .form-group
+                %label.col-xs-12.control-label 标题/Title
+                .col-xs-12
+                    %input.form-control(name="title")
+            .form-group
+                %label.col-xs-12.control-label 副标题/Subtitle
+                .col-xs-12
+                    %input.form-control(name="short_message")
+            .form-group
+                %label.col-xs-12.control-label 内容/Content
+                .col-xs-12
+                    %textarea.form-control(name="content" style="height:400px")
+            .form-group
+                .col-xs-6
+                    %select.form-control(name="student_id")
+                        %option(value="0") 全部 All
+                        - for k,s in student
+                            %option(value="#{s.id}") #{s.name} #{s.name_en}
+                .col-xs-6
+                    %button.save.button(type="submit")Send
+        %a.back(href="post") Back
+
+
+    :javascript
+        j('form').submit(function(e){
+            e.preventDefault();
+            var d = j(this).serialize()
+            if(!j('[name="title"]').val()){
+                alert('Title is empty!');return
+            }
+            if(!j('[name="short_message"]').val()){
+                alert('Subtitle is empty!');return
+            }
+            if(!j('[name="content"]').val()){
+                alert('Content is empty!');return
+            }
+            j.post('/teacher/sendNotice',d,function(){
+                alert('success');
+                location="post"
+            })
+
+        })
+    

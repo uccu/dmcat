@@ -32,7 +32,7 @@
         var id = GetQueryString('id');
 
         $.ajax({
-            url:"/parent/get_notice_list",
+            url:"/notice/get_notice_lists",
             type:"get",
             data:{},
             dataType:"JSON",

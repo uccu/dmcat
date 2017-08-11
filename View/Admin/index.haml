@@ -31,9 +31,9 @@
                                         %strong.font-bold
                                             #{userInfo.name}
                                     %span.text-muted.text-xs.block
-                                        - if userInfo.type == 2
+                                        - if userInfo.type == 3
                                             #{lang.adminIndex.teacher}
-                                        - elseif userInfo.type == 3
+                                        - elseif userInfo.type == 2
                                             #{lang.adminIndex.docter}
                                         - elseif userInfo.type == 4
                                             #{lang.adminIndex.market}

@@ -14,6 +14,12 @@ class NoticeModel extends Model{
         return $this->join('App\School\Model\UserModel','id','user_id','LEFT');
     }
 
+
+    public function student(){
+
+        return $this->join('App\School\Model\StudentModel','id','student_id');
+    }
+
     
 
 }

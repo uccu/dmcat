@@ -1,0 +1,37 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+    %title Send
+
+- block body
+    :css
+        .main a{
+            border:#ccc solid 1px;
+            padding:15px 25px;
+            margin:30px;
+            font-size:12px;
+            display: block;
+            text-align: center
+        }
+
+    .main
+        %a(href="send")
+            发送通知
+            %br
+            New Announcements
+
+        %a(href="history_all")
+            所有通知
+            %br
+            All history
+        %a(href="history_student")
+            学生通知
+            %br
+            Student history
+
+        %a(href="index")
+            Back
+
+    

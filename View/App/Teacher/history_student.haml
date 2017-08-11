@@ -1,0 +1,59 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+    %title History
+
+- block body
+    :css
+        button,a{
+            border: #ccc solid 1px;
+            padding: 8px;
+            font-size: 12px;
+            display: block;
+            text-align: center;
+            background: #fff;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .block{
+            border: #ccc solid 1px;
+            padding: 8px;
+            font-size: 12px;
+            display: block;
+            text-align: center;
+            background: #fff;
+            width: 100%;
+            margin-top: 20px;
+            display:block
+        }
+        .block .title{
+            color:#666;
+            font-size: 16px;
+        }
+        .block .short{
+            color:#999;
+            font-size: 14px;
+        }
+        .block .time{
+            color:#ccc;
+            font-size: 12px;
+        }
+        .block .to{
+            color:#337ab7;
+            font-size: 12px;
+            margin-bottom:10px
+        }
+
+    .main.container
+        %a.back(href="post") Back
+        - for k,n in list
+            %a.block(href="/parent/notice_detail?id=#{n.id}")
+                .to.tl
+                    To : #{n.name} #{n.name_en}
+                .title.tl = n.title
+                .short.tl = n.short_message
+                .time.tr = n.date
+
+    
