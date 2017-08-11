@@ -397,6 +397,11 @@ class VisaController extends Controller{
 
     }
     
+    
+    /** 我的签证
+     * getVisa
+     * @return mixed 
+     */
     private function _getVisa(&$data,$model,$type){
 
         if($info = $model->select('id','update_time')->find($this->L->id)){
@@ -441,6 +446,10 @@ class VisaController extends Controller{
 
 
 
+
+
+
+    # 咨询购买设置
     function admin_limit_get(ConsultPayRuleModel $model,$id){
 
         $this->L->adminPermissionCheck(70);
@@ -535,6 +544,298 @@ class VisaController extends Controller{
 
         $upd = AdminFunc::upd($model,$id,$data);
         $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+
+    function admin_visa_setting(VisaSelectModel $model,$page = 1,$limit = 10,$type = 0){
+        
+        $this->L->adminPermissionCheck(77);
+
+        $name = ['','技术移民签证设置','商业签证设置'];
+        $name = $name[$type];
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/visa/admin_visa_setting_get?type='.$type,
+                'upd'   => '/visa/admin_visa_setting_upd',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/visa/admin_visa_setting_del',
+
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '排序',
+                '表单名',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                'ord',
+                'name',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        $where['type'] = $type;
+
+        $list = $model->order('ord')->where($where)->page($page,$limit)->get()->toArray();
+
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_visa_setting_get(VisaSelectModel $model,$id,$type){
+
+        $this->L->adminPermissionCheck(77);
+
+        $name = ['','技术移民签证设置','商业签证设置'];
+        $name = $name[$type];
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/visa/admin_visa_setting_get?type='.$type,
+                'upd'   => '/visa/admin_visa_setting_upd',
+                'back'  => 'visa/setting?type='.$type,
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/visa/admin_visa_setting_del',
+                'link'  => [
+                    
+                    'type'=>'warning',
+                    'name'=>'设置选项',
+                    'href'=>'visa/setting_option?id='.$id,
+                    
+                ]
+
+            ];
+        $tbody = 
+            [
+
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'type',
+                    'default'=> $type
+                ],
+                [
+                    'title' =>  '表单名',
+                    'name'  =>  'name',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '排序正序',
+                    'name'  =>  'ord',
+                    'size'  =>  '2',
+                    'default'=> '0',
+                ],
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+        if(!$info->id)unset($opt['link']);
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_visa_setting_upd(VisaSelectModel $model,$id){
+        $this->L->adminPermissionCheck(77);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+
+        unset($data['id']);
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_visa_setting_del(VisaSelectModel $model,VisaSelectOptionModel $omodel,$id){
+        $this->L->adminPermissionCheck(77);
+        $del = AdminFunc::del($model,$id);
+        $omodel->where(['select_id'=>$id])->remove();
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+    
+    function admin_visa_setting_option(VisaSelectOptionModel $model,$page = 1,$limit = 10,$id = 0){
+        
+        $this->L->adminPermissionCheck(77);
+
+        $name = '选项';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/visa/admin_visa_setting_option_get?type='.$id,
+                'upd'   => '/visa/admin_visa_setting_option_upd',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/visa/admin_visa_setting_option_del',
+
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '选项文字',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                'id',
+                'name',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        $where['select_id'] = $id;
+
+        $list = $model->order('id')->where($where)->page($page,$limit)->get()->toArray();
+
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_visa_setting_option_get(VisaSelectOptionModel $model,$id,$type){
+
+        $this->L->adminPermissionCheck(77);
+
+        $name = '选项';
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/visa/admin_visa_setting_option_get?id='.$type,
+                'upd'   => '/visa/admin_visa_setting_option_upd',
+                'back'  => 'visa/setting_option?id='.$type,
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/visa/admin_visa_setting_option_del',
+
+            ];
+        $tbody = 
+            [
+
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'select_id',
+                    'default'=> $type
+                ],
+                [
+                    'title' =>  '选项文字',
+                    'name'  =>  'name',
+                    'size'  =>  '4',
+                ],
+
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_visa_setting_option_upd(VisaSelectOptionModel $model,$id){
+        $this->L->adminPermissionCheck(77);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+
+        unset($data['id']);
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_visa_setting_option_del(VisaSelectOptionModel $model,$id){
+        $this->L->adminPermissionCheck(77);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
         AJAX::success($out);
     }
 

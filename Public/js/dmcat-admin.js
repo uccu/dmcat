@@ -93,6 +93,14 @@
                     })
                 })
             }
+            if(m.opt.link){
+                var link = j('<button class="btn btn-'+(m.opt.link.type||'default')+'" style="margin-left:2px">'+(m.opt.link.name||'')+'</button>');
+                link.appendTo('.optBox')
+                link.on('click',function(){
+                    gotoNewTag(m.opt.link.href||'#',m.opt.link.name||'')
+                })
+                
+            }
             for(var i in m.tbody){
                 var para = m.tbody[i];
                 switch(para.type){
