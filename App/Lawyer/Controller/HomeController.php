@@ -45,7 +45,7 @@ class HomeController extends Controller{
 
         $lawyer = $lawyerModel->select(
             'star','id','name','description','avatar','type','fee_star','feedback_star','average_reply','online_time'
-        )->where(['active'=>1])->order('top desc,rand()','RAW')->limit(10)->get()->toArray();
+        )->where(['active'=>1])->order('top desc,rand()','RAW')->limit(999)->get()->toArray();
 
         foreach($lawyer as &$l){
             $l->average_reply = Func::time_zcalculate($l->average_reply);

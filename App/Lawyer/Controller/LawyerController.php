@@ -36,7 +36,7 @@ class LawyerController extends Controller{
      * @param mixed $limit
      * @return mixed 
      */
-    function getLawyerList($type = 0 ,$pgae = 1 ,$limit = 10,LawyerModel $model){
+    function getLawyerList($type = 0 ,$pgae = 1 ,$limit = 999,LawyerModel $model){
 
         $where['type'] = $type;
         $where['active'] = 1;
