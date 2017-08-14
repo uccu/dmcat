@@ -239,7 +239,7 @@ class HomeController extends Controller{
                     'title' =>  '图片',
                     'name'  =>  'pic',
                     'type'  =>  'pic',
-                    'description'=>'比例16:7，建议尺寸375*164'
+                    'description'=>'*比例16:7，建议尺寸375*164'
                 ],
                 [
                     'title' =>  '跳转类型',

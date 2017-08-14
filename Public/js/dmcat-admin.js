@@ -106,7 +106,7 @@
                 switch(para.type){
                     
                     case 'pic':
-                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><img class="cp picImg" src="/pic/'+(m.info[para.name]||para.default||'nopic.jpg')+'" style="max-width:100%;max-height:100px"><input class="picFile" type="file" accept="image/*" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'nopic.jpg')+'"></div>'+(para.description?'<label class="col-sm-2 control-label">'+para.description+'</label>':'')+'</div>')
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 3)+'"><img class="cp picImg" src="/pic/'+(m.info[para.name]||para.default||'nopic.jpg')+'" style="max-width:100%;max-height:100px"><input class="picFile" type="file" accept="image/*" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'nopic.jpg')+'"></div>'+(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         upPic(pa.find('.picFile'),'/home/uploadPic')
                         pa.find('.picImg').on('click',function(){j(this).parent().find('.picFile').click()})
 
