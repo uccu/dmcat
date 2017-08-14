@@ -519,7 +519,7 @@ class UserController extends Controller{
 
 
 
-    function admin_user(UserModel $model,$page = 1,$limit = 10){
+    function admin_user(UserModel $model,$page = 1,$limit = 10,$search){
         
         $this->L->adminPermissionCheck(68);
 
@@ -532,7 +532,12 @@ class UserController extends Controller{
                 'view'  => 'home/upd',
                 'add'   => 'home/upd',
                 'del'   => '/user/admin_user_del',
-
+                'req'   =>[
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search'
+                    ],
+                ]
             ];
 
         # 头部标题设置
@@ -572,6 +577,10 @@ class UserController extends Controller{
         # 列表内容
         $where = [];
         $where['type'] = 0;
+
+        if($search){
+            $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        }
 
         $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
 
@@ -707,7 +716,7 @@ class UserController extends Controller{
         $out['del'] = $del;
         AJAX::success($out);
     }
-    function admin_master(UserModel $model,$page = 1,$limit = 10){
+    function admin_master(UserModel $model,$page = 1,$limit = 10,$search){
         
         $this->L->adminPermissionCheck(67);
 
@@ -720,6 +729,12 @@ class UserController extends Controller{
                 'view'  => 'home/upd',
                 'add'   => 'home/upd',
                 'del'   => '/user/admin_master_del',
+                'req'   =>[
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search'
+                    ],
+                ]
 
             ];
 
@@ -760,6 +775,10 @@ class UserController extends Controller{
         # 列表内容
         $where = [];
         $where['type'] = 1;
+
+        if($search){
+            $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        }
 
         $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
 

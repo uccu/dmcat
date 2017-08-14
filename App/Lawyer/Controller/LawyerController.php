@@ -356,7 +356,7 @@ class LawyerController extends Controller{
             $where['type'] = $type;
         }
         if($search){
-            $where['search'] = ['name like %n','%'.$search.'%'];
+            $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
 
         $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();

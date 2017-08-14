@@ -235,7 +235,6 @@
         d = d || {};
         if(!that.req.param){
             that.req.param = d;
-            console.log('ww')
         }
         that.req.url = u
         for(var i in d){
@@ -264,7 +263,6 @@
                     gotoNewTag(that.opt.add+'?get='+that.opt.get,'新增'+that.name)
                 })
             }
-            console.log(that.req.param)
             if(that.opt.req){
                 for(var i in that.opt.req){
                     if(!(that.opt.req[i] instanceof Object)){
