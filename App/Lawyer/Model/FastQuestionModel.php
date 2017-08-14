@@ -8,6 +8,6 @@ use Model;
 class FastQuestionModel extends Model{
 
     public $table = 'fast_question';
-
+    public $field;
 
 }
