@@ -282,7 +282,7 @@ class LawyerController extends Controller{
 
 
 
-    function admin_lawyer(LawyerModel $model,$page = 1,$limit = 10){
+    function admin_lawyer(LawyerModel $model,$page = 1,$limit = 10,$search = '',$type = -1){
         
         $this->L->adminPermissionCheck(75);
 
@@ -295,7 +295,25 @@ class LawyerController extends Controller{
                 'view'  => 'home/upd',
                 'add'   => 'home/upd',
                 'del'   => '/lawyer/admin_lawyer_del',
-
+                'req'   =>[
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search'
+                    ],
+                    [
+                        'name'=>'type',
+                        'title'=>'律师类型',
+                        'type'=>'select',
+                        'option'=>  [
+                            '-1'=>  '全部',
+                            '0' =>  '法律',
+                            '1' =>  '留学转学',
+                            '2' =>  '签证',
+                        ],
+                        'default'=>'-1'
+                        
+                    ]
+                ]
             ];
 
         # 头部标题设置
@@ -334,6 +352,12 @@ class LawyerController extends Controller{
 
         # 列表内容
         $where = [];
+        if($type != -1){
+            $where['type'] = $type;
+        }
+        if($search){
+            $where['search'] = ['name like %n','%'.$search.'%'];
+        }
 
         $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
 

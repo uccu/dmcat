@@ -233,8 +233,17 @@
     admin.prototype.getList = function(u,d){
         var that = this
         d = d || {};
-        that.req = {url:u,param:d}
+        if(!that.req.param){
+            that.req.param = d;
+            console.log('ww')
+        }
+        that.req.url = u
+        for(var i in d){
+            that.req.param[i] = d[i]
+        }
+        
         curl(u,d,function(m){
+            
             that.opt    =   m.opt
             that.name   =   m.name
             var the=j('<thead>'),tbo=j('<tbody>'),b=j('<div class="ibox-content tc animated fadeInUp"><table class="table table-striped table-responsive">')
@@ -249,11 +258,51 @@
                 that.req.param.page = p;
                 that.getList(that.req.url,that.req.param);
             }).appendTo(b);
+            j('.topw .row').html('')
             if(that.opt.add){
-                j('.topw .row').html('')
                 j('<div class="col-sm-1 animated fadeInRight"><a class="btn btn-primary btn-outline">新增</a></div>').appendTo('.topw .row').on('click',function(){
                     gotoNewTag(that.opt.add+'?get='+that.opt.get,'新增'+that.name)
                 })
+            }
+            console.log(that.req.param)
+            if(that.opt.req){
+                for(var i in that.opt.req){
+                    if(!(that.opt.req[i] instanceof Object)){
+                        that.opt.req[i] = {name:that.opt.req[i]}
+                    }
+                    switch(that.opt.req[i].type){
+                        case 'select':
+                            var pa = j('<div class="col-sm-3 animated fadeInRight"><div class="input-group"><span class="input-group-addon">'+that.opt.req[i].title+'</span><select name="'+that.opt.req[i].name+'" class="form-control">'+(function(o){
+                                var d = '';
+                                for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
+                                return d
+                            })(that.opt.req[i].option)+'</select></div></div>')
+                            pa.appendTo('.topw .row')
+                            pa.find('select').val(that.req.param[that.opt.req[i].name]||that.opt.req[i].default||'')
+                            that.req.param[that.opt.req[i].name] = pa.find('select').val()
+                            pa.find('select').change(function(){
+                                that.req.param[j(this).attr('name')] = $(this).val()
+                                that.req.param.page = 1
+                                that.flesh()
+                            })
+                            break;
+                        default:
+                            var pa = j('<div class="col-sm-3 animated fadeInRight"><div class="input-group"><span class="input-group-addon">'+that.opt.req[i].title+'</span><input name="'+that.opt.req[i].name+'" type="text" class="form-control"></div></div>')
+                            pa.appendTo('.topw .row')
+                            pa.find('input').val(that.req.param[that.opt.req[i].name]||that.opt.req[i].default||'')
+                            that.req.param[that.opt.req[i].name] = pa.find('input').val()
+                            pa.find('input').keyup(function(e){
+                                if(e.which == 13){
+                                    that.req.param[j(this).attr('name')] = $(this).val()
+                                    that.req.param.page = 1
+                                    that.flesh()
+                                }
+                                
+                            })
+                            break;
+                    }
+                }
+
             }
             j('.load1').addClass('fadeOutUp')
         })
