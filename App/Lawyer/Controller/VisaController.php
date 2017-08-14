@@ -614,7 +614,7 @@ class VisaController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_visa_setting_get(VisaSelectModel $model,$id,$type){
+    function admin_visa_setting_get(VisaSelectModel $model,VisaSelectOptionModel $omodel,$id,$type){
 
         $this->L->adminPermissionCheck(77);
 
@@ -630,13 +630,13 @@ class VisaController extends Controller{
                 'view'  => 'home/upd',
                 'add'   => 'home/upd',
                 'del'   => '/visa/admin_visa_setting_del',
-                'link'  => [
+                // 'link'  => [
                     
-                    'type'=>'warning',
-                    'name'=>'设置选项',
-                    'href'=>'visa/setting_option?id='.$id,
+                //     'type'=>'warning',
+                //     'name'=>'设置选项',
+                //     'href'=>'visa/setting_option?id='.$id,
                     
-                ]
+                // ]
 
             ];
         $tbody = 
@@ -662,14 +662,25 @@ class VisaController extends Controller{
                     'size'  =>  '2',
                     'default'=> '0',
                 ],
+                [
+                    'title' =>  '选项',
+                    'name'  =>  'option',
+                    'type'  =>  'option',
+                    'size'  =>  '4',
+                    
+                ],
 
             ];
 
         !$model->field && AJAX::error('字段没有公有化！');
 
+        
 
         $info = AdminFunc::get($model,$id);
         if(!$info->id)unset($opt['link']);
+
+        $where2['select_id'] = $id;
+        $info->option = $omodel->order('id')->where($where2)->get()->toArray();
 
         $out = 
             [
@@ -682,13 +693,24 @@ class VisaController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_visa_setting_upd(VisaSelectModel $model,$id){
+    function admin_visa_setting_upd(VisaSelectModel $model,VisaSelectOptionModel $omodel,$id){
         $this->L->adminPermissionCheck(77);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
 
+        $option = Request::getSingleInstance()->request('option','raw');
+
         unset($data['id']);
+        unset($data['option']);
         $upd = AdminFunc::upd($model,$id,$data);
+        $omodel->where(['select_id'=>$id])->remove();
+        
+        if($option)foreach($option as $op){
+
+            $omodel->set(['select_id'=>$id,'name'=>$op.''])->add();
+
+        }
+
         $out['upd'] = $upd;
         AJAX::success($out);
     }
@@ -702,7 +724,7 @@ class VisaController extends Controller{
 
 
     
-    function admin_visa_setting_option(VisaSelectOptionModel $model,$page = 1,$limit = 10,$id = 0){
+    function admin_visa_setting_option(VisaSelectOptionModel $model,$page = 1,$limit = 999,$id = 0){
         
         $this->L->adminPermissionCheck(77);
 

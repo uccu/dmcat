@@ -126,6 +126,23 @@
                         +'<select/></div></div>')
                         pa.find('select').val(m.info[para.name]||para.default||'')
                         break;
+                    case 'option':
+                        var pa = j('<div>')
+                        for(var i in m.info[para.name]){
+                            var pa2 = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'[]" value="'+m.info[para.name][i].name+'"></div>'+'<label class="col-sm-1 control-label" style="text-align:left"><i class="fa fa-times cp"></i></label>'+'</div>')
+                            pa2.find('i').click(function(){j(this).parent().parent().remove()})
+                            pa.append(pa2)
+                        }
+                        var pa2 = j('<div class="form-group" work="'+para.name+'" size="'+(para.size || 6)+'"><label class="col-sm-2 control-label">'+para.title+'</label><label class="col-sm-1 control-label" style="text-align:left"><i class="fa fa-plus cp" style="font-size:20px"></i></label>'+'</div>')
+                            pa2.find('i').click(function(){
+                                var h = j(this).parent().parent();
+                                var pa3 = j('<div class="form-group" work="'+h.attr('work')+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(h.attr('size'))+'"><input class="form-control" name="'+h.attr('work')+'[]"></div>'+'<label class="col-sm-2 control-label" style="text-align:left"><i class="fa fa-times cp"></i></label>'+'</div>')
+                                pa3.find('i').click(function(){j(this).parent().parent().remove()})
+                                j(this).parent().parent().before(pa3)
+                            })
+                            pa.append(pa2)
+                        
+                        break;
                     case 'h5':
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 9)+'"><div class="summernote" data-name="'+para.name+'">'+(m.info[para.name]||para.default||'')+'</div></div>');
                         var su = pa.find(".summernote").summernote({
