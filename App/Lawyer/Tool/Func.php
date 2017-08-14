@@ -6,6 +6,7 @@ use App\Lawyer\Middleware\L;
 use App\Lawyer\Model\ConfigModel;
 use App\Lawyer\Model\MessageModel;
 use App\Lawyer\Model\CaptchaModel;
+use App\Lawyer\Model\UploadModel;
 
 
 class Func {
@@ -128,14 +129,14 @@ class Func {
         return true;
     }
     
-    static function upload($name){
+    static function upload($name = ''){
         if(!$_FILES)return [];
         
         $paths = [];
         $upn = $upa = [];
         if(!is_dir(BASE_ROOT.'upload'))
                 !mkdir(BASE_ROOT.'upload',0777,true) && AJAX::error('文件夹权限不足，无法创建文件！');
-        // $model = UploadModel::copyMutiInstance();
+        $model = UploadModel::copyMutiInstance();
         
         foreach($_FILES as $k=>$file){
             $upn[] = $k;
@@ -145,7 +146,8 @@ class Func {
                 $data = [];
                 $data['path'] = $paths[$k];
                 $data['name'] = $file['name'];
-                // $id = $model->set($data)->add()->getStatus();
+                $data['type'] = $file['type'];
+                $id = $model->set($data)->add()->getStatus();
                 move_uploaded_file($file['tmp_name'],BASE_ROOT."upload/".$paths[$k]);
                 $paths[$k] = $id;
             }

@@ -78,7 +78,7 @@ class LawyerController extends Controller{
      * @param mixed $ajax 
      * @return mixed 
      */
-    function checkLawyerAuth($id,$ajax = true){
+    function checkLawyerAuth($id,$ajax = true,$add = false){
 
         $model = LawyerModel::copyMutiInstance();
         $limitModel = UserConsultLimitModel::copyMutiInstance();
@@ -104,7 +104,7 @@ class LawyerController extends Controller{
         $auth->word_count == 0 && AJAX::error('总字数已用完，请重新开通会员！');
         $auth->question_count == 0 && AJAX::error('问题总数已用完，请重新开通会员！');
 
-        $lawyer_id = $this->L->userInfo->lawyer_id;
+        $lawyer_id = $this->L->userInfo->{'lawyer_id_'.$type};
         if($lawyer_id && $lawyer_id != $id){
             if(!$consultModel->where(['user_id'=>$this->L->id,'lawyer_id'=>$lawyer_id,'which'=>1])->find()){
                 $consult = $consultModel->where(['user_id'=>$this->L->id,'lawyer_id'=>$lawyer_id,'which'=>0])->order('create_time')->find();
@@ -121,6 +121,12 @@ class LawyerController extends Controller{
 
             }
         }
+        if($add){
+
+            $this->L->userInfo->{'lawyer_id_'.$type} = $id;
+            $this->L->userInfo->save();
+        }
+        
 
 
         
@@ -149,10 +155,9 @@ class LawyerController extends Controller{
 
         !$this->L->id && AJAX::error('未登录');
 
-        $this->checkLawyerAuth($lawyer_id,false);
+        $this->checkLawyerAuth($lawyer_id,false,true);
 
-        $this->L->userInfo->lawyer_id = $lawyer_id;
-        $this->L->userInfo->save();
+        
         
         !in_array($type,['work','family','refuse','travel','marry','graduate','student','perpetual','technology','business']) && AJAX::error('未知的签证类型！');
         
@@ -181,10 +186,8 @@ class LawyerController extends Controller{
         
         !$this->L->id && AJAX::error('未登录');
 
-        $mee = $this->checkLawyerAuth($id,false);
+        $mee = $this->checkLawyerAuth($id,false,true);
 
-        $this->L->userInfo->lawyer_id = $id;
-        $this->L->userInfo->save();
 
         $word_count = mb_strlen($message);
 
@@ -534,6 +537,8 @@ class LawyerController extends Controller{
         $out['del'] = $del;
         AJAX::success($out);
     }
+    
+
     
 
 }

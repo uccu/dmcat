@@ -517,6 +517,23 @@ class UserController extends Controller{
 
     }
 
+    /** 我的学校详情
+     * mySchoolDetail
+     * @return mixed 
+     */
+    function mySchoolDetail(UserSchoolModel $model,$id){
+
+        !$this->L->id && AJAX::error('未登录');
+        $info = $model->select('school.name','school.id>school_id','school.pic','school.description','id','progress','file')->where(['user_id'=>$this->L->id])->find($id);
+        if(!$info)AJAX::error('不存在！');
+        $info->download = 'download/file?id='.$info->file;
+        
+        $out['info'] = $info;
+
+        AJAX::success($out);
+
+    }
+
 
 
     function admin_user(UserModel $model,$page = 1,$limit = 10,$search){
@@ -549,6 +566,8 @@ class UserController extends Controller{
                 '手机号',
                 '名字',
                 '启用',
+                '绑定的律师',
+                '学校'
 
             ];
 
@@ -570,6 +589,14 @@ class UserController extends Controller{
                     'name'=>'active',
                     'type'=>'checkbox',
                 ],
+                [
+                    'name'=>'lawyer',
+                    'href'=>true,
+                ],
+                [
+                    'name'=>'school',
+                    'href'=>true,
+                ],
 
             ];
             
@@ -586,6 +613,11 @@ class UserController extends Controller{
 
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->lawyer = '<i class="fa fa-pencil text-navy"></i> 查看';
+            $v->lawyer_href = 'chat/user_chat?id='.$v->id;
+            $v->school = '<i class="fa fa-pencil text-navy"></i> 查看';
+            $v->school_href = 'school/user_school?id='.$v->id;
+            
         }
 
         # 分页内容

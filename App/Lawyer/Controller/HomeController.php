@@ -113,6 +113,15 @@ class HomeController extends Controller{
         AJAX::success($out);
 
     }
+    function uploadFile(){
+        
+        $id = Func::upload('file');
+        if(!$id)AJAX::error('no file');
+        $out['path'] = $id;
+        $out['fpath'] = '/pic/file.jpg';
+        $out['apath'] = Func::fullPicAddr('file.jpg');
+        AJAX::success($out);
+    }
     
 
 

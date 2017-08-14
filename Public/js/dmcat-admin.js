@@ -55,7 +55,7 @@
             if(u)curl(n,u,function(d){
                 f.parent().find('.picText').val(d.path)
                 f.parent().find('img').attr('src',d.fpath)
-                if(i instanceof Function)i(d)
+                if(i instanceof Function)i(d,f)
             },1);
         })
     }
@@ -74,11 +74,11 @@
         curl(u,d,function(m){
 
             j('.ibox-title h3').html(m.name)
-            if(m.opt.back){
+            if(m.opt.back || get('back')){
                 var back = j('<button class="btn btn-default" type="button">关闭并返回</button>');
                 back.prependTo('.optBox')
                 back.on('click',function(){
-                    gotoTag(m.opt.back,1)
+                    gotoTag(get('back')||m.opt.back,1)
                 })
             }
             if(m.opt.upd){
@@ -110,6 +110,27 @@
                         upPic(pa.find('.picFile'),'/home/uploadPic')
                         pa.find('.picImg').on('click',function(){j(this).parent().find('.picFile').click()})
 
+                        break;
+                    case 'file':
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 1)+'">'+'<i class="fa fa-plus-square-o cp picImg add" style="font-size:40px"></i>'+'<img class="cp picImg dn img" src="/pic/'+'file.jpg'+'" style="max-width:100%;max-height:100px;"><input class="picFile" type="file" accept="image/*" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'"></div><label class="col-sm-2 control-label dn del" style="text-align:left"><i class="fa fa-times cp"></i></label>'+(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
+                        upPic(pa.find('.picFile'),'/home/uploadFile',function(d,f){
+                            f.parent().find('img').show();
+                            f.parent().find('.add').hide();
+                            f.parent().parent().parent().parent().find('.del').show();
+                        })
+                        pa.find('.picImg').on('click',function(){j(this).parent().find('.picFile').click()})
+                        pa.find('.del').click(function(){
+                            pa.find('img').hide();
+                            pa.find('.add').show();
+                            pa.find('.del').hide();
+                            pa.find('.picText').val('');
+                        })
+                        if(m.info[para.name]){
+                            pa.find('img').show();
+                            pa.find('.add').hide();
+                            pa.find('.del').show();
+                            pa.find('.picText').val(m.info[para.name]);
+                        }
                         break;
                     case 'avatar':
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><img class="cp picImg img-circle" src="/pic/'+(m.info[para.name]||para.default||'noavatar.png')+'" style="max-width:100%;max-height:100px"><input class="picFile" type="file" accept="image/*" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'noavatar.png')+'"></div></div>')
@@ -258,6 +279,11 @@
                 that.getList(that.req.url,that.req.param);
             }).appendTo(b);
             j('.topw .row').html('')
+            if(that.opt.back || get('back')){
+                j('<div class="col-sm-1 animated fadeInRight"><a class="btn btn-default btn-outline">返回</a></div>').appendTo('.topw .row').on('click',function(){
+                    gotoTag(get('back')||m.opt.back,1)
+                })
+            }
             if(that.opt.add){
                 j('<div class="col-sm-1 animated fadeInRight"><a class="btn btn-primary btn-outline">新增</a></div>').appendTo('.topw .row').on('click',function(){
                     gotoNewTag(that.opt.add+'?get='+that.opt.get,'新增'+that.name)
@@ -384,7 +410,13 @@
                             break;
                         default:
                             var ti = this.list[g][t.name];
-                            td.html(ti);
+                            var ti2 = this.list[g][t.name+'_href'];
+                            if(t.href && ti2){
+                                td.html(j('<a data-e="'+ti2+'">').html(ti));
+                                td.find('a').click(function(){
+                                    gotoNewTag(j(this).attr('data-e'),'查看')
+                                })
+                            }else td.html(ti);
                             break;
                     }
                 }else{

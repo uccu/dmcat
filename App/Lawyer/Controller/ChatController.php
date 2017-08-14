@@ -16,6 +16,7 @@ use App\Lawyer\Model\LawyerModel;
 use App\Lawyer\Model\BannerModel;
 use App\Lawyer\Model\H5Model;
 use App\Lawyer\Model\FastQuestionModel;
+use App\Lawyer\Model\ConsultModel;
 
 
 class ChatController extends Controller{
@@ -95,7 +96,7 @@ class ChatController extends Controller{
 
         $this->L->adminPermissionCheck(86);
 
-        $name = '用户管理';
+        $name = '问题管理';
 
         # 允许操作接口
         $opt = 
@@ -159,6 +160,95 @@ class ChatController extends Controller{
     }
 
 
-    
+    function admin_user_chat(ConsultModel $consultModel,LawyerModel $model,$id){
+
+        $this->L->adminPermissionCheck(68);
+
+        $name = '管理员';
+        # 允许操作接口
+        $opt = 
+            [
+
+                'back'  => 'staff/user'
+                
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '律师ID',
+                '律师类型',
+                '名字',
+                '聊天记录'
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'lawyer_id',
+                'typeName',
+                'name',
+                [
+                    'name'=>'look',
+                    'href'=>true,
+                ],
+
+            ];
+            
+
+        # 列表内容
+        $where['user_id'] = $id;
+        $consultModel->distinct();
+
+        $lawyer_list = $consultModel->where($where)->get_field('lawyer_id')->toArray();
+        
+        $list = [];
+        foreach($lawyer_list as $v){
+
+            $list[] = $consultModel->select('content','create_time','lawyer_id','lawyer.name','lawyer.avatar','lawyer.type')->where($where)->where(['lawyer_id'=>$v])->order('create_time desc')->find();
+        }
+
+
+        $types = ['法律','留学转学','签证'];
+
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->typeName = $types[$v->type];
+            $v->look = '<i class="fa fa-pencil text-navy"></i> 查看';
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = count($list);
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+    }
     
 }

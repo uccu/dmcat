@@ -8,7 +8,7 @@ use View;
 use Request;
 use App\Lawyer\Middleware\L;
 
-class ChatController extends Controller{
+class SchoolController extends Controller{
 
     function __construct(){
 
@@ -17,21 +17,20 @@ class ChatController extends Controller{
 
     }
 
-    /* 快速问题 */
-    function fast(){
+    /* 学校管理 */
+    function school(){
 
-        View::addData(['getList'=>'/chat/admin_fast']);
+        View::addData(['getList'=>'/school/admin_school']);
         View::hamlReader('home/list','Admin');
     }
 
-    function user_chat($id){
 
-        View::addData(['getList'=>'/chat/admin_user_chat?id='.$id]);
+    function user_school($id){
+
+        View::addData(['getList'=>'/school/admin_user_school?id='.$id]);
         View::hamlReader('home/list','Admin');
 
     }
-
-    
 
     
 

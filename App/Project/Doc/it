@@ -120,6 +120,13 @@ user/mySchool
 {}
 
 
+1.17 我的学校详情
+user/mySchoolDetail
+id 记录ID
+{"data":{"info":{"name":"\u52a0\u5c14\u79c1\u7acb\u5b66\u6821","school_id":"1","pic":"nopic.jpg","description":"\u52a0\u5c14\u79c1\u7acb\u5b66\u6821","id":"1","progress":"1","file":"8","download":"download\/file?id=8"}},"code":200,"url":"","message":""}
+{}
+
+
 2.1 获取首页内容
 home/index
 {"data":{"banner":[{"id":"1","type":"1","pic":"noavatar.png","href":"","active":"1","ord":"1","ehref":"http:\/\/d.baka\/home\/banner_h5?id=1"},{"id":"12","type":"0","pic":"nopic.jpg","href":"","active":"1","ord":"2","ehref":"http:\/\/d.baka\/home\/banner_h5?id=12"},{"id":"2","type":"0","pic":"nopic.jpg","href":"1235","active":"1","ord":"3","ehref":"http:\/\/d.baka\/home\/banner_h5?id=2"}],"lawyer":[{"id":"2","name":"\u7406\u5f8b\u5e082","description":"","avatar":"20170807\/16.07.59.864728.jpg","type":"2","fee_star":"4.4","feedback_star":"2.0","average_reply":"2\u5206\u949f","star":"2"}],"introduction":"http:\/\/d.baka\/home\/h5?id=1"},"code":200,"url":"","message":""}
