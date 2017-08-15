@@ -20,13 +20,13 @@ class DownloadController extends Controller{
 
     function file($id = 0,UploadModel $model){
 
-        if(!$id)echo $id = Request::getInstance()->folder[2];
+        if(!$id)echo $id = Request::getSingleInstance()->folder[2];
 
         $file = $model->find($id);
-        !$file && Response::getInstance()->r302('/404.html');
+        !$file && Response::getSingleInstance()->r302('/404.html');
 
         $path = BASE_ROOT.'upload/'.$file->path;
-        !is_file($path) && Response::getInstance()->r302('/404.html');
+        !is_file($path) && Response::getSingleInstance()->r302('/404.html');
 
         $fp = fopen($path,"r");
         $file_size = filesize($path);
@@ -51,10 +51,10 @@ class DownloadController extends Controller{
     function watch($id,UploadModel $model){
 
         $file = $model->find($id);
-        !$file && Response::getInstance()->r302('/404.html');
+        !$file && Response::getSingleInstance()->r302('/404.html');
 
         $path = BASE_ROOT.'upload/'.$file->path;
-        !is_file($path) && Response::getInstance()->r302('/404.html');
+        !is_file($path) && Response::getSingleInstance()->r302('/404.html');
 
         View::addData(['path'=>'/download/file/'.$id.'.pdf']);
 
