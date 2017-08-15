@@ -528,7 +528,7 @@ class UserController extends Controller{
         $info = $model->select('school.name','school.id>school_id','school.pic','school.description','id','progress','file')->where(['user_id'=>$this->L->id])->find($id);
         if(!$info)AJAX::error('不存在！');
 
-        $file = $umodel->find($id);
+        $file = $umodel->find($info->file);
         if(!$file)$info->download = '';
         else{
             $info->download = 'download/file/'.$info->file.'/'.$file->name;
