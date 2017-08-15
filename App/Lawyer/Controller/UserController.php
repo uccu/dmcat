@@ -531,8 +531,9 @@ class UserController extends Controller{
         $file = $umodel->find($info->file);
         if(!$file)$info->download = '';
         else{
+            $arr = explode('.',$file->name);$str = end($arr);
             // $info->download = 'download/file/'.$info->file.'/'.$file->name;
-            $info->download = 'download/file/'.$info->file.'/s';
+            $info->download = 'download/file/'.$info->file.'/'.TIME_NOW.'.'.$str;
         }
 
         

@@ -1,5 +1,7 @@
 .vscode
 Log/*.log
 Public/pic
+Public/lawyer
 composer.lock
 vendor
+upload
