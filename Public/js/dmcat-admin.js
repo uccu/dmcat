@@ -111,6 +111,22 @@
                         pa.find('.picImg').on('click',function(){j(this).parent().find('.picFile').click()})
 
                         break;
+                    case 'pics':
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'">'+
+                        (function(p){
+                            var s = '';
+                            p = p.split(',');
+                            for(var i in p){
+                                s += '<a href="/pic/'+p[i]+'" target="_blank"><img class="cp picImg" src="/pic/'+p[i]+'" style="max-width:100%;max-height:100px;margin-right: 10px;margin-bottom: 10px;"></a>'
+                            }
+                            return s
+
+                        })(m.info[para.name]||para.default||'nopic.jpg')
+                        
+                        
+                        +(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
+
+                        break;
                     case 'file':
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 1)+'">'+'<i class="fa fa-plus-square-o cp picImg add" style="font-size:40px"></i>'+'<img class="cp picImg dn img" src="/pic/'+'file.jpg'+'" style="max-width:100%;max-height:100px;"><input class="picFile" type="file" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'"></div><label class="col-sm-2 control-label dn del" style="text-align:left"><i class="fa fa-times cp"></i></label>'+(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         upPic(pa.find('.picFile'),'/home/uploadFile',function(d,f){
@@ -202,7 +218,7 @@
                         pa.find('textarea').val(m.info[para.name]||para.default||'')
                         break;
                     default:
-                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label">'+para.description+'</label>':'')+'</div>')
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         break;
                 }
                 pa.appendTo('form')

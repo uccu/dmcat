@@ -494,7 +494,7 @@ class HomeController extends Controller{
                     'size'  =>  '4',
                 ],
                 [
-                    'title' =>  '头像',
+                    'title' =>  '图片',
                     'name'  =>  'pic',
                     'type'  =>  'pic',
                 ],

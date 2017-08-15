@@ -262,7 +262,7 @@ visa/getWork
 
 4.3 更新家庭团聚签证
 visa/updFamily
-histrory 历史签证
+history 历史签证
 bondsman 担保人
 vouchee 被担保人
 {"data":{},"code":200,"url":"","message":""}
@@ -271,7 +271,7 @@ vouchee 被担保人
 
 4.4 获取家庭团聚签证
 visa/getFamily
-{"data":{"info":{"id":"","update_time":"","histrory":"","bondsman":"","vouchee":""}},"code":200,"url":"","message":""}
+{"data":{"info":{"id":"","update_time":"","history":"","bondsman":"","vouchee":""}},"code":200,"url":"","message":""}
 {见4.3}
 
 

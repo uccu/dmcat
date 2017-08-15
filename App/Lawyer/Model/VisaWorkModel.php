@@ -10,5 +10,8 @@ class VisaWorkModel extends Model{
     public $table = 'visa_work';
     public $field;
 
+    public function user(){
 
+        return $this->join(UserModel::class,'id','id');
+    }
 }
