@@ -35,7 +35,13 @@ class HomeController extends Controller{
         View::addData(['getList'=>'/home/admin_banner']);
         View::hamlReader('home/list','Admin');
     }
+    
 
+    function share(){
+
+        View::addData(['getList'=>'/home/admin_share']);
+        View::hamlReader('home/list','Admin');
+    }
     
 
     function setting(){

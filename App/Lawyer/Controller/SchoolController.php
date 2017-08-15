@@ -185,7 +185,7 @@ class SchoolController extends Controller{
         
         $this->L->adminPermissionCheck(86);
 
-        $name = '管理员';
+        $name = '用户学校';
         # 允许操作接口
         $opt = 
             [
@@ -264,7 +264,7 @@ class SchoolController extends Controller{
 
         $this->L->adminPermissionCheck(86);
 
-        $name = '问题管理';
+        $name = '用户学校';
         $statuss = ['材料准备','递交','等待','补材料','结果'];
 
         # 允许操作接口

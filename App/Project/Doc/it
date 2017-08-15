@@ -124,7 +124,7 @@ user/mySchool
 user/mySchoolDetail
 id 记录ID
 {"data":{"info":{"name":"\u52a0\u5c14\u79c1\u7acb\u5b66\u6821","school_id":"1","pic":"nopic.jpg","description":"\u52a0\u5c14\u79c1\u7acb\u5b66\u6821","id":"1","progress":"1","file":"8","download":"download\/file?id=8"}},"code":200,"url":"","message":""}
-{}
+{progress:0材料准备1递交2等待3补材料4结果}
 
 
 2.1 获取首页内容
@@ -170,6 +170,11 @@ file 图片二进制流
 {"data":{"path":"xxx.jpg"},"code":200,"url":"","message":""}
 {}
 
+
+2.8
+home/share
+{"data":{"list":[{"id":"1","name":"\u6d4b\u8bd5\u5206\u4eab","description":"\u6d4b\u8bd5\u5206\u4eab","pic":"20170815\/13.50.43.817166.jpg"}]},"code":200,"url":"","message":""}
+{}
 
 
 3.1 获取律师列表

@@ -15,6 +15,7 @@ use App\Lawyer\Tool\AdminFunc;
 use App\Lawyer\Model\LawyerModel;
 use App\Lawyer\Model\BannerModel;
 use App\Lawyer\Model\H5Model;
+use App\Lawyer\Model\ShareModel;
 
 
 class HomeController extends Controller{
@@ -124,7 +125,18 @@ class HomeController extends Controller{
     }
     
 
+    /** 分享列表
+     * mySchool
+     * @return mixed 
+     */
+    function share(ShareModel $model){
 
+        $list = $model->get()->toArray();
+        $out['list'] = $list;
+
+        AJAX::success($out);
+
+    }
 
 
 
@@ -369,6 +381,165 @@ class HomeController extends Controller{
 
         $out['upd'] = $upd;
         
+        AJAX::success($out);
+    }
+
+
+
+
+
+
+
+    function admin_share(ShareModel $model,$page = 1,$limit = 10,$search){
+        
+        $this->L->adminPermissionCheck(88);
+
+        $name = '分享';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/home/admin_share_get',
+                'upd'   => '/home/admin_share_upd',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/home/admin_share_del',
+                
+
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '名字',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'name',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+
+
+        $list = $model->where($where)->page($page,$limit)->get()->toArray();
+
+        foreach($list as &$v){
+            $v->fullPic = $v->pic ? Func::fullPicAddr($v->pic) : Func::fullPicAddr('nopic.jpg');
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_share_get(ShareModel $model,$id){
+
+        $this->L->adminPermissionCheck(88);
+
+        $name = '分享';
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/home/admin_share_get',
+                'upd'   => '/home/admin_share_upd',
+                'back'  => 'home/share',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/home/admin_share_del',
+
+            ];
+        $tbody = 
+            [
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'title' =>  '名字',
+                    'name'  =>  'name',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '头像',
+                    'name'  =>  'pic',
+                    'type'  =>  'pic',
+                ],
+                [
+                    'title' =>  '简介',
+                    'name'  =>  'description',
+                    'type'  =>  'textarea',
+                ],
+                
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_share_upd(ShareModel $model,$id,$pwd){
+        $this->L->adminPermissionCheck(88);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        
+        unset($data['id']);
+
+        
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_share_del(ShareModel $model,$id){
+        $this->L->adminPermissionCheck(88);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
         AJAX::success($out);
     }
 }
