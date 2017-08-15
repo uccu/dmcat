@@ -362,5 +362,47 @@ class Func {
         return true;
         
     }
+
+
+
+    /** 推送
+     * push
+     * @param mixed $user_id 
+     * @param mixed $content 
+     * @param mixed $extras 
+     * @return mixed 
+     */
+    public static function push($user_id = 0,$content,$extras = ['key'=>'','id'=>'']){
+
+        if(!$user_id)return false;
+
+        $L = L::getInstance();
+
+        $app_key = $L->config->push_app_key;
+        $master_secret = $L->config->push_master_secret;
+
+        $client = new \JPush\Client($app_key, $master_secret);
+        $client2 = new \JPush\Client($app_key, $master_secret);
+
+
+
+        $z1 = $client->push()
+            ->options(['apns_production'=>1])
+            ->setPlatform('ios')
+            ->addAlias('A'.$user_id)
+            ->androidNotification($content,['extras'=>$extras])
+            ->iosNotification($content,['extras'=>$extras,'sound'=>'default'])
+            ->send();
+        $z2 = $client2->push()
+        
+            ->setPlatform('all')
+            ->addAlias('A'.$user_id)
+            ->androidNotification($content,['extras'=>$extras])
+            ->iosNotification($content,['extras'=>$extras,'sound'=>'default'])
+            ->send();
+
+        return [$z1,$z2];
+
+    }
     
 }

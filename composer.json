@@ -16,7 +16,8 @@
         "mthaml/mthaml": "^1.8",
         "cebe/markdown": "^1.1",
         "twig/twig": "1.26.1",
-        "uccu/dmcat-tool":"dev-master"
+        "uccu/dmcat-tool":"dev-master",
+        "jpush/jpush": "^3.5"
     },
     "autoload": {
 		"psr-4": {

@@ -531,7 +531,8 @@ class UserController extends Controller{
         $file = $umodel->find($info->file);
         if(!$file)$info->download = '';
         else{
-            $info->download = 'download/file/'.$info->file.'/'.$file->name;
+            // $info->download = 'download/file/'.$info->file.'/'.$file->name;
+            $info->download = 'download/file/'.$info->file.'/s';
         }
 
         
@@ -942,4 +943,11 @@ class UserController extends Controller{
         AJAX::success($out);
     }
 
+
+
+
+    function test(){
+
+        Func::push(10,'test!!!');
+    }
 }
