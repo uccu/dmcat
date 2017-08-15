@@ -18,6 +18,7 @@ use App\Lawyer\Model\UserModel;
 use App\Lawyer\Model\CaptchaModel;
 use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\UserSchoolModel;
+use App\Lawyer\Model\UploadModel;
 
 
 class UserController extends Controller{
@@ -521,12 +522,19 @@ class UserController extends Controller{
      * mySchoolDetail
      * @return mixed 
      */
-    function mySchoolDetail(UserSchoolModel $model,$id){
+    function mySchoolDetail(UserSchoolModel $model,$id,UploadModel $umodel){
 
         !$this->L->id && AJAX::error('未登录');
         $info = $model->select('school.name','school.id>school_id','school.pic','school.description','id','progress','file')->where(['user_id'=>$this->L->id])->find($id);
         if(!$info)AJAX::error('不存在！');
-        $info->download = 'download/file?id='.$info->file;
+
+        $file = $umodel->find($id);
+        if(!$file)$info->download = '';
+        else{
+            $info->download = 'download/file/'.$info->file.'/'.$file->name;
+        }
+
+        
         
         $out['info'] = $info;
 
