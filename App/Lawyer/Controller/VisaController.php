@@ -693,16 +693,17 @@ class VisaController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_visa_setting_upd(VisaSelectModel $model,VisaSelectOptionModel $omodel,$id){
+    function admin_visa_setting_upd(VisaSelectModel $model,VisaSelectOptionModel $omodel,$id,$type){
         $this->L->adminPermissionCheck(77);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
-
+        $data['type'] = $type;
         $option = Request::getSingleInstance()->request('option','raw');
 
         unset($data['id']);
         unset($data['option']);
         $upd = AdminFunc::upd($model,$id,$data);
+        $id = $id ? $id : $upd;
         $omodel->where(['select_id'=>$id])->remove();
         
         if($option)foreach($option as $op){
