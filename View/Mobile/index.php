@@ -19,7 +19,9 @@
 </head>
 <body>
     <style>
-        /*.index-banner img{height:100%}*/
+    /*.tabchange{clear: both;overflow: hidden;}
+    .tabchange li{font-size:0.221rem;float:left; padding:0 0.1rem;line-height:0.6rem;}
+    .tabcontain img{margin:0.2rem 0 0 0.2rem !important;width: 6.0rem;}*/
     </style>
     <header>
         <div class="header-left index-header-left" style="background:transparent !important;" onclick="redirect('searcher')"></div>
@@ -40,8 +42,8 @@
         <!-- 如果需要分页器 -->
         <div class="swiper-pagination"></div>
     </div>
-    <div class="main-boxs">
-        <div class="tabchange-nav video-nav" style="overflow-x: scroll; overflow-y: hidden;">
+    <!-- <div class="main-box"> -->
+        <div class="tabchange-nav video-nav nav" style="overflow-x: scroll; overflow-y: hidden;">
             <ul class="tabchange" >
                 <li data-num="1" class="tabchange-active">德汇宝贝广场</li>
                 <li data-num="2">德汇万达广场</li>
@@ -50,96 +52,113 @@
                 <li data-num="5">德汇金融</li>
             </ul>
         </div>
-        <div class="tabcontain" style="display: block;">
-                <div class="swiper-container tabslider" id="slider_1">
-                    <div class="swiper-wrapper">
-                        <?php if($homeM[0]->pic)foreach(explode(';',$homeM[0]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
-                        
+        <div id="tabs-container" class="swiper-container">
+            <div class="swiper-wrapper">
+                <!--德汇宝贝广场-->
+                <div class="swiper-slide tabcontain">
+                    <div class="swiper-container aaa tabslider">
+                        <div class="swiper-wrapper">
+                            <?php if($homeM[0]->pic)foreach(explode(';',$homeM[0]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
+                        </div>
+                        <!-- 如果需要分页器 -->
+                        <div class="swiper-pagination"></div>
+                        <div class="this-title">
+                            <?php echo lang('德汇宝贝广场');?>
+                        </div>
                     </div>
-                    <!-- 如果需要分页器 -->
-                    <div class="swiper-pagination tab-pagination"></div>
-                    <div class="this-title">
-                        <?php echo lang('德汇宝贝广场');?>
-                    </div>
-                </div>
-                <p><?php echo langV($homeM[0],'description');?></p>
-                <div class="more-button">
-                    <a href="newWorld"><?php echo lang('了解更多');?></a>
-                </div>
-        </div>
-        <div class="tabcontain">
-                <div class="swiper-container tabslider" id="slider_2">
-                    <div class="swiper-wrapper">
-                        <?php if($homeM[1]->pic)foreach(explode(';',$homeM[1]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
-                        
-                    </div>
-                    <!-- 如果需要分页器 -->
-                    <div class="swiper-pagination tab-pagination"></div>
-                    <div class="this-title">
-                        <?php echo lang('德汇万达广场');?>
-                    </div>
-                </div>
-                <p><?php echo langV($homeM[1],'description');?></p>
-                <div class="more-button">
-                    <a href="wandaSquare"><?php echo lang('了解更多');?></a>
-                </div>
-        </div>
-        <div class="tabcontain">
-                <div class="swiper-container tabslider" id="slider_3">
-                    <div class="swiper-wrapper">
-                        <?php if($homeM[2]->pic)foreach(explode(';',$homeM[2]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
-                        
-                    </div>
-                    <!-- 如果需要分页器 -->
-                    <div class="swiper-pagination tab-pagination"></div>
-                    <div class="this-title">
-                        <?php echo lang('德汇特色小镇');?>
-                    </div>
-                </div>
-                <p><?php echo langV($homeM[2],'description');?></p>
-                <div class="more-button">
-                    <a href="newCity"><?php echo lang('了解更多');?></a>
-                </div>
-        </div>
 
-        <div class="tabcontain">
-                <div class="swiper-container tabslider" id="slider_4">
-                    <div class="swiper-wrapper">
-                        <?php if($homeM[3]->pic)foreach(explode(';',$homeM[3]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
-                        
-                    </div>
-                    <!-- 如果需要分页器 -->
-                    <div class="swiper-pagination tab-pagination"></div>
-                    <div class="this-title">
-                        <?php echo lang('德汇物流');?>
+                    <p><?php echo langV($homeM[0],'description');?></p>
+                    <div class="more-button">
+                        <a href="newWorld"><?php echo lang('了解更多');?></a>
                     </div>
                 </div>
-                <p><?php echo langV($homeM[3],'description');?></p>
-                <div class="more-button">
-                    <a href="logistics"><?php echo lang('了解更多');?></a>
-                </div>
-        </div>
+                <!--最新-->
+                <div class="swiper-slide tabcontain">
+                    <div class="swiper-container aaa tabslider" >
+                        <div class="swiper-wrapper">
+                            <?php if($homeM[1]->pic)foreach(explode(';',$homeM[1]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
+                        </div>
+                        <!-- 如果需要分页器 -->
+                        <div class="swiper-pagination "></div>
+                        <div class="this-title">
+                            <?php echo lang('德汇万达广场');?>
+                        </div>
+                    </div>
 
-        <div class="tabcontain">
-                <div class="swiper-container tabslider" id="slider_5">
-                    <div class="swiper-wrapper">
-                        <?php if($homeM[4]->pic)foreach(explode(';',$homeM[4]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
-                        
-                    </div>
-                    <!-- 如果需要分页器 -->
-                    <div class="swiper-pagination tab-pagination"></div>
-                    <div class="this-title">
-                        <?php echo lang('德汇金融');?>
+                    <p><?php echo langV($homeM[1],'description');?></p>
+                    <div class="more-button">
+                        <a href="wandaSquare"><?php echo lang('了解更多');?></a>
                     </div>
                 </div>
-                <p><?php echo langV($homeM[4],'description');?></p>
-                <div class="more-button">
-                    <a href="finance"><?php echo lang('了解更多');?></a>
-                </div>
-        </div>
 
-        
-    </div>
+                <div class="swiper-slide tabcontain">
+                    <div class="content-slide tabslider">
+                        <div class="swiper-container aaa">
+                            <div class="swiper-wrapper">
+                                <?php if($homeM[2]->pic)foreach(explode(';',$homeM[2]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
+                            </div>
+                            <!-- 如果需要分页器 -->
+                            <div class="swiper-pagination"></div>
+                            <div class="this-title">
+                                <?php echo lang('德汇特色小镇');?>
+                            </div>
+                        </div>
+                    </div>
+                    <p><?php echo langV($homeM[2],'description');?></p>
+                    <div class="more-button">
+                        <a href="newCity"><?php echo lang('了解更多');?></a>
+                    </div>
+                </div>
+
+
+                <div class="swiper-slide tabcontain">
+                    <div class="content-slide tabslider">
+                        <div class="swiper-container aaa">
+                            <div class="swiper-wrapper">
+                                <?php if($homeM[3]->pic)foreach(explode(';',$homeM[3]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
+
+                            </div>
+                            <!-- 如果需要分页器 -->
+                            <div class="swiper-pagination"></div>
+                            <div class="this-title">
+                                <?php echo lang('德汇物流');?>
+                            </div>
+                        </div>
+                    </div>
+                    <p><?php echo langV($homeM[2],'description');?></p>
+                    <div class="more-button">
+                        <a href="newCity"><?php echo lang('了解更多');?></a>
+                    </div>
+                </div>
+
+
+
+
+                <div class="swiper-slide tabcontain">
+                    <div class="content-slide tabslider">
+                        <div class="swiper-container aaa">
+                            <div class="swiper-wrapper">
+                            <?php if($homeM[4]->pic)foreach(explode(';',$homeM[4]->pic) as $pic){echo '<div class="swiper-slide top-banner"><img style="height: 100% !important;" src="/pic/'.$pic.'" alt=""></div>';}?>
+
+                            </div>
+                            <!-- 如果需要分页器 -->
+                            <div class="swiper-pagination"></div>
+                            <div class="this-title">
+                                <?php echo lang('德汇金融');?>
+                            </div>
+                        </div>
+                    </div>
+                    <p><?php echo langV($homeM[3],'description');?></p>
+                    <div class="more-button">
+                        <a href="logistics"><?php echo lang('了解更多');?></a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+  
+<!-- </div> -->
     <div class="news-box">
         <ul class="news-box-title">
             <li>
@@ -245,8 +264,8 @@
     
     <?php include('side_slider.php');?>
     <script>
-        $('.index-banner').height($(window).width()/3)
-        $('.tabslider').height($(window).width()*46/67)
+        $('.index-banner').height($(window).width()/3);
+        $('.tabslider').height($(window).width()*46/67);
         window.onload = function(){
             var mySwiper = new Swiper ('.index-banner', {
                 direction: 'horizontal',
@@ -255,59 +274,41 @@
                 pagination: '.swiper-pagination',
             })
             var width = $(window).width();
-            for (var i = 1; i <= 5; i++) {
-                var swiper = new Swiper('#slider_' + i, {
-                    direction: 'horizontal',
-                    loop: true,
-                    pagination: '.swiper-pagination',//分页显示设置
-                    autoplay: 6000,
-                    width: width,
-                    paginationClickable: true,
-                    nested:true,
-                    paginationBulletRender: function (swiper, index, className) {
-                        return '<span class="' + className + '">' + (index + 1) + '</span>';
-                    }
-                });
-            }
 
+            /****************导航切换*****************/
+            var tabsSwiper = new Swiper('#tabs-container',{
+                speed:500,
+                autoHeight:true,
+                onSlideChangeStart: function(){
+                    $(".nav li").removeClass('tabchange-active');
+                    $(".nav li").eq(tabsSwiper.activeIndex).addClass('tabchange-active')
+                }
+            });
+            $(".nav li").on('touchstart',function(e){
+                // e.preventDefault()
+                $(".nav li").removeClass('tabchange-active');
+                $(this).addClass('tabchange-active')
+                tabsSwiper.slideTo( $(this).index() )
+            });
+            $(".nav li").click(function(e){
+                // e.preventDefault()
+            });
 
-
-        // $(".tabchange").find('li').click(function () {
-        //     var obj = $(this);
-        //     var bodyW = $('body').width();
-        //     $(this).addClass('tabchange-active');
-        //     $(this).siblings().removeClass('tabchange-active');
-        //     var num = parseInt(obj.attr("data-num")) - 1;
-        //     console.info(-bodyW * num + "px");
-        //     $('.tabcontain').eq($(this).index()).css("margin-left", -bodyW * num + "px");
-        
-
-
-        // });
-
-
-
-        $(".tabcontain").removeClass('hid').addClass('hid')
-            $(".tabchange").find('li').click(function(){
-                $(".tabcontain").css('display','none');
-                $(this).addClass('tabchange-active');
-                $(this).siblings().removeClass('tabchange-active')
-                $('.tabcontain').eq($(this).index()).css('display','block')
+            var newSwiper = new Swiper('.aaa', {
+                direction: 'horizontal',
+                loop: true,
+                pagination: '.swiper-pagination',//分页显示设置
+                paginationClickable:true,
+                autoplay: 3000,
+                nested:true,
+                autoplayDisableOnInteraction:false,
+                resistanceRatio:0,
+                paginationBulletRender: function (newSwiper, index, className) {
+                            return '<span class="' + className + '">' + (index + 1) + '</span>';
+                        }
             })
-
-
-
-
-
-
-
-
-
-
-
         }
         
-
         $(".news-box-title").find('li').click(function(){
             $(this).find("h1").addClass("news-active");
             $(this).siblings().find("h1").removeClass("news-active");

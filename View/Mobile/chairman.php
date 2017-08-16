@@ -69,6 +69,7 @@
     </div>
 </div>
 <style>
+    body{position:relative;}
     .chairman_info{font-size: 12px; color: #676767; margin-top: 15px; line-height: 26px; padding-bottom: 40px; border-bottom: 1px solid #DEDEDE;}
     .chairman_box{position: relative; width: 268px; height: 188px; border: 1px solid #DEDEDE; padding: 10px; margin: 0 15px 60px; float: left;}
     .chairman_box .table{width: 100%; height: 100%; display: table;}
@@ -82,14 +83,16 @@
     .dialog .dialog-close{display: block; background: #F4F4F4; padding: 4px 10px; position: absolute; right: 0; top: 0; color: #666; cursor: pointer;}
 </style>
 <div class="dialog" style="display: none;">
-    <div class="dialog-close" onclick="$('.dialog').hide();">✕ 关闭</div>
-    <div class="chairman-images-scan">
+    <div style="z-index:2;width:100%;height:100%;position:absolute" onclick="$('.dialog').hide();"></div>
+    <div class="dialog-close" onclick="$('.dialog').hide();" style="z-index:100">✕ 关闭</div>
+    <div class="chairman-images-scan" style="z-index:100">
         <div class="swiper-wrapper">
         </div>
         <div class="swiper-button-prev"></div>
         <div class="swiper-button-next"></div>
     </div>
 </div>
+<div class="mengceng"></div>
 <?php include('side_slider.php');?>
 <script>
     $(document).ready(function () {
@@ -105,18 +108,22 @@
                 html += '<div class="chairman-scan-box chairman_box swiper-slide">'+
                         '<div class="table">'+
                         '<div class="table-cell">'+
-                        '<img src="' + v + '">'+
+                        '<img style="z-index:103" src="' + v + '">'+
                         '</div></div></div>';
             });
             $(".swiper-wrapper").html(html);
             $(".dialog").show();
             new Swiper('.chairman-images-scan', {
                 effect: 'flip',
+                loop : true,
                 grabCursor: true,
                 nextButton: '.swiper-button-next',
                 prevButton: '.swiper-button-prev'
             });
+
         });
+
+        
     });
 </script>
 </body>

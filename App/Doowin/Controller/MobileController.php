@@ -183,16 +183,26 @@ class MobileController extends Controller{
 
         $chairmanPicture = $chairmanPictureModel->order('top desc','id desc')->get()->toArray();
 
-                foreach($chairmanPicture as $k=>$v){
+        $pic_ = [];
+
+        foreach($chairmanPicture as $k=>$v){
 
             if($chairmanPicture[$k]->pic){
                 $pics = explode(';',$chairmanPicture[$k]->pic);
+                
                 $chairmanPicture[$k]->pic2Array = $pics;
                 $chairmanPicture[$k]->count = count($chairmanPicture[$k]->pic2Array);
                 foreach($pics as &$v2)$v2 = Func::fullPicAddr( $v2 );
                 $chairmanPicture[$k]->picArray = implode(';',$pics);
+                $pic_[$k] = $chairmanPicture[$k]->picArray;
                 $chairmanPicture[$k]->first = $chairmanPicture[$k]->pic2Array[0];
             }
+
+        }
+        foreach($chairmanPicture as $k=>$v){
+
+            $pic__ = $pic_;
+            $chairmanPicture[$k]->picArray = implode(';',array_slice($pic__,$k)).($k?';'.implode(';',array_slice($pic__,0,$k)):'');
 
         }
 
