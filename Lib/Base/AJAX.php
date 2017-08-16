@@ -69,7 +69,7 @@ class AJAX{
 
         $req = json_encode($_REQUEST);
         ErrorApiModel::copyMutiInstance()->set([
-            'request'=>$res,'output'=>$message,'date'=>date('Y-m-d H:i:s'),'path'=>REQUEST_PATH
+            'request'=>$req,'output'=>$message,'date'=>date('Y-m-d H:i:s'),'path'=>REQUEST_PATH
         ])->add();
 
         }catch(Exception $e){
