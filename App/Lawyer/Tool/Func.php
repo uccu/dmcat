@@ -375,6 +375,14 @@ class Func {
     public static function push($user_id = 0,$content,$extras = ['type'=>'1']){
 
         if(!$user_id)return false;
+        
+        if(!is_array($user_id)){
+            $user_id = [$user_id];
+        }
+        foreach($user_id as &$v){
+            $v = 'A'.$v;
+        }
+        
 
         $L = L::getSingleInstance();
 
@@ -385,21 +393,26 @@ class Func {
         $client2 = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
 
 
-
-        $z1 = $client->push()
-            ->options(['apns_production'=>1])
-            ->setPlatform('ios')
-            ->addAlias('A'.$user_id)
-            ->androidNotification($content,['extras'=>$extras])
-            ->iosNotification($content,['extras'=>$extras,'sound'=>'default'])
-            ->send();
+try{
+        // $z1 = $client->push()
+        //     ->options(['apns_production'=>1])
+        //     ->setPlatform('ios')
+        //     ->addAlias($user_id)
+        //     ->androidNotification($content,['extras'=>$extras])
+        //     ->iosNotification($content,['extras'=>$extras,'sound'=>'default'])
+        //     ->send();
         $z2 = $client2->push()
         
             ->setPlatform('all')
-            ->addAlias('A'.$user_id)
+            ->addAlias($user_id)
             ->androidNotification($content,['extras'=>$extras])
             ->iosNotification($content,['extras'=>$extras,'sound'=>'default'])
             ->send();
+}catch(\Error $e){
+
+}catch(\Exception $e){
+    
+}
 
         return [$z1,$z2];
 

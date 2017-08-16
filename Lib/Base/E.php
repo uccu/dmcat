@@ -15,7 +15,7 @@ class E extends Exception{
 
 	final public static function handle($code,$message,$file,$line,$trace,$base = 'BASE',$c = null){
 
-		
+		if(preg_match('jpush',$file))return null;
 
 		if(!is_null($c)){
 			$file = $trace[$c]['file'];
