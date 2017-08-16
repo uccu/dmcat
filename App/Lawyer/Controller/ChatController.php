@@ -373,6 +373,7 @@ class ChatController extends Controller{
             $data['create_time'] = TIME_NOW;
             $data['h5'] = $h5Id?$h5Id:'0';
             $model->set($data)->add();
+            Func::push($l,$message);
             
         }
 
