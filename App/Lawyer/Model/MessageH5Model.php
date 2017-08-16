@@ -5,7 +5,7 @@ namespace App\Lawyer\Model;
 use Model;
 
 
-class MessageH5 extends Model{
+class MessageH5Model extends Model{
 
     public $table = 'message_h5';
 
