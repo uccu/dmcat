@@ -15,6 +15,7 @@ use App\Lawyer\Tool\AdminFunc;
 use App\Lawyer\Model\LawyerModel;
 use App\Lawyer\Model\BannerModel;
 use App\Lawyer\Model\H5Model;
+use App\Lawyer\Model\MessageH5Model;
 use App\Lawyer\Model\ShareModel;
 
 
@@ -85,7 +86,7 @@ class HomeController extends Controller{
      * @return mixed 
      */
     function h5($id,H5Model $model){
-        
+    
         $h5 = $model->find($id);
         !$h5 && Response::r302('/404');
         
@@ -95,6 +96,17 @@ class HomeController extends Controller{
 
 
     }
+    function messageH5($id,MessageH5Model $model){
+        
+        $h5 = $model->find($id);
+        !$h5 && Response::r302('/404');
+            
+        View::addData(['data'=>$h5->content]);
+    
+        View::hamlReader('h5','App');
+
+    }
+    
 
     function upAvatar(){
 

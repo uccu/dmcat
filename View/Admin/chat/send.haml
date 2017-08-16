@@ -94,6 +94,8 @@
                 for(var i in e.req.param)f[i]=e.req.param[i]
                 delete f.page
                 f.toAll = toAll
+                f.message = $('.sendBox textarea').val();
+                if(!f.message){toastr['error']('消息不能为空！');return}
                 curl('/chat/sendMail',f,function(){
                     curl_succ('发送成功！')
                 });
@@ -107,6 +109,8 @@
                 if(!$(h5).text())h5 = '';
                 f.h5 = h5
                 f.toAll = toAll
+                f.message = $('.sendBox textarea').val();
+                if(!f.message){toastr['error']('消息不能为空！');return}
                 curl('/chat/sendPush',f,function(){
                     curl_succ('发送成功！')
                 });

@@ -19,6 +19,8 @@ use App\Lawyer\Model\UserModel;
 use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\FastQuestionModel;
 use App\Lawyer\Model\ConsultModel;
+use App\Lawyer\Model\MessageModel;
+use App\Lawyer\Model\MessageH5;
 
 
 class ChatController extends Controller{
@@ -354,13 +356,25 @@ class ChatController extends Controller{
         AJAX::success($out);
     }
 
-    function sendPush(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$all,$normal,$vip,$vip0,$vip1,$vip2){
+    function sendPush(MessageModel $model,MessageH5 $messageH5,UserModel $userModel,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$all,$normal,$vip,$vip0,$vip1,$vip2,$h5,$message,$toAll){
         
         $where = $this->setWhere($lmodel,$search,$all,$normal,$vip,$vip0,$vip1,$vip2);
         
-        $list = $model->where($where)->get_field('id')->toArray();
+        $list = $userModel->where($where)->get_field('id')->toArray();
 
         $out['list'] = $list;
+
+        if($h5)$h5Id = $messageH5->set(['content'=>$h5])->add()->getStatus();
+        
+        foreach($list as $l){
+
+            $data['user_id'] = $l;
+            $data['content'] = $message;
+            $data['create_time'] = TIME_NOW;
+            $data['h5'] = $h5Id?$h5Id:'0';
+            $model->set($data)->add();
+            
+        }
 
         AJAX::success($out);
     }
