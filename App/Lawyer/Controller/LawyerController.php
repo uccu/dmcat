@@ -111,7 +111,7 @@ class LawyerController extends Controller{
                 if($consult){
                     $consult->create_time + 3600 * $auth->hours > TIME_NOW && AJAX::error('律师已绑定，'.$auth->hours.'小时后未回复可以更换律师！');
                 }else{
-                    AJAX::error('律师已绑定，请咨询您绑定的律师！');
+                    // AJAX::error('律师已绑定，请咨询您绑定的律师！');
                 }
             }
             $visaSend = $visaSendModel->where(['user_id'=>$this->L->id,'lawyer_id'=>$id])->order('create_time')->find();
