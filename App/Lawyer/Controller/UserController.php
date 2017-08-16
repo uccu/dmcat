@@ -521,7 +521,7 @@ class UserController extends Controller{
         
         !$this->L->id && AJAX::error('未登录');
         $where['user_id'] = $this->L->id;
-        $list = $model->where($where)->order('craete_time desc')->page($page,$limit)->get()->toArray();
+        $list = $model->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
         
         $out['list'] = $list;
         AJAX::success($out);
