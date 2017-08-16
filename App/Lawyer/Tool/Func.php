@@ -372,17 +372,17 @@ class Func {
      * @param mixed $extras 
      * @return mixed 
      */
-    public static function push($user_id = 0,$content,$extras = ['key'=>'','id'=>'']){
+    public static function push($user_id = 0,$content,$extras = ['type'=>'1']){
 
         if(!$user_id)return false;
 
-        $L = L::getInstance();
+        $L = L::getSingleInstance();
 
         $app_key = $L->config->push_app_key;
         $master_secret = $L->config->push_master_secret;
 
-        $client = new \JPush\Client($app_key, $master_secret);
-        $client2 = new \JPush\Client($app_key, $master_secret);
+        $client = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
+        $client2 = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
 
 
 

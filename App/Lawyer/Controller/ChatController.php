@@ -20,7 +20,7 @@ use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\FastQuestionModel;
 use App\Lawyer\Model\ConsultModel;
 use App\Lawyer\Model\MessageModel;
-use App\Lawyer\Model\MessageH5;
+use App\Lawyer\Model\MessageH5Model;
 
 
 class ChatController extends Controller{
@@ -356,7 +356,7 @@ class ChatController extends Controller{
         AJAX::success($out);
     }
 
-    function sendPush(MessageModel $model,MessageH5 $messageH5,UserModel $userModel,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$all,$normal,$vip,$vip0,$vip1,$vip2,$h5,$message,$toAll){
+    function sendPush(MessageModel $model,MessageH5Model $messageH5,UserModel $userModel,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$all,$normal,$vip,$vip0,$vip1,$vip2,$h5,$message,$toAll){
         
         $where = $this->setWhere($lmodel,$search,$all,$normal,$vip,$vip0,$vip1,$vip2);
         
