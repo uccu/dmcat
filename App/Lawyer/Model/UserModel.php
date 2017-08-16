@@ -11,8 +11,12 @@ class UserModel extends Model{
     public $field;
 
     public function lawyer(){
-
+        
         return $this->join(LawyerModel::class,'id','lawyer_id','LEFT');
+    }
+    public function lim(){
+        
+        return $this->join(UserConsultLimitModel::class,'user_id','id','LEFT');
     }
 
 }

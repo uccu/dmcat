@@ -6,7 +6,7 @@
         return p.searchParams.get(d);
     }
     
-    var curl = function(url,data,func,raw){
+    var curl = window.curl = function(url,data,func,raw){
         var a = {
             url:url,data:data,dataType:'json',
             type:raw || (data && JSON.stringify(data) !="{}")?'post':'get',
@@ -39,7 +39,7 @@
         j('<div>').addClass('btn btn-white').attr('type','button').append('<i class="fa fa-chevron-right"></i>').on('click',function(){e(max)}).appendTo(p);
         return p;
     }
-    var packFormData = function(file,v,x){
+    var packFormData = window.packFormData = function(file,v,x){
         
         var form = new FormData();
         if(typeof v==="object")for(d in v)if(typeof v[d]==="object")form.append(v[d].name,v[d].value);else form.append(d,v[d]);
@@ -261,7 +261,7 @@
         close && that.click();
     }
     
-    var curl_succ = function(message){
+    var curl_succ = window.curl_succ = function(message){
         toastr['success'](message);
     }
     admin.prototype.flesh = function(){
@@ -326,8 +326,20 @@
                                 that.flesh()
                             })
                             break;
+                        case 'checkbox':
+                            var pa = j('<div class="col-sm-'+(that.opt.req[i].size||2)+' animated fadeInRight"><div class="input-group"><span class="input-group-addon">'+that.opt.req[i].title+'</span><div style="padding: 7px 0 3px 8px;border: 1px solid #E5E6E7;width: 37px;"><input type="checkbox"  name="'+that.opt.req[i].name+'" /></div>')
+                            pa.appendTo('.topw .row')
+                            that.req.param[that.opt.req[i].name] == '1' && pa.find('input').attr('checked','checked');
+                            pa.find('input').iCheck({checkboxClass: 'icheckbox_square-green',radioClass: 'iradio_square-green'}).on('ifChanged',function(){
+                                that.req.param[j(this).attr('name')] = this.checked?'1':'0'
+                                that.req.param.page = 1
+                                that.flesh()
+                            });
+                            that.req.param[that.opt.req[i].name] = pa.find('input')[0].checked?'1':'0'
+                            
+                            break;
                         default:
-                            var pa = j('<div class="col-sm-3 animated fadeInRight"><div class="input-group"><span class="input-group-addon">'+that.opt.req[i].title+'</span><input name="'+that.opt.req[i].name+'" type="text" class="form-control"></div></div>')
+                            var pa = j('<div class="col-sm-'+(that.opt.req[i].size||2)+' animated fadeInRight"><div class="input-group"><span class="input-group-addon">'+that.opt.req[i].title+'</span><input name="'+that.opt.req[i].name+'" type="text" class="form-control"></div></div>')
                             pa.appendTo('.topw .row')
                             pa.find('input').val(that.req.param[that.opt.req[i].name]||that.opt.req[i].default||'')
                             that.req.param[that.opt.req[i].name] = pa.find('input').val()

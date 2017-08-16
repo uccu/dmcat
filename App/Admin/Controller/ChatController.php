@@ -19,9 +19,15 @@ class ChatController extends Controller{
 
     /* 快速问题 */
     function fast(){
-
+        
         View::addData(['getList'=>'/chat/admin_fast']);
         View::hamlReader('home/list','Admin');
+    }
+    
+    function send(){
+
+        View::addData(['getList'=>'/chat/admin_send']);
+        View::hamlReader('chat/send','Admin');
     }
 
     function user_chat($id){

@@ -19,6 +19,7 @@ use App\Lawyer\Model\CaptchaModel;
 use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\UserSchoolModel;
 use App\Lawyer\Model\UploadModel;
+use App\Lawyer\Model\MessageModel;
 
 
 class UserController extends Controller{
@@ -468,6 +469,11 @@ class UserController extends Controller{
 
 
 
+    /** 获取我的VIP
+     * getMyVip
+     * @param mixed $model 
+     * @return mixed 
+     */
     function getMyVip(UserConsultLimitModel $model){
 
         !$this->L->id && AJAX::error('未登录');
@@ -501,6 +507,24 @@ class UserController extends Controller{
 
         AJAX::success($out);
 
+    }
+
+
+    /** 获取我的消息
+     * myMessage
+     * @param mixed $model 
+     * @param mixed $page 
+     * @param mixed $limit 
+     * @return mixed 
+     */
+    function myMessage(MessageModel $model,$page = 1,$limit = 10){
+        
+        !$this->L->id && AJAX::error('未登录');
+        $where['user_id'] = $this->L->id;
+        $list = $model->where($where)->order('craete_time desc')->page($page,$limit)->get()->toArray();
+        
+        $out['list'] = $list;
+        AJAX::success($out);
     }
 
 
@@ -546,7 +570,7 @@ class UserController extends Controller{
 
 
 
-    function admin_user(UserModel $model,$page = 1,$limit = 10,$search){
+    function admin_user(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$type){
         
         $this->L->adminPermissionCheck(68);
 
@@ -563,6 +587,25 @@ class UserController extends Controller{
                     [
                         'title'=>'搜索',
                         'name'=>'search'
+                    ],
+                    // [
+                    //     'title'=>'测试',
+                    //     'name'=>'test',
+                    //     'type'=>'checkbox',
+                        
+                    // ],
+                    [
+                        'title'=>'类型',
+                        'name'=>'type',
+                        'type'=>'select',
+                        'option'=>[
+                            '0'=>'全部',
+                            '1'=>'普通会员',
+                            '2'=>'法律会员',
+                            '3'=>'留学转学会员',
+                            '4'=>'签证会员',
+                        ],
+                        'default'=>'0'
                     ],
                 ]
             ];
@@ -614,6 +657,22 @@ class UserController extends Controller{
         # 列表内容
         $where = [];
         $where['type'] = 0;
+        if($type){
+            if($type == 2){
+                $where['lim.rule.type'] = 0; 
+                $where['e2'] = ['%F > %n','lim.death_time',TIME_NOW]; 
+            }elseif($type == 3){
+                $where['lim.rule.type'] = 1; 
+                $where['e2'] = ['%F > %n','lim.death_time',TIME_NOW]; 
+            }elseif($type == 4){
+                $where['lim.rule.type'] = 2; 
+                $where['e2'] = ['%F > %n','lim.death_time',TIME_NOW]; 
+            }elseif($type == 1){
+                $where['e2'] = ['NOT EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `user_id` = %F)','id'];
+            }
+            
+
+        }
 
         if($search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];

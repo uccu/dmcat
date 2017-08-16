@@ -7,7 +7,11 @@
         .row
             .col-sm-12
                 .ibox.float-e-margins
-                    .ibox-title.topw(style="height:64px")
+                    :css
+                        .topw .row>div{
+                            padding-bottom:20px
+                        }
+                    .ibox-title.topw(style="padding-top:20px")
                         .row
                 .load1.sk-spinner.sk-spinner-wave.animated
                     .sk-rect1

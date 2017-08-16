@@ -15,6 +15,8 @@ use App\Lawyer\Tool\AdminFunc;
 use App\Lawyer\Model\LawyerModel;
 use App\Lawyer\Model\BannerModel;
 use App\Lawyer\Model\H5Model;
+use App\Lawyer\Model\UserModel;
+use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\FastQuestionModel;
 use App\Lawyer\Model\ConsultModel;
 
@@ -156,6 +158,210 @@ class ChatController extends Controller{
         $this->L->adminPermissionCheck(86);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+    function admin_send(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$all,$normal,$vip,$vip0,$vip1,$vip2){
+        
+        $this->L->adminPermissionCheck(68);
+        
+        $name = '用户';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/user/admin_user_get',
+                'req'   =>[
+                    
+                    [
+                        'title'=>'全部用户',
+                        'name'=>'all',
+                        'type'=>'checkbox',
+                        
+                    ],
+                    [
+                        'title'=>'普通用户',
+                        'name'=>'normal',
+                        'type'=>'checkbox',
+                        
+                    ],
+                    [
+                        'title'=>'所有会员',
+                        'name'=>'vip',
+                        'type'=>'checkbox',
+                        
+                    ],
+                    [
+                        'title'=>'法律会员',
+                        'name'=>'vip0',
+                        'type'=>'checkbox',
+                        
+                    ],
+                    
+                    [
+                        'title'=>'签证会员',
+                        'name'=>'vip2',
+                        'type'=>'checkbox',
+                        
+                    ],
+                    [
+                        'title'=>'留学转学会员',
+                        'name'=>'vip1',
+                        'type'=>'checkbox',
+                        
+                    ],
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search',
+                        'size'=>'6'
+                    ],
+                ]
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '用户ID',
+                '手机号',
+                '名字',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'id',
+                'phone',
+                'name',
+                
+
+            ];
+            
+
+        # 列表内容
+        $where = $this->setWhere($lmodel,$search,$all,$normal,$vip,$vip0,$vip1,$vip2);
+
+        $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->lawyer = '<i class="fa fa-pencil text-navy"></i> 查看';
+            $v->lawyer_href = 'chat/user_chat?id='.$v->id;
+            $v->school = '<i class="fa fa-pencil text-navy"></i> 查看';
+            $v->school_href = 'school/user_school?id='.$v->id;
+            
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    
+    private function setWhere($lmodel,$search,$all,$normal,$vip,$vip0,$vip1,$vip2){
+
+        $where = [];
+        $where['type'] = 0;
+        
+        $vip0 && $vip1 && $vip2 && $vip = 1;
+        $normal && $vip && $all = 1;
+
+        if($all){
+
+        }elseif($vip){
+            $where['e2'] = ['EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `user_id` = %F AND `death_time`>%n)','id',TIME_NOW];
+        
+        }elseif($normal && !$vip0 && !$vip1 && !$vip2 && !$vip){
+            $where['e2'] = ['NOT EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `user_id` = %F)','id'];
+        
+        }elseif($normal && $vip0 && !$vip1 && !$vip2 && !$vip){
+            $where['e2'] = ['NOT EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `user_id` = %F) OR EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`=1 AND `user_id` = %F AND `death_time`>%n)','id','id',TIME_NOW];
+        }elseif($normal && !$vip0 && $vip1 && !$vip2 && !$vip){
+            $where['e2'] = ['NOT EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `user_id` = %F) OR EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`=2 AND `user_id` = %F AND `death_time`>%n)','id','id',TIME_NOW];
+        }elseif($normal && !$vip0 && !$vip1 && $vip2 && !$vip){
+            $where['e2'] = ['NOT EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `user_id` = %F) OR EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`=3 AND `user_id` = %F AND `death_time`>%n)','id','id',TIME_NOW];
+        
+        }elseif($normal && $vip0 && $vip1 && !$vip2 && !$vip){
+            $where['e2'] = ['NOT EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `user_id` = %F) OR EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`!=3 AND `user_id` = %F AND `death_time`>%n)','id','id',TIME_NOW];
+        }elseif($normal && $vip0 && !$vip1 && $vip2 && !$vip){
+            $where['e2'] = ['NOT EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `user_id` = %F) OR EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`!=2 AND `user_id` = %F AND `death_time`>%n)','id','id',TIME_NOW];
+        }elseif($normal && !$vip0 && $vip1 && $vip2 && !$vip){
+            $where['e2'] = ['NOT EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `user_id` = %F) OR EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`!=1 AND `user_id` = %F AND `death_time`>%n)','id','id',TIME_NOW];
+        
+        }elseif(!$normal && $vip0 && $vip1 && !$vip2 && !$vip){
+            $where['e2'] = ['EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`!=3 AND `user_id` = %F AND `death_time`>%n)','id',TIME_NOW];
+        }elseif(!$normal && $vip0 && !$vip1 && $vip2 && !$vip){
+            $where['e2'] = ['EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`!=2 AND `user_id` = %F AND `death_time`>%n)','id',TIME_NOW];
+        }elseif(!$normal && !$vip0 && $vip1 && $vip2 && !$vip){
+            $where['e2'] = ['EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`!=1 AND `user_id` = %F AND `death_time`>%n)','id',TIME_NOW];
+        
+        }elseif(!$normal && $vip0 && !$vip1 && !$vip2 && !$vip){
+            $where['e2'] = ['EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`=1 AND `user_id` = %F AND `death_time`>%n)','id',TIME_NOW];
+        }elseif(!$normal && !$vip0 && $vip1 && !$vip2 && !$vip){
+            $where['e2'] = ['EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`=2 AND `user_id` = %F AND `death_time`>%n)','id',TIME_NOW];
+        }elseif(!$normal && $vip0 && !$vip1 && $vip2 && !$vip){
+            $where['e2'] = ['EXISTS(SELECT `id` FROM '.$lmodel->table.' WHERE `rule_id`=3 AND `user_id` = %F AND `death_time`>%n)','id',TIME_NOW];
+        
+        }
+
+
+
+
+        
+
+        if($search){
+            $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        }
+
+        return $where;
+    }
+
+    function sendMail(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$all,$normal,$vip,$vip0,$vip1,$vip2){
+        
+        $where = $this->setWhere($lmodel,$search,$all,$normal,$vip,$vip0,$vip1,$vip2);
+        
+        $list = $model->where($where)->get_field('id')->toArray();
+
+        $out['list'] = $list;
+
+        AJAX::success($out);
+    }
+
+    function sendPush(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$all,$normal,$vip,$vip0,$vip1,$vip2){
+        
+        $where = $this->setWhere($lmodel,$search,$all,$normal,$vip,$vip0,$vip1,$vip2);
+        
+        $list = $model->where($where)->get_field('id')->toArray();
+
+        $out['list'] = $list;
+
         AJAX::success($out);
     }
 
