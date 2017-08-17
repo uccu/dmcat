@@ -108,17 +108,32 @@ class WebController extends Controller{
      * @return mixed 
      */
     function getChatList($id,ConsultModel $consultModel,$page = 1,$limit = 10){
-        $this->L->id= 1;
+
         !$this->L->id && AJAX::error('未登录');
         
         $where['lawyer_id'] = $this->L->id;
         $where['user_id'] = $id;
 
-        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->page($page,$limit)->order('create_time desc')->get('create_time')->toArray();
+        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->page($page,$limit)->order('create_time desc')->get()->toArray();
         
-        ksort($list);
+        $list2 = [];
+        foreach($list as $v){
+            
+            $list2[$v->create_time][] = $v;
 
-        $out['list'] = array_values($list);
+        }
+        
+        ksort($list2);
+
+        $list = [];
+
+        foreach($list2 as $v){
+            
+            $list = array_merge($list,$v);
+
+        }
+
+        $out['list'] = $list;
 
         AJAX::success($out);
 

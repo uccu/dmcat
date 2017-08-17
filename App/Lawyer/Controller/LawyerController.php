@@ -245,13 +245,28 @@ class LawyerController extends Controller{
         $where['user_id'] = $this->L->id;
         $where['lawyer_id'] = $id;
 
-        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->page($page,$limit)->order('create_time desc')->get('create_time')->toArray();
+        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->page($page,$limit)->order('create_time desc')->get()->toArray();
 
         $consultModel->where($where)->where(['which'=>1])->set(['isread'=>1])->save();
         
-        ksort($list);
+        $list2 = [];
+        foreach($list as $v){
+            
+            $list2[$v->create_time][] = $v;
 
-        $out['list'] = array_values($list);
+        }
+        
+        ksort($list2);
+
+        $list = [];
+
+        foreach($list2 as $v){
+            
+            $list = array_merge($list,$v);
+
+        }
+
+        $out['list'] = $list;
 
         AJAX::success($out);
 
