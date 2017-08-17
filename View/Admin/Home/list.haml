@@ -25,7 +25,7 @@
 - block otherScript
     :javascript
         $(function(){
-            var e = new Dmcat.admin('#{getList}')
+            var e = new Dmcat.admin('#{getList|raw}')
             window.flesh = function(){
                 e.flesh()
             }

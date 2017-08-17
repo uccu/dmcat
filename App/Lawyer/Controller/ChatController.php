@@ -447,11 +447,83 @@ class ChatController extends Controller{
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
             $v->typeName = $types[$v->type];
             $v->look = '<i class="fa fa-pencil text-navy"></i> 查看';
+            $v->look_href = 'chat/user_chats?lawyer_id='.$v->lawyer_id.'&user_id='.$id;
         }
 
         # 分页内容
         $page   = $page;
         $max    = count($list);
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+    }
+
+
+    function admin_user_chats(ConsultModel $consultModel,LawyerModel $model,$user_id,$lawyer_id,$page = 1,$limit  = 10){
+        
+        $this->L->adminPermissionCheck(68);
+
+        $name = '管理员';
+        # 允许操作接口
+        $opt = 
+            [
+
+                'back'  => 'chat/user_chat?id='.$user_id
+                
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '时间',
+                '发送者',
+                '内容'
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                'date',
+                'name',
+                'content',
+
+            ];
+            
+
+        # 列表内容
+        $where['user_id'] = $user_id;
+        $where['lawyer_id'] = $lawyer_id;
+
+        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','lawyer.name>lawyer_name','user.name>user_name','user.avatar>user_avatar')->where($where)->page($page,$limit)->order('create_time desc')->get()->toArray();
+
+
+        foreach($list as &$v){
+            $v->date = date('m-d H:i',$v->create_time);
+            $v->name = $v->which ? $v->lawyer_name : $v->user_name;
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = $consultModel->select('COUNT(*) as c','RAW')->where($where)->find()->c;
         $limit  = $limit;
 
         # 输出内容

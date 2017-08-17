@@ -248,7 +248,7 @@
         return p;
     }
 
-    var gotoNewTag = function(addr,name){
+    var gotoNewTag = window.gotoNewTag = function(addr,name){
         w.top.$('.gotoTag a').text(name).attr('href',addr).click();
     }
     var gotoTag = function(addr,close){
@@ -444,7 +444,8 @@
                                 td.find('a').click(function(){
                                     gotoNewTag(j(this).attr('data-e'),'查看')
                                 })
-                            }else td.html(ti);
+                            }else if(t.html)td.html(ti);
+                            else td.text(ti);
                             break;
                     }
                 }else{
