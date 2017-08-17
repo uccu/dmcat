@@ -118,6 +118,8 @@ class WebController extends Controller{
         
         $list2 = [];
         foreach($list as $v){
+
+            $v->create_time = date('m-d H:i',$v->craete_time);
             
             $list2[$v->create_time][] = $v;
 
@@ -176,6 +178,8 @@ class WebController extends Controller{
     function sendQuestionToUser($id,$message,ConsultModel $consultModel){
         
         !$this->L->id && AJAX::error('未登录');
+
+        !$message && AJAX::error('消息不能为空！');
 
         $word_count = mb_strlen($message);
 
