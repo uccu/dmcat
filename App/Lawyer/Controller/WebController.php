@@ -141,7 +141,7 @@ class WebController extends Controller{
         $list2 = [];
         foreach($list as $v){
 
-            $v->create_time = date('m-d H:i',$v->create_time);
+            
             
             $list2[$v->create_time][] = $v;
 
@@ -152,7 +152,7 @@ class WebController extends Controller{
         $list = [];
 
         foreach($list2 as $v){
-            
+            $v->create_time = date('m-d H:i:s',$v->create_time);
             $list = array_merge($list,$v);
 
         }
