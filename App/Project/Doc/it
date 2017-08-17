@@ -567,6 +567,7 @@ user_id 用户ID
 
 
 6.18 报价
+web/addPrice
 type 签证类型（参照6.6）
 user_id 用户ID
 price 价格
