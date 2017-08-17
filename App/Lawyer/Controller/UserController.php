@@ -594,7 +594,7 @@ class UserController extends Controller{
 
 
 
-    function admin_user(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$type){
+    function admin_user(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$type,$master_type=-2){
         
         $this->L->adminPermissionCheck(68);
 
@@ -630,6 +630,19 @@ class UserController extends Controller{
                             '4'=>'签证会员',
                         ],
                         'default'=>'0'
+                    ],
+                    [
+                        'title'=>'平台大使',
+                        'name'=>'master_type',
+                        'type'=>'select',
+                        'option'=>[
+                            '-2'=>'全部',
+                            '0'=>'零级平台大使',
+                            '1'=>'一级平台大使',
+                            '2'=>'二级平台大使',
+                            '-1'=>'普通用户',
+                        ],
+                        'default'=>'-2'
                     ],
                 ]
             ];
@@ -697,6 +710,9 @@ class UserController extends Controller{
             
 
         }
+        
+        if($master_type != -2)$where['master_type'] = $master_type; 
+        
 
         if($search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];

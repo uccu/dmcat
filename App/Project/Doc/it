@@ -475,3 +475,100 @@ id 用户ID
 message 内容
 {"data":{},"code":200,"url":"","message":""}
 {}
+
+
+6.5 获取我的信息
+web/getMyInfo
+{"data":{"info":{"name":"\u91d1\u4e16\u5141Timothy \u5f8b\u5e08","avatar":"20170810\/00.15.07.887701.jpg","id":"1"}},"code":200,"url":"","message":""}
+{name:名字,avatar:头像,id:用户ID}
+
+
+6.6 获取所有签证数量
+web/getAllVisa
+{"data":{"work":"0","family":"0","refuse":"0","travel":"0","marry":"0","graduate":"0","student":"2","perpetual":"0","technology":"1","business":"0"},"code":200,"url":"","message":""}
+{work工作签证,family家庭团聚签证,refuse拒签上诉,travel旅游签证,marry配偶签证,graduate学生毕业签证,student学生签证/陪读,perpetual永久签证,technology技术移民签证,business商业签证}
+
+
+6.7 获取对应类型的签证的用户
+web/getVisaByVisaType
+type 签证类型，参照6.6
+{"data":{"list":[{"id":"1","user_id":"10","lawyer_id":"4","type":"student","create_time":"1502335258","avatar":"20170809\/17.56.07.699961.jpg","date":"2017-08-10"},{"id":"2","user_id":"10","lawyer_id":"4","type":"student","create_time":"1502338755","avatar":"20170809\/17.56.07.699961.jpg","date":"2017-08-10"}]},"code":200,"url":"","message":""}
+{user_id:用户ID,type:签证类型,avatar:用户头像,date:填写时间}
+
+
+6.8 用户的工作签证
+web/getWork
+user_id 用户ID
+{参照4.2}
+{参照4.2}
+
+
+6.9 用户的家庭团聚签证
+web/getFamily
+user_id 用户ID
+{参照4.4}
+{参照4.4}
+
+
+6.10 用户的拒签上诉
+web/getRefuse
+user_id 用户ID
+{参照4.6}
+{参照4.6}
+
+
+6.11 用户的旅游签证
+web/getTravel
+user_id 用户ID
+{参照4.8}
+{参照4.8}
+
+
+6.12 用户的配偶签证
+web/getMarry
+user_id 用户ID
+{参照4.10}
+{参照4.10}
+
+
+6.13 用户的学生毕业签证
+web/getGraduate
+user_id 用户ID
+{参照4.12}
+{参照4.12}
+
+
+6.14 用户的学生签证/陪读
+web/getStudent
+user_id 用户ID
+{参照4.14}
+{参照4.14}
+
+
+6.15 用户的永久签证
+web/getPerpetual
+user_id 用户ID
+{参照4.16}
+{参照4.16}
+
+
+6.16 用户的技术移民签证
+web/getTechnology
+user_id 用户ID
+{参照4.18}
+{参照4.18}
+
+
+6.17 用户的商业签证
+web/getBusiness
+user_id 用户ID
+{参照4.20}
+{参照4.20}
+
+
+6.18 报价
+type 签证类型（参照6.6）
+user_id 用户ID
+price 价格
+{"data":{},"code":200,"url":"","message":""}
+{}

@@ -17,7 +17,8 @@ use App\Lawyer\Model\LawyerModel;
 use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\ConsultModel;
 use App\Lawyer\Model\FastQuestionModel;
-
+use App\Lawyer\Model\VisaSendModel;
+use Model;
 
 
 class WebController extends Controller{
@@ -99,6 +100,27 @@ class WebController extends Controller{
         ];
         
         AJAX::success($out);
+    }
+
+
+    /** 获取我的信息
+     * getMyInfo
+     * @return mixed 
+     */
+    function getMyInfo(){
+        
+        !$this->L->id && AJAX::error('未登录');
+
+        $info = new stdClass;
+
+        $info->name = $this->L->userInfo->name;
+        $info->avatar = $this->L->userInfo->avatar;
+        $info->id = $this->L->id;
+
+        $out['info'] = $info;
+        
+        AJAX::success($out);
+    
     }
 
 
@@ -197,6 +219,232 @@ class WebController extends Controller{
 
         DB::commit();
 
+        AJAX::success();
+
+    }
+
+
+
+    function getAllVisa(VisaSendModel $model){
+        
+        !$this->L->id && AJAX::error('未登录');
+
+        $where['lawyer_id'] = $this->L->id;
+
+        $list = $model->group('type')->where($where)->select('COUNT(*) AS `count`,`type`','RAW')->get('type')->toArray();
+
+        $data['work'] = $list['work']?$list['work']->count:'0';
+        $data['family'] = $list['family']?$list['family']->count:'0';
+        $data['refuse'] = $list['refuse']?$list['refuse']->count:'0';
+        $data['travel'] = $list['travel']?$list['travel']->count:'0';
+        $data['marry'] = $list['marry']?$list['marry']->count:'0';
+        $data['graduate'] = $list['graduate']?$list['graduate']->count:'0';
+        $data['student'] = $list['student']?$list['student']->count:'0';
+        $data['perpetual'] = $list['perpetual']?$list['perpetual']->count:'0';
+        $data['technology'] = $list['technology']?$list['technology']->count:'0';
+        $data['business'] = $list['business']?$list['business']->count:'0';
+
+        $out = $data;
+
+        AJAX::success($out);
+        
+    }
+
+    function getVisaByVisaType(VisaSendModel $model,$type){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $types = ['work','family','refuse','travel','marry','graduate','student','perpetual','technology','business'];
+        
+        if(!in_array($type,$types))AJAX::error('未知的签证类型！');
+
+        $where['lawyer_id'] = $this->L->id;
+
+        if($type)$where['type'] = $type;
+        
+        $list = $model->select('*','user.avatar')->where($where)->order('create_time')->get()->toArray();
+
+        foreach($list as &$v){
+            $v->date = date('Y-m-d',$v->create_time);
+        }
+        
+
+        $out['list'] = $list;
+
+        AJAX::success($out);
+        
+    }
+
+
+
+
+    # 工作签证
+    function getWork(VisaWorkModel $model,$user_id){
+        !$this->L->id && AJAX::error('未登录');
+        $info = AdminFunc::get($model,$user_id);
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+
+    # 家庭团聚签证
+    function getFamily(VisaFamilyModel $model,$user_id){
+        
+        !$this->L->id && AJAX::error('未登录');
+        $info = AdminFunc::get($model,$user_id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+
+    # 拒签上诉
+    function getRefuse(VisaRefuseModel $model,$user_id){
+        
+        !$this->L->id && AJAX::error('未登录');
+        $info = AdminFunc::get($model,$user_id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+
+    # 旅游签证
+    function getTravel(VisaTravelModel $model,$user_id){
+        
+        !$this->L->id && AJAX::error('未登录');
+        $info = AdminFunc::get($model,$user_id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+
+    # 配偶签证
+    function getMarry(VisaMarryModel $model,$user_id){
+        
+        !$this->L->id && AJAX::error('未登录');
+        $info = AdminFunc::get($model,$user_id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+    
+    # 学生毕业签证
+    function getGraduate(VisaGraduateModel $model,$user_id){
+        
+        !$this->L->id && AJAX::error('未登录');
+        $info = AdminFunc::get($model,$user_id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+    
+    # 学生签证/陪读
+    function getStudent(VisaStudentModel $model,$user_id){
+        
+        !$this->L->id && AJAX::error('未登录');
+        $info = AdminFunc::get($model,$user_id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+    
+    # 永久签证
+    function getPerpetual(VisaPerpetualModel $model,$user_id){
+        
+        !$this->L->id && AJAX::error('未登录');
+        $info = AdminFunc::get($model,$user_id);
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+    
+    # 技术移民签证
+    function getTechnology($user_id,
+        VisaTechnologyModel $model,
+        VisaTechnologyOptionModel $optionModel,
+        VisaSelectModel $visaSelectModel
+        ){
+
+        !$this->L->id && AJAX::error('未登录');
+        $info = $model->find($user_id);
+
+        if($info){
+
+            $option = $optionModel->where(['technology_id'=>$info->id])->get('select_id')->toArray();
+        }
+
+        $select = $visaSelectModel->select([
+            'id,name,GROUP_CONCAT(%F) AS `option`','option.name'
+        ],'RAW')->where(['type'=>1])->group('id')->order('ord')->get()->toArray();
+
+        foreach($select as &$v){
+            $v->option = explode(',',$v->option);
+            if($info){
+                $v->value = $option[$v->id]->value;
+                if(!$v->value)$v->value = '';
+            }else{
+                $v->value = '';
+            }
+        }
+
+        $info = AdminFunc::get($model,$user_id);
+
+        $out['info'] = $info;
+        $out['select'] = $select;
+        AJAX::success($out);
+
+    }
+    
+    # 商业签证
+    function getBusiness($user_id,
+        VisaBusinessModel $model,
+        VisaBusinessOptionModel $optionModel,
+        VisaSelectModel $visaSelectModel
+        ){
+
+        !$this->L->id && AJAX::error('未登录');
+        $info = $model->find($user_id);
+
+        if($info){
+
+            $option = $optionModel->where(['business_id'=>$info->id])->get('select_id')->toArray();
+        }
+
+        $select = $visaSelectModel->select([
+            'id,name,GROUP_CONCAT(%F) AS `option`','option.name'
+        ],'RAW')->where(['type'=>2])->group('id')->order('ord')->get()->toArray();
+
+        foreach($select as &$v){
+            $v->option = explode(',',$v->option);
+            if($info){
+                $v->value = $option[$v->id]->value;
+                if(!$v->value)$v->value = '';
+            }else{
+                $v->value = '';
+            }
+        }
+
+        $info = AdminFunc::get($model,$user_id);
+
+        $out['info'] = $info;
+        $out['select'] = $select;
+        AJAX::success($out);
+
+    }
+    
+
+
+    function addPrice($type,$user_id,$price){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $types = ['work','family','refuse','travel','marry','graduate','student','perpetual','technology','business'];
+
+        if(!in_array($type,$types))AJAX::error('未知的签证类型！');
+
+        if(!$price)AJAX::success('价格不能为空！');
+
+        $save = Model::copyMutiInstance('visa_'.$type)->set(['price'=>$price])->where(['id'=>$user_id])->save()->getStatus();
+
+        !$save && AJAX::error('用户没有填写签证！');
         AJAX::success();
 
     }
