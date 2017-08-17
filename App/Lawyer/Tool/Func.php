@@ -402,7 +402,7 @@ class Func {
             //     ->iosNotification($content,['extras'=>$extras,'sound'=>'default'])
             //     ->send();
             $z2 = $client2->push()
-            
+                ->options(['apns_production'=>1])
                 ->setPlatform('all')
                 ->addAlias($user_id)
                 ->androidNotification($content,['extras'=>$extras])
