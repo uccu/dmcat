@@ -393,26 +393,26 @@ class Func {
         $client2 = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
 
 
-try{
-        // $z1 = $client->push()
-        //     ->options(['apns_production'=>1])
-        //     ->setPlatform('ios')
-        //     ->addAlias($user_id)
-        //     ->androidNotification($content,['extras'=>$extras])
-        //     ->iosNotification($content,['extras'=>$extras,'sound'=>'default'])
-        //     ->send();
-        $z2 = $client2->push()
+        try{
+            // $z1 = $client->push()
+            //     ->options(['apns_production'=>1])
+            //     ->setPlatform('ios')
+            //     ->addAlias($user_id)
+            //     ->androidNotification($content,['extras'=>$extras])
+            //     ->iosNotification($content,['extras'=>$extras,'sound'=>'default'])
+            //     ->send();
+            $z2 = $client2->push()
+            
+                ->setPlatform('all')
+                ->addAlias($user_id)
+                ->androidNotification($content,['extras'=>$extras])
+                ->iosNotification($content,['badge' => '1','extras'=>$extras,'sound'=>'default'])
+                ->send();
+        }catch(\Error $e){
         
-            ->setPlatform('all')
-            ->addAlias($user_id)
-            ->androidNotification($content,['extras'=>$extras])
-            ->iosNotification($content,['badge' => '1','extras'=>$extras,'sound'=>'default'])
-            ->send();
-}catch(\Error $e){
-    
-}catch(\Exception $e){
-    
-}
+        }catch(\Exception $e){
+        
+        }
 
         return [$z1,$z2];
 
