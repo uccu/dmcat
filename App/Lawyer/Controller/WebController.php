@@ -119,7 +119,7 @@ class WebController extends Controller{
         $list2 = [];
         foreach($list as $v){
 
-            $v->create_time = date('m-d H:i',$v->craete_time);
+            $v->create_time = date('m-d H:i',$v->create_time);
             
             $list2[$v->create_time][] = $v;
 
