@@ -385,8 +385,8 @@ class UserController extends Controller{
 
         !$this->L->id && AJAX::error('未登录');
 
-        $out['message'] = MessageModel::copyMutiInstance()->where(['user_id'=>$info->id,'isread'=>0])->find() ?'1':'0';
-        $out['consult'] = ConsultModel::copyMutiInstance()->where(['user_id'=>$info->id,'which'=>1,'isread'=>0])->find() ?'1':'0';
+        $out['message'] = MessageModel::copyMutiInstance()->where(['user_id'=>$this->L->id,'isread'=>0])->find() ?'1':'0';
+        $out['consult'] = ConsultModel::copyMutiInstance()->where(['user_id'=>$this->L->id,'which'=>1,'isread'=>0])->find() ?'1':'0';
 
         AJAX::success($out);
     }
