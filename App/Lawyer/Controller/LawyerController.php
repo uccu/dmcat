@@ -246,6 +246,8 @@ class LawyerController extends Controller{
         $where['lawyer_id'] = $id;
 
         $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->page($page,$limit)->order('create_time desc')->get('create_time')->toArray();
+
+        $consultModel->where($where)->where(['which'=>1])->set(['isread'=>1])->save();
         
         ksort($list);
 
@@ -272,7 +274,7 @@ class LawyerController extends Controller{
         $list = [];
         foreach($lawyer_list as $v){
 
-            $list[] = $consultModel->select('content','create_time','lawyer_id','lawyer.name','lawyer.avatar','lawyer.type')->where($where)->where(['lawyer_id'=>$v])->order('create_time desc')->find();
+            $list[] = $consultModel->select('content','create_time','lawyer_id','lawyer.name','lawyer.avatar','lawyer.type','isread')->where($where)->where(['lawyer_id'=>$v])->order('create_time desc')->find();
         }
 
         $out['list'] = $list;

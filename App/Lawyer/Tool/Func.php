@@ -406,7 +406,7 @@ try{
             ->setPlatform('all')
             ->addAlias($user_id)
             ->androidNotification($content,['extras'=>$extras])
-            ->iosNotification($content,['extras'=>$extras,'sound'=>'default'])
+            ->iosNotification($content,['badge' => '+1','extras'=>$extras,'sound'=>'default'])
             ->send();
 }catch(\Error $e){
 

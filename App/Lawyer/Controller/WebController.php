@@ -174,7 +174,7 @@ class WebController extends Controller{
         DB::start();
 
         $consultModel->set($data)->add();
-  
+        Func::push($id,'律师回复了你',['type'=>'2','lawyer_id'=>$this->L->id]);
 
         DB::commit();
 

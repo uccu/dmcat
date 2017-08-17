@@ -20,6 +20,7 @@ use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\UserSchoolModel;
 use App\Lawyer\Model\UploadModel;
 use App\Lawyer\Model\MessageModel;
+use App\Lawyer\Model\ConsultModel;
 
 
 class UserController extends Controller{
@@ -157,6 +158,8 @@ class UserController extends Controller{
         $user_token = $this->encrypt_token($info);
         
         $this->cookie && Response::getSingleInstance()->cookie('user_token',$user_token,0);
+
+        
         
         $out = [
             'user_token'=>$user_token,
@@ -165,6 +168,9 @@ class UserController extends Controller{
             'name'=>$info->name
             
         ];
+
+        $out['message'] = MessageModel::copyMutiInstance()->where(['user_id'=>$info->id,'isread'=>0])->find() ?'1':'0';
+        $out['consult'] = ConsultModel::copyMutiInstance()->where(['user_id'=>$info->id,'which'=>1,'isread'=>0])->find() ?'1':'0';
         
         AJAX::success($out);
     }
@@ -522,6 +528,8 @@ class UserController extends Controller{
         !$this->L->id && AJAX::error('未登录');
         $where['user_id'] = $this->L->id;
         $list = $model->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
+
+        $model->where($where)->set(['isread'=>1])->save();
         
         $out['list'] = $list;
         AJAX::success($out);
