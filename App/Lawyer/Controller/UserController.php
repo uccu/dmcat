@@ -165,7 +165,8 @@ class UserController extends Controller{
             'user_token'=>$user_token,
             'id'=>$info->id,
             'avatar'=>$info->avatar,
-            'name'=>$info->name
+            'name'=>$info->name,
+            'master_type'=>$info->master_type
             
         ];
 
