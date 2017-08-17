@@ -272,9 +272,10 @@ class LawyerController extends Controller{
         $lawyer_list = $consultModel->where($where)->get_field('lawyer_id')->toArray();
         
         $list = [];
-        foreach($lawyer_list as $v){
+        foreach($lawyer_list as $k=>$v){
 
-            $list[] = $consultModel->select('content','create_time','lawyer_id','lawyer.name','lawyer.avatar','lawyer.type','isread')->where($where)->where(['lawyer_id'=>$v])->order('create_time desc')->find();
+            $list[$k] = $consultModel->select('content','create_time','lawyer_id','lawyer.name','lawyer.avatar','lawyer.type')->where($where)->where(['lawyer_id'=>$v])->order('create_time desc')->find();
+            $list[$k]->isread = $consultModel->where($where)->where(['which'=>1,'isread'=>0])->find() ?'0':'1';
         }
 
         $out['list'] = $list;
