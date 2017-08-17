@@ -184,21 +184,26 @@ class UserController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function register($password,$phone,$phone_captcha,$cookie = false){
+    function register(UserModel $model,$password,$phone,$phone_captcha,$cookie = false,$id = 0){
         
         
         //是否储存登录信息到cookie
         if($cookie)$this->cookie = true;
 
         Func::check_phone($phone);
-
         Func::check_password($password);
-
         Func::check_phone_captcha($phone,$phone_captcha);
 
         $info           = new stdClass;
+
+        if($id){
+            $master = $model->find($id);
+            !$master && AJAX::error('平台大使不存在！');
+            $master->type == -1 && AJAX::error('推荐人并不是平台大使！');
+            $info->master_id = $id;
+        }
+        
         $info->phone    = $phone;
-        $info->name     = $phone;
         $info->salt     = Func::randWord(6);
         $info->password = $this->encrypt_password($password,$info->salt);
         $this->_add_user($info);
