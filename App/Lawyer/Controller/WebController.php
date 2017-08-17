@@ -138,6 +138,9 @@ class WebController extends Controller{
 
         $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->page($page,$limit)->order('create_time desc')->get()->toArray();
         
+
+        $consultModel->where($where)->where(['which'=>0])->set(['isread'=>1])->save();
+
         $list2 = [];
         foreach($list as $v){
 
@@ -159,6 +162,26 @@ class WebController extends Controller{
 
         $out['list'] = $list;
 
+        AJAX::success($out);
+
+    }
+
+    function getNewChatList($id,ConsultModel $consultModel){
+        !$this->L->id && AJAX::error('未登录');
+        
+        $where['lawyer_id'] = $this->L->id;
+        $where['user_id'] = $id;
+        $where['which'] = 0;
+        $where['isread'] = 0;
+
+        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->order('create_time')->get()->toArray();
+
+        foreach($list as $v){
+
+            $v->create_time = date('m-d H:i:s',$v->create_time);
+
+        }
+        $out['list'] = $list;
         AJAX::success($out);
 
     }
