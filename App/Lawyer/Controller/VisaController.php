@@ -494,7 +494,6 @@ class VisaController extends Controller{
                     'title' =>  '有效期限（天）',
                     'name'  =>  'expiry',
                     'size'  =>  '2',
-                    'description'=>'*-1为无限'
                 ],
                 [
                     'title' =>  '会员金额',
