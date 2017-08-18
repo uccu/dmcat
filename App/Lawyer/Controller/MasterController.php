@@ -48,7 +48,7 @@ class MasterController extends Controller{
         $list = $model->select('id','avatar','name','phone','create_time')->where(['parent_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
         
         $out['list'] = $list;
-
+        !$list && AJAX::error('暂无数据！');
         AJAX::success($out);
 
     }
@@ -97,6 +97,8 @@ class MasterController extends Controller{
         
         $out['list'] = $list;
 
+        !$list && AJAX::error('暂无数据！');
+
         AJAX::success($out);
         
     }
@@ -142,6 +144,7 @@ class MasterController extends Controller{
         $list = AdminFunc::get($model,$this->L->id);
 
         $out['list'] = $list;
+        
         AJAX::success($out);
     }
 
