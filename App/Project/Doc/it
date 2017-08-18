@@ -627,7 +627,7 @@ address 详细地址
 master/checkParent
 name 名字
 phone 手机
-{"data":{},"code":200,"url":"","message":""}
+{"data":{"id":"10"},"code":200,"url":"","message":""}
 {}
 
 7.8 个人平台大使审核申请

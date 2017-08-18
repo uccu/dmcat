@@ -59,7 +59,7 @@ class MasterController extends Controller{
      * @param mixed $id 
      * @return mixed 
      */
-    function delLowerLevel($id = 0){
+    function delLowerLevel(UserModel $model,$id = 0){
 
         !$this->L->id && AJAX::error('未登录');
         
@@ -77,7 +77,7 @@ class MasterController extends Controller{
         }
         
 
-        AJXA::success();
+        AJAX::success();
 
     }
 
@@ -97,7 +97,7 @@ class MasterController extends Controller{
         
         $out['list'] = $list;
 
-        AJXA::success($out);
+        AJAX::success($out);
         
     }
     
@@ -107,7 +107,7 @@ class MasterController extends Controller{
      * @param mixed $id 
      * @return mixed 
      */
-    function delCustomer($id = 0){
+    function delCustomer(UserModel $model,$id = 0){
 
         !$this->L->id && AJAX::error('未登录');
         
@@ -125,7 +125,7 @@ class MasterController extends Controller{
         }
         
 
-        AJXA::success();
+        AJAX::success();
 
     }
 
