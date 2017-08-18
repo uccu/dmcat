@@ -363,7 +363,7 @@ class VisaController extends Controller{
         AJAX::success($out);
 
     }
-    function updBusiness(VisaBusinessModel $model,VisaBusinessOptionModel $optionModel){
+    function updBusiness(VisaBusinessModel $model,VisaBusinessOptionModel $optionModel,$json){
 
 
         !$this->L->id && AJAX::error('未登录');
