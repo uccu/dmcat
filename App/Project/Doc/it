@@ -479,8 +479,8 @@ message 内容
 
 6.5 获取我的信息
 web/getMyInfo
-{"data":{"info":{"name":"\u91d1\u4e16\u5141Timothy \u5f8b\u5e08","avatar":"20170810\/00.15.07.887701.jpg","id":"1"}},"code":200,"url":"","message":""}
-{name:名字,avatar:头像,id:用户ID}
+{"data":{"info":{"name":"\u91d1\u4e16\u5141Timothy \u5f8b\u5e08","avatar":"20170810\/00.15.07.887701.jpg","id":"1","type":"1"}},"code":200,"url":"","message":""}
+{name:名字,avatar:头像,id:用户ID,type:律师类型0,1,2}
 
 
 6.6 获取所有签证数量
@@ -492,8 +492,8 @@ web/getAllVisa
 6.7 获取对应类型的签证的用户
 web/getVisaByVisaType
 type 签证类型，参照6.6
-{"data":{"list":[{"id":"1","user_id":"10","lawyer_id":"4","type":"student","create_time":"1502335258","avatar":"20170809\/17.56.07.699961.jpg","date":"2017-08-10"},{"id":"2","user_id":"10","lawyer_id":"4","type":"student","create_time":"1502338755","avatar":"20170809\/17.56.07.699961.jpg","date":"2017-08-10"}]},"code":200,"url":"","message":""}
-{user_id:用户ID,type:签证类型,avatar:用户头像,date:填写时间}
+{"data":{"list":[{"id":"1","user_id":"10","lawyer_id":"4","type":"student","create_time":"1502335258","avatar":"20170809\/17.56.07.699961.jpg","date":"2017-08-10","name":"xxxx}]},"code":200,"url":"","message":""}
+{user_id:用户ID,type:签证类型,avatar:用户头像,date:填写时间,name:名字}
 
 
 6.8 用户的工作签证

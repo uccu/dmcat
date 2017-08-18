@@ -115,6 +115,7 @@ class WebController extends Controller{
 
         $info->name = $this->L->userInfo->name;
         $info->avatar = $this->L->userInfo->avatar;
+        $info->type = $this->L->userInfo->type;
         $info->id = $this->L->id;
 
         $out['info'] = $info;
@@ -136,7 +137,7 @@ class WebController extends Controller{
         $where['lawyer_id'] = $this->L->id;
         $where['user_id'] = $id;
 
-        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar')->where($where)->page($page,$limit)->order('create_time desc')->get()->toArray();
+        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar','user.name')->where($where)->page($page,$limit)->order('create_time desc')->get()->toArray();
         
 
         $consultModel->where($where)->where(['which'=>0])->set(['isread'=>1])->save();
@@ -285,7 +286,7 @@ class WebController extends Controller{
 
         if($type)$where['type'] = $type;
         
-        $list = $model->select('*','user.avatar')->where($where)->order('create_time')->get()->toArray();
+        $list = $model->select('*','user.avatar','user.name')->where($where)->order('create_time')->get()->toArray();
 
         foreach($list as &$v){
             $v->date = date('Y-m-d',$v->create_time);
