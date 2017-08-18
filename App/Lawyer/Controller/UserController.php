@@ -15,6 +15,8 @@ use App\Lawyer\Tool\Func;
 use App\Lawyer\Tool\AdminFunc;
 # Model
 use App\Lawyer\Model\UserModel;
+use App\Lawyer\Model\UserMasterCompanyModel;
+use App\Lawyer\Model\UserMasterPersonModel;
 use App\Lawyer\Model\CaptchaModel;
 use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\UserSchoolModel;
@@ -641,8 +643,6 @@ class UserController extends Controller{
                             '1'=>'一级平台大使',
                             '2'=>'二级平台大使',
                             '-1'=>'普通用户',
-                            '3'=>'审核中',
-                            '4'=>'审核失败',
                         ],
                         'default'=>'-2'
                     ],
@@ -713,9 +713,12 @@ class UserController extends Controller{
 
         }
         
-        if($master_type != -2)$where['master_type'] = $master_type; 
-        
-
+        if($master_type != -2){
+            $where['master_type'] = $master_type; 
+            if($master_type == -1){
+                $where['master_type'] = ['%F NOT IN (%c)','master_type',[0,1,2,3,4]];
+            }
+        }
         if($search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
@@ -1055,6 +1058,349 @@ class UserController extends Controller{
         $this->L->adminPermissionCheck(67);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+
+
+
+
+    function admin_apply(UserModel $model,$page = 1,$limit = 10,$search,$master_type=0){
+        
+        $this->L->adminPermissionCheck(102);
+
+        $name = '申请';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/user/admin_apply_get',
+                'upd'   => '/user/admin_apply_upd',
+                'view'  => 'home/upd',
+
+                'req'   =>[
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search'
+                    ],
+                    [
+                        'title'=>'平台大使',
+                        'name'=>'master_type',
+                        'type'=>'select',
+                        'option'=>[
+                            '0'=>'全部',
+                            '3'=>'审核中',
+                            '4'=>'审核失败',
+                        ],
+                        'default'=>'0'
+                    ],
+                ]
+
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '用户ID',
+                '账号',
+                '名字',
+                '状态',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'id',
+                'phone',
+                'name',
+                'status',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        $where['type'] = 0;
+
+        if($master_type)$where['master_type'] = $master_type;
+        else{
+            $where['master_type'] = ['%F IN (%c)','master_type',[3,4]];
+        }
+        if($search){
+            $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        }
+
+        $list = $model->order('master_type','create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->status = $v->master_type == 3 ? '未审核':'审核驳回';
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+
+    function admin_apply_get(UserModel $model,$id,UserMasterCompanyModel $userMasterCompanyModel,UserMasterPersonModel $userMasterPersonModel){
+
+        $this->L->adminPermissionCheck(102);
+
+        $name = '申请';
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/user/admin_apply_get',
+                'upd'   => '/user/admin_apply_upd',
+                'back'  => 'staff/apply',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '/user/admin_apply_del',
+
+            ];
+        $tbody = 
+            [
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'title' =>  '状态',
+                    'name'  =>  'status',
+                    'type'  =>  'select',
+                    'option'=>[
+                        '0'=>'未审核',
+                        '1'=>'通过',
+                        '2'=>'不通过',
+                    ],
+                    'default'=>'0'
+                ],
+                [
+                    'title' =>  '不通过的理由',
+                    'name'  =>  'reason',
+                    'type'  =>  'textarea',
+                ],
+                
+                
+
+            ];
+
+
+        
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+        $info2 = $model->find($id);
+        $reason = $info2->reason;
+        $master_type = $info2->master_type;
+        
+        # 是否是公司
+        if($info2->master_company){
+
+            $info = AdminFunc::get($userMasterCompanyModel,$id);
+            $info->reason = $reason?$reason:'';
+            $info->status = $master_type == 3 ? '0':'2';
+
+            $tbody = array_merge($tbody,[
+
+                [
+                    'title'=>'公司名称',
+                    'name'=>'name',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'公司执照编号',
+                    'name'=>'license',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'公司税务编号',
+                    'name'=>'tax',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'座机',
+                    'name'=>'cell',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'负责人',
+                    'name'=>'person',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'联系电话',
+                    'name'=>'phone',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'详细地址',
+                    'name'=>'address',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'上一级的ID',
+                    'name'=>'parent_id',
+                    'disabled'=>true
+                ]
+
+            ]);
+        }else{
+            $info = AdminFunc::get($userMasterPersonModel,$id);
+            $info->reason = $reason?$reason:'';
+            $info->status = $master_type == 3 ? '0':'2';
+
+            $tbody = array_merge($tbody,[
+
+                [
+                    'title'=>'个人姓名',
+                    'name'=>'name',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'联系电话',
+                    'name'=>'phone',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'身份证件类型',
+                    'name'=>'code_type',
+                    'type'=>'select',
+                    'option'=>[
+                        '0'=>'护照',
+                        '1'=>'身份证',
+                        '2'=>'澳洲驾照号'
+                    ],
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'证件号',
+                    'name'=>'code',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'详细地址',
+                    'name'=>'address',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'上一级的ID',
+                    'name'=>'parent_id',
+                    'disabled'=>true
+                ]
+
+            ]);
+        }
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+
+    function admin_apply_upd(UserModel $model,$id,$reason,$status,UserMasterCompanyModel $userMasterCompanyModel,UserMasterPersonModel $userMasterPersonModel){
+
+        $this->L->adminPermissionCheck(102);
+
+        $user = $model->find($id);
+
+        !$user && AJAX::error('用户不存在');
+
+        if($status == 1){
+            
+            if($user->master_company){
+                $us = $userMasterCompanyModel->find($id);
+                if($us){
+                    $pa = $model->find($us->parent_id);
+                    if($pa->master_type == 0){
+
+                        $user->master_type = 1;
+
+                    }elseif($pa->master_type == 1){
+
+                        $user->master_type = 2;
+                        
+                    }else{
+                        AJAX::error('上一级不存在！');
+                    }
+                    $user->parent_id = $us->parent_id;
+                    $user->save();
+                }else{
+                    AJAX::error('上一级不存在！');
+                }
+            }else{
+                $us = $userMasterPersonModel->find($id);
+                if($us){
+                    $pa = $model->find($us->parent_id);
+                    if($pa->master_type == 0){
+
+                        $user->master_type = 1;
+
+                    }elseif($pa->master_type == 1){
+
+                        $user->master_type = 2;
+                        
+                    }else{
+                        AJAX::error('上一级不存在！');
+                    }
+                    $user->parent_id = $us->parent_id;
+                    $user->save();
+                }else{
+                    AJAX::error('上一级不存在！');
+                }
+            }
+        }elseif($status == 2){
+        
+            $user->master_type = 4;
+            $user->reason = $reason;
+            !$reason && AJAX::error('理由不能为空！');
+            $user->save();
+
+        }else{
+
+            $user->master_type = 3;
+            $user->save();
+
+        }
+        
+        
         AJAX::success($out);
     }
 

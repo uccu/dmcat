@@ -39,8 +39,12 @@ class StaffController extends Controller{
         View::hamlReader('home/list','Admin');
     }
     
+    /* 审批 */
+    function apply(){
 
-    
+        View::addData(['getList'=>'/user/admin_apply']);
+        View::hamlReader('home/list','Admin');
+    }
 
 
 }

@@ -20,8 +20,8 @@ use App\Lawyer\Model\ConsultModel;
 use App\Lawyer\Model\FastQuestionModel;
 use App\Lawyer\Model\VisaSendModel;
 use App\Lawyer\Model\UserAccountModel;
-use App\Lawyer\Model\UserMasterPerson;
-use App\Lawyer\Model\UserMasterCompany;
+use App\Lawyer\Model\UserMasterPersonModel;
+use App\Lawyer\Model\UserMasterCompanyModel;
 use Model;
 
 
@@ -202,7 +202,7 @@ class MasterController extends Controller{
      * @param mixed $parent_id 
      * @return mixed 
      */
-    function applyPerson(UserMasterPerson $model,UserModel $umodel,$parent_id = 0){
+    function applyPerson(UserMasterPersonModel $model,UserModel $umodel,$parent_id = 0){
 
         $parent = $umodel->find($parent_id);
         !$parent && AJAX::error('用户不存在！');
@@ -220,6 +220,7 @@ class MasterController extends Controller{
         $model->set($data)->add(true);
 
         $this->L->userInfo->master_type = 3;
+        $this->L->userInfo->reason = '';
         $this->L->userInfo->save();
 
         AJAX::success();
@@ -232,7 +233,7 @@ class MasterController extends Controller{
      * @param mixed $model 
      * @return mixed 
      */
-    function getApplyPerson(UserMasterPerson $model){
+    function getApplyPerson(UserMasterPersonModel $model){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -250,7 +251,7 @@ class MasterController extends Controller{
      * @param mixed $parent_id 
      * @return mixed 
      */
-    function applyCompany(UserMasterCompany $model,UserModel $umodel,$parent_id = 0){
+    function applyCompany(UserMasterCompanyModel $model,UserModel $umodel,$parent_id = 0){
 
         $parent = $umodel->find($parent_id);
         !$parent && AJAX::error('用户不存在！');
@@ -268,6 +269,7 @@ class MasterController extends Controller{
         $model->set($data)->add(true);
 
         $this->L->userInfo->master_type = 3;
+        $this->L->userInfo->reason = '';
         $this->L->userInfo->master_company = 1;
         $this->L->userInfo->save();
 
@@ -281,7 +283,7 @@ class MasterController extends Controller{
      * @param mixed $model 
      * @return mixed 
      */
-    function getapplyCompany(UserMasterCompany $model){
+    function getapplyCompany(UserMasterCompanyModel $model){
 
         !$this->L->id && AJAX::error('未登录');
 

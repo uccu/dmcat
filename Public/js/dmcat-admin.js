@@ -155,7 +155,7 @@
 
                         break;
                     case 'select':
-                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 2)+'"><select class="form-control" name="'+para.name+'">'+(function(o){
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 2)+'"><select class="form-control" '+(para.disabled?'disabled':'')+' name="'+para.name+'">'+(function(o){
                             var d = '';
                             for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
                             return d
@@ -218,7 +218,7 @@
                         pa.find('textarea').val(m.info[para.name]||para.default||'')
                         break;
                     default:
-                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'" '+(para.disabled?'disabled':'')+' value="'+(m.info[para.name]||para.default||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         break;
                 }
                 pa.appendTo('form')
