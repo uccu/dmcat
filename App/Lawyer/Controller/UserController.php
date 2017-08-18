@@ -641,6 +641,8 @@ class UserController extends Controller{
                             '1'=>'一级平台大使',
                             '2'=>'二级平台大使',
                             '-1'=>'普通用户',
+                            '3'=>'审核中',
+                            '4'=>'审核失败',
                         ],
                         'default'=>'-2'
                     ],

@@ -573,3 +573,89 @@ user_id 用户ID
 price 价格
 {"data":{},"code":200,"url":"","message":""}
 {}
+
+
+7.1 获取下一级平台大使的用户
+master/getLowerLevelList
+{"data":{"list":[{"id":"2","avatar":"noavatar.png","name":"113","phone":"13333333333","create_time":"0"}]},"code":200,"url":"","message":""}
+{}
+
+
+7.2 删除下一级
+master/delLowerLevel
+id 用户ID
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+7.3 获取客户
+master/getCustomerList
+{"data":{"list":[{"id":"2","avatar":"noavatar.png","name":"113","phone":"13333333333","create_time":"0"}]},"code":200,"url":"","message":""}
+{}
+
+
+7.4 删除客户
+master/delCustomer
+id 用户ID
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+7.5 获取我的收款账户
+master/getAccount
+{"data":{"list":{"id":"","bank_name":"","bank":"","account":"","bank_addr":"","swift_code":"","bsb":"","name":"","abn":"","gst":"","address":"","update_time":""}},"code":200,"url":"","message":""}
+{}
+
+
+7.6 更新我的收款账户
+master/updAccount
+bank_name 个人/公司开户名
+bank 开户银行
+account 银行账号
+bank_addr 开户行地址
+swift_code swift_code
+bsb 澳洲银行BSB号
+name 收款个人/公司
+abn 澳洲公司ABN
+gst ABN是否注册GST
+address 详细地址
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+7.7 检查用户是否是01级平台大使
+master/checkParent
+name 名字
+phone 手机
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+7.8 个人平台大使审核申请
+master/applyPerson
+parent_id
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+7.9 获取个人平台大使信息
+master/getApplyPerson
+{"data":{"list":{"id":"1","name":"","phone":"","code_type":"0","code":"","address":"","update_time":"1503024135","parent_id":"2"}},"code":200,"url":"","message":""}
+{}
+
+
+7.10 公司平台大使审核申请
+master/applyCompany
+parent_id
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+7.11 获取公司平台大使信息
+master/getapplyCompany
+{"data":{"list":{"ud":"","name":"","license":"","tax":"","cell":"","person":"","phone":"","address":"","update_time":"","parent_id":""}},"code":200,"url":"","message":""}
+{}
+
+7.12 获取我的平台大使状态
+master/getApply
+{"data":{"type":"0","company":"0"},"code":200,"url":"","message":""}
+{type:[0:0级大使,1:1级大使,2:2级大使,-1:普通用户,3:审核中,4:审核失败],company:是否是公司,reason:失败原因}
