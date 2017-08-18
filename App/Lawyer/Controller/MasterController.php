@@ -299,6 +299,7 @@ class MasterController extends Controller{
 
         $out['type'] = $this->L->userInfo->master_type;
         $out['company'] = $this->L->userInfo->master_company;
+        $out['reason'] = $this->L->userInfo->reason;
 
         AJAX::success($out);
     }
