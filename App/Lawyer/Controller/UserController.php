@@ -793,6 +793,19 @@ class UserController extends Controller{
                     'type'  =>  'avatar',
                 ],
                 [
+                    'title' =>  '公司平台大使',
+                    'name'  =>  'master_type',
+                    'type'  =>  'select',
+                    'option'=>[
+                        '0'=>'零级平台大使',
+                        '1'=>'一级平台大使',
+                        '2'=>'二级平台大使',
+                        '-1'=>'普通用户',
+                        '3'=>'审核中',
+                        '4'=>'审核失败',
+                    ],
+                ],
+                [
                     'title' =>  '微信第三方标示',
                     'name'  =>  'wx',
                 ],

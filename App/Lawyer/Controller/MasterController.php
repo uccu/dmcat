@@ -184,7 +184,8 @@ class MasterController extends Controller{
 
         !in_array($parent->master_type ,[0,1]) && AJAX::error('非0级1级平台大使，无法成为下一级！');
 
-        AJAX::success();
+        $out['parent_id'] = $parent->id;
+        AJAX::success($out);
 
 
     }
