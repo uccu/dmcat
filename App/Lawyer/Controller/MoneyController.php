@@ -16,6 +16,7 @@ use App\Lawyer\Tool\AdminFunc;
 # Model
 use App\Lawyer\Model\ConfigModel;
 use App\Lawyer\Model\UserModel;
+use App\Lawyer\Model\UserProfitModel;
 
 
 class MoneyController extends Controller{
@@ -102,7 +103,6 @@ class MoneyController extends Controller{
                 'get'   => '/money/admin_user_get',
                 'upd'   => '/money/admin_user_upd',
                 'view'  => 'home/upd',
-                'add'   => 'home/upd',
                 'req'   =>[
                     [
                         'title'=>'搜索',
@@ -145,6 +145,7 @@ class MoneyController extends Controller{
                 '平台大使',
                 '已结算收益',
                 '未结算收益',
+                '收益详情'
 
             ];
 
@@ -164,7 +165,11 @@ class MoneyController extends Controller{
                 'name',
                 'master',
                 'profit_o',
-                'profit'
+                'profit',
+                [
+                    'name'=>'detail',
+                    'href'=>true,
+                ],
 
             ];
             
@@ -195,12 +200,9 @@ class MoneyController extends Controller{
 
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
-            $v->lawyer = '<i class="fa fa-pencil text-navy"></i> 查看';
-            $v->lawyer_href = 'chat/user_chat?id='.$v->id;
-            $v->school = '<i class="fa fa-pencil text-navy"></i> 查看';
-            $v->school_href = 'school/user_school?id='.$v->id;
-            $v->master = $opt['req'][1]['option'][$v->master_type];
-            
+            $v->detail = '<i class="fa fa-pencil text-navy"></i> 查看';
+            $v->detail_href = 'staff/profit_detail?id='.$v->id;
+
         }
 
         # 分页内容
@@ -311,6 +313,91 @@ class MoneyController extends Controller{
                 'tbody' =>  $tbody,
                 'name'  =>  $name,
                 'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+
+
+    function admin_user_detail(UserProfitModel $model,$page = 1,$limit = 10,$search,$type,$id = 0){
+        
+        $this->L->adminPermissionCheck(105);
+
+        $name = '用户';
+        # 允许操作接口
+        $opt = 
+            [
+
+                'req'   =>[
+                    
+                ]
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '用户ID',
+                '手机号',
+                '名字',
+                '贡献金额',
+                '贡献时间',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'id',
+                'phone',
+                'name',
+                'money',
+                'date',
+                
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        $where['user_id'] = $id;
+
+        $list = $model->select('profit.name','profit.id','profit.avatar','profit.phone','create_time','money')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->date = date('Y-m-d H:i:s',$v->create_time);
+
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
             ];
 
         AJAX::success($out);

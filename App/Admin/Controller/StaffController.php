@@ -39,6 +39,12 @@ class StaffController extends Controller{
         View::hamlReader('home/list','Admin');
     }
 
+    function profit_detail($id){
+
+        View::addData(['getList'=>'/money/admin_user_detail?id='.$id]);
+        View::hamlReader('home/list','Admin');
+    }
+
 
     /*  律师 */
     function lawyer(){
