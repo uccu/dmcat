@@ -20,6 +20,21 @@ use App\Lawyer\Model\FastQuestionModel;
 use App\Lawyer\Model\VisaSendModel;
 use Model;
 
+use App\Lawyer\Model\VisaWorkModel;
+use App\Lawyer\Model\VisaFamilyModel;
+use App\Lawyer\Model\VisaRefuseModel;
+use App\Lawyer\Model\VisaTravelModel;
+use App\Lawyer\Model\VisaMarryModel;
+use App\Lawyer\Model\VisaGraduateModel;
+use App\Lawyer\Model\VisaStudentModel;
+use App\Lawyer\Model\VisaPerpetualModel;
+use App\Lawyer\Model\VisaSelectModel;
+use App\Lawyer\Model\VisaSelectOptionModel;
+use App\Lawyer\Model\VisaTechnologyModel;
+use App\Lawyer\Model\VisaTechnologyOptionModel;
+use App\Lawyer\Model\VisaBusinessModel;
+use App\Lawyer\Model\VisaBusinessOptionModel;
+
 
 class WebController extends Controller{
 
