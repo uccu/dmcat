@@ -7,7 +7,8 @@ use App\Lawyer\Model\ConfigModel;
 use App\Lawyer\Model\MessageModel;
 use App\Lawyer\Model\CaptchaModel;
 use App\Lawyer\Model\UploadModel;
-
+use App\Lawyer\Model\UserModel;
+use Model;
 
 class Func {
     /**
@@ -418,4 +419,26 @@ class Func {
 
     }
     
+
+
+    # 增加未结算收益
+    public static function addProfit($profit_id,$user_id,$money,$master_id = 0){
+
+        $user = UserModel::CopyMutiInstance()->find($user_id);
+        if(!$user)return;
+
+        $user->profit += $money;
+        $user->save();
+
+        $data['create_time'] = TIME_NOW;
+        $data['profit_id'] = $profit_id;
+        $data['master_id'] = $master_id;
+        $data['money'] = $money;
+        $data['user_id'] = $user_id;
+
+        Model::CopyMutiInstance('user_profit')->set($data)->add();
+
+        return true;
+
+    }
 }

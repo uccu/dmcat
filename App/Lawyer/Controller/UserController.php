@@ -595,7 +595,49 @@ class UserController extends Controller{
     }
 
 
+    /** 增加用户价值
+     * addValue
+     * @param mixed $model 
+     * @param mixed $id 
+     * @param mixed $input 
+     * @return mixed 
+     */
+    function addValue(UserModel $model,$id,$input){
+        $this->L->adminPermissionCheck(68);
+        $user = $model->find($id);
 
+        !$user && AJAX::error('用户不存在！');
+        !$input && AJAX::error('内容不能为空');
+
+        DB::start();
+
+        $user->value += $input;
+        $user->save();
+
+        if($user->master_id){
+
+            $master = $model->find($user->master_id);
+
+            if(in_array($master->master_type,[0,1,2])){
+
+                $profit_0 = $this->L->config->profit_0;
+                Func::addProfit($user->id,$master->id,$input * $profit_0 / 100);
+
+                if($master->parent_id){
+
+                    $profit_1 = $this->L->config->profit_1;
+                    Func::addProfit($user->id,$master->parent_id,$input * $profit_1 / 100,$master->id);
+
+                }
+
+            }
+
+        }
+        DB::commit();
+        
+        AJAX::success();
+
+    }
     function admin_user(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$type,$master_type=-2){
         
         $this->L->adminPermissionCheck(68);
@@ -804,8 +846,6 @@ class UserController extends Controller{
                         '1'=>'一级平台大使',
                         '2'=>'二级平台大使',
                         '-1'=>'普通用户',
-                        '3'=>'审核中',
-                        '4'=>'审核失败',
                     ],
                 ],
                 [
@@ -825,6 +865,20 @@ class UserController extends Controller{
                     'name'  =>  'pwd',
                     'size'  =>  '4',
                 ],
+                [
+                    'title' =>  '总贡献价值',
+                    'name'  =>  'value',
+                    'disabled'=>true,
+                    'size'=>'2',
+                ],
+                [
+                    'title' =>  '贡献价值',
+                    'button'  =>  '添加',
+                    'type'  =>  'ajax',
+                    'url'=>'/user/addValue',
+                    'default'=>'0',
+                    'refresh'=>true
+                ],
                 
 
             ];
@@ -833,6 +887,8 @@ class UserController extends Controller{
 
 
         $info = AdminFunc::get($model,$id);
+
+        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
         $out = 
             [

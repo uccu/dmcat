@@ -217,6 +217,18 @@
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><textarea class="form-control" name="'+para.name+'" style="resize:none;height:200px"></textarea></div></div>')
                         pa.find('textarea').val(m.info[para.name]||para.default||'')
                         break;
+                    case 'ajax':
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-2"><input class="form-control" refresh="'+(para.refresh?1:0)+'" data-url="'+para.url+'" value="'+(para.default||'')+'"></div><div class="col-sm-2"><a class="btn btn-primary" >'+para.button+'</a></div></div>')
+                        pa.find('a').click(function(e){
+                            e.preventDefault();
+                            var url = j(this).parent().parent().find('input').attr('data-url')
+                            var r = j(this).parent().parent().find('input').attr('refresh')
+                            curl(url,{input:j(this).parent().parent().find('input').val(),id:that.req.param.id},function(){
+                                curl_succ('增加成功！');
+                                if(r=='1')setTimeout('location.reload()',1000)
+                            })
+                        })
+                        break;
                     default:
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'" '+(para.disabled?'disabled':'')+' value="'+(m.info[para.name]||para.default||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         break;
