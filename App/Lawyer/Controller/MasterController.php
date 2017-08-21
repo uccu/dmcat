@@ -22,6 +22,7 @@ use App\Lawyer\Model\VisaSendModel;
 use App\Lawyer\Model\UserAccountModel;
 use App\Lawyer\Model\UserMasterPersonModel;
 use App\Lawyer\Model\UserMasterCompanyModel;
+use App\Lawyer\Model\UserProfitModel;
 use Model;
 
 
@@ -39,14 +40,20 @@ class MasterController extends Controller{
      * @param mixed $model 
      * @return mixed 
      */
-    function getLowerLevelList(UserModel $model){
-
+    function getLowerLevelList(UserModel $model,UserProfitModel $userProfitModel,$page = 1,$limit = 10){
+        $this->L->id = 10;
         !$this->L->id && AJAX::error('未登录');
         
         !in_array($this->L->userInfo->master_type ,[0,1]) && AJAX::error('非0级1级平台大使，没有下一级！');
 
         $list = $model->select('id','avatar','name','phone','create_time')->where(['parent_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
         
+        foreach($list as &$v){
+
+            $v->profit = $userProfitModel->select(['SUM(%F) AS `s`','money'],'RAW')->where(['user_id'=>$this->L->id,'master_id'=>$v->id])->find()->s;
+            !$v->profit && $v->profit = '0';
+        }
+
         $out['list'] = $list;
         !$list && AJAX::error('暂无数据！');
         AJAX::success($out);
@@ -87,7 +94,8 @@ class MasterController extends Controller{
      * @param mixed $model 
      * @return mixed 
      */
-    function getCustomerList(UserModel $model){
+    function getCustomerList(UserModel $model,UserProfitModel $userProfitModel,$page = 1,$limit = 10){
+        
         
         !$this->L->id && AJAX::error('未登录');
         
@@ -95,6 +103,42 @@ class MasterController extends Controller{
 
         $list = $model->select('id','avatar','name','phone','create_time')->where(['master_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
         
+        foreach($list as &$v){
+
+            $v->profit = $userProfitModel->select(['SUM(%F) AS `s`','money'],'RAW')->where(['user_id'=>$this->L->id,'profit_id'=>$v->id])->find()->s;
+            !$v->profit && $v->profit = '0';
+        }
+
+
+        $out['list'] = $list;
+
+        !$list && AJAX::error('暂无数据！');
+
+        AJAX::success($out);
+        
+    }
+
+    /** 3.1获取下一级的客户
+     * getCustomerList
+     * @param mixed $model 
+     * @return mixed 
+     */
+    function getCustomerListById(UserModel $model,UserProfitModel $userProfitModel,$id = 0,$page = 1,$limit = 10){
+        
+        !$this->L->id && AJAX::error('未登录');
+
+        $info = $model->find($id);
+        
+        !in_array($info->master_type ,[0,1,2]) && AJAX::error('非平台大使，没有客户！');
+
+        $list = $model->select('id','avatar','name','phone','create_time')->where(['master_id'=>$id])->order('create_time desc')->get()->toArray();
+        
+        foreach($list as &$v){
+
+            $v->profit = $userProfitModel->select(['SUM(%F) AS `s`','money'],'RAW')->where(['user_id'=>$this->L->id,'profit_id'=>$v->id])->find()->s;
+            !$v->profit && $v->profit = '0';
+        }
+
         $out['list'] = $list;
 
         !$list && AJAX::error('暂无数据！');

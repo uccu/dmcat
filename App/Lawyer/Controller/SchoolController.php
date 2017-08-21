@@ -193,6 +193,7 @@ class SchoolController extends Controller{
                 'upd'   => '/school/admin_user_school_upd',
                 'view'  => 'home/upd',
                 'add'   => 'home/upd',
+                'back'  => 'staff/user',
                 'del'   => '/school/admin_user_school_del',
 
             ];
@@ -227,9 +228,9 @@ class SchoolController extends Controller{
             
 
         # 列表内容
-        $where = [];
+        $where['user_id'] = $id;
 
-        $list = $model->select('school.name','school.id>school_id','school.pic','school.description','id','progress')->where(['user_id'=>$id])->page($page,$limit)->get()->toArray();
+        $list = $model->select('school.name','school.id>school_id','school.pic','school.description','id','progress')->where($where)->page($page,$limit)->get()->toArray();
 
         $statuss = ['材料准备','递交','等待','补材料','结果'];
         foreach($list as &$v){

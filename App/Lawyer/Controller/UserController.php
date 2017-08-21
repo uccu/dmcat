@@ -638,7 +638,7 @@ class UserController extends Controller{
         AJAX::success();
 
     }
-    function admin_user(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$type,$master_type=-2){
+    function admin_user(UserSchoolModel $smodel,UserModel $model,UserConsultLimitModel $lmodel,ConsultModel $consultModel,$page = 1,$limit = 10,$search,$type,$master_type=-2){
         
         $this->L->adminPermissionCheck(68);
 
@@ -773,6 +773,15 @@ class UserController extends Controller{
             $v->lawyer_href = 'chat/user_chat?id='.$v->id;
             $v->school = '<i class="fa fa-pencil text-navy"></i> 查看';
             $v->school_href = 'school/user_school?id='.$v->id;
+
+            $where2['user_id'] = $v->id;
+            $consultModel->distinct();
+            $lawyer_list = $consultModel->where($where2)->get_field('lawyer_id')->toArray();
+            $count = count($lawyer_list);
+            $v->lawyer .= '(<span style="'.($count?'color:red':'').'">'.$count.'</span>)';
+
+            $count = $smodel->where($where2)->select('COUNT(*) AS c','RAW')->find()->c;
+            $v->school .= '(<span style="'.($count?'color:red':'').'">'.$count.'</span>)';
             
         }
 

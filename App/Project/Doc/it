@@ -594,6 +594,13 @@ master/getCustomerList
 {}
 
 
+7.3.1 获取客户V2
+master/getCustomerListById
+id 用户ID
+{"data":{"list":[{"id":"2","avatar":"noavatar.png","name":"113","phone":"13333333333","create_time":"0"}]},"code":200,"url":"","message":""}
+{}
+
+
 7.4 删除客户
 master/delCustomer
 id 用户ID

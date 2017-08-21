@@ -328,7 +328,8 @@ class MoneyController extends Controller{
         # 允许操作接口
         $opt = 
             [
-
+                
+                'back'  => 'staff/profit',
                 'req'   =>[
                     
                 ]
