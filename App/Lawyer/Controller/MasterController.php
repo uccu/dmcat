@@ -41,7 +41,7 @@ class MasterController extends Controller{
      * @return mixed 
      */
     function getLowerLevelList(UserModel $model,UserProfitModel $userProfitModel,$page = 1,$limit = 10){
-        $this->L->id = 10;
+        
         !$this->L->id && AJAX::error('未登录');
         
         !in_array($this->L->userInfo->master_type ,[0,1]) && AJAX::error('非0级1级平台大使，没有下一级！');
