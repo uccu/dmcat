@@ -233,7 +233,7 @@ class WebController extends Controller{
             $list2 = array_merge($list2,$v);
         }
 
-        $out['list'] = $list;
+        $out['list'] = $list2;
 
         AJAX::success($out);
 
