@@ -217,9 +217,10 @@ class WebController extends Controller{
         $lawyer_list = $consultModel->where($where)->get_field('user_id')->toArray();
         
         $list = [];
-        foreach($lawyer_list as $v){
+        foreach($lawyer_list as $k=>$v){
 
-            $list[] = $consultModel->select('content','create_time','user_id','user.name','user.avatar')->where($where)->where(['user_id'=>$v])->order('create_time desc')->find();
+            $list[$k] = $consultModel->select('content','create_time','user_id','user.name','user.avatar')->where($where)->where(['user_id'=>$v])->order('create_time desc')->find();
+            $list[$k]->isread = $consultModel->where($where)->where(['lawyer_id'=>$v])->where(['which'=>1,'isread'=>0])->find() ?'0':'1';
         }
 
         $out['list'] = $list;
