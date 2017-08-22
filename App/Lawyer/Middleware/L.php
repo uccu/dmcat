@@ -78,10 +78,21 @@ class L extends Middleware{
 
         !$this->id && AJAX::error('未登录');
         $type = $this->userInfo->type;
-        $auth = AdminMenuModel::copyMutiInstance()->find($id)->auth;
-        $auth = $auth ? explode(',',$auth) : [];
+        $auth = AdminMenuModel::copyMutiInstance()->find($id);
+        $authe = $auth->auth ? explode(',',$auth->auth) : [];
         
-        !in_array($type,$auth) && AJAX::error('没有权限，请与超级管理员联系！');
+        $aa = in_array($type,$authe);
+
+        if($auth->auth_user){
+
+            $authe = $auth->auth_user ? explode(',',$auth->auth_user) : [];
+            $aa2 = in_array($this->id,$authe);
+
+        }
+
+        if(!$aa && !$aa2){
+             AJAX::error('没有权限，请与超级管理员联系！');
+        }
 
         return true;
     }

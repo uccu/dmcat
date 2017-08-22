@@ -970,6 +970,7 @@ class UserController extends Controller{
                 '用户ID',
                 '账号',
                 '名字',
+                '权限',
                 '启用',
 
             ];
@@ -988,6 +989,10 @@ class UserController extends Controller{
                 'id',
                 'phone',
                 'name',
+                [
+                    'name'=>'auth',
+                    'href'=>true,
+                ],
                 [
                     'name'=>'active',
                     'type'=>'checkbox',
@@ -1008,6 +1013,8 @@ class UserController extends Controller{
 
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->auth = '<i class="fa fa-pencil text-navy"></i> 权限';
+            $v->auth_href = 'staff/auth?id='.$v->id;
         }
 
         # 分页内容
@@ -1469,6 +1476,11 @@ class UserController extends Controller{
         AJAX::success($out);
     }
 
+
+    function getAuth(){
+        $this->L->adminPermissionCheck(67);
+
+    }
 
 
 
