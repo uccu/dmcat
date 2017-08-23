@@ -975,8 +975,10 @@ class UserController extends Controller{
                 '用户ID',
                 '账号',
                 '名字',
-                '权限',
+                '用户类型',
                 '启用',
+                '权限',
+                
 
             ];
 
@@ -994,14 +996,16 @@ class UserController extends Controller{
                 'id',
                 'phone',
                 'name',
-                [
-                    'name'=>'auth',
-                    'href'=>true,
-                ],
+                'type_name',
                 [
                     'name'=>'active',
                     'type'=>'checkbox',
                 ],
+                [
+                    'name'=>'auth',
+                    'href'=>true,
+                ],
+                
 
             ];
             
@@ -1019,7 +1023,9 @@ class UserController extends Controller{
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
             $v->auth = '<i class="fa fa-pencil text-navy"></i> 权限';
-            $v->auth_href = 'staff/auth?id='.$v->id;
+            $v->type_name = $v->type == 2?'受限管理员':'管理员';
+            if($v->type == 2)$v->auth_href = 'staff/auth?id='.$v->id;
+            else $v->auth = '所有权限';
         }
 
         # 分页内容
