@@ -407,7 +407,7 @@ class MoneyController extends Controller{
     
     function submit(UserModel $model,$id,$input){
 
-        $this->L->adminPermissionCheck(68);
+        $this->L->adminPermissionCheck(105);
         $user = $model->find($id);
 
         !$user && AJAX::error('用户不存在！');

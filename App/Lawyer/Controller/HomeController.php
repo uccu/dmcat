@@ -401,10 +401,10 @@ class HomeController extends Controller{
 
 
 
-
+    # 分享设置
     function admin_share(ShareModel $model,$page = 1,$limit = 10,$search){
         
-        $this->L->adminPermissionCheck(88);
+        $this->L->adminPermissionCheck(89);
 
         $name = '分享';
         # 允许操作接口
@@ -479,7 +479,7 @@ class HomeController extends Controller{
     }
     function admin_share_get(ShareModel $model,$id){
 
-        $this->L->adminPermissionCheck(88);
+        $this->L->adminPermissionCheck(89);
 
         $name = '分享';
 
@@ -536,7 +536,7 @@ class HomeController extends Controller{
 
     }
     function admin_share_upd(ShareModel $model,$id,$pwd){
-        $this->L->adminPermissionCheck(88);
+        $this->L->adminPermissionCheck(89);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
         
@@ -549,7 +549,7 @@ class HomeController extends Controller{
         AJAX::success($out);
     }
     function admin_share_del(ShareModel $model,$id){
-        $this->L->adminPermissionCheck(88);
+        $this->L->adminPermissionCheck(89);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
         AJAX::success($out);

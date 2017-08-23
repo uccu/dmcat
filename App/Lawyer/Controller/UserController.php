@@ -23,6 +23,7 @@ use App\Lawyer\Model\UserSchoolModel;
 use App\Lawyer\Model\UploadModel;
 use App\Lawyer\Model\MessageModel;
 use App\Lawyer\Model\ConsultModel;
+use App\Lawyer\Model\AdminMenuModel;
 
 
 class UserController extends Controller{
@@ -638,6 +639,8 @@ class UserController extends Controller{
         AJAX::success();
 
     }
+
+    # 管理用户
     function admin_user(UserSchoolModel $smodel,UserModel $model,UserConsultLimitModel $lmodel,ConsultModel $consultModel,$page = 1,$limit = 10,$search,$type,$master_type=-2){
         
         $this->L->adminPermissionCheck(68);
@@ -847,7 +850,7 @@ class UserController extends Controller{
                     'type'  =>  'avatar',
                 ],
                 [
-                    'title' =>  '公司平台大使',
+                    'title' =>  '平台大使',
                     'name'  =>  'master_type',
                     'type'  =>  'select',
                     'option'=>[
@@ -940,6 +943,8 @@ class UserController extends Controller{
         $out['del'] = $del;
         AJAX::success($out);
     }
+
+    # 管理管理员
     function admin_master(UserModel $model,$page = 1,$limit = 10,$search){
         
         $this->L->adminPermissionCheck(67);
@@ -1003,7 +1008,7 @@ class UserController extends Controller{
 
         # 列表内容
         $where = [];
-        $where['type'] = 1;
+        $where['type'] = ['%F in (1,2)','type'];
 
         if($search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
@@ -1079,6 +1084,15 @@ class UserController extends Controller{
                     'type'  =>  'avatar',
                 ],
                 [
+                    'title' =>  '用户类型',
+                    'name'  =>  'type',
+                    'type'  =>  'select',
+                    'option'=>[
+                        '1'=>'管理员',
+                        '2'=>'受限管理员',
+                    ],
+                ],
+                [
                     'title' =>  '修改密码',
                     'name'  =>  'pwd',
                     'size'  =>  '4',
@@ -1103,7 +1117,7 @@ class UserController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_master_upd(UserModel $model,$id,$pwd){
+    function admin_master_upd(UserModel $model,$id,$pwd,$type){
         $this->L->adminPermissionCheck(67);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
@@ -1113,7 +1127,8 @@ class UserController extends Controller{
 
         $model->where('phone = %n AND id != %d',$data['phone'],$id)->find() && AJAX::error('账号已存在，请更改为其他账号！');
 
-        $data['type'] = 1;
+        if($type == 2)$data['type'] = 2;
+        else $data['type'] = 1;
         if(!$id){
             $data['salt'] = Func::randWord(6);
             $data['password'] = $this->encrypt_password($pwd,$data['salt']);
@@ -1133,11 +1148,7 @@ class UserController extends Controller{
         AJAX::success($out);
     }
 
-
-
-
-
-
+    # 申请成为平台大使的管理
     function admin_apply(UserModel $model,$page = 1,$limit = 10,$search,$master_type=0){
         
         $this->L->adminPermissionCheck(102);
@@ -1243,7 +1254,6 @@ class UserController extends Controller{
         AJAX::success($out);
 
     }
-
     function admin_apply_get(UserModel $model,$id,UserMasterCompanyModel $userMasterCompanyModel,UserMasterPersonModel $userMasterPersonModel){
 
         $this->L->adminPermissionCheck(102);
@@ -1406,7 +1416,6 @@ class UserController extends Controller{
         AJAX::success($out);
 
     }
-
     function admin_apply_upd(UserModel $model,$id,$reason,$status,UserMasterCompanyModel $userMasterCompanyModel,UserMasterPersonModel $userMasterPersonModel){
 
         $this->L->adminPermissionCheck(102);
@@ -1476,10 +1485,35 @@ class UserController extends Controller{
         AJAX::success($out);
     }
 
+    # 修改后台权限
+    function changeAuth($user_id,$id,$auth){
 
-    function getAuth(){
+
         $this->L->adminPermissionCheck(67);
 
+        $model = AdminMenuModel::copyMutiInstance();
+
+        $w = $model->find($id);
+
+        if(!$w)AJAX::success('无模块');
+
+        $auth_user = $w->auth_user ? explode(',',$w->auth_user) : [];
+        $key = array_search($user_id,$auth_user);
+
+        if($auth){
+            
+            if($key === false)$auth_user[] = $user_id;
+        }else{
+            
+            if($key !== false)unset($auth_user[$key]);
+        }
+        
+
+        $w->auth_user = $auth_user ? implode(',',$auth_user) : '';
+
+        $w->save();
+
+        AJAX::success();
     }
 
 

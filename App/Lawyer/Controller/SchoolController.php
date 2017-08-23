@@ -183,7 +183,7 @@ class SchoolController extends Controller{
 
     function admin_user_school(UserSchoolModel $model,$page = 1,$limit = 10,$id){
         
-        $this->L->adminPermissionCheck(86);
+        $this->L->adminPermissionCheck(68);
 
         $name = '用户学校';
         # 允许操作接口
@@ -263,7 +263,7 @@ class SchoolController extends Controller{
     }
     function admin_user_school_get(UserSchoolModel $model,SchoolModel $smodel,$id,$type){
 
-        $this->L->adminPermissionCheck(86);
+        $this->L->adminPermissionCheck(68);
 
         $name = '用户学校';
         $statuss = ['材料准备','递交','等待','补材料','结果'];
@@ -327,7 +327,7 @@ class SchoolController extends Controller{
 
     }
     function admin_user_school_upd(UserSchoolModel $model,$id,$type){
-        $this->L->adminPermissionCheck(86);
+        $this->L->adminPermissionCheck(68);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
         $data['user_id'] = $type;
@@ -339,7 +339,7 @@ class SchoolController extends Controller{
         AJAX::success($out);
     }
     function admin_user_school_del(UserSchoolModel $model,$id){
-        $this->L->adminPermissionCheck(86);
+        $this->L->adminPermissionCheck(68);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
         AJAX::success($out);

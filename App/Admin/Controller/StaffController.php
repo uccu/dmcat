@@ -8,6 +8,7 @@ use View;
 use Request;
 use App\Lawyer\Middleware\L;
 use App\Lawyer\Model\AdminMenuModel;
+use App\Lawyer\Model\UserModel;
 
 class StaffController extends Controller{
 
@@ -62,28 +63,34 @@ class StaffController extends Controller{
     }
 
     /* 权限 */
-    function auth(){
+    function auth($id){
 
-        $menu = $this->getMenu();
+        $menu = $this->getMenu($id);
         View::addData(['menu'=>$menu]);
+        View::addData(['id'=>$id]);
         View::hamlReader('staff/auth','Admin');
     }
 
-    private function getMenu(){
+    private function getMenu($id){
 
         $model = AdminMenuModel::copyMutiInstance();
+        $uModel = UserModel::copyMutiInstance();
         $all = $model->order('id')->get('id')->toArray();
 
-        $auth = $this->L->userInfo->type;
-        $id = $this->L->id;
+        $info = $uModel->find($id);
+        !$info && AJAX::error('用户不存在');
+        $auth = $info->type;
+        $id = $info->id;
 
         $tops = [];
         foreach($all as $k=>$v){
 
             $v->auth = $v->auth ? explode(',',$v->auth) : [];
             $v->auth_user = $v->auth_user ? explode(',',$v->auth_user) : [];
-            if(!in_array($auth,$v->auth) && !in_array($id,$v->auth_user)){
-                unset($all[$k]);continue;
+            if(in_array($id,$v->auth_user)){
+                $v->checked = 'checked';
+            }else{
+                $v->checked = '';
             }
 
             $v->list = [];

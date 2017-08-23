@@ -163,9 +163,11 @@ class ChatController extends Controller{
         AJAX::success($out);
     }
 
+
+    # 发送消息
     function admin_send(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$all,$normal,$vip,$vip0,$vip1,$vip2){
         
-        $this->L->adminPermissionCheck(68);
+        $this->L->adminPermissionCheck(100);
         
         $name = '用户';
         # 允许操作接口
@@ -345,8 +347,9 @@ class ChatController extends Controller{
         return $where;
     }
 
+    # 发送短信
     function sendMail(UserModel $model,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$all,$normal,$vip,$vip0,$vip1,$vip2){
-        
+        $this->L->adminPermissionCheck(100);
         $where = $this->setWhere($lmodel,$search,$all,$normal,$vip,$vip0,$vip1,$vip2);
         
         $list = $model->where($where)->get_field('id')->toArray();
@@ -356,8 +359,9 @@ class ChatController extends Controller{
         AJAX::success($out);
     }
 
+    # 发送推送
     function sendPush(MessageModel $model,MessageH5Model $messageH5,UserModel $userModel,UserConsultLimitModel $lmodel,$page = 1,$limit = 10,$search,$all,$normal,$vip,$vip0,$vip1,$vip2,$h5,$message,$toAll){
-        
+        $this->L->adminPermissionCheck(100);
         $where = $this->setWhere($lmodel,$search,$all,$normal,$vip,$vip0,$vip1,$vip2);
         
         $list = $userModel->where($where)->get_field('id')->toArray();
@@ -380,7 +384,7 @@ class ChatController extends Controller{
         AJAX::success($out);
     }
 
-
+    # 绑定的律师列表
     function admin_user_chat(ConsultModel $consultModel,LawyerModel $model,$id){
 
         $this->L->adminPermissionCheck(68);
@@ -473,7 +477,7 @@ class ChatController extends Controller{
         AJAX::success($out);
     }
 
-
+    # 与律师聊天记录
     function admin_user_chats(ConsultModel $consultModel,LawyerModel $model,$user_id,$lawyer_id,$page = 1,$limit  = 10){
         
         $this->L->adminPermissionCheck(68);
