@@ -271,12 +271,12 @@ class Func {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         if($data){
-            curl_setopt($ch, CURLOPT_POST, 1);
+            // curl_setopt($ch, CURLOPT_POST, 1);
 		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         }
         
         $z = curl_exec($ch);
-        return $json = json_decode($z);
+        return $z;
     }
 
     

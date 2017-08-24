@@ -4,6 +4,9 @@ namespace App\Lawyer\Tool;
 use Model;
 use stdClass;
 use AJAX;
+use App\Lawyer\Middleware\L2;
+use App\Lawyer\Model\PaymentModel;
+
 
 class AdminFunc{
     
@@ -43,6 +46,66 @@ class AdminFunc{
     static function del(Model $model,$id){
 
         return $model->remove($id)->getStatus();
+
+    }
+
+
+
+    static function alipay_refund($payment_id,$money = 0){
+
+        
+
+        /*退款批次号*/
+        $out_trade_no = TIME_NOW.Func::randWord(10,3);
+        $paymentModel = PaymentModel::copyMutiInstance();
+
+        $payLog = $paymentModel->find($payment_id);
+        
+        !$payLog && AJAX::error('没有找到支付记录!');
+        !$payLog->success_time && AJAX::error('没有付款成功不能退款!');
+        !$payLog->open_order_id && AJAX::error('未找到原付款支付宝交易号!');
+        !$payLog->total_fee && AJAX::error('交易价格无效，不能退款!');
+
+        if(!$money)$money = $payLog->total_fee;
+        $money > $payLog->total_fee && AJAX::error('退款金额不能大于交易金额!');
+
+        $open_order_id = $payLog->open_order_id;
+
+        $L = L2::getSingleInstance();
+
+
+        $p['service']           = 'refund_fastpay_by_platform_pwd';         // 服务接口名称， 固定值
+        $p['partner']           = $L->config->aliay_partner;                // 签约的支付宝账号对应的支付宝唯一用户号
+        $p['_input_charset']    = 'utf-8';                                  // 参数编码， 固定值
+        $p['notify_url']        = Func::fullAddr('pay/alipay_refund_c');    // 服务器异步通知页面路径
+        $p['seller_email']      = $L->config->aliay_seller_id;              // 卖家支付宝账号
+        $p['seller_user_id']    = $L->config->aliay_partner;                // 卖家用户ID
+        $p['refund_date']       = date('Y-m-d H:i:s',TIME_NOW);             // 退款请求的当前时间
+        $p['batch_no']          = $out_trade_no;                            // 退款批次号
+        $p['batch_num']         = '1';                                      // 总笔数
+        $p['detail_data']       = '#'.$open_order_id.'<sup>'.$money.'</sup>退款'.$money.'元';// 单笔数据集
+        
+        
+        ksort($p);
+
+        foreach($p as $k=>$v)$info[] = $k.'='.$v;
+        $info = implode('&',$info);
+
+        $res = openssl_get_privatekey ( $L->config->alipay_rsa_private_key );
+        openssl_sign ( $info, $sign, $res );
+        openssl_free_key ( $res );
+        // base64编码
+        $sign = base64_encode ( $sign );
+        $sign = urlencode ( $sign );
+        // 执行签名函数
+        $info .= "&sign=" . $sign . "&sign_type=RSA";
+        $p['sign'] = $sign;
+        $p['sign_type'] = 'RSA';
+        
+
+        return  Func::curl('https://mapi.alipay.com/gateway.do',$p);
+
+
 
     }
 }
