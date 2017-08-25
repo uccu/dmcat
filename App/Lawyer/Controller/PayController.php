@@ -363,9 +363,13 @@ class PayController extends Controller{
 
     // function test(){
 
-    //     $result = AdminFunc::alipay_refund(1,1);
+    //     $result = AdminFunc::alipay_refund(28,0.01);
     //     header("Content-type:text/html;charset=gbk");
     //     echo $result;
+    // }
+
+    // function alipay_refund_c(){
+    //     echo 'success';
     // }
 
 

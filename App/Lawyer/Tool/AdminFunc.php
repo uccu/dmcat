@@ -76,14 +76,14 @@ class AdminFunc{
 
         $p['service']           = 'refund_fastpay_by_platform_pwd';         // 服务接口名称， 固定值
         $p['partner']           = $L->config->aliay_partner;                // 签约的支付宝账号对应的支付宝唯一用户号
-        $p['_input_charset']    = 'utf-8';                                  // 参数编码， 固定值
-        $p['notify_url']        = Func::fullAddr('pay/alipay_refund_c');    // 服务器异步通知页面路径
+        $p['_input_charset']    = 'UTF-8';                                  // 参数编码， 固定值
+        // $p['notify_url']        = Func::fullAddr('pay/alipay_refund_c');    // 服务器异步通知页面路径
         $p['seller_email']      = $L->config->aliay_seller_id;              // 卖家支付宝账号
         $p['seller_user_id']    = $L->config->aliay_partner;                // 卖家用户ID
         $p['refund_date']       = date('Y-m-d H:i:s',TIME_NOW);             // 退款请求的当前时间
         $p['batch_no']          = $out_trade_no;                            // 退款批次号
         $p['batch_num']         = '1';                                      // 总笔数
-        $p['detail_data']       = '#'.$open_order_id.'<sup>'.$money.'</sup>退款'.$money.'元';// 单笔数据集
+        $p['detail_data']       = '#'.$open_order_id.'^'.$money.'^退款'.$money.'元';// 单笔数据集
         
         
         ksort($p);
@@ -96,12 +96,13 @@ class AdminFunc{
         openssl_free_key ( $res );
         // base64编码
         $sign = base64_encode ( $sign );
-        $sign = urlencode ( $sign );
+        // $sign = urlencode ( $sign );
         // 执行签名函数
         $info .= "&sign=" . $sign . "&sign_type=RSA";
         $p['sign'] = $sign;
         $p['sign_type'] = 'RSA';
         
+        // var_dump($p);die();
 
         return  Func::curl('https://mapi.alipay.com/gateway.do',$p);
 

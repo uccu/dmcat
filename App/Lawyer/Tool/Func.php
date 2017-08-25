@@ -271,7 +271,7 @@ class Func {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         if($data){
-            // curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POST, 1);
 		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         }
         
