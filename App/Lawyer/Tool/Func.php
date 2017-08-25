@@ -336,6 +336,9 @@ class Func {
             ]
         )->remove();
 
+
+        // self::curl('http:// 222.73.117.140:8044/mt?un=I2367747&pw=GnTvRmS4eN6266&da=8613661730893&sm=[您的签名]测试内容&dc=15&tf=3&rf=1');
+
         return true;
 
     }

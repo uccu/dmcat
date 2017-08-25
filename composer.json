@@ -24,5 +24,11 @@
             "Lib\\": "Lib",
 			"App\\": "App"
 		},"classmap": ["Lib/Base/"]
-	}
+    },
+    "repositories": {
+    "packagist": {
+        "type": "composer",
+        "url": "https://packagist.phpcomposer.com"
+    }
+}
 }

@@ -83,28 +83,31 @@ class AdminFunc{
         $p['refund_date']       = date('Y-m-d H:i:s',TIME_NOW);             // 退款请求的当前时间
         $p['batch_no']          = $out_trade_no;                            // 退款批次号
         $p['batch_num']         = '1';                                      // 总笔数
-        $p['detail_data']       = '#'.$open_order_id.'^'.$money.'^退款'.$money.'元';// 单笔数据集
+        $p['detail_data']       = $open_order_id.'^'.$money.'^退款';// 单笔数据集
         
         
         ksort($p);
 
-        foreach($p as $k=>$v)$info[] = $k.'='.$v;
+        foreach($p as $k=>$v){
+            $info2[] = $k.'='.$v ;
+            $info[] = $k.'='.urlencode( $v );
+        }
+        $info2 = implode('&',$info2);
         $info = implode('&',$info);
 
-        $res = openssl_get_privatekey ( $L->config->alipay_rsa_private_key );
-        openssl_sign ( $info, $sign, $res );
-        openssl_free_key ( $res );
-        // base64编码
-        $sign = base64_encode ( $sign );
+        $md5 = 'm838by7lgm8lmfne8jbeibxmbsinin9c';
+        
+        
+        $sign = md5($info2.$md5);
         // $sign = urlencode ( $sign );
         // 执行签名函数
-        $info .= "&sign=" . $sign . "&sign_type=RSA";
+        $info .= "&sign=" . $sign . "&sign_type=MD5";
         $p['sign'] = $sign;
-        $p['sign_type'] = 'RSA';
+        $p['sign_type'] = 'MD5';
         
-        // var_dump($p);die();
+        echo 'https://mapi.alipay.com/gateway.do?'.$info;die();
 
-        return  Func::curl('https://mapi.alipay.com/gateway.do',$p);
+        return  Func::curl('https://mapi.alipay.com/gateway.do?'.$info);
 
 
 
