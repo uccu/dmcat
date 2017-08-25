@@ -302,8 +302,31 @@ class PayController extends Controller{
 
         if($trade_status != 'TRADE_SUCCESS'){
 
-            AJAX::error('1');
+            AJAX::error('支付失败！');
         }
+
+        $sign = $data['sign'];
+        unset($data['sign']);
+        unset($data['sign_type']);
+        ksort($data);
+
+        $ob = [];
+        $str = '';
+        foreach($data as $k=>$v){
+
+            $ob[] = $k.'='.$v;
+        }
+        $str = implode('&',$ob);        
+        $res = openssl_get_publickey ( $this->L->config->alipay_rsa_public_key );
+        $sign = base64_decode($sign);
+        $result = (bool)openssl_verify($str,$sign,$res);
+        openssl_free_key($res);
+
+        if(!$result){
+            AJAX::error('签名验证失败！');
+        }
+        //https://mapi.alipay.com/gateway.do?service=notify_verify&partner=2088002396712354&notify_id=RqPnCoPT3K9%252Fvwbh3I%252BFioE227%252BPfNMl8jwyZqMIiXQWxhOCmQ5MQO%252FWd93rvCB%252BaiGg
+        
         
         $payLog = $paymentModel->where(['out_trade_no'=>$out_trade_no])->find();
         !$payLog && AJAX::error('没有订单！');
@@ -321,7 +344,6 @@ class PayController extends Controller{
         $payLog->success_time = TIME_NOW;
         $payLog->update_time = TIME_NOW;
         $payLog->open_order_id = $data['trade_no'] ? $data['trade_no'] : '';
-        $payLog->success_time = $data['buyer_email'] ? $data['buyer_email'] : '';;
         $payLog->open_id = $data['buyer_id'] ? $data['buyer_id'] : '';
         $payLog->name = $data['buyer_login_id'] ? $data['buyer_login_id'] : '';
         $payLog->account = $data['buyer_email'] ? $data['buyer_email'] : '';
@@ -329,7 +351,7 @@ class PayController extends Controller{
 
         $payLog->save();
 
-        AJAX::error('测试！');
+        echo 'success';
     }
 
     function wcpay_c(){
@@ -344,6 +366,38 @@ class PayController extends Controller{
     //     $result = AdminFunc::alipay_refund(1,1);
     //     header("Content-type:text/html;charset=gbk");
     //     echo $result;
+    // }
+
+
+    // function test(){
+
+    //     $data = '{"discount":"0.00","payment_type":"1","trade_no":"2017082521001004350281105857","subject":"\u7eed\u8d39\u4f1a\u5458","buyer_email":"627024472@qq.com","gmt_create":"2017-08-25 11:20:48","notify_type":"trade_status_sync","quantity":"1","out_trade_no":"15036311978930368812","seller_id":"2088721799712959","notify_time":"2017-08-25 11:20:49","body":"\u7eed\u8d39\u4f1a\u5458","trade_status":"TRADE_SUCCESS","is_total_fee_adjust":"N","total_fee":"0.01","gmt_payment":"2017-08-25 11:20:49","seller_email":"149660723@qq.com","price":"0.01","buyer_id":"2088502824880353","notify_id":"eb9d6d0ea779692ea1176b16605d593ipa","use_coupon":"N","sign_type":"RSA","sign":"jXOvpdxRudDYk4u9CHNAja7zWhvJUiCTu7P\/XoW044TA+NKF8Ybcu4WXbQPoQbzple+KHiVWi+iJOR7ZeNbrJN0iToljqa0posMVNxG8vRbbh9cYRQM\/SK\/icoiS6bMrAYGMJAMWBH0D10\/Tge9dQjtFsm1lUY1Ij6gdfu7I7Sw="}';
+
+    //     $data = json_decode($data,true);
+    //     $sign = $data['sign'];
+    //     unset($data['sign']);
+    //     unset($data['sign_type']);
+    //     ksort($data);
+
+    //     $ob = [];
+    //     $str = '';
+    //     foreach($data as $k=>$v){
+
+    //         $ob[] = $k.'='.$v;
+    //     }
+    //     $str = implode('&',$ob);
+    //     // echoq $this->L->config->alipay_rsa_public_key;
+        
+    //     $res = openssl_get_publickey ( $this->L->config->alipay_rsa_public_key );
+
+    //     $sign = base64_decode($sign);
+    //     $original_str='';
+    //     $result = (bool)openssl_verify($str,$sign,$res);
+    //     openssl_free_key($res);
+
+    //     var_dump($result,$original_str);
+
+        
     // }
 
 }
