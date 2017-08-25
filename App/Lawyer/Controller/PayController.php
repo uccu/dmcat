@@ -114,6 +114,7 @@ class PayController extends Controller{
 
         /*总价格&订单号*/
         $total_fee = $rule->price;
+        $total_fee = '0.01';
         $out_trade_no = TIME_NOW.Func::randWord(10,3);
 
         /*生成随机码*/
@@ -187,10 +188,10 @@ class PayController extends Controller{
         $nonce_str2 = Func::randWord(32,2);
         
         $p['appid']             = $this->L->config->wcpay_appid;
-        $p['body']              = 'INAX 商品订单';
+        $p['body']              = '续费会员';
         $p['mch_id']            = $this->L->config->wcpay_mch_id;
         $p['nonce_str']         = $nonce_str;
-        $p['notify_url']        = Func::fullAddr('goods/wcpay_c');
+        $p['notify_url']        = Func::fullAddr('pay/wcpay_c');
         $p['out_trade_no']      = $out_trade_no;
         $p['spbill_create_ip']  = $_SERVER ["REMOTE_ADDR"];
         $p['total_fee']         = $total_fee100;
@@ -289,10 +290,46 @@ class PayController extends Controller{
     }
 
 
-    function alipay_c(){
+    function alipay_c($out_trade_no,$trade_status){
+
+        $data = Request::getSingleInstance()->request;
+
+        foreach($data as &$v){
+            $v = (string)$v;
+        }
+
+        $paymentModel = PaymentModel::getSingleInstance();
+
+        if($trade_status != 'TRADE_SUCCESS'){
+
+            AJAX::error('1');
+        }
+        
+        $payLog = $paymentModel->where(['out_trade_no'=>$out_trade_no])->find();
+        !$payLog && AJAX::error('没有订单！');
 
 
+        if($payLog->success_time != 0){
 
+            AJAX::error('支付单已支付！');
+        }
+
+
+        $this->pay_finish($payLog->rule_id,$payLog->user_id);
+
+
+        $payLog->success_time = TIME_NOW;
+        $payLog->update_time = TIME_NOW;
+        $payLog->open_order_id = $data['trade_no'] ? $data['trade_no'] : '';
+        $payLog->success_time = $data['buyer_email'] ? $data['buyer_email'] : '';;
+        $payLog->open_id = $data['buyer_id'] ? $data['buyer_id'] : '';
+        $payLog->name = $data['buyer_login_id'] ? $data['buyer_login_id'] : '';
+        $payLog->account = $data['buyer_email'] ? $data['buyer_email'] : '';
+        $payLog->pay_nonce_str = $data['notify_id'] ? $data['notify_id'] : '';
+
+        $payLog->save();
+
+        AJAX::error('测试！');
     }
 
     function wcpay_c(){
