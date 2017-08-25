@@ -91,8 +91,8 @@ class ClassesController extends Controller{
 
     function upd($id,ClassesModel $model){
 
-        $data = Request::getInstance()->request(['name','name_en','school_id']);
-
+        $data = Request::getInstance()->request(['name','name_en','school_id','level']);
+        $data['school_id'] = 1;
         if(!$id){
             
             $data['create_time'] = TIME_NOW;
@@ -104,6 +104,14 @@ class ClassesController extends Controller{
         
         
 
+        AJAX::success();
+
+    }
+
+    function del($id,ClassesModel $model){
+
+        !$id && AJAX::error_i18n('param_error');
+        $model->remove($id);
         AJAX::success();
 
     }

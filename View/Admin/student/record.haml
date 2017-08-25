@@ -62,7 +62,7 @@
                         .form-group
                             %label.col-sm-3.control-label #{lang.student.classes_id}
                             .col-sm-3
-                                %input.form-control(type="number" name="classes_id")
+                                %select.form-control(name="classes_id")
                         .form-group
                             %label.col-sm-3.control-label #{lang.student.nationality}
                             .col-sm-9
@@ -140,6 +140,12 @@
                     }
                     getList('/student/lists',{school_id:school});
                 })
+
+                curl('/classes/lists',{school_id:school},function(w){
+                    for(d in w.list)$('[name="classes_id"]').append($('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id));
+                    if($('[name="classes_id"]').attr('data-value'))$('[name="classes_id"]').val($('[name="classes_id"]').attr('data-value')).attr('data-value','');
+                });
+
             });
             
             getList('/student/lists',{school_id:school,classes_id:classes});

@@ -10,13 +10,13 @@ class ClassesModel extends Model{
 
     public function school(){
 
-        return $this->join('App\School\Model\SchoolModel','id','school_id');
+        return $this->join('App\School\Model\SchoolModel','id','school_id','LEFT');
         
     }
     
     public function level(){
 
-        return $this->join('App\School\Model\ClassesLevelModel','id','level');
+        return $this->join('App\School\Model\ClassesLevelModel','id','level','LEFT');
         
     }
 
