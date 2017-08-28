@@ -8,14 +8,20 @@
             .col-sm-12
                 .ibox.float-e-margins
                     .ibox-content.topw
-                        .row
-                            .col-sm-1
-                                %button.btn.btn-primary.btn-outline.newOne(data-toggle="button" type="button" aria-pressed="true") new
-                            .col-sm-3
-                                %form.input-group
-                                    %input.form-control
-                                    %span.input-group-btn
-                                        %button.btn.btn-primary.search(type="submit") 搜索
+                        .form-horizontal
+                            .form-group
+                                .col-sm-1
+                                    %button.btn.btn-primary.btn-outline.newOne(data-toggle="button" type="button" aria-pressed="true") new
+                                
+                                %label.col-sm-1.control-label #{lang.classes.classes}
+                                .col-sm-2
+                                    %select.form-control.m-b.classesChange
+                                        %option(value="0") #{lang.adminIndex.all}
+                                .col-sm-3
+                                    %form.input-group
+                                        %input.form-control
+                                        %span.input-group-btn
+                                            %button.btn.btn-primary.search(type="submit") 搜索
                 .sk-spinner.sk-spinner-wave.animated
                     .sk-rect1
                     .sk-rect2
@@ -70,18 +76,18 @@
                             %label.col-sm-3.control-label #{lang.user.password}
                             .col-sm-9
                                 %input.form-control(name="raw_password")
-                        .form-group.updateOnly
+                        .form-group.updateOnly2
                             :css
-                                .form-group.updateOnly kbd{
+                                .form-group kbd{
                                     margin:4px;
-                                }.form-group.updateOnly kbd:hover{
+                                }.form-group kbd:hover{
                                     background-color:red
                                 }
                             %label.col-sm-3.control-label #{lang.student.student_name}
                             .col-sm-9(style="padding-top:7px")
                                 
                     
-                    .form-horizontal.updateOnly
+                    .form-horizontal
                         .hr-line-dashed
                         .form-group
                             %label.col-sm-3.control-label
@@ -108,11 +114,22 @@
 - block otherScript
     :javascript
         $(function(){
-
+            var classes_id = 0;
             $('.topw form').bind('submit',function(){
                 flesh($(this).find('input').val());
                 return false;
             });
+
+            
+
+            curl('/classes/lists',{school_id:1},function(w){
+                for(d in w.list)$('.classesChange').append($('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id));
+                $('.classesChange').bind('change',function(){
+                    classes_id = $(this).val();flesh();
+                })
+            });
+
+            
 
             curl('/school/lists',{},function(w){
                 for(d in w.list)$('[name="school_id"]').append($('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id))
@@ -142,7 +159,7 @@
                 })
             });
             var addKdb = function(z,x){
-                $('.form-group.updateOnly .col-sm-9').append($('<kbd>').text(z).attr('data-student-id',x).addClass('cp t').bind('click',function(){
+                $('.form-group.updateOnly2 .col-sm-9').append($('<kbd>').text(z).attr('data-student-id',x).addClass('cp t').bind('click',function(){
                     var that = this;
                     curl_check(function(){
                         curl('/staff/delete_student',{id:$(that).attr('data-student-id')},function(){
@@ -152,15 +169,30 @@
                 }))
             }
             gr.updFunction = function(d){
-                $('.form-group.updateOnly .col-sm-9').html('');
+                $('.form-group.updateOnly2 .col-sm-9').html('');
                 for(w in d.student)addKdb(d.lang=='cn'?d.student[w].name:d.student[w].name_en,d.student[w].id)
                 
             };
             $('#modal_new .add').bind('click',function(){
-                if($('#modal_new [name="student_id"]').val())
-                    curl('/staff/add_student',{student_id:$('#modal_new [name="student_id"]').val(),id:$('#modal_new [name="id"]').val()},function(d){
+                if($('#modal_new [name="student_id"]').val()){
+
+                    var data = $('form').serializeArray()
+                    var id = $('#modal_new [name="id"]').val();
+                    data.push({name:'type',value:"1"})
+                    if(!id)curl('/staff/upd',data,function(w){
+                        
+                        $('#modal_new [name="id"]').val(w.id);
+
+                        curl('/staff/add_student',{student_id:$('#modal_new [name="student_id"]').val(),id:$('#modal_new [name="id"]').val()},function(d){
+                            curl_succ('success!');addKdb(d.name,d.id)
+                        })
+                    });
+                    else curl('/staff/add_student',{student_id:$('#modal_new [name="student_id"]').val(),id:$('#modal_new [name="id"]').val()},function(d){
                         curl_succ('success!');addKdb(d.name,d.id)
                     })
+
+                    
+                }
             })
             upPic('/staff/upPic','input[type="file"]','input[name="avatar"]','.avatar_img');
             $('.avatar_img').bind('click',function(){
@@ -168,7 +200,7 @@
             })
             function flesh(s){
                 s = s||'';
-                getList('/staff/lists',{type:1,page:1,search:s})
+                getList('/staff/lists',{type:1,page:1,search:s,classes_id:classes_id})
             }
             $('[name="school_id"]').change();
             flesh();

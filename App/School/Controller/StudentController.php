@@ -91,7 +91,7 @@ class StudentController extends Controller{
 
         !$id && AJAX::success(['info'=>[]]);
         $out['info'] = $info = Model::getInstance('student_physical')->find($id);
-        !$info && AJAX::error_i18n('no_data');
+        !$info && AJAX::success(['info'=>['id'=>$id]]);
 
 
         AJAX::success($out);
@@ -148,7 +148,7 @@ class StudentController extends Controller{
     function physical_upd($id,StudentPhysicalModel $model){
 
         $data = Request::getInstance()->request($model->field);
-        $model->set($data)->save($id);
+        $model->set($data)->add(true);
         AJAX::success();
 
     }

@@ -28,7 +28,7 @@ class StaffController extends Controller{
 
 
     /* 列表 */
-    function lists(UserModel $model,$type = 0,$search = '',$page = 1,$school,$limit = 50){
+    function lists(UserModel $model,$type = 0,$search = '',$page = 1,$school,$limit = 50,$classes_id = 0){
 
         // !$this->L->id && AJAX::error_i18n('not_login');
 
@@ -60,6 +60,14 @@ class StaffController extends Controller{
         $out['lang'] = $this->lang->language;
 
         $where['type'] = $type;
+
+        if($this->L->userInfo->type == 3){
+            $classes_id = $classes_id ? $classes_id : UserClassesModel::getInstance()->where(['user_id'=>$this->L->id])->find()->classes_id;
+
+        }
+
+        if($classes_id)$where['student.studentInfo.classes_id'] = $classes_id;
+
         if($search)$where[] = ['name LIKE %n OR name_en LIKE %n OR user_name LIKE %n OR phone LIKE %n OR email LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
 
         
@@ -131,7 +139,7 @@ class StaffController extends Controller{
             }
         }
 
-        AJAX::success();
+        AJAX::success(['id'=>$id]);
 
     }
 

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9b77365384ae000e3004a38a0262fbf9",
-    "content-hash": "e0b86adf3ef0386090284c6a297b109a",
+    "hash": "a09280b986fe46d371b77bdb9eef34f1",
+    "content-hash": "3e09d99fdf39f4e7fc553860cf3d50ea",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -111,16 +111,16 @@
         },
         {
             "name": "endroid/qrcode",
-            "version": "2.1.4",
+            "version": "2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/endroid/QrCode.git",
-                "reference": "57ff85573a7ad466e247ea9264bea07590842cd6"
+                "reference": "6d3b55bf46e416bfd80efdbf7ca0e39c6f86a7c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/endroid/QrCode/zipball/57ff85573a7ad466e247ea9264bea07590842cd6",
-                "reference": "57ff85573a7ad466e247ea9264bea07590842cd6",
+                "url": "https://files.phpcomposer.com/files/endroid/QrCode/6d3b55bf46e416bfd80efdbf7ca0e39c6f86a7c3.zip",
+                "reference": "6d3b55bf46e416bfd80efdbf7ca0e39c6f86a7c3",
                 "shasum": ""
             },
             "require": {
@@ -176,7 +176,7 @@
                 "qrcode",
                 "symfony"
             ],
-            "time": "2017-04-29 20:57:19"
+            "time": "2017-06-18 21:47:09"
         },
         {
             "name": "khanamiryan/qrcode-detector-decoder",

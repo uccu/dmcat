@@ -19,5 +19,11 @@
         "endroid/qrcode": "^2.1",
         "overtrue/pinyin": "^3.0",
         "os/php-excel": "^2.1"
+    },
+    "repositories": {
+    "packagist": {
+        "type": "composer",
+        "url": "https://packagist.phpcomposer.com"
     }
+}
 }
