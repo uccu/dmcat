@@ -18,6 +18,7 @@ use App\Lawyer\Model\UserConsultLimitModel;
 use App\Lawyer\Model\ConsultModel;
 use App\Lawyer\Model\FastQuestionModel;
 use App\Lawyer\Model\VisaSendModel;
+use App\Lawyer\Model\ConsultPayRuleModel;
 
 
 class LawyerController extends Controller{
@@ -84,6 +85,7 @@ class LawyerController extends Controller{
         $limitModel = UserConsultLimitModel::copyMutiInstance();
         $consultModel = ConsultModel::copyMutiInstance();
         $visaSendModel = VisaSendModel::copyMutiInstance();
+        $consultPayRuleModel = ConsultPayRuleModel::copyMutiInstance();
         !$this->L->id && AJAX::error('未登录');
 
         $where['id'] = $id;
@@ -98,11 +100,18 @@ class LawyerController extends Controller{
 
         $auth = $limitModel->select('*','rule.hours')->where($where)->find();
 
-        !$auth && AJAX::error('请开通会员！');
+        if($this->L->userInfo->create_time > TIME_NOW - 3600 * 24 * 7){
+            $auth = $consultPayRuleModel->select('hours')->where(['type'=>$type])->find();
 
-        $auth->death_time < TIME_NOW && AJAX::error('会员已到期，请重新开通会员！');
-        $auth->word_count == 0 && AJAX::error('总字数已用完，请重新开通会员！');
-        $auth->question_count == 0 && AJAX::error('问题总数已用完，请重新开通会员！');
+        }else{
+            !$auth && AJAX::error('请开通会员！');
+
+            $auth->death_time < TIME_NOW && AJAX::error('会员已到期，请重新开通会员！');
+            $auth->word_count == 0 && AJAX::error('总字数已用完，请重新开通会员！');
+            $auth->question_count == 0 && AJAX::error('问题总数已用完，请重新开通会员！');
+        }
+
+        
 
         $lawyer_id = $this->L->userInfo->{'lawyer_id_'.$type};
         if($lawyer_id && $lawyer_id != $id){
@@ -138,7 +147,6 @@ class LawyerController extends Controller{
             unset($auth->hours);
             $obj = new stdClass;
             $obj->auth = $auth;
-
             return $obj;
         }
         
@@ -199,12 +207,18 @@ class LawyerController extends Controller{
         $data['word_count'] = $word_count;
 
         DB::start();
+        $vip = '0';
+        if($mee->id){
+            $vip = '1';
 
-        $mee->auth->word_count != -1 && $mee->auth->word_count < $word_count && AJAX::error('提问失败，剩余字数不足！');
+            $mee->auth->word_count != -1 && $mee->auth->word_count < $word_count && AJAX::error('提问失败，剩余字数不足！');
 
-        $mee->auth->word_count != -1 && $mee->auth->word_count -= $word_count;
-        $mee->auth->question_count != -1 && $mee->auth->question_count -= 1;
-        $mee->auth->save();
+            $mee->auth->word_count != -1 && $mee->auth->word_count -= $word_count;
+            $mee->auth->question_count != -1 && $mee->auth->question_count -= 1;
+            $mee->auth->save();
+        
+        }
+
         
 
         $consultModel->set($data)->add();
@@ -212,7 +226,7 @@ class LawyerController extends Controller{
 
         DB::commit();
 
-        AJAX::success();
+        AJAX::success(['isvip'=>$vip]);
 
     }
 
