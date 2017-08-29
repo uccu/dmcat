@@ -214,7 +214,7 @@
                         var pa = j('<input type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'">')
                         break;
                     case 'textarea':
-                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><textarea class="form-control" name="'+para.name+'" style="resize:none;height:200px"></textarea></div></div>')
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><textarea class="form-control" name="'+para.name+'" style="resize:none;height:200px" '+(para.disabled?'disabled':'')+'></textarea></div></div>')
                         pa.find('textarea').val(m.info[para.name]||para.default||'')
                         break;
                     case 'ajax':

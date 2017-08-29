@@ -114,7 +114,7 @@ class PayController extends Controller{
 
         /*总价格&订单号*/
         $total_fee = $rule->price;
-        $total_fee = '0.01';
+        // $total_fee = '0.01';
         $out_trade_no = TIME_NOW.Func::randWord(10,3);
 
         /*生成随机码*/

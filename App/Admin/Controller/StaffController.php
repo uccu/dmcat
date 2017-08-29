@@ -125,5 +125,10 @@ class StaffController extends Controller{
         View::addData(['getList'=>'/money/admin_pay']);
         View::hamlReader('home/list','Admin');
     }
+    function refund(){
+
+        View::addData(['getList'=>'/money/admin_refund']);
+        View::hamlReader('home/list','Admin');
+    }
 
 }

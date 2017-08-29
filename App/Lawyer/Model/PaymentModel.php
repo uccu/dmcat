@@ -8,7 +8,7 @@ use Model;
 class PaymentModel extends Model{
 
     public $table = 'payment';
-
+    public $field;
 
     public function user(){
         

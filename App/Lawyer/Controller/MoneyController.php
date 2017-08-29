@@ -18,6 +18,7 @@ use App\Lawyer\Model\ConfigModel;
 use App\Lawyer\Model\UserModel;
 use App\Lawyer\Model\UserProfitModel;
 use App\Lawyer\Model\PaymentModel;
+use App\Lawyer\Model\RefundModel;
 
 
 class MoneyController extends Controller{
@@ -417,7 +418,7 @@ class MoneyController extends Controller{
 
     function admin_pay(PaymentModel $model,$page = 1,$limit = 20,$search = '',$ispaid = 0){
         
-        $this->L->adminPermissionCheck(105);
+        $this->L->adminPermissionCheck(106);
 
         $name = '用户';
         # 允许操作接口
@@ -451,8 +452,7 @@ class MoneyController extends Controller{
                 '支付金额',
                 '支付会员类型',
                 '支付方式',
-                '是否支付',
-
+                '支付时间',
             ];
 
 
@@ -497,7 +497,192 @@ class MoneyController extends Controller{
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
             $v->rule_type = $type_a[$v->type];
 
-            $v->ispaid = $v->success_time ? 'Yes':'No';
+            $v->ispaid = $v->success_time ? date('Y-m-d H:i:s',$v->success_time):'未支付';
+
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_pay_get(PaymentModel $model,$id){
+
+        $this->L->adminPermissionCheck(106);
+        $model->find($id)->type > 0 && AJAX::error('无权限！');
+        $name = '';
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/money/admin_pay_get',
+                'back'  => 'staff/pay',
+                'view'  => 'home/upd',
+
+            ];
+        $tbody = 
+            [  
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'title'=>'订单号',
+                    'name'=>'out_trade_no',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'预付款ID（微信）',
+                    'name'=>'prepay_id',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'付款人',
+                    'name'=>'name',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'付款账号',
+                    'name'=>'account',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'open_id',
+                    'name'=>'open_id',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'第三方付款流水号',
+                    'name'=>'open_order_id',
+                    'disabled'=>true
+                ],
+                [
+                    'title'=>'错误',
+                    'name'=>'error',
+                    'type'=>'textarea',
+                    'disabled'=>true
+                ],
+                
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+
+    # 申请退款记录
+    function admin_refund(RefundModel $model,$page = 1,$limit = 20,$search = '',$state = -2){
+        
+        $this->L->adminPermissionCheck(107);
+
+        $name = '用户';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/money/admin_refund_get',
+                'upd'   => '/money/admin_refund_upd',
+                'view'  => 'home/upd',
+                'req'   =>[
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search'
+                    ],
+                    [
+                        'title'=>'状态',
+                        'name'=>'state',
+                        'type'=>'select',
+                        'default'=>'-2',
+                        'option'=>[
+                            '0'=>'待审核',
+                            '1'=>'通过',
+                            '-1'=>'审核驳回',
+                            '-2'=>'全部'
+                        ]
+                    ],
+                ]
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '用户ID',
+                '手机号',
+                '名字',
+                '审核状态'
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'id',
+                'phone',
+                'user_name',
+                'state_name'
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+
+        if($state != -2){
+            $where['state'] = $state; 
+        }
+        
+        
+        
+        if($search){
+            $where['search'] = ['%F LIKE %n OR %F LIKE %n','user.name','%'.$search.'%','user.phone','%'.$search.'%'];
+        }
+
+        $list = $model->select('user.name>user_name','user.avatar','user.phone','*')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+
+        $type_a = ['0'=>'待审核','1'=>'审核通过','-1'=>'审核驳回'];
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->state_name = $type_a[$v->state];
 
         }
 
@@ -525,6 +710,75 @@ class MoneyController extends Controller{
 
     }
 
+    function admin_refund_get(RefundModel $model,$id){
+
+        $this->L->adminPermissionCheck(107);
+        $model->find($id)->type > 0 && AJAX::error('无权限！');
+        $name = '';
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/money/admin_refund_get',
+                'upd'   => '/money/admin_refund_upd',
+                'back'  => 'staff/refund',
+                'view'  => 'home/upd',
+
+            ];
+        $tbody = 
+            [  
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'id',
+                ],
+                [
+                    'title'=>'状态',
+                    'name'=>'state',
+                    'type'=>'select',
+                    'default'=>'-2',
+                    'option'=>[
+                        '0'=>'待审核',
+                        '1'=>'通过',
+                        '-1'=>'审核驳回',
+                    ]
+                ],
+                [
+                    'title'=>'图片',
+                    'name'=>'pic',
+                    'type'  =>  'pics',
+                ],
+                
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_refund_upd(RefundModel $model,$id){
+        $this->L->adminPermissionCheck(107);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        
+        unset($data['id']);
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
 
     
     function submit(UserModel $model,$id,$input){
