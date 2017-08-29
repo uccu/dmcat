@@ -344,12 +344,17 @@ class Func {
             ]
         )->select('COUNT(*) AS c','RAW')->find()->c;
 
-        if($count > 2){
-            AJAX::success('发送验证码过于频繁，请稍候再试！');
+        if($count > 3){
+            AJAX::error('发送验证码过于频繁，请稍候再试！');
         }
 
+        $sm = urlencode('【环球留学移民律师】校验码：'.$rand.'，请勿向任何人提供您收到的短信校验码。');
 
-        self::curl('http:// 222.73.117.140:8044/mt?un=I2367747&pw=GnTvRmS4eN6266&da='.$add.$phone.'&sm=【环球留学移民律师】校验码：'.$rand.'，请勿向任何人提供您收到的短信校验码。&dc=15&tf=3&rf=1');
+        $re = self::curl('http://222.73.117.140:8044/mt?un=I2367747&pw=GnTvRmS4eN6266&da='.$add.$phone.'&sm='.$sm.'&rd=1&tf=3&rf=2');
+
+        $u = json_decode($re);
+
+        if(!$u || !$u->success)AJAX::error('发送失败：'.($u ? $u->r : '网络连接失败！'));
 
         return true;
 

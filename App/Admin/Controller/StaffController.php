@@ -119,4 +119,11 @@ class StaffController extends Controller{
     }
 
 
+
+    function pay(){
+
+        View::addData(['getList'=>'/money/admin_pay']);
+        View::hamlReader('home/list','Admin');
+    }
+
 }

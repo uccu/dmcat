@@ -650,7 +650,7 @@ class UserController extends Controller{
      * @param mixed $model 
      * @return mixed 
      */
-    function applyRefund(RefundModel $model){
+    function applyRefund(RefundModel $model,$pic){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -660,11 +660,13 @@ class UserController extends Controller{
 
         $model->where($data)->find() && AJAX::error('申请失败，您已经有一个待处理的退款申请！');
 
-        $paths = Func::uploadFiles();
+        // $paths = Func::uploadFiles();
 
-        !$paths && AJAX::error('必须上传至少一张图片！');
+        // !$paths && AJAX::error('必须上传至少一张图片！');
 
-        $data['pic'] = implode(',',$paths);
+        // $data['pic'] = implode(',',$paths);
+
+        $data['pic'] = $pic;
         $data['create_time'] = TIME_NOW;
 
         $model->set($data)->add();

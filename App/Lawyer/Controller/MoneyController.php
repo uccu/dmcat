@@ -17,6 +17,7 @@ use App\Lawyer\Tool\AdminFunc;
 use App\Lawyer\Model\ConfigModel;
 use App\Lawyer\Model\UserModel;
 use App\Lawyer\Model\UserProfitModel;
+use App\Lawyer\Model\PaymentModel;
 
 
 class MoneyController extends Controller{
@@ -198,10 +199,17 @@ class MoneyController extends Controller{
 
         $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
 
+        $master_list = [
+                            '0'=>'零级平台大使',
+                            '1'=>'一级平台大使',
+                            '2'=>'二级平台大使',
+                        ];
+
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
             $v->detail = '<i class="fa fa-pencil text-navy"></i> 查看';
             $v->detail_href = 'staff/profit_detail?id='.$v->id;
+            $v->master = $master_list[$v->master_type];
 
         }
 
@@ -320,7 +328,7 @@ class MoneyController extends Controller{
     }
 
 
-    function admin_user_detail(UserProfitModel $model,$page = 1,$limit = 10,$search,$type,$id = 0){
+    function admin_user_detail(UserProfitModel $model,$page = 1,$limit = 20,$search,$type,$id = 0){
         
         $this->L->adminPermissionCheck(105);
 
@@ -404,6 +412,120 @@ class MoneyController extends Controller{
         AJAX::success($out);
 
     }
+
+
+
+    function admin_pay(PaymentModel $model,$page = 1,$limit = 20,$search = '',$ispaid = 0){
+        
+        $this->L->adminPermissionCheck(105);
+
+        $name = '用户';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/money/admin_pay_get',
+                'upd'   => '/money/admin_pay_upd',
+                'view'  => 'home/upd',
+                'req'   =>[
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search'
+                    ],
+                    [
+                        'title'=>'是否支付',
+                        'name'=>'ispaid',
+                        'type'=>'checkbox',
+                        'default'=>'0'
+                    ],
+                ]
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '用户ID',
+                '手机号',
+                '名字',
+                '支付金额',
+                '支付会员类型',
+                '支付方式',
+                '是否支付',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'id',
+                'phone',
+                'user_name',
+                'total_fee',
+                'rule_type',
+                'pay_type',
+                'ispaid',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+
+        if($ispaid){
+            $where['success_time'] = ['%F>0','success_time']; 
+        }
+        
+        
+        
+        if($search){
+            $where['search'] = ['%F LIKE %n OR %F LIKE %n','user.name','%'.$search.'%','user.phone','%'.$search.'%'];
+        }
+
+        $list = $model->select('user.name>user_name','user.avatar','user.phone','rule.type','*')->order('ctime desc')->where($where)->page($page,$limit)->get()->toArray();
+
+        $type_a = ['法律','留学转学','签证'];
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->rule_type = $type_a[$v->type];
+
+            $v->ispaid = $v->success_time ? 'Yes':'No';
+
+        }
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+
+
     
     function submit(UserModel $model,$id,$input){
 
