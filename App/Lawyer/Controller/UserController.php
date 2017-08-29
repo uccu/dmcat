@@ -188,8 +188,9 @@ class UserController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function register(UserModel $model,$password,$phone,$phone_captcha,$cookie = false,$id = 0){
+    function register(UserModel $model,$type = '86',$password,$phone,$phone_captcha,$cookie = false,$id = 0){
         
+        if(!in_array($type,['86','61']))AJAX::error('不支持的区号！');
         
         //是否储存登录信息到cookie
         if($cookie)$this->cookie = true;
@@ -206,7 +207,7 @@ class UserController extends Controller{
             $master->type == -1 && AJAX::error('推荐人并不是平台大使！');
             $info->master_id = $id;
         }
-        
+        $info->phone_type= $type;
         $info->phone    = $phone;
         $info->salt     = Func::randWord(6);
         $info->password = $this->encrypt_password($password,$info->salt);
@@ -359,10 +360,12 @@ class UserController extends Controller{
      * @param mixed $out 是否输出AJAX
      * @return mixed 
      */
-    function captcha($phone,$out = 1) {
+    function captcha($phone,$type = '86',$out = 1) {
+
+        if(!in_array($type,['86','61']))AJAX::error('不支持的区号！');
 
         Func::check_phone($phone);
-        Func::msm($phone);
+        Func::msm($phone,$type);
 
 
         if($out)AJAX::success();

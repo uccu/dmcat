@@ -317,12 +317,14 @@ class Func {
      * @param mixed $phone 
      * @return mixed 
      */
-    static public function msm($phone){
+    static public function msm($phone,$add = '86'){
 
         if(!$phone)AJAX::error('手机号不能为空！');
 
         $rand = self::randWord(4,3);
         // $rand = '1234';
+
+        $phone = preg_replace('/^0/','',$phone);
 
         $data['captcha'] = $rand;
         $data['time'] = TIME_NOW + 300;
@@ -336,8 +338,18 @@ class Func {
             ]
         )->remove();
 
+        $count = CaptchaModel::copyMutiInstance()->where(
+            [
+                'phone'=>$phone
+            ]
+        )->select('COUNT(*) AS c','RAW')->find()->c;
 
-        self::curl('http:// 222.73.117.140:8044/mt?un=I2367747&pw=GnTvRmS4eN6266&da=8613661730893&sm=【环球留学移民律师】校验码：'.$rand.'，请勿向任何人提供您收到的短信校验码。&dc=15&tf=3&rf=1');
+        if($count > 2){
+            AJAX::success('发送验证码过于频繁，请稍候再试！');
+        }
+
+
+        self::curl('http:// 222.73.117.140:8044/mt?un=I2367747&pw=GnTvRmS4eN6266&da='.$add.$phone.'&sm=【环球留学移民律师】校验码：'.$rand.'，请勿向任何人提供您收到的短信校验码。&dc=15&tf=3&rf=1');
 
         return true;
 
