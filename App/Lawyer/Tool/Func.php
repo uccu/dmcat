@@ -321,8 +321,8 @@ class Func {
 
         if(!$phone)AJAX::error('手机号不能为空！');
 
-        // $rand = self::randWord(4,3);
-        $rand = '1234';
+        $rand = self::randWord(4,3);
+        // $rand = '1234';
 
         $data['captcha'] = $rand;
         $data['time'] = TIME_NOW + 300;
@@ -337,7 +337,7 @@ class Func {
         )->remove();
 
 
-        // self::curl('http:// 222.73.117.140:8044/mt?un=I2367747&pw=GnTvRmS4eN6266&da=8613661730893&sm=[您的签名]测试内容&dc=15&tf=3&rf=1');
+        self::curl('http:// 222.73.117.140:8044/mt?un=I2367747&pw=GnTvRmS4eN6266&da=8613661730893&sm=【环球留学移民律师】校验码：'.$rand.'，请勿向任何人提供您收到的短信校验码。&dc=15&tf=3&rf=1');
 
         return true;
 
