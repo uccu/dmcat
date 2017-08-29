@@ -24,6 +24,7 @@ use App\Lawyer\Model\UploadModel;
 use App\Lawyer\Model\MessageModel;
 use App\Lawyer\Model\ConsultModel;
 use App\Lawyer\Model\AdminMenuModel;
+use App\Lawyer\Model\RefundModel;
 
 
 class UserController extends Controller{
@@ -642,6 +643,38 @@ class UserController extends Controller{
         AJAX::success();
 
     }
+
+
+    /** 退款申请
+     * applyRefund
+     * @param mixed $model 
+     * @return mixed 
+     */
+    function applyRefund(RefundModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $data['user_id'] = $this->L->id;
+        $data['state'] = 0;
+
+
+        $model->where($data)->find() && AJAX::error('申请失败，您已经有一个待处理的退款申请！');
+
+        $paths = Func::uploadFiles();
+
+        !$paths && AJAX::error('必须上传至少一张图片！');
+
+        $data['pic'] = implode(',',$paths);
+        $data['create_time'] = TIME_NOW;
+
+        $model->set($data)->add();
+
+        AJAX::success();
+        
+    }
+
+
+
 
     # 管理用户
     function admin_user(UserSchoolModel $smodel,UserModel $model,UserConsultLimitModel $lmodel,ConsultModel $consultModel,$page = 1,$limit = 10,$search,$type,$master_type=-2){
