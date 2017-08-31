@@ -19,6 +19,7 @@ use App\Lawyer\Model\ConsultModel;
 use App\Lawyer\Model\FastQuestionModel;
 use App\Lawyer\Model\VisaSendModel;
 use App\Lawyer\Model\ConsultPayRuleModel;
+use App\Lawyer\Model\RefundModel;
 
 
 class LawyerController extends Controller{
@@ -104,6 +105,9 @@ class LawyerController extends Controller{
             $auth = $consultPayRuleModel->select('hours')->where(['type'=>$type])->find();
 
         }else{
+
+            RefundModel::copyMutiInstance()->where(['user_id'=>$this->L->id,'type'=>$type,'state'=>0])->find() && AJAX::success('退款申请中！');
+
             !$auth && AJAX::error('请开通会员！');
 
             $auth->death_time < TIME_NOW && AJAX::error('会员已到期，请重新开通会员！');
