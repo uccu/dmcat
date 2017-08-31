@@ -655,6 +655,7 @@ class UserController extends Controller{
         !$this->L->id && AJAX::error('未登录');
 
         $data['user_id'] = $this->L->id;
+        $data['type'] = $type;
         $data['state'] = 0;
 
 
@@ -667,7 +668,7 @@ class UserController extends Controller{
         // $data['pic'] = implode(',',$paths);
 
         $data['pic'] = $pic;
-        $data['type'] = $type;
+        
         $data['create_time'] = TIME_NOW;
 
         $model->set($data)->add();
