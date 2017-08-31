@@ -95,6 +95,8 @@ class E extends Exception{
 		$error = error_get_last();
 		if($error && $error['type']){
 
+			if($error['type'] == 8192)return null;
+
 			$ex = new self($error['message']);
 
 			return self::handle($error['type'],$error['message'],$error['file'],$error['line'],$ex->getTrace(),'SHUTDOWN');
