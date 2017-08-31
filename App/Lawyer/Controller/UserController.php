@@ -667,6 +667,7 @@ class UserController extends Controller{
         // $data['pic'] = implode(',',$paths);
 
         $data['pic'] = $pic;
+        $data['type'] = $type;
         $data['create_time'] = TIME_NOW;
 
         $model->set($data)->add();

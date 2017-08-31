@@ -19,6 +19,7 @@ use App\Lawyer\Model\UserModel;
 use App\Lawyer\Model\UserProfitModel;
 use App\Lawyer\Model\PaymentModel;
 use App\Lawyer\Model\RefundModel;
+use App\Lawyer\Model\UserConsultLimitModel;
 
 
 class MoneyController extends Controller{
@@ -642,6 +643,7 @@ class MoneyController extends Controller{
                 '用户ID',
                 '手机号',
                 '名字',
+                '会员类型',
                 '审核状态'
             ];
 
@@ -656,9 +658,10 @@ class MoneyController extends Controller{
                     'href'=>false,
                     'size'=>'30',
                 ],
-                'id',
+                'user_id',
                 'phone',
                 'user_name',
+                'type_name',
                 'state_name'
 
             ];
@@ -680,10 +683,11 @@ class MoneyController extends Controller{
         $list = $model->select('user.name>user_name','user.avatar','user.phone','*')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
 
         $type_a = ['0'=>'待审核','1'=>'审核通过','-1'=>'审核驳回'];
+        $type_names = ['0'=>'法律会员','1'=>'留学转学会员','-1'=>'签证会员'];
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
             $v->state_name = $type_a[$v->state];
-
+            $v->type_name = $type_names[$v->type];
         }
 
         # 分页内容
@@ -756,6 +760,10 @@ class MoneyController extends Controller{
 
         $info = AdminFunc::get($model,$id);
 
+        if($info->state == 1){
+            $tbody[1]['disabled'] = true;
+        }
+
 
         $out = 
             [
@@ -768,7 +776,7 @@ class MoneyController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_refund_upd(RefundModel $model,$id){
+    function admin_refund_upd(RefundModel $model,$id,$state,UserConsultLimitModel $lModel){
         $this->L->adminPermissionCheck(107);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
@@ -776,6 +784,33 @@ class MoneyController extends Controller{
         unset($data['id']);
 
         $upd = AdminFunc::upd($model,$id,$data);
+
+        if($state == 1){
+
+            $info = $model->find($id);
+            $type = $info->type;
+            $user_id = $info->user_id;
+
+            $l = $lModel->select('rule.word_count>rule_word_count','rule.question_count>rule_question_count','rule.expiry','word_count','question_count','death_time')->where(['user_id'=>$user_id,'rule.type'=>$type])->find();
+            if($l){
+                $word_count = $l->word_count;
+                if($l->rule_word_count != -1 && $l->word_count != -1){
+                    $word_count = $l->word_count - $l->rule_word_count;
+                    if($word_count < 0)$word_count = 0;
+                }
+                $question_count = $l->question_count;
+                if($l->rule_question_count != -1 && $l->question_count != -1){
+                    $question_count = $l->question_count - $l->rule_question_count;
+                    if($question_count < 0)$question_count = 0;
+                }
+                $death_time = $l->death_time - $l->expiry * 3600 * 24;
+
+                $lModel->set(['word_count'=>$word_count,'question_count'=>$question_count,'death_time'=>$death_time])->where(['user_id'=>$user_id,'rule.type'=>$type])->save();
+            }
+
+        }
+
+
         $out['upd'] = $upd;
         AJAX::success($out);
     }
