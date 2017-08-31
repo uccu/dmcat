@@ -106,7 +106,7 @@ class LawyerController extends Controller{
 
         }else{
 
-            RefundModel::copyMutiInstance()->where(['user_id'=>$this->L->id,'type'=>$type,'state'=>0])->find() && AJAX::success('退款申请中！');
+            RefundModel::copyMutiInstance()->where(['user_id'=>$this->L->id,'type'=>$type,'state'=>0])->find() && AJAX::error('退款申请中！');
 
             !$auth && AJAX::error('请开通会员！');
 
