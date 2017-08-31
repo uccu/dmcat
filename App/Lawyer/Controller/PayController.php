@@ -229,7 +229,7 @@ class PayController extends Controller{
         $data['pay_type'] = 'wcpay';
         $data['total_fee'] = $total_fee;
         $data['out_trade_no'] = $out_trade_no;
-
+        $data['rule_id'] = $rule->id;
 
         if(!$da){
 
