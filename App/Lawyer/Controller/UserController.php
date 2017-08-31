@@ -650,7 +650,7 @@ class UserController extends Controller{
      * @param mixed $model 
      * @return mixed 
      */
-    function applyRefund(RefundModel $model,$pic){
+    function applyRefund(RefundModel $model,$pic,$type){
 
         !$this->L->id && AJAX::error('未登录');
 
