@@ -290,6 +290,12 @@ class PayController extends Controller{
     }
 
 
+    /** 支付宝回调
+     * alipay_c
+     * @param mixed $out_trade_no 
+     * @param mixed $trade_status 
+     * @return mixed 
+     */
     function alipay_c($out_trade_no,$trade_status){
 
         $data = Request::getSingleInstance()->request;
@@ -354,8 +360,64 @@ class PayController extends Controller{
         echo 'success';
     }
 
+    /** 微信回调
+     * wcpay_c
+     * @return mixed 
+     */
     function wcpay_c(){
 
+        $postStr = file_get_contents ( 'php://input' );
+        $xmlObject =  simplexml_load_string ( $postStr );
+        $xmlArray = [];
+        $xmlArray2 = [];
+        foreach($xmlObject as $k=>$v){
+            $xmlArray[$k] = $xmlArray2[$k] = $v.'';
+        }
+        $sign = $xmlArray['sign'];
+        unset($xmlArray['sign']);
+        ksort($xmlArray,SORT_STRING);
+        if(!$xmlArray || !$xmlArray['result_code'])AJAX::error('微信支付回调失败');
+        if($xmlArray['result_code'] != 'SUCCESS')AJAX::error('微信支付回调.'.$xmlArray['return_msg']);
+
+        $signStr = '';
+
+        foreach($xmlArray as $k=>$v){
+            $signStr .= $k.'='.$v.'&';
+        }
+        $signStr .= 'key='.$this->L->config->wcpay_key;
+
+        $model = PaymentModel::getSingleInstance();
+        $where['out_trade_no'] = $xmlArray['out_trade_no'];
+        $where['nonce_str'] = $xmlArray['nonce_str'];
+        $log = $model->where($where)->find();
+        if(!$log)AJAX::error('未找到支付单！');
+        
+        if($sign != strtoupper ( md5 ( $signStr ) )){
+
+            $log->update_time = TIME_NOW;
+            $log->error = '支付回调签名错误.'.json_encode($xmlArray2);
+            $log->save();
+            AJAX::error('支付回调签名错误');
+        }
+
+                
+
+        //支付单的状态不是代付款
+        if($log->success_time != 0)AJAX::error('该订单已付款！');
+
+        $this->pay_finish($log->rule_id,$log->user_id);
+        
+
+        $log->update_time = TIME_NOW;
+        $log->success_time = TIME_NOW;
+        $log->open_id = $xmlArray['openid']?$xmlArray['openid']:'';
+        $log->bank = $xmlArray['bank_type']?$xmlArray['bank_type']:'';
+        $log->open_order_id = $xmlArray['transaction_id']?$xmlArray['transaction_id']:'';
+        $log->name = $xmlArray['device_info']?$xmlArray['device_info']:'';
+        $status = $log->save()->getStatus();
+
+                
+        echo 'success';
 
         
     }
