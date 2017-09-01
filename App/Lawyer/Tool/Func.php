@@ -324,7 +324,7 @@ class Func {
         $rand = self::randWord(4,3);
         // $rand = '1234';
 
-        $phone = preg_replace('/^0/','',$phone);
+        
 
         $data['captcha'] = $rand;
         $data['time'] = TIME_NOW + 300;
@@ -349,7 +349,7 @@ class Func {
         }
 
         $sm = urlencode('【环球留学移民律师】校验码：'.$rand.'，请勿向任何人提供您收到的短信校验码。');
-
+        $phone = preg_replace('/^0/','',$phone);
         $re = self::curl('http://222.73.117.140:8044/mt?un=I2367747&pw=GnTvRmS4eN6266&da='.$add.$phone.'&sm='.$sm.'&rd=1&tf=3&rf=2');
 
         $u = json_decode($re);
