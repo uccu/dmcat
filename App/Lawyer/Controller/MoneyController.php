@@ -60,6 +60,16 @@ class MoneyController extends Controller{
                     'name'  =>  'profit_1',
                     'size'  =>  '2',
                 ],
+                [
+                    'title' =>  '高级客户给平台大使的收益百分比(%)',
+                    'name'  =>  'profit_e_0',
+                    'size'  =>  '2'
+                ],
+                [
+                    'title' =>  '高级客户给平台大使的上一级的收益百分比(%)',
+                    'name'  =>  'profit_e_1',
+                    'size'  =>  '2',
+                ],
                 
 
             ];
@@ -70,6 +80,8 @@ class MoneyController extends Controller{
 
         $info->profit_0 = $this->L->config->profit_0;
         $info->profit_1 = $this->L->config->profit_1;
+        $info->profit_e_0 = $this->L->config->profit_e_0;
+        $info->profit_e_1 = $this->L->config->profit_e_1;
 
         $out = 
             [
@@ -82,13 +94,15 @@ class MoneyController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_setting_upd(ConfigModel $model,$profit_0,$profit_1){
+    function admin_setting_upd(ConfigModel $model,$profit_0,$profit_1,$profit_e_0,$profit_e_1){
         $this->L->adminPermissionCheck(104);
 
 
 
         $model->set(['value'=>$profit_0])->where(['name'=>'profit_0'])->save();
         $model->set(['value'=>$profit_1])->where(['name'=>'profit_1'])->save();
+        $model->set(['value'=>$profit_e_0])->where(['name'=>'profit_e_0'])->save();
+        $model->set(['value'=>$profit_e_1])->where(['name'=>'profit_e_1'])->save();
     
         AJAX::success($out);
     }

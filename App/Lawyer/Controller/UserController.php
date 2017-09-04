@@ -189,7 +189,7 @@ class UserController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function register(UserModel $model,$type = '86',$password,$phone,$phone_captcha,$cookie = false,$id = 0){
+    function register(UserModel $model,$type = '86',$password,$phone,$phone_captcha,$cookie = false,$id = 0,$user_type = 0){
         
         if(!in_array($type,['86','61']))AJAX::error('不支持的区号！');
         
@@ -208,10 +208,11 @@ class UserController extends Controller{
             $master->type == -1 && AJAX::error('推荐人并不是平台大使！');
             $info->master_id = $id;
         }
-        $info->phone_type= $type;
-        $info->phone    = $phone;
-        $info->salt     = Func::randWord(6);
-        $info->password = $this->encrypt_password($password,$info->salt);
+        $info->phone_type   = $type;
+        $info->phone        = $phone;
+        $info->user_type    = $user_type?1:0;
+        $info->salt         = Func::randWord(6);
+        $info->password     = $this->encrypt_password($password,$info->salt);
         $this->_add_user($info);
     }
 
@@ -619,18 +620,25 @@ class UserController extends Controller{
         $user->value += $input;
         $user->save();
 
+        # 是否绑定平台大使
         if($user->master_id){
 
             $master = $model->find($user->master_id);
 
+            # 绑定的账号是否是平台大使
             if(in_array($master->master_type,[0,1,2])){
 
                 $profit_0 = $this->L->config->profit_0;
+                # 是否是高级客户
+                if($user->user_type)$profit_0 = $this->L->config->profit_e_0;
                 Func::addProfit($user->id,$master->id,$input * $profit_0 / 100);
 
+                # 是否有上一级平台大使
                 if($master->parent_id){
 
                     $profit_1 = $this->L->config->profit_1;
+                    # 是否是高级客户
+                    if($user->user_type)$profit_1 = $this->L->config->profit_e_1;
                     Func::addProfit($user->id,$master->parent_id,$input * $profit_1 / 100,$master->id);
 
                 }
@@ -662,15 +670,11 @@ class UserController extends Controller{
         $model->where($data)->find() && AJAX::error('申请失败，您已经有一个待处理的退款申请！');
 
         // $paths = Func::uploadFiles();
-
         // !$paths && AJAX::error('必须上传至少一张图片！');
-
         // $data['pic'] = implode(',',$paths);
 
         $data['pic'] = $pic;
-        
         $data['create_time'] = TIME_NOW;
-
         $model->set($data)->add();
 
         AJAX::success();
