@@ -59,8 +59,10 @@ class L2 extends Middleware{
             return;
         }
 
-        !$info->active && AJAX::error('账号已被禁用，请联系管理员！');
-
+        if(!$info->active){
+            Response::getSingleInstance()->cookie('lawyer_token','',-3600);
+            AJAX::error('账号已被禁用，请联系管理员！');
+        }
         /*验证登陆合法性*/
         if($hash === sha1($info->password.$salt.$time)){
             $this->userInfo = $info;
