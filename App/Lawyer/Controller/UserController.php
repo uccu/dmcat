@@ -121,6 +121,8 @@ class UserController extends Controller{
         $encryptedPassword = $this->encrypt_password($password,$info->salt);
         if($encryptedPassword!=$info->password)AJAX::error('密码错误');
 
+        !$info->active && AJAX::error('账号已被禁用，请联系管理员！');
+        
         //输出登录返回信息
         $this->_out_info($info);
 
