@@ -21,7 +21,7 @@ use App\Lawyer\Model\FastQuestionModel;
 use App\Lawyer\Model\ConsultModel;
 use App\Lawyer\Model\MessageModel;
 use App\Lawyer\Model\MessageH5Model;
-
+use DB;
 
 class ChatController extends Controller{
 
@@ -547,5 +547,133 @@ class ChatController extends Controller{
 
         AJAX::success($out);
     }
+
+
+    function get_lawyer(ConsultModel $consultModel){
+
+        $this->L->adminPermissionCheck(108);
+        
+        $consultModel->distinct();
+        $where['lawyer.active'] = 1;
+
+        $lawyer_list = $consultModel->where($where)->get_field('lawyer_id')->toArray();
+        
+        $list = [];
+        foreach($lawyer_list as $v){
+
+            $info = $consultModel->select('create_time','lawyer.name','lawyer.avatar','lawyer_id')->where(['lawyer_id'=>$v])->order('create_time desc')->find();
+            if($info)$info->hasMessage = $consultModel->where(['lawyer_id'=>$v])->where(['which'=>0,'isread'=>0])->find() ?'1':'0';
+
+            if($info)$list[$info->create_time][] = $info;
+
+        }
+
+        krsort($list);
+        $list2 = [];
+        foreach($list as $v){
+
+            $list2 = array_merge($list2,$v);
+        }
+
+        $out['list'] = $list2;
+
+        AJAX::success($out);
+
+    }
+
+    function get_user(ConsultModel $consultModel,$lawyer_id){
+
+        $this->L->adminPermissionCheck(108);
+        
+        $consultModel->distinct();
+        $where['lawyer_id'] = $lawyer_id;
+
+        $user_list = $consultModel->where($where)->get_field('user_id')->toArray();
+        
+        $list = [];
+        foreach($user_list as $v){
+
+            $info = $consultModel->select('create_time','user.name','user.avatar','user_id')->where($where)->where(['user_id'=>$v])->order('create_time desc')->find();
+            if($info)$info->hasMessage = $consultModel->where($where)->where(['user_id'=>$v])->where(['which'=>0,'isread'=>0])->find() ?'1':'0';
+            if($info)$list[$info->create_time][] = $info;
+
+        }
+
+        krsort($list);
+        $list2 = [];
+        foreach($list as $v){
+
+            $list2 = array_merge($list2,$v);
+        }
+
+        $out['list'] = $list2;
+
+        AJAX::success($out);
+
+    }
+
+    function get_chat($user_id,ConsultModel $consultModel,$page = 1,$limit = 10,$lawyer_id){
+
+        $this->L->adminPermissionCheck(108);
+        
+        $where['lawyer_id'] = $lawyer_id;
+        $where['user_id'] = $user_id;
+
+        $list = $consultModel->select('*','lawyer.avatar>lawyer_avatar','user.avatar>user_avatar','user.name')->where($where)->page($page,$limit)->order('create_time desc')->get()->toArray();
+        
+
+        $consultModel->where($where)->where(['which'=>0])->set(['isread'=>1])->save();
+
+        $list2 = [];
+        foreach($list as $v){
+
+            
+            
+            $list2[$v->create_time][] = $v;
+
+        }
+        
+        ksort($list2);
+
+        $list = [];
+
+        foreach($list2 as $v){
+            foreach($v as &$j)$j->create_time = date('m-d H:i:s',$j->create_time);
+            $list = array_merge($list,$v);
+
+        }
+
+        $out['list'] = $list;
+
+        AJAX::success($out);
+
+    }
     
+
+
+    function send($user_id,$lawyer_id,$message,ConsultModel $consultModel){
+        
+        $this->L->adminPermissionCheck(108);
+
+        !$message && AJAX::error('消息不能为空！');
+
+        $word_count = mb_strlen($message);
+
+        $data['user_id'] = $user_id;
+        $data['lawyer_id'] = $lawyer_id;
+        $data['which'] = 1;
+        $data['create_time'] = TIME_NOW;
+        $data['content'] = $message;
+        $data['word_count'] = $word_count;
+
+        DB::start();
+
+        $consultModel->set($data)->add();
+        Func::push($id,'律师回复了你',['type'=>'2','lawyer_id'=>$lawyer_id]);
+
+        DB::commit();
+
+        AJAX::success();
+
+    }
 }

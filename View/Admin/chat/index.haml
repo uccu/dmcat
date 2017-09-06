@@ -1,0 +1,218 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-xl-12
+                .ibox.sendBox.float-e-margins(style="min-width:1038px")
+
+                    :css
+                        .lawyerList,.userList,.chatList{
+                            height:600px;
+                            padding-top:1px;
+                        }
+                        .lawyerList{
+                            padding-top:1px;
+                            box-shadow:0 0 5px #c7c inset
+                        }
+                        .userList{
+                            padding-top:1px;
+                            box-shadow:0 0 5px #7cc inset
+                        }
+                        .chatList{
+                            box-shadow:0 0 5px #cc7 inset
+                        }
+                        .lawyerBox{
+
+                        }
+                        .lawyerBox.active,.userBox.active{
+                            background:#676a6c;
+
+                        }
+                        .lawyerBox.active .lawyerName,.userBox.active .userName{
+
+                            color:#fff
+                        }
+                        .lawyerBox.hasMessage::before,.userBox.hasMessage::before{
+                            content:' ';
+                            position:absolute;
+                            width:5px;
+                            height:5px;
+                            background:red;
+                            border-radius:50%;
+                            top:7px;
+                            left:7px
+                        }
+                        .lawyerAvatar img,.userAvatar img,.chatAvatar img{
+                            margin-top: 7px;
+                            width:34.4px;
+                            height:34.4px
+                        }
+                        .lawyerName,.userName{
+                            line-height:50px;
+                        }
+                        .chatBox{
+                            width:60%;
+                            margin:10px 0
+                        }
+
+                        .chatContent{
+                            margin-top: 3px;
+                            border: 1px solid #ddd;
+                            padding: 10px;
+                            border-radius: 10px;
+                            background:#f9f9f9
+                        }
+                        .viewList{
+                            height:70%;
+                            overflow-y: auto;
+                        }
+                        textarea{
+                            height: 180px;
+                            resize:none;
+                            outline:0;
+                            border:solid 1px #ccc;
+                            padding:10px;
+                            font-size:13px;
+                            line-height:20px;
+                            box-shadow:0 0 5px #ccc inset
+                        }
+
+
+
+                    .ibox-content.tl.animated.fadeInLeft
+                        .row
+                            .col-xs-3.lawyerList
+                                
+                            .col-xs-3.userList
+                                
+                            .col-xs-6.chatList
+                                .viewList
+                                    
+                                .sendBox.row
+                                    %textarea.col-xs-12(disabled)
+- block otherScript
+    :javascript
+        ~function(){
+            var lawyer_time = 0;
+            var lawyer = 0;
+            var user_time = 0;
+            var user = 0;
+            var getLawyer = function(){
+                curl('/chat/get_lawyer',{},function(d){
+                    $('.lawyerList').empty()
+                    var list = d.list
+                    for(var i in list){
+                        $('<div>').addClass('lawyerBox row t cp pr'+(list[i].hasMessage==1?' hasMessage':'')).append(
+                            $('<div>').addClass('col-xs-3 lawyerAvatar').append(
+                                $('<img>').addClass('img-circle img-responsive').attr('src','/pic/'+list[i].avatar)
+                                
+                            )
+                        ).append(
+                            $('<div>').addClass('lawyerName col-xs-8').text(list[i].name)
+                        ).appendTo('.lawyerList').attr('data-id',list[i].lawyer_id).click(function(){
+                            $(this).removeClass('hasMessage')
+                            var lawyer_id = $(this).attr('data-id')
+                            $('.lawyerBox').removeClass('active')
+                            $(this).addClass('active')
+                            user_time = user = 0
+                            $('.viewList').empty()
+                            $('textarea')[0].disabled = true
+                            lawyer = lawyer_id
+                            getUser(lawyer)
+                        })
+                    }
+
+                    if(list.length)lawyer_time = list[0].create_time
+                    if(lawyer)$('.lawyerBox[data-id="'+lawyer+'"]').addClass('active')
+                })
+
+                
+
+
+            }
+            var getUser = function(lawyer_id){
+                if(!lawyer_id)lawyer_id = lawyer
+                if(!lawyer_id)return
+                curl('/chat/get_user',{lawyer_id:lawyer_id},function(d){
+                    $('.userList').empty()
+                    var list = d.list
+                    for(var i in list){
+                        $('<div>').addClass('userBox row t cp pr'+(list[i].hasMessage==1?' hasMessage':'')).append(
+                            $('<div>').addClass('col-xs-3 userAvatar').append(
+                                $('<img>').addClass('img-circle img-responsive').attr('src','/pic/'+list[i].avatar)
+                                
+                            )
+                        ).append(
+                            $('<div>').addClass('userName col-xs-8').text(list[i].name)
+                        ).appendTo('.userList').attr('data-id',list[i].user_id).click(function(){
+                            $(this).removeClass('hasMessage')
+                            var user_id = $(this).attr('data-id')
+                            $('.userBox').removeClass('active')
+                            $(this).addClass('active')
+                            user = user_id
+                            getChat(lawyer,user)
+                        })
+                    }
+                    if(list.length)user_time = list[0].create_time
+                    if(user)$('.userBox[data-id="'+user+'"]').addClass('active')
+                })
+            }
+            var getChat = function(lawyer_id,user_id){
+                if(!lawyer_id)lawyer_id = lawyer
+                if(!user_id)user_id = user
+                if(!lawyer_id)return
+                if(!user_id)return
+                curl('/chat/get_chat',{user_id:user_id,lawyer_id:lawyer_id},function(d){
+                    $('textarea')[0].disabled = false
+                    $('.viewList').empty()
+                    var list = d.list
+                    for(var i in list){
+                        if(list[i].which ==  0){
+                            $('<div>').addClass('chatBox userChat row clear').append(
+                                $('<div>').addClass('chatAvatar col-xs-3 pr').append(
+                                    $('<img>').addClass('img-circle img-responsive').attr('src','/pic/'+list[i].user_avatar)
+                                ).append('<i class="fa fa-arrow-right" style="color:#19aa8d;top: 17px;position: absolute;left: 60px;">')
+                            ).append(
+                                $('<div>').addClass('chatContent col-xs-9').text(list[i].content)
+                            ).appendTo('.viewList')
+
+                        }else{
+                            $('<div>').addClass('chatBox userChat row fr clear').append(
+                                $('<div>').addClass('chatContent col-xs-9').text(list[i].content)
+                            ).append(
+                                $('<div>').addClass('chatAvatar col-xs-3 pr').append(
+                                    $('<img>').addClass('img-circle img-responsive fr').attr('src','/pic/'+list[i].lawyer_avatar)
+                                ).append('<i class="fa fa-arrow-left" style="color:#19aa8d;top: 17px;position: absolute;right: 60px;">')
+                            ).appendTo('.viewList')
+                        }
+                    }
+                    $('.viewList').scrollTop(999999)
+                })
+
+
+            }
+            $('textarea').keyup(function(e){
+                if(e.which == 13){
+                    var message = $(this).val()
+                    $(this).val('')
+                    if(message)curl('/chat/send',{message:message,lawyer_id:lawyer,user_id:user},function(){
+                        getChat(lawyer,user)
+                    })
+                }
+            })
+            getLawyer();
+
+
+            setInterval(function(){
+                getLawyer()
+                if(lawyer){
+                    getUser()
+                    if(user)getChat()
+                }
+            },10000)
+
+        }()
+        

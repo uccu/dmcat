@@ -37,6 +37,12 @@ class ChatController extends Controller{
 
     }
 
+    function index($id){
+
+        View::hamlReader('chat/index','Admin');
+
+    }
+
     function user_chats($lawyer_id,$user_id){
         
         View::addData(['getList'=>'/chat/admin_user_chats?lawyer_id='.$lawyer_id.'&user_id='.$user_id]);
