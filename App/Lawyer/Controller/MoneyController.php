@@ -731,7 +731,6 @@ class MoneyController extends Controller{
     function admin_refund_get(RefundModel $model,$id){
 
         $this->L->adminPermissionCheck(107);
-        $model->find($id)->type > 0 && AJAX::error('无权限！');
         $name = '';
 
         # 允许操作接口
