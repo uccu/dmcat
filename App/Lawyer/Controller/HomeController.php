@@ -587,13 +587,15 @@ class HomeController extends Controller{
                         'title'=>'开始日期',
                         'name'=>'start_time',
                         'default'=>'2000-01-01',
-                        'size'=>'2'
+                        'size'=>'4',
+                        'type'=>'laydate',
                     ],
                     [
                         'title'=>'结束日期',
                         'name'=>'end_time',
                         'default'=>date('Y-m-d'),
-                        'size'=>'2'
+                        'size'=>'4',
+                        'type'=>'laydate',
                     ],
                 ]
             ];

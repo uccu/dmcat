@@ -350,6 +350,22 @@
                             that.req.param[that.opt.req[i].name] = pa.find('input')[0].checked?'1':'0'
                             
                             break;
+                        case 'laydate':
+                            var pa = j('<div class="col-sm-'+(that.opt.req[i].size||2)+' animated fadeInRight"><div class="input-group"><span class="input-group-addon">'+that.opt.req[i].title+'</span><input id="laydate'+that.opt.req[i].name+'" name="'+that.opt.req[i].name+'" type="text" class="form-control"></div></div>')
+                            pa.appendTo('.topw .row')
+                            pa.find('input').val(that.req.param[that.opt.req[i].name]||that.opt.req[i].default||'')
+                            that.req.param[that.opt.req[i].name] = pa.find('input').val()
+                            pa.find('input').keyup(function(e){
+                                that.req.param[j(this).attr('name')] = $(this).val()
+                                that.req.param.page = 1
+                                that.flesh()
+                                
+                                
+                            })
+                            laydate({elem:"#laydate"+that.opt.req[i].name,event:"focus",choose:function(e){
+                                j(this.elem).keyup()
+                            }});
+                            break;
                         default:
                             var pa = j('<div class="col-sm-'+(that.opt.req[i].size||2)+' animated fadeInRight"><div class="input-group"><span class="input-group-addon">'+that.opt.req[i].title+'</span><input name="'+that.opt.req[i].name+'" type="text" class="form-control"></div></div>')
                             pa.appendTo('.topw .row')
