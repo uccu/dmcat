@@ -354,6 +354,7 @@ class PayController extends Controller{
         $payLog->name = $data['buyer_login_id'] ? $data['buyer_login_id'] : '';
         $payLog->account = $data['buyer_email'] ? $data['buyer_email'] : '';
         $payLog->pay_nonce_str = $data['notify_id'] ? $data['notify_id'] : '';
+        $payLog->success_date = date('Y-m-d',TIME_NOW);
 
         $payLog->save();
 
@@ -414,6 +415,7 @@ class PayController extends Controller{
         $log->bank = $xmlArray['bank_type']?$xmlArray['bank_type']:'';
         $log->open_order_id = $xmlArray['transaction_id']?$xmlArray['transaction_id']:'';
         $log->name = $xmlArray['device_info']?$xmlArray['device_info']:'';
+        $log->success_date = date('Y-m-d',TIME_NOW);
         $status = $log->save()->getStatus();
 
                 

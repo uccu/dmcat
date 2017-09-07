@@ -466,6 +466,7 @@
                             break;
                         default:
                             var ti = this.list[g][t.name];
+                            if(!ti && t.default)ti = t.default
                             var ti2 = this.list[g][t.name+'_href'];
                             if(t.href && ti2){
                                 td.html(j('<a data-e="'+ti2+'">').html(ti));

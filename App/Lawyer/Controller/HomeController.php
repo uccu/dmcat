@@ -10,6 +10,7 @@ use Request;
 use App\Lawyer\Middleware\L;
 use App\Lawyer\Tool\Func;
 use App\Lawyer\Tool\AdminFunc;
+use stdClass;
 
 # Model
 use App\Lawyer\Model\LawyerModel;
@@ -18,6 +19,8 @@ use App\Lawyer\Model\H5Model;
 use App\Lawyer\Model\MessageH5Model;
 use App\Lawyer\Model\ShareModel;
 use App\Lawyer\Model\UserModel;
+use App\Lawyer\Model\PaymentModel;
+use App\Lawyer\Model\RefundModel;
 
 
 class HomeController extends Controller{
@@ -561,13 +564,60 @@ class HomeController extends Controller{
     function admin_statistics($start_time,$end_time){
         $this->L->adminPermissionCheck(109);
 
+        !$start_time && $start_time = '2000-01-01';
+
         $start_time && $where['e1'] = ['%F >= %n','create_date',$start_time];
         $end_time && $where['e2'] = ['%F <= %n','create_date',$end_time];
-        if($start_time){
+        $start_time && $where2['e1'] = ['%F >= %n','success_date',$start_time];
+        $end_time && $where2['e2'] = ['%F <= %n','success_date',$end_time];
+        
+        if(1 || $start_time){
             $where['type'] = 0;
             $model = UserModel::copyMutiInstance();
             $list = $model->select('COUNT(*) AS `count`,`create_date`','raw')->where($where)->group('create_date')->get('create_date')->toArray();
-            
+
+
+            # 付费
+            $list1 = PaymentModel::copyMutiInstance()->select('COUNT(*) AS `count`,`success_date`','raw')->where('%F != %n','success_date','')->where('%F = 1','rule_id')->where($where2)->group('success_date')->get('success_date')->toArray();
+            foreach($list1 as $v){
+                if(!$list[$v->success_date])$list[$v->success_date] = new stdClass;
+                $list[$v->success_date]->rule_1 = $v->count;
+                $list[$v->success_date]->create_date = $v->success_date;
+            }
+            $list2 = PaymentModel::copyMutiInstance()->select('COUNT(*) AS `count`,`success_date`','raw')->where('%F != %n','success_date','')->where('%F = 2','rule_id')->where($where2)->group('success_date')->get('success_date')->toArray();
+            foreach($list2 as $v){
+                if(!$list[$v->success_date])$list[$v->success_date] = new stdClass;
+                $list[$v->success_date]->rule_2 = $v->count;
+                $list[$v->success_date]->create_date = $v->success_date;
+            }
+            $list3 = PaymentModel::copyMutiInstance()->select('COUNT(*) AS `count`,`success_date`','raw')->where('%F != %n','success_date','')->where('%F = 3','rule_id')->where($where2)->group('success_date')->get('success_date')->toArray();
+            foreach($list3 as $v){
+                if(!$list[$v->success_date])$list[$v->success_date] = new stdClass;
+                $list[$v->success_date]->rule_3 = $v->count;
+                $list[$v->success_date]->create_date = $v->success_date;
+            }
+
+            # 退款
+            $list1 = RefundModel::copyMutiInstance()->select('COUNT(*) AS `count`,`success_date`','raw')->where('%F != %n','success_date','')->where('%F = 0','type')->where($where2)->group('success_date')->get('success_date')->toArray();
+            foreach($list1 as $v){
+                if(!$list[$v->success_date])$list[$v->success_date] = new stdClass;
+                $list[$v->success_date]->refund_1 = $v->count;
+                $list[$v->success_date]->create_date = $v->success_date;
+            }
+            $list2 = RefundModel::copyMutiInstance()->select('COUNT(*) AS `count`,`success_date`','raw')->where('%F != %n','success_date','')->where('%F = 1','type')->where($where2)->group('success_date')->get('success_date')->toArray();
+            foreach($list2 as $v){
+                if(!$list[$v->success_date])$list[$v->success_date] = new stdClass;
+                $list[$v->success_date]->refund_2 = $v->count;
+                $list[$v->success_date]->create_date = $v->success_date;
+            }
+            $list3 = RefundModel::copyMutiInstance()->select('COUNT(*) AS `count`,`success_date`','raw')->where('%F != %n','success_date','')->where('%F = 2','type')->where($where2)->group('success_date')->get('success_date')->toArray();
+            foreach($list3 as $v){
+                if(!$list[$v->success_date])$list[$v->success_date] = new stdClass;
+                $list[$v->success_date]->refund_3 = $v->count;
+                $list[$v->success_date]->create_date = $v->success_date;
+            }
+
+
             krsort($list);
             $list = array_values($list);
         }else{
@@ -606,6 +656,12 @@ class HomeController extends Controller{
 
                 '日期',
                 '注册人数',
+                '法律',
+                '留学转学',
+                '签证',
+                '法律退款',
+                '留学转学退款',
+                '签证退款',
 
             ];
 
@@ -615,9 +671,38 @@ class HomeController extends Controller{
             [
 
                 
-                'create_date',
-                
-                'count',
+                [
+                    'name'=>'create_date',
+                ],
+                [
+                    'name'=>'count',
+                    'default'=>'0'
+                ],
+                [
+                    'name'=>'rule_1',
+                    'default'=>'0'
+                ],
+                [
+                    'name'=>'rule_2',
+                    'default'=>'0'
+                ],
+                [
+                    'name'=>'rule_3',
+                    'default'=>'0'
+                ],
+                [
+                    'name'=>'refund_1',
+                    'default'=>'0'
+                ],
+                [
+                    'name'=>'refund_2',
+                    'default'=>'0'
+                ],
+                [
+                    'name'=>'refund_3',
+                    'default'=>'0'
+                ],
+
 
             ];
 

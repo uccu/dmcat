@@ -793,7 +793,7 @@ class MoneyController extends Controller{
         $this->L->adminPermissionCheck(107);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
-        
+        $data['success_date'] = date('Y-m-d');
         unset($data['id']);
 
         $upd = AdminFunc::upd($model,$id,$data);
