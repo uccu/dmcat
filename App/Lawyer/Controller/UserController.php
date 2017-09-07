@@ -62,6 +62,7 @@ class UserController extends Controller{
      */
     private function _add_user($info){
         $info->create_time = TIME_NOW;
+        $info->create_date = date('Y-m-d',TIME_NOW);
 
         
 
@@ -973,6 +974,8 @@ class UserController extends Controller{
         if(!$id){
             $data['salt'] = Func::randWord(6);
             $data['password'] = $this->encrypt_password($pwd,$data['salt']);
+            $data['create_time'] = TIME_NOW;
+            $data['create_date'] = date('Y-m-d',TIME_NOW);
         }elseif($pwd){
             $salt = $model->find($id)->salt;
             $data['password'] = $this->encrypt_password($pwd,$salt);

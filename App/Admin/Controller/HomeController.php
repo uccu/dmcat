@@ -48,6 +48,10 @@ class HomeController extends Controller{
 
         View::hamlReader('home/setting','Admin');
     }
+    function statistics(){
+        View::addData(['getList'=>'/home/admin_statistics']);
+        View::hamlReader('home/list','Admin');
+    }
 
     
 

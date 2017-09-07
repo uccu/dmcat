@@ -17,6 +17,7 @@ use App\Lawyer\Model\BannerModel;
 use App\Lawyer\Model\H5Model;
 use App\Lawyer\Model\MessageH5Model;
 use App\Lawyer\Model\ShareModel;
+use App\Lawyer\Model\UserModel;
 
 
 class HomeController extends Controller{
@@ -553,5 +554,94 @@ class HomeController extends Controller{
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
         AJAX::success($out);
+    }
+
+
+    # 统计
+    function admin_statistics($start_time,$end_time){
+        $this->L->adminPermissionCheck(109);
+
+        $start_time && $where['e1'] = ['%F >= %n','create_date',$start_time];
+        $end_time && $where['e2'] = ['%F <= %n','create_date',$end_time];
+        if($start_time){
+            $where['type'] = 0;
+            $model = UserModel::copyMutiInstance();
+            $list = $model->select('COUNT(*) AS `count`,`create_date`','raw')->where($where)->group('create_date')->get('create_date')->toArray();
+            
+            krsort($list);
+            $list = array_values($list);
+        }else{
+            $list = [];
+        }
+
+        
+
+
+
+        $name = '统计';
+        # 允许操作接口
+        $opt = 
+            [
+                'req'   =>[
+                    [
+                        'title'=>'开始日期',
+                        'name'=>'start_time',
+                        'default'=>'2000-01-01',
+                        'size'=>'2'
+                    ],
+                    [
+                        'title'=>'结束日期',
+                        'name'=>'end_time',
+                        'default'=>date('Y-m-d'),
+                        'size'=>'2'
+                    ],
+                ]
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '日期',
+                '注册人数',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                
+                'create_date',
+                
+                'count',
+
+            ];
+
+        # 分页内容
+        $page   = 1;
+        $max    = count($list);
+        $limit  = $max;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+        AJAX::success($out);
+
     }
 }
