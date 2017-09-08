@@ -3,93 +3,75 @@
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
+use Hoa\Exception\Exception as Ex;
+use Hoa\Exception\Error as Er;
 class E extends Exception{
 
 	
+	# 处理异常
+	final public static function handleException(){
 
-	final public static function handleException($e,$line=null){
-		
-		return self::handle($e->getCode(),$e->getMessage(),$e->getFile(),$e->getLine(),$e->getTrace(),'BASE',$line);
-		
+		self::throwEx('SYSTEM Exception');
 	}
 
-	final public static function handle($code,$message,$file,$line,$trace,$base = 'BASE',$c = null){
 
-		
+	# 处理错误
+	final public static function handleError(){
 
-		if(!is_null($c)){
-			$file = $trace[$c]['file'];
-			$line = $trace[$c]['line'];
-		}else{
-			$trace[0]['file'] = $file;
-			$trace[0]['line'] = $line;
-		}
+		self::throwEx('SYSTEM ERROR');
 
-		$file = str_ireplace(array(BASE_ROOT,'.php'),'',$file);
-		$file = str_ireplace('/','\\',$file);
+	}
 
-		$str =  "$base EXCEPTION : [$code][$message] FILE [$file] LINE [$line]";
-		
-		
 
-		
+	# 输出给前端
+	final public static function output($exception,$fileName = NULL){
 
-		// create a log channel
-		
-		$elog = Config::get('ERROR_LOG');
-		if(!$elog){
+		$message = $exception->getFormattedMessage();
+		$form = $exception->getFrom();
+		$raise = $exception->raise();
 
-		}elseif(is_writable(LOG_ROOT) && 
-			(!file_exists(LOG_ROOT.DATE_TODAY.'.log') || is_writable(LOG_ROOT.DATE_TODAY.'.log'))
+		# 记录日志
+		!$fileName && $fileName = DATE_TODAY;
+		$enableLog = Config::get('ERROR_LOG');
+		$filePath = LOG_ROOT . $fileName . '.log';
+
+		# 判断文件写入权限
+		if(
+			$enableLog && 
+			is_writable(LOG_ROOT) && 
+			(
+				!file_exists($filePath) || is_writable($filePath)
+			)
 		){
-			$log = new Logger($base);
-			$log->pushHandler(new StreamHandler(LOG_ROOT.DATE_TODAY.'.log', Logger::WARNING));
-			// add records to the log
 			
-			$log->addError($str);
-			foreach($trace as $k=>$c){
-				$file = $c['file'];
-				$line = isset($c['line']) ? $c['line'] : '';
-				$file = str_ireplace(array(BASE_ROOT,'.php'),'',$file);
-				$file = str_ireplace('/','\\',$file);
-				$str2 =  "EXCEPTION FILE [$file] LINE [$line]";
-				$log->addWarning($str2,[$k]);
-			}
+			$file = fopen($filePath,"a");
+			fwrite($file,$raise."\n");
+			fclose($file);
+
 		}else{
-			$str =  "LOG|".$str;
+
+			$enableLog && $message = 'LogError|' . $message;
+
 		}
-		
 
-		
-
-
+		# 输出类型
 		$type = Config::get('EXCEPTION_OUTPUT_TYPE');
+		switch($type){
 
-		if(is_null($type) || $type == 'string')echo $str;
-			
-		else AJAX::error($str ,999 );
-		
-		exit();
-	}
-
-	final public static function handleError($errno, $errstr, $errfile, $errline){
-
-		switch($errno){
-			case 8:
-				// if(stripos($errstr,'Undefined index')===0)return null;
-				// if(stripos($errstr,'Undefined property')===0)return null;
-				// if(stripos($errstr,'Undefined offset')===0)return null;
-				return null;
+			case 'string':
+				echo $message;
 				break;
 			default:
+				AJAX::error($message ,999 );
 				break;
+
 		}
 
-		$ex = new self($errstr);
-
-		return self::handle($errno,$errstr,$errfile,$errline,$ex->getTrace(),'ERROR');
+		exit();
 
 	}
+
+	
 
 	final public static function handleShutdown(){
 		$error = error_get_last();
@@ -97,18 +79,24 @@ class E extends Exception{
 
 			$ex = new self($error['message']);
 
-			return self::handle($error['type'],$error['message'],$error['file'],$error['line'],$ex->getTrace(),'SHUTDOWN');
+			self::throwEx('SYSTEM Shutdown');
 		}
 	}
 
 
 	
 
-	final public static function throwEx($m,$line=0){
+	final public static function throwEx($message){
 
-		$e = new self($m);
+		$exception = new Ex($message);
+		self::output($exception);
 
-		self::handleException($e,$line);
+	}
+
+	final public static function throwEr($message){
+
+		$exception = new Er($message);
+		self::output($exception);
 
 	}
 

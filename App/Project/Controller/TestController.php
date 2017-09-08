@@ -83,6 +83,12 @@ class TestController extends Controller{
 
     }
 
+    function b(){
+
+        echo $ss;
+
+    }
+
 
 
 }
