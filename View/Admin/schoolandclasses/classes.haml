@@ -76,7 +76,7 @@
                 })
                 curl('/classes/level_lists',{school_id:school},function(w){
                     for(d in w.list)$('[name="level"]').append($('<option>').text(w.lang=='cn'?w.list[d].name:w.list[d].name_en).attr('value',w.list[d].id));
-                    if($('[name="level"]').attr('data-value'))$('[name="level"]').val($('[name="level"]').attr('data-value')).attr('data-value','0');
+                    if($('[name="level"]').attr('data-value'))$('[name="level"]').val($('[name="level"]').attr('data-value')).attr('data-value','');
                 });
             });
             getList('/classes/lists',{school_id:school})

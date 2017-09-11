@@ -299,7 +299,7 @@ class TeacherController extends Controller{
         ){
         $id = $this->L->id;
         if(!$id)AJAX::error('not login');
-
+        $classes_id = $userClassesModel->where(['user_id'=>$id])->find()->classes_id;
         if($student_id){
 
             $data['title'] = $title;
@@ -308,11 +308,12 @@ class TeacherController extends Controller{
             $data['create_time'] = TIME_NOW;
             $data['student_id'] = $student_id;
             $data['user_id'] =$this->L->id;
+            $data['classes_id'] = $classes_id;
             $data['type'] = 1;
             $out['l'] = $noticeModel->set($data)->add()->getStatus();
 
         }else{
-            $classes_id = $userClassesModel->where(['user_id'=>$id])->find()->classes_id;
+            
             if(!$classes_id)AJAX::error('没有管理的班级！');
             $data['title'] = $title;
             $data['short_message'] = $short_message;

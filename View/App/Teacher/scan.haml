@@ -7,13 +7,16 @@
 
 - block body
     :css
-        .scan{
-            margin:30px;
+        .scan,.back{
+            margin:10px;
             border:solid 1px #666;
             color:#666;
             font-size:15px;
-            padding:15px;
             background:#fff;
+            width: 50%;
+            color:#337ab7;
+            font-size: 12px;
+            padding: 5px;
         }
         .green{
             border-radius:50%;
@@ -39,30 +42,61 @@
         .row{
             margin-top:20px
         }
-    %h2.tc.title = date
-
+        #datetimepicker{
+            text-align: center;
+            border: 1px solid #ccc;
+            /* margin: 20px; */
+            display: block;
+            margin: 20px auto;
+            line-height: 30px;
+            color: #777;
+        }
+        .nos{
+            text-align: center;
+            font-size: 21px;
+            margin-top: 50px;
+        }
+        
+    -# %h2.tc.title = date
+    %input#datetimepicker(type="text" value="#{date}")
     .tc
+        %a(href="/teacher/index")
+            %button.back Back
+        %a(href="javascript:ef();location.reload(true)")
+            %button.back Refresh
         %a(href="javascript:ef();")
-            %button.scan scan
+            %button.scan Scan
     
     - for k,s in list
-        .tc.row
-            .col-xs-3
-                #{s.name} 
-            .col-xs-3
-                #{s.name_en} 
-            .col-xs-3
-                - if s.status
-                    .green
-                - else
-                    .yellow
-            .col-xs-3
-                - if s.leave_time
-                    .green
-                - else
-                    .red
+        .container-fluid
+            .tc.row
+                .col-xs-3
+                    #{s.name} 
+                .col-xs-3
+                    #{s.name_en} 
+                .col-xs-3
+                    - if s.status
+                        .green
+                    - else
+                        .yellow
+                .col-xs-3
+                    - if s.leave_time
+                        .green
+                    - else
+                        .red
+    - if list
+    - else
+        .nos
+            NO STUDENT
     %script(src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js")
+    
+    %script(src="/js/plugins/layer/laydate/laydate.js")
     :javascript
+        laydate({elem:"#datetimepicker",event:"focus",format: 'YYYY-MM-DD',choose:function(){
+            location = '/teacher/scan?date='+j('input').val()
+        }});
+        
+        
         wx.config({
             debug: false,
             appId: '#{appId}',

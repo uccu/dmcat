@@ -50,6 +50,7 @@ class NoticeController extends Controller{
         $out['thead'] = [
             'ID'=>['class'=>'tc'],
             "标题/Title"=>['class'=>'tc'],
+            "类型"=>['class'=>'tc'],
             "显示/Show"=>['class'=>'tc'],
             "回执/Reply"=>['class'=>'tc'],
             '_opt'=>['class'=>'tc'],
@@ -58,6 +59,7 @@ class NoticeController extends Controller{
         $out['tbody'] = [
             'id'=>['class'=>'tc'],
             'title'=>['class'=>'tc'],
+            "type_name"=>['class'=>'tc'],
             'isshow'=>['class'=>'tc eisshow','type'=>'checkbox'],
             'need_confirm'=>['class'=>'tc eneed_confirm','type'=>'checkbox'],
             '_opt'=>['class'=>'tc'],
@@ -68,14 +70,21 @@ class NoticeController extends Controller{
 
         if($need_confirm)$where['need_confirm'] = 1;
 
+        if($this->L->userInfo->type == 3){
+            $classes_id = UserModel::getInstance()->select('classes.classes_id')->find($this->L->id)->classes_id;
+            $where['classes_id'] = $classes_id;
+        }
+
         $list = $model->where($where)->page($page,$limit)->order('id','DESC')->get()->toArray();
 
+        $type_names = ['All','Single Student','Single Class'];
         foreach($list as &$v){
             $v->title = $this->lang->language == 'en' ? $v->short_message : $v->title;
+            $v->type_name = $type_names[$v->type];
         }
 
         $out['list']  = $list;
-        $out['max'] = $model->select('COUNT(*) as c','RAW')->find()->c;
+        $out['max'] = $model->where($where)->select('COUNT(*) as c','RAW')->find()->c;
         $out['page'] = $page;
         $out['limit'] = $limit;
         AJAX::success($out);
@@ -88,16 +97,30 @@ class NoticeController extends Controller{
         AJAX::success();
 
     }
-    function upd($id = 0,NoticeModel $model){
+    function upd($id = 0,$student_id,$classes_id,NoticeModel $model){
 
         $data = Request::getInstance()->request($model->field);
+        if(!$student_id)$student_id = $data['student_id'] = 0;
+        if(!$classes_id)$classes_id = $data['classes_id'] = 0;
 
+        if($student_id)$data['type'] = 1;
+        elseif($classes_id)$data['type'] = 2;
+        elseif($this->L->userInfo->type == 3){
+            $data['classes_id'] = $classes_id = UserModel::getInstance()->select('classes.classes_id')->find($this->L->id)->classes_id;
+            $data['type'] = 2;
+        }else{
+            $data['type'] = 0;
+        }
+        
+
+
+        $data['user_id'] = $this->L->id;
         if($id){
 
             $info = $model->find($id);
             !$info && AJAX::error_i18n('no_data');
 
-            !$model->set($data)->save($id)->getStatus() && AJAX::error_i18n('save_failed');
+            $model->set($data)->save($id)->getStatus();
 
         }else{
             

@@ -95,12 +95,11 @@
     <div class="album">
         <h1>相册<span>Album</span></h1>
         <div class="childPicture">
-            <input type="file" id="file"  style="display: none" />
             <div class="childimg">
                 <div class="addimg">
                     <!--<img src="img/jl.png" alt="">-->
                 </div>
-                <div class="addalubm" style="display: none;"></div>
+                <div class="addalubm" style="display: none;"><input type="file" id="file" name="file" style="opacity: 0; width: 100%; height: 100%;" accept="image/*" onchange="uploadFile();" /></div>
             </div>
         </div>
     </div>
@@ -117,9 +116,11 @@
     <a href = "javascript:void(0)" style="line-height: 0.5rem;font-size: 0.23rem;background: #1b2b69;color:#ffffff;display: inline-block;margin:auto;width:1rem;border-radius: 3px;">确定</a>
 </div>
 <script src="/app/js/main.js"></script>
+<script src="/app/js/jquery-1.4.2.min.js"></script>
 <script src="/app/js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src='/app/js/star.js'></script>
 <script type="text/javascript" src='/app/js/jquery.upload.js'></script>
+
 <script type="text/javascript">
     var imgurl='/pic/'
     var mHeight = window.screen.height;
@@ -268,14 +269,13 @@
             }
         })
         //编写评价时上传图片
-        $('.addalubm').click(function(){
+        /*$('.addalubm').click(function(){
             $('input[type="file"]').click();
             $("#file").unbind('change').bind('change',function() {
                 // var form = new FormData();
-                //var file = $("input[type=\"file\"]")[0].files[0];//获取type="file"类型的input
+                // var file = $("input[type=\"file\"]")[0].files[0];//获取type="file"类型的input
                 // form.append("file", file);
                
-
                 // $.ajax({
                 //     url: "/student/upPic",
                 //     data: form,
@@ -291,32 +291,28 @@
                 //         }
                 //     }
                 // })
-
-
-
                 $.ajaxFileUpload({
-                    url: "/student/upPic",
-                    dataType: "json",
-                    secureuri: false,
-                    fileElementId:'file',
-                    success: function (result) {
-                        if (e.code == 200) {
-                            var result = e.data;
-                            var childimg = '<img src="'+ result.apath +'" data-z="'+result.path+'">'
-                            $(".addimg").append(childimg)
+                        url: "/student/upPic",
+                        dataType: "json",
+                        secureuri: false,
+                        fileElementId: 'file',
+                        success: function (e) {
+                            if (e.code == 200) {
+                                var result = e.data;
+                                var childimg = '<img src="'+ result.apath +'" data-z="'+result.path+'">'
+                                $(".addimg").append(childimg)
+                            }else{
+                                alert(e.message)
+                            }
+                        },
+                        error: function (e) {
+                            alert("请检查网络");
                         }
-                    },
-                });
-
-
-
-
-
-
-
+                    });
 
             })
-        })
+        })*/
+
         //  提交评价
         var a=new URL(location);
         var id = a.searchParams.get('id')
@@ -403,6 +399,30 @@
         })
         }
     })
+
+
+// 编写评价时上传图片
+function uploadFile()
+{
+    $.ajaxFileUpload({
+        url: "/student/upPic",
+        dataType: "json",
+        secureuri: false,
+        fileElementId: 'file',
+        success: function (e) {
+            if (e.code == 200) {
+                var result = e.data;
+                var childimg = '<img src="'+ result.apath +'" data-z="'+result.path+'">'
+                $(".addimg").append(childimg)
+            }else{
+                alert(e.message)
+            }
+        },
+        error: function (e) {
+            alert("请检查网络");
+        }
+    });
+}
 
 </script>
 </body>
