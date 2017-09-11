@@ -126,7 +126,7 @@
                             getUser(lawyer)
                         })
                     }if(list.length){
-                        if(lawyer_time && lawyer_time != list[0].create_time){
+                        if(lawyer_time && lawyer_time != list[0].create_time && list[0].isread == '0'){
                             audio.play()
                         }
                         lawyer_time = list[0].create_time
