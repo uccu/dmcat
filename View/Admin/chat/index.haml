@@ -94,6 +94,7 @@
                                 .sendBox.row
                                     %textarea.col-xs-12(disabled)
 - block otherScript
+    %script(src="/js/audio.js")
     :javascript
         ~function(){
             var audio = new audioApi('/1.mp3')
