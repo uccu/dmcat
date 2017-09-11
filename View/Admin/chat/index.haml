@@ -125,9 +125,13 @@
                             lawyer = lawyer_id
                             getUser(lawyer)
                         })
+                    }if(list.length){
+                        if(lawyer_time && lawyer_time != list[0].create_time){
+                            audio.play()
+                        }
+                        lawyer_time = list[0].create_time
                     }
-
-                    if(list.length)lawyer_time = list[0].create_time
+                    
                     if(lawyer)$('.lawyerBox[data-id="'+lawyer+'"]').addClass('active')
                 })
 
@@ -211,9 +215,7 @@
             setInterval(function(){
                 var la = lawyer_time;
                 getLawyer()
-                if(lawyer_time != la){
-                    audio.play()
-                }
+                
                 if(lawyer){
                     getUser()
                     if(user)getChat()
