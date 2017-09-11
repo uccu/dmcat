@@ -96,6 +96,7 @@
 - block otherScript
     :javascript
         ~function(){
+            var audio = new audioApi('/1.mp3')
             var lawyer_time = 0;
             var lawyer = 0;
             var user_time = 0;
@@ -196,7 +197,7 @@
             }
             $('textarea').keyup(function(e){
                 if(e.which == 13){
-                    var message = $(this).val()
+                    var message = $(this).val().replace(/[\n\r]/,'')
                     $(this).val('')
                     if(message)curl('/chat/send',{message:message,lawyer_id:lawyer,user_id:user},function(){
                         getChat(lawyer,user)
@@ -207,7 +208,11 @@
 
 
             setInterval(function(){
+                var la = lawyer_time;
                 getLawyer()
+                if(lawyer_time != la){
+                    audio.play()
+                }
                 if(lawyer){
                     getUser()
                     if(user)getChat()
