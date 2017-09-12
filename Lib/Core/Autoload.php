@@ -1,7 +1,8 @@
 <?php
 namespace Lib\Core;
-use E;
+use Uccu\DmcatTool\Tool\E;
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
+
 
 class Autoload{
 

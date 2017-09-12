@@ -2,6 +2,7 @@
 
 use Uccu\DmcatTool\Traits\InstanceTrait;
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
+use Uccu\DmcatTool\Tool\E;
 Class Route{
 
     use InstanceTrait;

@@ -4,14 +4,14 @@ namespace App\Project\Controller;
 
 use Controller;
 
-use AJAX;
+use Uccu\DmcatTool\Tool\AJAX;
 
 use Request;
 use Route;
 use App\Project\Model\UserModel;
 use App\Project\Model\LessionModel as Lession;
 use Model;
-
+use Uccu\DmcatTool\Tool\E;
 
 
 
@@ -85,7 +85,7 @@ class TestController extends Controller{
 
     function b(){
 
-        echo $ss;
+        E::throwEx('dwdw');
 
     }
 

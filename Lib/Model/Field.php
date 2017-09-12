@@ -1,7 +1,7 @@
 <?php
 
 namespace Lib\Model;
-use E;
+use Uccu\DmcatTool\Tool\E;
 
 use Lib\Model\Using;
 

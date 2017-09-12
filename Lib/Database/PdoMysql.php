@@ -1,7 +1,7 @@
 <?php
 namespace Lib\Database;
 
-use E;
+use Uccu\DmcatTool\Tool\E;
 use Uccu\DmcatTool\Traits\InstanceTrait;
 use PDO;
 use PDOStatement;

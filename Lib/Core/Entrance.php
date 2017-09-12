@@ -36,9 +36,9 @@ require_once VENDOR_ROOT.'autoload.php';
 
 //错误机制
 
-set_exception_handler(array('E','handleException'));
-set_error_handler(array('E','handleError'));
-register_shutdown_function(array('E', 'handleShutdown'));
+set_exception_handler(array('Uccu\DmcatTool\Tool\E','handleException'));
+set_error_handler(array('Uccu\DmcatTool\Tool\E','handleError'));
+register_shutdown_function(array('Uccu\DmcatTool\Tool\E', 'handleShutdown'));
 
 
 
@@ -87,12 +87,11 @@ if(Config::get('OB_GZHANDLER')){
 }
 
 
-
 //处理请求路由
 Route::getSingleInstance()->parse();
 
 //输出内容
-if(Config::get('OB_GZHANDLER')){
+while (0 < ob_get_level()) {
     ob_end_flush();
 }
 

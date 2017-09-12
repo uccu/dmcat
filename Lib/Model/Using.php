@@ -2,7 +2,7 @@
 
 namespace Lib\Model;
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
-use E;
+use Uccu\DmcatTool\Tool\E;
 use Model;
 
 use Uccu\DmcatTool\Traits\InstanceTrait;
