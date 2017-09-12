@@ -56,8 +56,10 @@ require_once LIB_ROOT.'Function/Core.php';
 
 // Config设置
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
+use Uccu\DmcatTool\Tool\E;
 Config::$_CONFIG_ROOT = CONFIG_ROOT;
-
+E::$_BASE_ROOT = BASE_ROOT;
+E::$_LOG_ROOT = LOG_ROOT;
 //定义请求路径
 
 if(!isset($argc))

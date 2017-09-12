@@ -12,6 +12,7 @@ use App\Project\Model\UserModel;
 use App\Project\Model\LessionModel as Lession;
 use Model;
 use Uccu\DmcatTool\Tool\E;
+use Uccu\DmcatTool\Tool\LocalConfig;
 
 
 
@@ -85,7 +86,7 @@ class TestController extends Controller{
 
     function b(){
 
-        E::throwEx('dwdw');
+        throw new \Exception('dw');
 
     }
 
