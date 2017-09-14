@@ -1,10 +1,6 @@
 <?php
 
 
-use Lib\Core\Autoload;
-
-
-
 //error_reporting(0);
 
 //定义常量
@@ -25,10 +21,6 @@ define('OPTION_DEBUG',2);
 
 
 //主自动加载
-
-require_once LIB_ROOT.'Core/Autoload.php';
-// spl_autoload_register( array('Lib\\Core\\Autoload', 'load'));
-
 //composer依赖的自动加载
 
 require_once VENDOR_ROOT.'autoload.php';
@@ -42,10 +34,6 @@ register_shutdown_function(array('Uccu\DmcatTool\Tool\E', 'handleShutdown'));
 
 
 
-
-//验证PHP扩展
-
-// Autoload::extension_check();
 
 
 
