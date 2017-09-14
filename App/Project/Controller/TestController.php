@@ -78,7 +78,7 @@ class TestController extends Controller{
 
         $user = $model->find(null);
 
-        var_dump($model);
+        // AJAX::success(['user'=>$user]);
         
         echo basename(__CLASS__);
 

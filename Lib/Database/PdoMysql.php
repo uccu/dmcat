@@ -37,9 +37,9 @@ class PdoMysql
 			$this->_config->USER, 
 			$this->_config->PASSWORD,
 			[
-				PDO::ATTR_PERSISTENT 	=> 	true,
-				PDO::ATTR_TIMEOUT 		=> 	$this->_config->TIMEOUT,
-				PDO::ATTR_AUTOCOMMIT 	=> 	$this->_config->AUTOCOMMIT,
+				PDO::ATTR_PERSISTENT 	=> 	(bool)$this->_config->ATTR_PERSISTENT,
+				PDO::ATTR_TIMEOUT 		=> 	$this->_config->ATTR_TIMEOUT,
+				PDO::ATTR_AUTOCOMMIT 	=> 	$this->_config->ATTR_AUTOCOMMIT,
 				PDO::ATTR_ERRMODE 		=>	(int)$this->_config->ATTR_ERRMODE,
 				PDO::ATTR_CASE 			=>	(int)$this->_config->ATTR_CASE,
 			]
