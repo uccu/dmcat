@@ -86,11 +86,11 @@ class TestController extends Controller{
 
     function b(){
 
-        $a = 'Lib\Tool\Hook';
-        // $a::ajaxCallback();
+        $a = LocalConfig::get('HOOK_CLASS');
         $s = class_exists($a);
-        $g = method_exists('','ajaxCallback');
-        var_dump($g,$a);
+        $g = method_exists($a,'ajaxCallback');
+        $a::ajaxCallback();
+        AJAX::error();
     }
 
 
