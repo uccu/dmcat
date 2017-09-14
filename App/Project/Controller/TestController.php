@@ -86,8 +86,11 @@ class TestController extends Controller{
 
     function b(){
 
-        throw new \Exception('dw');
-
+        $a = 'Lib\Tool\Hook';
+        // $a::ajaxCallback();
+        $s = class_exists($a);
+        $g = method_exists('','ajaxCallback');
+        var_dump($g,$a);
     }
 
 
