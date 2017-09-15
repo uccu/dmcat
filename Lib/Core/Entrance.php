@@ -38,10 +38,6 @@ register_shutdown_function(array('Uccu\DmcatTool\Tool\E', 'handleShutdown'));
 
 
 
-//加载全局函数库
-
-require_once LIB_ROOT.'Function/Core.php';
-
 // Config设置
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
 use Uccu\DmcatTool\Tool\E;

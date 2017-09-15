@@ -70,17 +70,11 @@ class TestController extends Controller{
 
     }
 
-    function tes($e = null){
+    function test(UserModel $model){
 
-        // if(!isset($e))echo 1;
+        $user = $model->find(1);
 
-        $model = UserModel::copyMutiInstance();
-
-        $user = $model->find(null);
-
-        // AJAX::success(['user'=>$user]);
-        
-        echo basename(__CLASS__);
+        echo $user;
 
     }
 

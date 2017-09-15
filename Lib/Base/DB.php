@@ -19,7 +19,15 @@ class DB{
         return Using::getSingleInstance()->rollback();
     }
 
-    
+    # 原生
+    static function raw($str = ''){
+
+        $obj = new self;
+        $obj->type = 'raw';
+        $obj->str = $str;
+        return $obj;
+
+    }
 
 
 
