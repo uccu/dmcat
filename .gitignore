@@ -3,3 +3,4 @@ Log/*.log
 Public/pic
 composer.lock
 vendor
+ws/node_modules
