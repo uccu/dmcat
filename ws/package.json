@@ -1,14 +1,13 @@
 {
-    "name": "car-095",
-    "description": "car-095",
-    "version": "0.0.0",
+    
     "author": {
         "name": "pzcat",
         "email": "cat@4moe.com"
     },
     "license": "MIT",
     "dependencies":{
-        "mysql":"~2.14.1"
+        "mysql":"~2.14.1",
+        "nodejs-websocket":"~1.7.1"
         
     }
 }

@@ -1,84 +1,61 @@
-const mysql = require('mysql')
-const db_config = require('./db_config')
+const ws = require("nodejs-websocket")
+const crypto = require('crypto')
+const util = require('util')
+const fs = require('fs')
+const md5 = d => crypto.createHash('md5').update(d).digest('hex')
+const content = d => d instanceof Object ? JSON.stringify(d) : '{}'
+const userAction = require('./userAction')
+const driverAction = require('./driverAction')
 const db = require('./db')
+let data = require('./data')
+
+db.$(function(){
+    db.delete('delete from c_user_online')
+})
 
 
-var connection;
-function handleDisconnect() {
-    connection = mysql.createConnection(db_config);                                               
-    connection.connect(function(err) {              
-        if(err) {                                     
-        console.log("进行断线重连：" + new Date());
-        setTimeout(handleDisconnect, 2000);   //2秒重连一次
+let serverCallback = function(con){
+
+    console.log("one connection linked")
+    let path = con.path.slice(1)
+
+
+    if(['user','driver'].indexOf(path) === -1){
+        console.warn('error path',path,path.indexOf(['user','driver']) === -1)
+        con.sendText(content({status:400,type:'connect'}))
+        con.close()
         return;
-        }         
-        console.log("连接成功");
-
-    });                                                                           
-    connection.on('error', function(err) {
-        console.log('db error', err);
-        if(err.code === 'PROTOCOL_CONNECTION_LOST') { 
-            handleDisconnect();                         
-        } else {
-            throw err;
-        }
-    });
-}
-handleDisconnect();
-
-var sql = 'SELECT * FROM cache where id = 2';
-
-
-    setInterval(function(){
-        db.find(connection,sql,function(r){
-            console.log(r.id)
-        })
-    },2000)
-
+    }
 
     
 
+    con.sendText(content({status:200,type:'connect'}))
 
-// 插入
-// var  userAddSql = 'INSERT INTO userinfo(Id,UserName,UserPass) VALUES(0,?,?)';
-// var  userAddSql_Params = ['Wilson', 'abcd'];
-// connection.query(userAddSql,userAddSql_Params,function (err, result) {
-//         if(err){
-//          console.log('[INSERT ERROR] - ',err.message);
-//          return;
-//         }        
+    con.on("close", function (code, reason) {
+		console.log("one connection closed")
+	});
+	con.on("error", function (code, reason) {
+		console.log("%cone connection occurred error",'red')
+    });
+    con.on("text", function (str){
+        let obj
+        try{
+            obj = JSON.parse(str)
+        }catch(e){
+            console.warn('message not obj',str)
+            return
+        }
 
-//        console.log('--------------------------INSERT----------------------------');
-//        //console.log('INSERT ID:',result.insertId);        
-//        console.log('INSERT ID:',result);        
-//        console.log('-----------------------------------------------------------------\n\n');  
-// });
+        if(path == 'user'){
+            userAction(obj,con)
+        }else if(path == 'driver'){
+            driverAction(obj,con)
+        }
+        console.log(data.DriverMap.size,data.UserMap.size)
 
-// 更新
-// var userModSql = 'UPDATE userinfo SET UserName = ?,UserPass = ? WHERE Id = ?';
-// var userModSql_Params = ['钟慰', '5678',1];
-// //改
-// connection.query(userModSql,userModSql_Params,function (err, result) {
-//    if(err){
-//          console.log('[UPDATE ERROR] - ',err.message);
-//          return;
-//    }        
-//   console.log('--------------------------UPDATE----------------------------');
-//   console.log('UPDATE affectedRows',result.affectedRows);
-//   console.log('-----------------------------------------------------------------\n\n');
-// });
+	});
 
+}
 
-// 删除
-// var  userDelSql = 'DELETE FROM userinfo';
-// connection.query(userDelSql,function (err, result) {
-//         if(err){
-//           console.log('[DELETE ERROR] - ',err.message);
-//           return;
-//         }        
-
-//        console.log('--------------------------DELETE----------------------------');
-//        console.log('DELETE affectedRows',result.affectedRows);
-//        console.log('-----------------------------------------------------------------\n\n');  
-// });
-
+let server = ws.createServer(serverCallback).listen(7777)
+console.log("server started")

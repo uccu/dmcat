@@ -1,5 +1,5 @@
 const util = require('util');
+const post = require('./post');
 
-console.log(
-    util.inspect(module)
-)
+
+post('user/login2',function(e){console.log(e)})

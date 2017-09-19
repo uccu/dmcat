@@ -7,21 +7,21 @@ use DB;
 use stdClass;
 use Response;
 use Request;
-use App\Car\Middleware\L;
+use App\Car\Middleware\L2;
 use App\Car\Tool\Func;
 use Uccu\DmcatTool\Tool\AJAX;
 
 # 数据模型
-use App\Car\Model\UserModel;
+use App\Car\Model\DriverModel;
 use App\Car\Model\MessageModel;
 
 
-class UserController extends Controller{
+class DriverController extends Controller{
 
 
     function __construct(){
 
-        $this->L = L::getSingleInstance();
+        $this->L = L2::getSingleInstance();
         $this->salt = $this->L->config->SITE_SALT;
 
     }
@@ -52,7 +52,7 @@ class UserController extends Controller{
     private function _add_user($info){
 
         $info->create_time = TIME_NOW;
-        $model = UserModel::copyMutiInstance();
+        $model = DriverModel::copyMutiInstance();
         $model->where(['phone'=>$info->phone])->find() && AJAX::error('手机号已存在');
         
 
@@ -77,7 +77,7 @@ class UserController extends Controller{
      * @return mixed 
      */
     function logout(){
-        Response::getSingleInstance()->cookie('user_token','',-3600);
+        Response::getSingleInstance()->cookie('driver_token','',-3600);
         AJAX::success();
     }
 
@@ -88,7 +88,7 @@ class UserController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function login($phone = null,$password =null,UserModel $model,$cookie = null){
+    function login($phone = null,$password =null,DriverModel $model,$cookie = null){
 
 
         //检查参数是否存在
@@ -123,11 +123,11 @@ class UserController extends Controller{
      */
     private function _out_info($info){
         
-        $user_token = $this->encrypt_token($info);
-        $this->cookie && Response::getSingleInstance()->cookie('user_token',$user_token,0);
+        $driver_token = $this->encrypt_token($info);
+        $this->cookie && Response::getSingleInstance()->cookie('driver_token',$driver_token,0);
 
         $out = [
-            'user_token'=>$user_token,
+            'driver_token'=>$driver_token,
             'id'=>$info->id,
             'avatar'=>$info->avatar,
             'name'=>$info->name,
@@ -146,7 +146,7 @@ class UserController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function register(UserModel $model,$password = null,$phone = null,$phone_captcha,$cookie = false,$parent_id = 0){
+    function register(DriverModel $model,$password = null,$phone = null,$phone_captcha,$cookie = false,$parent_id = 0){
         
         
         //是否储存登录信息到cookie
@@ -186,7 +186,7 @@ class UserController extends Controller{
 
         Func::check_phone_captcha($phone,$phone_captcha);
 
-        $model = UserModel::copyMutiInstance();
+        $model = DriverModel::copyMutiInstance();
         if(!$userInfo = $model->where(['phone'=>$phone])->find()){
 
             AJAX::error('用户不存在！');
@@ -226,7 +226,7 @@ class UserController extends Controller{
         $info['name'] = $this->L->userInfo->name;
         $info['sex'] = $this->L->userInfo->sex;
         $info['phone'] = $this->L->userInfo->phone;
-        $info['id'] = $this->L->userInfo->id;
+        $info['id'] = $this->L->id;
 
         $out['info'] = $info;
 
