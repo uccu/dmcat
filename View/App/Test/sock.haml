@@ -3,15 +3,43 @@
 
 
 - block siteInfo
-  %title #{g.title}
-  %meta(name="keywords" content="#{g.keywords}")
-  %meta(name="description" content="#{g.description}")
+    %title #{g.title}
+    %meta(name="keywords" content="#{g.keywords}")
+    %meta(name="description" content="#{g.description}")
 
 
 - block body
-  #example
-    123
+    #example
+        123
 
-  
+
+    :javascript
+        a=new WebSocket('ws://127.0.0.1:7777/user')
+        b=new WebSocket('ws://127.0.0.1:7777/driver')
+        a.onopen = function(){
+            a.send('{"type":"login","user_token":"3Vz28Pj8Dd4VeNJhsrmS2HScgKxDOiSLHiNoXEstCVZf9vkADhTYAd1LPaA2O8Tg2DZBHPkcrwSUqtMsywR5Y2CgfKXXwdTr5YXJFdNKmDDQ="}')
+
+            
+            
+        }
+        b.onopen = function(){
+            b.send('{"type":"login","driver_token":"9BexvLb8FhNEy3bH8cIq2mW/IJAZD5EE09iWZjE6JWI6yJ++8/DpqEMhZkGcgeUMmyFs5b7iRmo44orAHOhw0iQLsgOe/fxN13/23YxbtkuI="}')
+        }
+
+        if(0){
+            d = {
+                type:'askForDriving',
+                start_latitude:'31.23170600',
+                start_longitude:'121.47264400',
+                end_latitude:'31.23170600',
+                end_longitude:'121.47264400',
+                start_name:'开始位置',
+                end_name:'结束为止',
+                distance:'100.22',
+                estimated_price:'500.22'
+            };
+            str = JSON.stringify(d)
+            a.send(str)
+        }
 
   

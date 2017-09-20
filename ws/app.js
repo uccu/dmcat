@@ -11,6 +11,7 @@ let data = require('./data')
 
 db.$(function(){
     db.delete('delete from c_user_online')
+    db.delete('delete from c_driver_online')
 })
 
 

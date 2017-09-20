@@ -1,9 +1,9 @@
 const post = require('./post')
-let data = require('./data')
-
-let UserInfo = function(){}
-
-let z = function(obj,con){
+const content = d => d instanceof Object ? JSON.stringify(d) : '{}'
+let data = require('./data'),
+db = require('./db'),
+UserInfo = function(){},
+z = function(obj,con){
 
     switch(obj.type){
 
@@ -26,12 +26,28 @@ let z = function(obj,con){
                 driver.con = con
                 driver.id = d.data.info.id
                 data.DriverMap.set(d.data.info.id,driver)
-                console.log(`one driver ${d.data.info.id} linked`)
+
+                let latitude = obj.latitude
+                let longitude = obj.longitude
+                if(latitude && longitude)db.replace('replace into c_driver_online (driver_id,latitude,longitude) VALUES(?,?,?)',[d.data.info.id,latitude,longitude])
+
+                else db.replace('replace into c_driver_online (driver_id) VALUES(?)',[d.data.info.id])
+
+
+                console.log(`driver ${d.data.info.id} linked`)
 
                 
 
             })
 
+            break;
+        case 'updPostion':
+            if(con.driver_id){
+                let latitude = obj.latitude
+                let longitude = obj.longitude
+                db.replace('update c_driver_online set latitude=?,longitude=? where driver_id=?',[latitude,longitude,con.driver_id])
+                console.log(`driver ${con.driver_id} updated position`)
+            }
             break;
         default:
             break;

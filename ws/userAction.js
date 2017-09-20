@@ -1,10 +1,9 @@
 const post = require('./post')
-let data = require('./data')
-let db = require('./db')
-
-let UserInfo = function(){}
-
-let z = function(obj,con){
+const content = d => d instanceof Object ? JSON.stringify(d) : '{}'
+let data = require('./data'),
+db = require('./db'),
+UserInfo = function(){},
+z = function(obj,con){
 
     switch(obj.type){
 
@@ -34,7 +33,7 @@ let z = function(obj,con){
 
                 else db.replace('replace into c_user_online (user_id) VALUES(?)',[d.data.info.id])
                 
-                console.log(`one user ${d.data.info.id} linked`)
+                console.log(`user ${d.data.info.id} linked`)
 
                 
 
@@ -42,21 +41,55 @@ let z = function(obj,con){
 
             break;
         case 'updPostion':
-
             if(con.user_id){
-
-                
                 let latitude = obj.latitude
                 let longitude = obj.longitude
-
                 db.replace('update c_user_online set latitude=?,longitude=? where user_id=?',[latitude,longitude,con.user_id])
+                console.log(`user ${con.user_id} updated position`)
+            }
+            break;
+        case 'askForDriving':
+            if(con.user_id){
+                let start_latitude = obj.start_latitude || 0
+                let start_longitude = obj.start_longitude || 0
+                let end_latitude = obj.end_latitude || 0
+                let end_longitude = obj.end_longitude || 0
                 
-                console.log(`one user ${con.user_id} updated position`)
+                let start_name = obj.start_name || ''
+                let end_name = obj.end_name || ''
+                let create_time = parseInt(Date.now() / 1000)
+                let distance = obj.distance || 0
+                let estimated_price = obj.estimated_price || 0
+                let id = db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price])
 
+                obj.id = id
+
+                con.sendText(content({status:200,type:'createOrderDriving',info:obj}))
+
+                let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
+                let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
+
+                let ids = db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
+                    
+                    for(let k in ids){
+
+                        let driver = data.DriverMap.get(ids[k].driver_id+'')
+                        driver && driver.con.sendText(content({status:200,type:'askForDriving',info:obj}))
+                    }
+
+                })
                 
+
+
+                console.log(`user ${con.user_id} create an order`)
+            }
+            break;
+        case 'cancelAskForDriving':
+            if(con.user_id){
+
+
 
             }
-
             break;
         default:
             break;
