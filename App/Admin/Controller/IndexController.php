@@ -15,7 +15,7 @@ class IndexController extends Controller{
 
         $this->L = L::getSingleInstance();
 
-        if(!$this->L->id || $this->L->userInfo->master_type<0){
+        if(!$this->L->id || (!$this->L->userInfo->type && $this->L->userInfo->master_type<0)){
             header('Location:/user/logout');
         }
 
