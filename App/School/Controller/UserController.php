@@ -10,6 +10,7 @@ use App\School\Middleware\L;
 use App\School\Tool\Func;
 use App\School\Tool\AJAX;
 use Model;
+use Request;
 
 class UserController extends Controller{
 
@@ -93,6 +94,13 @@ class UserController extends Controller{
         */
         $encryptedPassword = $this->encrypt_password($password,$info->salt);
         if($encryptedPassword!=$info->password)AJAX::error_i18n('wrong_pwd');
+
+        $wc_openid = Request::getInstance()->cookie('wc_openid');
+        if($wc_openid){
+
+            $info->wc_openid = $wc_openid;
+            $info->save();
+        }
 
         Model::getInstance('user_online')->set(['last_login'=>TIME_NOW])->save($info->id);
 

@@ -5,6 +5,7 @@ use App\School\Tool\AJAX;
 use App\School\Middleware\L;
 use App\School\Model\ConfigModel;
 use App\School\Model\MessageModel;
+use App\School\Model\UserModel;
 
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\LabelAlignment;
@@ -273,7 +274,8 @@ class Func{
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         if($data){
             curl_setopt($ch, CURLOPT_POST, 1);
-		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            if(is_string($data))curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		    else curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         }
         
         $z = curl_exec($ch);
@@ -360,6 +362,7 @@ class Func{
         return $dayOfThisMonth;
     }
 
+    # 获取AccessToken
     public static function getAccessToken(){
 
         $L = L::getInstance();
@@ -387,6 +390,7 @@ class Func{
 
     }
 
+    # 获取JsapiTicket
     public static function getJsapiTicket(){
 
         $L = L::getInstance();
@@ -410,7 +414,7 @@ class Func{
 
     }
 
-
+    # 获取签名
     public static function getSignature(){
 
         $data['noncestr'] = self::randWord(18);
@@ -429,7 +433,7 @@ class Func{
     }
 
 
-
+    # 添加消息
     public static function add_message($user_id,$message,$url = ''){
 
         $model = MessageModel::getInstance();
@@ -452,4 +456,104 @@ class Func{
 
     }
     
+
+    public static function sendArrive($student_id = 0){
+
+        $where['student.student_id'] = $student_id;
+
+        $user = UserModel::getInstance()->where($where)->find();
+        $student = StudentModel::getInstance()->find($student_id);
+        // $student = StudentModel::getInstance()->find(14);
+        // $user = UserModel::getInstance()->find(108);
+
+        if(!$student || !$user || !$user->wc_openid){
+            return false;
+        }
+
+        if(!$student->name)$name = $student->name_en;
+        elseif(!$student->name_en)$name = $student->name;
+        elseif($student->name == $student->name_en)$name = $student->name;
+        else $name = $student->name.' '.$student->name_en;
+
+        $arr['touser'] = $user->wc_openid;
+        $arr['template_id'] = 'ILOHzkgtEG7fnDJc_lWA86uYyfJPR0cvELiNzqm8OMU';
+        $arr['topcolor'] = '#FF0000';
+        $arr['data'] = [
+            'first'=>[
+                "value"=>"您好，您的子女已到校。\nHello, your children have come to school."
+            ],
+            'childName'=>[
+                "value"=>$name
+            ],
+            'time'=>[
+                "value"=>date('Y-m-d H:i:s')
+            ],
+            'status'=>[
+                "value"=>"已到校 Arrived"
+            ],
+            'remark'=>[
+                "value"=>""
+            ]
+        ];
+
+        $json = json_encode($arr);
+
+        $token = self::getAccessToken();
+
+        return self::curl('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$token,$json);
+
+        
+
+    }
+
+    public static function sendLeave($student_id = 0){
+
+        $where['student.student_id'] = $student_id;
+
+        // $user = UserModel::getInstance()->where($where)->find();
+        // $student = StudentModel::getInstance()->find($student_id);
+        $student = StudentModel::getInstance()->find(14);
+        $user = UserModel::getInstance()->find(108);
+
+        if(!$student || !$user || !$user->wc_openid){
+            return false;
+        }
+
+        if(!$student->name)$name = $student->name_en;
+        elseif(!$student->name_en)$name = $student->name;
+        elseif($student->name == $student->name_en)$name = $student->name;
+        else $name = $student->name.' '.$student->name_en;
+
+        $arr['touser'] = $user->wc_openid;
+        $arr['template_id'] = 'ILOHzkgtEG7fnDJc_lWA86uYyfJPR0cvELiNzqm8OMU';
+        $arr['topcolor'] = '#FF0000';
+        $arr['data'] = [
+            'first'=>[
+                "value"=>"您好，您的子女已离校。\nHello, your children have left school."
+            ],
+            'childName'=>[
+                "value"=>$name
+            ],
+            'time'=>[
+                "value"=>date('Y-m-d H:i:s')
+            ],
+            'status'=>[
+                "value"=>"已离校 Left"
+            ],
+            'remark'=>[
+                "value"=>""
+            ]
+        ];
+
+        $json = json_encode($arr);
+
+        $token = self::getAccessToken();
+
+        return self::curl('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$token,$json);
+
+        
+
+    }
+
+
 }

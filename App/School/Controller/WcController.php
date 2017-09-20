@@ -63,6 +63,9 @@ class WcController extends Controller{
         if($state == 'recruit'){
 
             header('Location:/recruit/language');
+        }elseif($state == 'login'){
+            
+            header('Location:/home/login');
         }elseif($state == 'test'){
             
             echo 'test';

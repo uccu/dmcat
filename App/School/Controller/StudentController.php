@@ -309,7 +309,7 @@ class StudentController extends Controller{
             $model->set($data)->add();
         }
 
-        
+        Func::sendArrive($id);
         AJAX::success();
     }
 
@@ -328,6 +328,7 @@ class StudentController extends Controller{
         $data['leave_time'] = date('H:i:s');
 
         $model->set($data)->where($where)->save();
+        Func::sendLeave($id);
         AJAX::success();
     }
 
