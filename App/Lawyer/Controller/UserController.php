@@ -887,6 +887,16 @@ class UserController extends Controller{
                     'size'  =>  '4',
                 ],
                 [
+                    'title' =>  '区号',
+                    'name'  =>  'phone_type',
+                    'type'  =>  'select',
+                    'option'=>[
+                        '86'=>'86',
+                        '61'=>'61'
+                    ],
+                    'default'=>'86'
+                ],
+                [
                     'title' =>  '名字',
                     'name'  =>  'name',
                     'size'  =>  '4',
@@ -1600,6 +1610,16 @@ class UserController extends Controller{
                     'title' =>  '手机号',
                     'name'  =>  'phone',
                     'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '区号',
+                    'name'  =>  'phone_type',
+                    'type'  =>  'select',
+                    'option'=>[
+                        '86'=>'86',
+                        '61'=>'61'
+                    ],
+                    'default'=>'86'
                 ],
                 [
                     'title' =>  '名字',
