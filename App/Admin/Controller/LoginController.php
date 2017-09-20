@@ -16,7 +16,7 @@ class LoginController extends Controller{
         
         $array = [1];
 
-        if($this->L->id && $this->L->userInfo->type){
+        if($this->L->id && $this->L->userInfo->master_type>-1){
             header('Location:/admin/index');
             die();
         }

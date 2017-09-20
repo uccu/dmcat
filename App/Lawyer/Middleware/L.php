@@ -81,7 +81,7 @@ class L extends Middleware{
         !$this->id && AJAX::error('未登录');
         $type = $this->userInfo->type;
         $auth = AdminMenuModel::copyMutiInstance()->find($id);
-        $authe = $auth->auth ? explode(',',$auth->auth) : [];
+        $authe = $auth->auth!='' ? explode(',',$auth->auth) : [];
         
         $aa = in_array($type,$authe);
 

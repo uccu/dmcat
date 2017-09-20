@@ -1577,4 +1577,87 @@ class UserController extends Controller{
 
         Func::push(10,'test!!!');
     }
+
+
+
+    # 管理顾客
+    function admin_customer_get(UserModel $model){
+
+        $this->L->adminPermissionCheck(111);
+        $name = '用户管理';
+
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '/user/admin_customer_get',
+                'upd'   => '/user/admin_customer_upd',
+
+            ];
+        $tbody = 
+            [
+                
+                [
+                    'title' =>  '手机号',
+                    'name'  =>  'phone',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '名字',
+                    'name'  =>  'name',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '头像',
+                    'name'  =>  'avatar',
+                    'type'  =>  'avatar',
+                ],
+                
+
+            ];
+
+        !$model->field && AJAX::error('字段没有公有化！');
+
+
+        $info = AdminFunc::get($model,$id);
+
+
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_customer_upd(UserModel $model){
+        $this->L->adminPermissionCheck(111);
+        $model->find($id)->type > 0 && AJAX::error('无权限！');
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['type']);
+        unset($data['salt']);
+        unset($data['id']);
+
+        $model->where('phone = %n AND id != %d',$data['phone'],$id)->find() && AJAX::error('手机号已存在，请更改为其他手机号！');
+
+        if(!$id){
+            $data['master_type'] = -1;
+            $data['master_id'] = $this->L->id;
+            $data['user_type'] = 1;
+            $data['salt'] = Func::randWord(6);
+            $pwd = Func::randWord(18);
+            $data['password'] = $this->encrypt_password($pwd,$data['salt']);
+            $data['create_time'] = TIME_NOW;
+            $data['create_date'] = date('Y-m-d',TIME_NOW);
+        }else{
+            AJAX::error('未知错误');
+        }
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
 }

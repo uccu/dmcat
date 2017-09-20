@@ -15,7 +15,7 @@ class IndexController extends Controller{
 
         $this->L = L::getSingleInstance();
 
-        if(!$this->L->id || $this->L->userInfo->type<1){
+        if(!$this->L->id || $this->L->userInfo->master_type<0){
             header('Location:/user/logout');
         }
 
@@ -39,7 +39,7 @@ class IndexController extends Controller{
         $tops = [];
         foreach($all as $k=>$v){
 
-            $v->auth = $v->auth ? explode(',',$v->auth) : [];
+            $v->auth = $v->auth != '' ? explode(',',$v->auth) : [];
             $v->auth_user = $v->auth_user ? explode(',',$v->auth_user) : [];
             if(!in_array($auth,$v->auth) && !in_array($id,$v->auth_user)){
                 unset($all[$k]);continue;
