@@ -30,7 +30,7 @@ let serverCallback = function(con){
 
     
 
-    con.sendText(content({status:200,type:'connect'}))
+    // con.sendText(content({status:200,type:'connect'}))
 
     con.on("close", function (code, reason) {
 		console.log("one connection closed")

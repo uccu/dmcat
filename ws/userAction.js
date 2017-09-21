@@ -14,6 +14,7 @@ z = function(obj,con){
                 if(d.code != 200){
 
                     console.error('one user error',d)
+                    con.sendText(content({status:400,type:'login'}))
                     return
                 }
                 let user = data.UserMap.get(d.data.info.id)
@@ -34,7 +35,7 @@ z = function(obj,con){
                 else db.replace('replace into c_user_online (user_id) VALUES(?)',[d.data.info.id])
                 
                 console.log(`user ${d.data.info.id} linked`)
-
+                con.sendText(content({status:200,type:'login'}))
                 
 
             })
