@@ -11,10 +11,10 @@ z = function(obj,con){
 
             post('user/getMyinfo',{user_token:obj.user_token},function(d){
 
+                if(!d)con.sendText(content({status:400,type:'login',message:'网络错误'}))
                 if(d.code != 200){
-
                     console.error('one user error',d)
-                    con.sendText(content({status:400,type:'login'}))
+                    con.sendText(content({status:400,type:'login',message:d.message}))
                     return
                 }
                 let user = data.UserMap.get(d.data.info.id)
