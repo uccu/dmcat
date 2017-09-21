@@ -35,6 +35,7 @@ class DriverController extends Controller{
     public function encrypt_password($password,$salt){
         return sha1($this->salt.md5($password).$salt);
     }
+    
     /** 生成登录TOKEN
      * 
      * @param mixed $info 

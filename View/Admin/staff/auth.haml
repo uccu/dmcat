@@ -1,0 +1,49 @@
+- extends "base.haml"
+
+
+- block body
+    .wrapper.wrapper-content
+        #modal_new.ibox.float-e-margins
+            .ibox-content
+                - for k,v0 in menu
+                    
+                    .row
+                        .col-xs-2
+                        .col-xs-5
+                            #{v0.name}
+                        .col-xs-1
+                            %input(data-id="#{v0.id}" type="checkbox" #{v0.checked})
+                    - if v0.list
+                        - for k,v1 in v0.list
+                            .row
+                                .col-xs-3
+                                    
+                                .col-xs-4
+                                    #{v1.name}
+                                .col-xs-1
+                                    %input(data-id="#{v1.id}" type="checkbox" #{v1.checked})
+                            - if v1.list
+                                - for k,v2 in v1.list
+                                    .row
+                                        .col-xs-4
+                                            
+                                        .col-xs-3
+                                            #{v2.name}
+                                        .col-xs-1
+                                            %input(data-id="#{v2.id}" type="checkbox" #{v2.checked})
+                            .block(style="height:20px")
+                    .block(style="height:50px")
+    
+
+- block otherScript
+    :javascript
+        var user_id = '#{id}'
+        $('input').click(function(){
+
+            var id = $(this).attr('data-id')
+            var auth = $(this)[0].checked?'1':'0'
+            curl('/user/changeAuth',{id:id,user_id:user_id,auth:auth},function(){
+                curl_succ('修改成功')
+            })
+
+        })

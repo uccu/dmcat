@@ -1,0 +1,52 @@
+- extends "base.haml"
+
+
+- block body
+    
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                #modal_new.ibox.float-e-margins
+                    .ibox-title
+                        %h3 
+                    .ibox-content
+                        %form.form-horizontal.animated(method="post")
+                            
+                        .ibox-title.optBox
+                            
+                            %button.btn.btn-success.flesh(type="button" onclick="location.reload()") 刷新
+
+    
+- block otherCss
+    %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
+    %link(href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet")
+
+                        
+
+
+
+- block otherScript
+    %script(src="/js/plugins/summernote/summernote.min.js")
+    %script(src="/js/plugins/summernote/summernote-zh-CN.js")
+    :javascript
+        $(function(j){
+            
+            
+
+            var wget = function(d){
+                var p =new URL(location);
+                return p.searchParams.get(d);
+            }
+
+            var get = wget('get');
+            var id = wget('id');
+            var e = new Dmcat.admin(get,{id:id},'info');
+
+            var su = 1
+            
+
+        });
+
+
+    
+        

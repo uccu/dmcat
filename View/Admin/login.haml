@@ -1,0 +1,54 @@
+!!!
+%html
+    %head
+        %meta(charset="utf-8")
+        %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        %title 后台 - 登录
+        %link(href="/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet")
+        %link(href="/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet")
+        %link(href="/css/animate.min.css" rel="stylesheet")
+        %link(href="/css/style.min862f.css?v=4.1.0" rel="stylesheet")
+        %link(href="/css/plugins/toastr/toastr.min.css" rel="stylesheet")
+        %link(href="/css/m.css" rel="stylesheet")
+        :javascript
+            if(window.top !== window.self){ window.top.location = window.location;}
+    %body.gray-bg
+        :css
+            body{
+                background-image:url(/pic/admin_login_background.jpg);
+                background-size:cover
+            }
+            h1{
+                height:200px
+            }
+        .middle-box.text-center.loginscreen.animated.fadeInDown
+            %div
+                %div
+                    %h1.logo-name 
+                %h3 登录后台
+                %form.m-t(role="form" method="post" action="/user/login")
+                    .form-group
+                        %input.form-control(name="phone" type="text" placeholder="用户名" required)
+                    .form-group
+                        %input.form-control(name="password" type="password" placeholder="密码" required)
+                        %input(name="admin" type="hidden" value="1")
+                        %input(name="cookie" type="hidden" value="1")
+                    %button.btn.btn-primary.block.full-width.m-b(type="submit") 登录
+
+        %script(src="/js/jquery.min.js?v=2.1.4")
+        %script(src="/js/bootstrap.min.js?v=3.3.6")
+        %script(src="/js/plugins/toastr/toastr.min.js")
+        :javascript
+            $('form').submit(function(e){
+                e.preventDefault()
+                $.post('/adminApi/login',$('form').serialize(),function(d){
+                    if(d.code != 200){
+                        toastr['error'](d.message);
+                    }
+                    else location.reload(true);
+                },'json');
+            })
+            
+
+            
+
