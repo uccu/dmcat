@@ -59,8 +59,13 @@ z = function(obj,con){
                 let end_name = obj.end_name || ''
                 let create_time = parseInt(Date.now() / 1000)
                 let distance = obj.distance || 0
+                let start_time = obj.start_time || 0
                 let estimated_price = obj.estimated_price || 0
-                let id = db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price])
+                let phone = obj.phone || ''
+                let name = obj.name || ''
+
+
+                let id = db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name])
 
                 obj.id = id
 
@@ -90,6 +95,10 @@ z = function(obj,con){
 
 
             }
+            break;
+        case 'callTaxi':
+            break;
+        case 'cancelCallTaxi':
             break;
         default:
             break;

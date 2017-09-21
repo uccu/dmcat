@@ -13,6 +13,7 @@ user/register
 password 密码
 phone 手机号
 phone_captcha 手机验证码
+terminal 终端1ios,2android,0其他
 parent_id 推荐码（推荐人ID）
 {"data":{"user_token":"PmO3h8PU9g0tEKBARu+JlTQ+i2JUBxsUBBE8sF5Q2\/Xxji0jTH4Ug66oZ\/QICRlPrBkMYbvAl7AD6Ls4Aco2Etub7BseppEThHq\/ZVZJi70I=","id":"41","avatar":"noavatar.png","name":"\u7528\u6237000041"},"code":200,"url":"","message":""}
 {user_token:用户TOKEN,id:用户ID}
@@ -103,6 +104,9 @@ start_name 开始地名
 end_name 结束地名
 distance 距离
 estimated_price 预估价
+start_time 出发时间（可选，预约限定）
+phone 联系人电话（代叫限定）
+name 联系人称呼（代叫限定）
 {}
 {}
 
@@ -110,6 +114,34 @@ estimated_price 预估价
 ws.1.4 取消代驾
 user
 type 固定cancelAskForDriving
+id 发起代驾的编号ID
+{}
+{}
+
+
+
+ws.1.5 发起出租车
+user
+type 固定callTaxi
+start_latitude 开始纬度
+start_longitude 开始经度
+end_latitude 结束纬度
+end_longitude 结束经度
+start_name 开始地名
+end_name 结束地名
+distance 距离
+estimated_price 预估价
+start_time 出发时间（可选，预约限定）
+phone 联系人电话（代叫限定）
+name 联系人称呼（代叫限定）
+meter 是否打表来接
+{}
+{}
+
+
+ws.1.6 取消出租车
+user
+type 固定cancelCallTaxi
 id 发起代驾的编号ID
 {}
 {}

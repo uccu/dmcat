@@ -146,7 +146,7 @@ class UserController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function register(UserModel $model,$password = null,$phone = null,$phone_captcha,$cookie = false,$parent_id = 0){
+    function register($terminal = 0,UserModel $model,$password = null,$phone = null,$phone_captcha,$cookie = false,$parent_id = 0){
         
         
         //是否储存登录信息到cookie
@@ -164,6 +164,7 @@ class UserController extends Controller{
             $info->parent_id = $parent_id;
         }
         $info->phone        = $phone;
+        $info->terminal     = floor($terminal);
         $info->salt         = Func::randWord(6);
         $info->password     = $this->encrypt_password($password,$info->salt);
         $this->_add_user($info);
