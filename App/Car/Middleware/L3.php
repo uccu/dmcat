@@ -9,6 +9,7 @@ use Response;
 
 use App\Car\Model\ConfigModel;
 use App\Car\Model\AdminModel;
+use App\Car\Model\AdminMenuModel;
 
 
 class L3 extends Middleware{
@@ -73,6 +74,28 @@ class L3 extends Middleware{
         Response::getSingleInstance()->cookie('admin_token','',-3600);
     }
 
+    function adminPermissionCheck($id){
+
+        !$this->id && AJAX::error('未登录');
+        $type = $this->userInfo->type;
+        $auth = AdminMenuModel::copyMutiInstance()->find($id);
+        $authe = $auth->auth ? explode(',',$auth->auth) : [];
+        
+        $aa = in_array($type,$authe);
+
+        if($auth->auth_user){
+
+            $authe = $auth->auth_user ? explode(',',$auth->auth_user) : [];
+            $aa2 = in_array($this->id,$authe);
+
+        }
+
+        if(!$aa && !$aa2){
+             AJAX::error('没有权限，请与超级管理员联系！');
+        }
+
+        return true;
+    }
 
 
 

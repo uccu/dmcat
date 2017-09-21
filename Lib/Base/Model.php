@@ -6,7 +6,7 @@ use Lib\Model\BaseModel;
 class Model extends BaseModel{
 
 
-
+    public $field;
 
 
 
