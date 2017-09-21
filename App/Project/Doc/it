@@ -142,6 +142,6 @@ meter 是否打表来接
 ws.1.6 取消出租车
 user
 type 固定cancelCallTaxi
-id 发起代驾的编号ID
+id 发起出租车的编号ID
 {}
 {}
