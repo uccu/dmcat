@@ -145,3 +145,23 @@ type 固定cancelCallTaxi
 id 发起出租车的编号ID
 {}
 {}
+
+
+
+
+
+
+3.1 上传图片（强制100x100）
+home/upAvatar
+file 图片二进制
+{"data":{"path":"20170921\/15.30.10.291918.jpg","fpath":"\/pic\/20170921\/15.30.10.291918.jpg","apath":"http:\/\/d.baka\/pic\/20170921\/15.30.10.291918.jpg"},"code":200,"url":"","message":""}
+{path:路径,fpath:根目录下的路径,apath:完整的图片地址}
+
+
+3.2 上传图片
+home/uploadPic
+file 图片二进制
+{"data":{"path":"20170921\/15.30.10.291918.jpg","fpath":"\/pic\/20170921\/15.30.10.291918.jpg","apath":"http:\/\/d.baka\/pic\/20170921\/15.30.10.291918.jpg"},"code":200,"url":"","message":""}
+{path:路径,fpath:根目录下的路径,apath:完整的图片地址}
+
+
