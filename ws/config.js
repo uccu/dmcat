@@ -1,6 +1,7 @@
 module.exports = {
 
-    host    :   'd.baka',       
-    path    :   '/'
+    host    :   '121.199.8.244',       
+    path    :   '/',
+    port    :   80
     
 }

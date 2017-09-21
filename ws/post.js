@@ -12,7 +12,7 @@ let z = function(url,data,cb){
     gData = '',
     options = {
         hostname: config.host,
-        port: 80,
+        port: config.port||80,
         path: config.path+url,
         method: 'POST',
         headers: {
