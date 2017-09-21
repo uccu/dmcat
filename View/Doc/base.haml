@@ -1,0 +1,35 @@
+!!!
+%html
+  %head
+    - block head
+      %meta(http-equiv="Content-Type" content="text/html;charset=utf-8")
+      %meta(http-equiv="X-UA-Compatible" content="IE=edge")
+      %meta#viewport(content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport")
+      
+      - block siteInfo
+        %title
+        %meta(name="keywords" content="")
+        %meta(name="description" content="")
+
+      %link(rel="stylesheet" href="//apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css")
+      %link(rel="stylesheet" href="/css/m.css")
+      - block css
+        / block css
+      %script(src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js")
+      %script(src="//apps.bdimg.com/libs/jquery-lazyload/1.9.5/jquery.lazyload.min.js")
+      %script(src="//apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js")
+      /[if lt IE 9]
+        %script(src="//apps.bdimg.com/libs/html5shiv/r29/html5.min.js")
+        %script(src="//apps.bdimg.com/libs/respond.js/1.4.2/respond.min.js")
+      %script(src="/js/m.js")
+      - block js
+        / block js
+  %body
+    - block body
+      %div.container
+        / block title
+
+    
+
+
+      
