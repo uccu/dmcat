@@ -9,11 +9,11 @@ function handleDisconnect() {
     connection = mysql.createConnection(db_config);                                               
     connection.connect(function(err) {              
         if(err) {                                     
-        console.log("进行断线重连：" + new Date());
+        console.log("reconnect db" + new Date());
         setTimeout(handleDisconnect, 2000);   //2秒重连一次
         return;
         }         
-        console.log("连接成功");
+        console.log("connect db success");
         cb instanceof Function && cb()
 
     });                                                                           

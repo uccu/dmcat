@@ -51,43 +51,59 @@ z = function(obj,con){
             break;
         case 'askForDriving':
             if(con.user_id){
-                let start_latitude = obj.start_latitude || 0
-                let start_longitude = obj.start_longitude || 0
-                let end_latitude = obj.end_latitude || 0
-                let end_longitude = obj.end_longitude || 0
-                
-                let start_name = obj.start_name || ''
-                let end_name = obj.end_name || ''
-                let create_time = parseInt(Date.now() / 1000)
-                let distance = obj.distance || 0
-                let start_time = obj.start_time || 0
-                let estimated_price = obj.estimated_price || 0
-                let phone = obj.phone || ''
-                let name = obj.name || ''
 
+                db.find('select * from c_order_driving where user_id=? and status in (1,2,3,4)',[con.user_id],function(result){
 
-                let id = db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name])
+                    if(result){
 
-                obj.id = id
+                        con.sendText(content({status:400,type:'askForDriving',message:'不能重复下单'}))
+                        return
 
-                con.sendText(content({status:200,type:'createOrderDriving',info:obj}))
-
-                let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
-                let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
-
-                let ids = db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
-                    
-                    for(let k in ids){
-
-                        let driver = data.DriverMap.get(ids[k].driver_id+'')
-                        driver && driver.con.sendText(content({status:200,type:'askForDriving',info:obj}))
                     }
 
+                    let start_latitude = obj.start_latitude || 0
+                    let start_longitude = obj.start_longitude || 0
+                    let end_latitude = obj.end_latitude || 0
+                    let end_longitude = obj.end_longitude || 0
+                    
+                    let start_name = obj.start_name || ''
+                    let end_name = obj.end_name || ''
+                    let create_time = parseInt(Date.now() / 1000)
+                    let distance = obj.distance || 0
+                    let start_time = obj.start_time || 0
+                    let estimated_price = obj.estimated_price || 0
+                    let phone = obj.phone || ''
+                    let name = obj.name || ''
+
+
+                    let id = db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name])
+
+                    obj.id = id
+
+                    con.sendText(content({status:200,type:'createOrderDriving',info:obj}))
+
+                    let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
+                    let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
+
+                    let ids = db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
+                        
+                        for(let k in ids){
+
+                            let driver = data.DriverMap.get(ids[k].driver_id+'')
+                            driver && driver.con.sendText(content({status:200,type:'askForDriving',info:obj}))
+                        }
+
+                    })
+                    
+
+
+                    console.log(`user ${con.user_id} create an order`)
+
+
                 })
+
+
                 
-
-
-                console.log(`user ${con.user_id} create an order`)
             }
             break;
         case 'cancelAskForDriving':
