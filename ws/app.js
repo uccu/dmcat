@@ -66,7 +66,7 @@ let serverCallback = function(con){
         }else if(path == 'driver'){
             driverAction(obj,con)
         }
-        console.log(data.DriverMap.size,data.UserMap.size)
+        
 
 	});
 
@@ -74,3 +74,7 @@ let serverCallback = function(con){
 
 let server = ws.createServer(serverCallback).listen(7777)
 console.log("server started")
+
+setInterval(function(){
+    console.log('Driver:'+data.DriverMap.size,'User:'+data.UserMap.size)
+},10000)

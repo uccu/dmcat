@@ -125,13 +125,23 @@ z = function(obj,con){
                 let id = obj.id || 0
                 db.find('select * from c_order_driving where id=? and user_id=?',[id,con.user_id],function(result){
                     if(result){
-                        if([1,2].indexOf(parseInt(result.status))){
+                        if([1,2].indexOf(parseInt(result.status))!==1){
                             db.update('update c_order_driving set status=0 where id=?',[id],function(){
                                 con.sendText(content({status:200,type:'cancelAskForDriving',id:id}))
                             })
                             if(result.status == 2){
                                 let driver = data.DriverMap.get(result.driver_id+'')
                                 driver && driver.con.sendText(content({status:200,type:'cancelAskForDriving',id:id}))
+                            }else{
+                                let driver_ids = result.driver_ids
+                                if(driver_ids){
+                                    driver_ids = driver_ids.split(',')
+                                    for(let k in driver_ids){
+                                        let driver = data.DriverMap.get(driver_ids[k]+'')
+                                        driver && driver.con.sendText(content({status:200,type:'cancelAskForDriving',id:id}))
+                                    }
+                                }
+
                             }
                         }
                     }
