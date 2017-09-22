@@ -80,10 +80,6 @@ z = function(obj,con){
 
                     let id = 0;
 
-                    
-
-                    
-
                     let ids = db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
 
                         db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name],function(e){
@@ -98,21 +94,9 @@ z = function(obj,con){
                             }
                             
                             db.update('update c_order_driving set driver_ids=? where id=?',[drivers.join(','),id])
-
                         })
-
-                        
-                        
-                        
-                        
-
                     })
-                    
-
-
                     console.log(`user ${con.user_id} create an order`)
-
-
                 })
 
 

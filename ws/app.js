@@ -33,24 +33,23 @@ let serverCallback = function(con){
     // con.sendText(content({status:200,type:'connect'}))
 
     con.on("close", function (code, reason) {
-
-        if(path == 'user'){
-            data.UserMap.delete(con.id)
-        }else{
-            data.DriverMap.delete(con.id)
+        if(con.user_id){
+            data.UserMap.delete(con.user_id)
+        }else if(con.driver_id){
+            data.DriverMap.delete(con.driver_id)
         }
 
 		console.log("one connection closed")
 	});
 	con.on("error", function (code, reason) {
 
-        if(path == 'user'){
-            data.UserMap.delete(con.id)
-        }else{
-            data.DriverMap.delete(con.id)
+        if(con.user_id){
+            data.UserMap.delete(con.user_id)
+        }else if(con.driver_id){
+            data.DriverMap.delete(con.driver_id)
         }
         
-		console.log("%cone connection occurred error",'red')
+		console.log("one connection occurred error")
     });
     con.on("text", function (str){
         let obj
