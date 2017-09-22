@@ -75,23 +75,36 @@ z = function(obj,con){
                     let phone = obj.phone || ''
                     let name = obj.name || ''
 
-
-                    let id = db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name])
-
-                    obj.id = con.user_id
-
-                    con.sendText(content({status:200,type:'askForDriving',info:obj}))
-
                     let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
                     let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
 
-                    let ids = db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
-                        
-                        for(let k in ids){
+                    let id = 0;
 
-                            let driver = data.DriverMap.get(ids[k].driver_id+'')
-                            driver && driver.con.sendText(content({status:200,type:'askForDriving',info:obj}))
-                        }
+                    
+
+                    
+
+                    let ids = db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
+
+                        db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name],function(e){
+                            id = e
+                            obj.id = id
+                            con.sendText(content({status:200,type:'askForDriving',info:obj}))
+                            let drivers = []
+                            for(let k in ids){
+                                drivers.push(ids[k].driver_id)
+                                let driver = data.DriverMap.get(ids[k].driver_id+'')
+                                driver && driver.con.sendText(content({status:200,type:'askForDriving',info:obj}))
+                            }
+                            
+                            db.update('update c_order_driving set driver_ids=? where id=?',[drivers.join(','),id])
+
+                        })
+
+                        
+                        
+                        
+                        
 
                     })
                     
