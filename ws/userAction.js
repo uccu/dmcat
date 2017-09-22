@@ -78,9 +78,9 @@ z = function(obj,con){
 
                     let id = db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name])
 
-                    obj.id = id
+                    obj.id = con.user_id
 
-                    con.sendText(content({status:200,type:'createOrderDriving',info:obj}))
+                    con.sendText(content({status:200,type:'askForDriving',info:obj}))
 
                     let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
                     let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
@@ -109,8 +109,20 @@ z = function(obj,con){
         case 'cancelAskForDriving':
             if(con.user_id){
 
-
-
+                let id = obj.id || 0
+                db.find('select * from c_order_driving where id=? and user_id=?',[id,con.user_id],function(result){
+                    if(result){
+                        if([1,2].indexOf(parseInt(result.status))){
+                            db.update('update c_order_driving set status=0 where id=?',[id],function(){
+                                con.sendText(content({status:200,type:'cancelAskForDriving',id:id}))
+                            })
+                            if(result.status == 2){
+                                let driver = data.DriverMap.get(result.driver_id+'')
+                                driver && driver.con.sendText(content({status:200,type:'cancelAskForDriving',id:id}))
+                            }
+                        }
+                    }
+                })
             }
             break;
         case 'callTaxi':
