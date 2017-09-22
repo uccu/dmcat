@@ -73,6 +73,33 @@ limit 每页数量
 {content:消息内容}
 
 
+1.10 获取行程
+user/getTripList
+page 页数
+limit 每页数量
+{"data":{"list":[{"trip_id":"2","type":"1","id":"2","user_id":"41","create_time":"1506056065","orderInfo":{"start_latitude":"31.23170600","start_longitude":"121.47264400","end_latitude":"31.23170600","end_longitude":"121.47264400","start_name":"\u5f00\u59cb\u4f4d\u7f6e","end_name":"\u7ed3\u675f\u4e3a\u6b62","create_time":"1506056065","status":"0","driver_id":"0"}}]},"code":200,"url":"","message":""}
+{type:1代驾2出租车3顺风车,status:0取消1创建(未接单)2接单（未接乘客）3接到乘客（路中）4到达终点（未付款）5已付款（未评价）6已评价，完成,driver_id:司机ID}
+
+
+
+1.11 获取默认地址
+user/getLocation
+{"data":{"home":{"id":"1","user_id":"41","type":"0","latitude":"0.00000000","longitude":"0.00000000","name":""},"company":{"id":"4","user_id":"41","type":"1","latitude":"0.00000000","longitude":"0.00000000","name":""}},"code":200,"url":"","message":""}
+{}
+
+
+1.12 修改默认地址
+user/changeLocation
+type 0家1公司
+latitude 纬度
+longitude 经度
+name 地址名
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
+
 
 ws.1.1 用户登录
 user

@@ -14,6 +14,10 @@ use Uccu\DmcatTool\Tool\AJAX;
 # 数据模型
 use App\Car\Model\UserModel;
 use App\Car\Model\MessageModel;
+use App\Car\Model\TripModel;
+use App\Car\Model\OrderDrivingModel;
+use App\Car\Model\OrderTaxiModel;
+use App\Car\Model\LocationModel;
 
 
 class UserController extends Controller{
@@ -295,6 +299,84 @@ class UserController extends Controller{
 
         AJAX::success();
 
+    }
+
+
+    /** 获取行程 */
+    function getTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel){
+
+        !$this->L->id && AJAX::error('未登录');
+        $where['user_id'] = $this->L->id;
+        $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
+
+        $select = 'start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,status,driver_id';
+
+        foreach($list as $k=>&$v){
+
+            if($v->type == 1){
+                $v->orderInfo = $orderDrivingModel->select($select,'RAW')->find($v->id);
+            }elseif($v->type == 2){
+                $v->orderInfo = $orderTaxiModel->select($select,'RAW')->find($v->id);
+            }elseif($v->type == 3){
+                $v->orderInfo = false;
+            }
+            if(!$v->orderInfo)unset($list[$k]);
+
+        }
+
+        $out['list'] = $list;
+        AJAX::success($out);
+
+    }
+
+
+    
+    /** 获取默认地址
+     * getLocation
+     * @param mixed $locationModel 
+     * @return mixed 
+     */
+    function getLocation(LocationModel $locationModel){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $where['user_id'] = $this->L->id;
+        $where['type'] = 0;
+
+        $obj = new stdClass;
+        foreach($locationModel->field as $field)$obj->$field = '';
+
+        $home = $locationModel->where($where)->find();
+        $where['type'] = 1;
+        $company = $locationModel->where($where)->find();
+
+        if(!$home)$home = $obj;
+        if(!$company)$company = $obj;
+
+        $out['home'] = $home;
+        $out['company'] = $company;
+
+        AJAX::success($out);
+
+    }
+
+    /** 修改地址
+     * changeLocation
+     * @param mixed $type 
+     * @param mixed $locationModel 
+     * @return mixed 
+     */
+    function changeLocation($type,LocationModel $locationModel){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $data = Request::getSingleInstance()->request($locationModel->field);
+        $data['user_id'] = $this->L->id;
+        $data['type'] = $type ?1:0;
+
+        $locationModel->set($data)->add(true);
+
+        AJAX::success();
     }
     
 }
