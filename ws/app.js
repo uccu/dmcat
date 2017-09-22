@@ -33,10 +33,13 @@ let serverCallback = function(con){
     // con.sendText(content({status:200,type:'connect'}))
 
     con.on("close", function (code, reason) {
+        
         if(con.user_id){
             data.UserMap.delete(con.user_id)
+            db.delete('delete from c_user_online where user_id=?',[con.user_id])
         }else if(con.driver_id){
             data.DriverMap.delete(con.driver_id)
+            db.delete('delete from c_driver_online where driver_id=?',[con.driver_id])
         }
 
 		console.log("one connection closed")
@@ -45,8 +48,10 @@ let serverCallback = function(con){
 
         if(con.user_id){
             data.UserMap.delete(con.user_id)
+            db.delete('delete from c_user_online where user_id=?',[con.user_id])
         }else if(con.driver_id){
             data.DriverMap.delete(con.driver_id)
+            db.delete('delete from c_driver_online where driver_id=?',[con.driver_id])
         }
         
 		console.log("one connection occurred error")
