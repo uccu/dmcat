@@ -43,10 +43,10 @@ exports.find = function(sql,param,cb){
 
             if(err){
                 console.log('[SELECT ERROR] - ',err.message);
-                cb instanceof Function && cb({})
+                cb instanceof Function && cb(false)
                 return;
             }        
-            cb instanceof Function && cb(result.length?result[0]:{})
+            cb instanceof Function && cb(result.length?result[0]:false)
         });
 
 }
