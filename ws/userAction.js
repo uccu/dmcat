@@ -86,6 +86,7 @@ z = function(obj,con){
                         db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name],function(e){
                             id = e
                             obj.id = id
+                            db.insert('insert into c_trip set type=1,id=?,user_id=?,create_time=?',[id,con.user_id,create_time])
                             con.sendText(content({status:200,type:'askForDriving',info:obj}))
                             let drivers = []
                             for(let k in ids){
