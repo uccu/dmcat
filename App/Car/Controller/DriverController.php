@@ -13,7 +13,7 @@ use Uccu\DmcatTool\Tool\AJAX;
 
 # 数据模型
 use App\Car\Model\DriverModel;
-use App\Car\Model\MessageModel;
+use App\Car\Model\DriverMessageModel;
 
 
 class DriverController extends Controller{
@@ -269,10 +269,10 @@ class DriverController extends Controller{
      * @param mixed $limit 
      * @return mixed 
      */
-    function getMyMessage(MessageModel $model,$page = 1,$limit = 10){
+    function getMyMessage(DriverMessageModel $model,$page = 1,$limit = 10){
         
         !$this->L->id && AJAX::error('未登录');
-        $where['user_id'] = $this->L->id;
+        $where['driver_id'] = $this->L->id;
         $list = $model->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
 
         $model->where($where)->set(['isread'=>1])->save();
@@ -286,12 +286,12 @@ class DriverController extends Controller{
      * @param mixed $content 反馈内容
      * @return mixed 
      */
-    function feedback($content,FeedbackModel $model){
+    function feedback($content,DriverFeedbackModel $model){
 
         !$this->L->id && AJAX::error('未登录');
         !$content && AJAX::error('内容不能为空！');
 
-        $model->set(['user_id'=>$this->L->id,'content'=>$content])->add();
+        $model->set(['driver_id'=>$this->L->id,'content'=>$content])->add();
 
         AJAX::success();
 
