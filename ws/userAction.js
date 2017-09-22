@@ -54,12 +54,10 @@ z = function(obj,con){
             if(con.user_id){
 
                 db.find('select * from c_order_driving where user_id=? and status in (1,2,3,4)',[con.user_id],function(result){
-
+                    /** 判断是否有订单正在执行中 */
                     if(result){
-
                         con.sendText(content({status:400,type:'askForDriving',message:'不能重复下单'}))
                         return
-
                     }
 
                     let start_latitude = obj.start_latitude || 0
@@ -84,9 +82,14 @@ z = function(obj,con){
                     let ids = db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
 
                         db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name],function(e){
+                            /** 创建订单 */
                             id = e
                             obj.id = id
+
+                            /** 创建行程 */
                             db.insert('insert into c_trip set type=1,id=?,user_id=?,create_time=?',[id,con.user_id,create_time])
+
+                            /** 发送成功信息 */
                             con.sendText(content({status:200,type:'askForDriving',info:obj}))
                             let drivers = []
                             for(let k in ids){
@@ -111,7 +114,7 @@ z = function(obj,con){
                 let id = obj.id || 0
                 db.find('select * from c_order_driving where id=? and user_id=?',[id,con.user_id],function(result){
                     if(result){
-                        if([1,2].indexOf(parseInt(result.status))!==1){
+                        if([1,2].indexOf(parseInt(result.status))!==-1){
                             db.update('update c_order_driving set status=0 where id=?',[id],function(){
                                 con.sendText(content({status:200,type:'cancelAskForDriving',id:id}))
                             })
