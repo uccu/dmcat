@@ -20,6 +20,7 @@ z = function(obj,con){
                 let user = data.UserMap.get(d.data.info.id)
                 if(user){
                     if(user.con === con)return
+                    delete user.con.user_id
                     user.con.close();
                 }
                 con.user_id = d.data.info.id

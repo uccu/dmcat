@@ -19,6 +19,7 @@ z = function(obj,con){
                 let driver = data.DriverMap.get(d.data.info.id)
                 if(driver){
                     if(driver.con === con)return
+                    delete user.con.driver_id
                     driver.con.close();
                 }
                 con.driver_id = d.data.info.id
