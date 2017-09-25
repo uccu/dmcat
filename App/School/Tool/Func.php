@@ -461,46 +461,54 @@ class Func{
 
         $where['student.student_id'] = $student_id;
 
-        $user = UserModel::getInstance()->where($where)->find();
+        $users = UserModel::getInstance()->where($where)->get();
         $student = StudentModel::getInstance()->find($student_id);
-        // $student = StudentModel::getInstance()->find(14);
-        // $user = UserModel::getInstance()->find(108);
 
-        if(!$student || !$user || !$user->wc_openid){
-            return false;
+
+        foreach($users as $user){
+
+            if(!$student || !$user || !$user->wc_openid){
+                return false;
+            }
+
+            if(!$student->name)$name = $student->name_en;
+            elseif(!$student->name_en)$name = $student->name;
+            elseif($student->name == $student->name_en)$name = $student->name;
+            else $name = $student->name.' '.$student->name_en;
+
+            $arr['touser'] = $user->wc_openid;
+            $arr['template_id'] = 'ILOHzkgtEG7fnDJc_lWA86uYyfJPR0cvELiNzqm8OMU';
+            $arr['topcolor'] = '#FF0000';
+            $arr['data'] = [
+                'first'=>[
+                    "value"=>"您好，您的子女已到校。\nHello, your children have come to school."
+                ],
+                'childName'=>[
+                    "value"=>$name
+                ],
+                'time'=>[
+                    "value"=>date('Y-m-d H:i:s')
+                ],
+                'status'=>[
+                    "value"=>"已到校 Arrived"
+                ],
+                'remark'=>[
+                    "value"=>""
+                ]
+            ];
+
+            $json = json_encode($arr);
+
+            $token = self::getAccessToken();
+
+            self::curl('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$token,$json);
+
         }
 
-        if(!$student->name)$name = $student->name_en;
-        elseif(!$student->name_en)$name = $student->name;
-        elseif($student->name == $student->name_en)$name = $student->name;
-        else $name = $student->name.' '.$student->name_en;
 
-        $arr['touser'] = $user->wc_openid;
-        $arr['template_id'] = 'ILOHzkgtEG7fnDJc_lWA86uYyfJPR0cvELiNzqm8OMU';
-        $arr['topcolor'] = '#FF0000';
-        $arr['data'] = [
-            'first'=>[
-                "value"=>"您好，您的子女已到校。\nHello, your children have come to school."
-            ],
-            'childName'=>[
-                "value"=>$name
-            ],
-            'time'=>[
-                "value"=>date('Y-m-d H:i:s')
-            ],
-            'status'=>[
-                "value"=>"已到校 Arrived"
-            ],
-            'remark'=>[
-                "value"=>""
-            ]
-        ];
+        
 
-        $json = json_encode($arr);
-
-        $token = self::getAccessToken();
-
-        return self::curl('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$token,$json);
+        return true;
 
         
 
@@ -510,48 +518,50 @@ class Func{
 
         $where['student.student_id'] = $student_id;
 
-        // $user = UserModel::getInstance()->where($where)->find();
-        // $student = StudentModel::getInstance()->find($student_id);
-        $student = StudentModel::getInstance()->find(14);
-        $user = UserModel::getInstance()->find(108);
+        $users = UserModel::getInstance()->where($where)->get();
+        $student = StudentModel::getInstance()->find($student_id);
+        
+        foreach($users as $user){
 
-        if(!$student || !$user || !$user->wc_openid){
-            return false;
+            if(!$student || !$user || !$user->wc_openid){
+                return false;
+            }
+
+            if(!$student->name)$name = $student->name_en;
+            elseif(!$student->name_en)$name = $student->name;
+            elseif($student->name == $student->name_en)$name = $student->name;
+            else $name = $student->name.' '.$student->name_en;
+
+            $arr['touser'] = $user->wc_openid;
+            $arr['template_id'] = 'ILOHzkgtEG7fnDJc_lWA86uYyfJPR0cvELiNzqm8OMU';
+            $arr['topcolor'] = '#FF0000';
+            $arr['data'] = [
+                'first'=>[
+                    "value"=>"您好，您的子女已离校。\nHello, your children have left school."
+                ],
+                'childName'=>[
+                    "value"=>$name
+                ],
+                'time'=>[
+                    "value"=>date('Y-m-d H:i:s')
+                ],
+                'status'=>[
+                    "value"=>"已离校 Left"
+                ],
+                'remark'=>[
+                    "value"=>""
+                ]
+            ];
+
+            $json = json_encode($arr);
+
+            $token = self::getAccessToken();
+
+            self::curl('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$token,$json);
+
         }
 
-        if(!$student->name)$name = $student->name_en;
-        elseif(!$student->name_en)$name = $student->name;
-        elseif($student->name == $student->name_en)$name = $student->name;
-        else $name = $student->name.' '.$student->name_en;
-
-        $arr['touser'] = $user->wc_openid;
-        $arr['template_id'] = 'ILOHzkgtEG7fnDJc_lWA86uYyfJPR0cvELiNzqm8OMU';
-        $arr['topcolor'] = '#FF0000';
-        $arr['data'] = [
-            'first'=>[
-                "value"=>"您好，您的子女已离校。\nHello, your children have left school."
-            ],
-            'childName'=>[
-                "value"=>$name
-            ],
-            'time'=>[
-                "value"=>date('Y-m-d H:i:s')
-            ],
-            'status'=>[
-                "value"=>"已离校 Left"
-            ],
-            'remark'=>[
-                "value"=>""
-            ]
-        ];
-
-        $json = json_encode($arr);
-
-        $token = self::getAccessToken();
-
-        return self::curl('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$token,$json);
-
-        
+        return true;
 
     }
 
