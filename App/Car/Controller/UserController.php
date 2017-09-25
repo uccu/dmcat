@@ -245,7 +245,7 @@ class UserController extends Controller{
 
         $name && $this->L->userInfo->name = $name;
         $avatar && $this->L->userInfo->avatar = $avatar;
-        $sex && $this->L->userInfo->sex = $sex;
+        $sex != NULL && $this->L->userInfo->sex = $sex;
 
         $this->L->userInfo->save();
 

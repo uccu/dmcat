@@ -243,7 +243,7 @@ class DriverController extends Controller{
 
         $name && $this->L->userInfo->name = $name;
         $avatar && $this->L->userInfo->avatar = $avatar;
-        $sex && $this->L->userInfo->sex = $sex;
+        $sex != NULL && $this->L->userInfo->sex = $sex;
         $brand && $this->L->userInfo->brand = $brand;
         $car_number && $this->L->userInfo->car_number = $car_number;
 
