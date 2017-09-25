@@ -227,6 +227,8 @@ class DriverController extends Controller{
         $info['name'] = $this->L->userInfo->name;
         $info['sex'] = $this->L->userInfo->sex;
         $info['phone'] = $this->L->userInfo->phone;
+        $info['brand'] = $this->L->userInfo->brand;
+        $info['car_number'] = $this->L->userInfo->car_number;
         $info['id'] = $this->L->id;
 
         $out['info'] = $info;
@@ -235,13 +237,15 @@ class DriverController extends Controller{
     }
 
     # 修改我的信息
-    function changeMyInfo($name,$avatar,$sex){
+    function changeMyInfo($name,$avatar,$sex,$car_number,$brand){
 
         !$this->L->id && AJAX::error('未登录');
 
         $name && $this->L->userInfo->name = $name;
         $avatar && $this->L->userInfo->avatar = $avatar;
         $sex && $this->L->userInfo->sex = $sex;
+        $brand && $this->L->userInfo->brand = $brand;
+        $car_number && $this->L->userInfo->car_number = $car_number;
 
         $this->L->userInfo->save();
 
