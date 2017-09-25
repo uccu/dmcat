@@ -14,6 +14,7 @@ use Uccu\DmcatTool\Tool\AJAX;
 # 数据模型
 use App\Car\Model\DriverModel;
 use App\Car\Model\DriverMessageModel;
+use App\Car\Model\DriverFeedbackModel;
 
 
 class DriverController extends Controller{
