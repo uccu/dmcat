@@ -85,7 +85,7 @@ class HomeController extends Controller{
         $distance = Func::getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude);
         if(!$distance)AJAX::error('距离获取失败');
 
-        $price = Func::getEstimatedPrice($distance);
+        $price = Func::getEstimatedPrice($distance->distance);
         if(!$price)AJAX::error('预估价获取失败');
 
         $out['area'] = $area;
