@@ -179,7 +179,7 @@
                                     var that = this
                                     var defaults = ele.parent().parent().attr('default')
                                     curl(url,{id:j(that).val()},function(w){
-                                        j(ele).html((all=='1'?'<option value="0">全部</option>':'')+(function(o){
+                                        j(ele).html((all=='1'?'<option value="0">全部</option>':'<option value="0">请选择</option>')+(function(o){
                                             var d = '';
                                             for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
                                             return d
@@ -195,7 +195,7 @@
                                 curl(url,{},function(w){
                                     var defaults = selects_dd.parent().parent().attr('default')
                                     var all = selects_dd.parent().parent().attr('all')
-                                    selects_dd.html((all=='1'?'<option value="0">全部</option>':'')+(function(o){
+                                    selects_dd.html((all=='1'?'<option value="0">全部</option>':'<option value="0">请选择</option>')+(function(o){
                                         var d = '';
                                         for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
                                         return d
