@@ -284,6 +284,23 @@ longitude 经度
 
 
 
+ws.2.3 司机抢单代驾
+@
+type 固定orderDriving
+id
+{}
+{}
+
+
+ws.2.4 司机抢单出租车
+@
+type 固定orderTaxi
+id
+{}
+{}
+
+
+
 3.1 上传图片（强制100x100）
 home/upAvatar
 file 图片二进制

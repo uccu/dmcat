@@ -11,8 +11,8 @@ let
 module.exports = {
 
     driverGetOrders(a,o,f){
-
-        db.find('select * from c_trip where where start_latitude between ? and ? and start_longitude between ? and ? and driver_id=0 order by create_time desc',[a-0.1,a+0.1,o-0.1,o+0.1],f)
+        console.log(a,o)
+        db.get('select * from c_trip where type<3 and start_latitude between ? and ? and start_longitude between ? and ? and driver_id=0 order by create_time desc',[a-0.1,a+0.1,o-0.1,o+0.1],f)
 
     }
 

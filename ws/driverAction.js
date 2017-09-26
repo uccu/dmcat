@@ -28,11 +28,9 @@ z = function(obj,con){
                 driver.id = d.data.info.id
                 data.DriverMap.set(d.data.info.id,driver)
 
-                let latitude = driver.latitude = obj.latitude
-                let longitude = driver.longitude = obj.longitude
-                if(latitude && longitude)db.replace('replace into c_driver_online (driver_id,latitude,longitude) VALUES(?,?,?)',[d.data.info.id,latitude,longitude])
-
-                else db.replace('replace into c_driver_online (driver_id) VALUES(?)',[d.data.info.id])
+                let latitude = driver.latitude = obj.latitude || 0
+                let longitude = driver.longitude = obj.longitude || 0
+                db.replace('replace into c_driver_online (driver_id,latitude,longitude) VALUES(?,?,?)',[d.data.info.id,latitude,longitude])
 
 
                 console.log(`driver ${d.data.info.id} linked`)
@@ -44,15 +42,41 @@ z = function(obj,con){
             break;
         case 'updPostion':
             if(con.driver_id){
+                let id = obj.id
                 let driver = data.DriverMap.get(con.driver_id)
-                let latitude = driver.latitude = obj.latitude
-                let longitude = driver.longitude = obj.longitude
+                let latitude = driver.latitude = obj.latitude || 0
+                let longitude = driver.longitude = obj.longitude || 0
                 db.replace('update c_driver_online set latitude=?,longitude=? where driver_id=?',[latitude,longitude,con.driver_id])
                 console.log(`driver ${con.driver_id} updated position`)
             }
             break;
-        case 'order':
-            
+        case 'orderDriving':
+            if(con.driver_id){
+                let id = obj.id
+                db.find('select * from c_order_driving where id=?',[id],function(result){
+                    if(result){
+                        db.update('update c_order_driving set driver_id=? where id=?',[con.driver_id,id],function(){
+                            db.update('update c_trip set driver_id=? where id=? and type=1',[con.driver_id,id],function(){
+                                let driver_ids = result.driver_ids
+                                con.sendText(content({status:200,type:'orderDriving',id:id}))
+                                if(driver_ids){
+                                    driver_ids = driver_ids.split(',')
+                                    for(let k in driver_ids){
+                                        if(driver_ids[k] == con.driver_id)continue;
+                                        let driver = data.DriverMap.get(driver_ids[k]+'')
+                                        driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
+
+                                            driver.con.sendText(content({type:'fleshDrivingList','mode':'order',list:r}))
+                                        })
+                                    }
+                                }
+                            })
+                        })
+                    }
+                })
+            }
+            break;
+        case 'orderTaxi':
             break;
         default:
             break;

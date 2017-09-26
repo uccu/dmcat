@@ -14,8 +14,8 @@
 
 
     :javascript
-        a=new WebSocket('ws://121.199.8.244:7777/user')
-        b=new WebSocket('ws://121.199.8.244:7777/driver')
+        a=new WebSocket('ws://127.0.0.1:7777/user')
+        b=new WebSocket('ws://127.0.0.1:7777/driver')
         a.onopen = function(){
             a.send('{"type":"login","user_token":"3Vz28Pj8Dd4VeNJhsrmS2HScgKxDOiSLHiNoXEstCVZf9vkADhTYAd1LPaA2O8Tg2DZBHPkcrwSUqtMsywR5Y2CgfKXXwdTr5YXJFdNKmDDQ="}')
 
@@ -34,9 +34,10 @@
                 end_latitude:'31.23170600',
                 end_longitude:'121.47264400',
                 start_name:'开始位置',
-                end_name:'结束为止',
+                end_name:'结束位置',
                 distance:'100.22',
-                estimated_price:'500.22'
+                estimated_price:'500.22',
+                city_id:'4522848'
             };
             str = JSON.stringify(d)
             a.send(str)
