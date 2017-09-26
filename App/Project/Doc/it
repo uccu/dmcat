@@ -262,5 +262,9 @@ file 图片二进制
 3.3 获取位置信息
 home/getLocationInfo
 type 1代驾2出租车3顺风车
+start_latitude 开始纬度
+start_longitude 开始经度
+end_latitude 结束纬度
+end_longitude 结束经度
 {"data":{"area":{"province":"\u4e0a\u6d77\u5e02","city":"\u4e0a\u6d77\u5e02","district":"\u9752\u6d66\u533a","name":"\u76c8\u6d66\u8857\u9053","cityId":"4522848"},"distance":{"origin_id":"1","dest_id":"1","distance":"857443","duration":"34140"},"price":"20.00","totalPrice":"20.00","coupon":"0.00"},"code":200,"url":"","message":""}
 {cityId:市ID,distance:距离（米）,duration:时间（秒）,price:里程价格,totalPrice:总价格,coupon:优惠券抵扣}
