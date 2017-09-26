@@ -466,7 +466,7 @@ class Func {
      * getArea
      * @return mixed 
      */
-    function getArea($latitude,$longitude){
+    public static function getArea($latitude,$longitude){
 
         $data['key'] = $key = L::getSingleInstance()->config->GAODE_KEY;
         $data['location'] = number_format($longitude,6,'.','').','.number_format($latitude,6,'.','');
@@ -499,7 +499,7 @@ class Func {
      * @param mixed $end_longitude 
      * @return mixed 
      */
-    function getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude){
+    public static function getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude){
 
         $data['key'] = $key = L::getSingleInstance()->config->GAODE_KEY;
         $data['origins'] = number_format($start_longitude,6,'.','').','.number_format($start_latitude,6,'.','');
@@ -520,7 +520,7 @@ class Func {
      * @param mixed $type 
      * @return mixed 
      */
-    function getEstimatedPrice($distance){
+    public static function getEstimatedPrice($distance){
         
         $distance = $distance / 1000;
 
