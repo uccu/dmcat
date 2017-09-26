@@ -499,7 +499,7 @@ class StaffController extends Controller{
 
         # 列表内容
         $where = [];
-        $where['type'] = 0;
+        $where['type'] = ['type < 7'];
         if($search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }

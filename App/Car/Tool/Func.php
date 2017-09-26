@@ -10,6 +10,7 @@ use App\Car\Model\CaptchaModel;
 use App\Car\Model\UploadModel;
 use App\Car\Model\UserModel;
 use Model;
+use stdClass;
 
 class Func {
     
@@ -456,6 +457,81 @@ class Func {
         Model::CopyMutiInstance('user_profit')->set($data)->add();
 
         return true;
+
+    }
+
+
+
+    /** 通过经纬度查询
+     * getArea
+     * @return mixed 
+     */
+    function getArea($latitude,$longitude){
+
+        $data['key'] = $key = L::getSingleInstance()->config->GAODE_KEY;
+        $data['location'] = number_format($longitude,6,'.','').','.number_format($latitude,6,'.','');
+        
+        $data = json_decode(self::curl('http://restapi.amap.com/v3/geocode/regeo',$data));
+
+        if(!$data->status)return false;
+
+        !$data->regeocode->addressComponent->city && $data->regeocode->addressComponent->city = $data->regeocode->addressComponent->province;
+
+        $obj = new stdClass;
+        $obj->province = $data->regeocode->addressComponent->province;
+        $obj->city = $data->regeocode->addressComponent->city;
+        $obj->district = $data->regeocode->addressComponent->district;
+
+        $obj->name = $data->regeocode->addressComponent->building->name;
+        if(!$obj->name)$obj->name = $data->regeocode->addressComponent->neighborhood->name;
+        if(!$obj->name)$obj->name = $data->regeocode->addressComponent->streetNumber->name;
+        if(!$obj->name)$obj->name = $data->regeocode->addressComponent->township;
+
+        return $obj;
+
+    }
+
+    /** 获取距离
+     * getDistance
+     * @param mixed $start_latitude 
+     * @param mixed $start_longitude 
+     * @param mixed $end_latitude 
+     * @param mixed $end_longitude 
+     * @return mixed 
+     */
+    function getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude){
+
+        $data['key'] = $key = L::getSingleInstance()->config->GAODE_KEY;
+        $data['origins'] = number_format($start_longitude,6,'.','').','.number_format($start_latitude,6,'.','');
+        $data['destination'] = number_format($end_longitude,6,'.','').','.number_format($end_latitude,6,'.','');
+        $data['type'] = 1;
+        $data = json_decode(self::curl('http://restapi.amap.com/v3/distance',$data));
+
+        if(!$data->status)return false;
+
+        return $data->results[0];
+
+
+    }
+
+    /** 计算价格
+     * getEstimatedPrice
+     * @param mixed $distance 
+     * @param mixed $type 
+     * @return mixed 
+     */
+    function getEstimatedPrice($distance){
+        
+        $distance = $distance / 1000;
+
+        if($distance < 6)$p = 20;
+        elseif($distance < 30)$p = 20+1.5*($distance-6);
+        elseif($distance < 100)$p = 56+1.5*($distance-30);
+        elseif($distance < 300)$p = 161+1.4*($distance-100);
+        else $p = 441+1.3*($distance-300);
+
+        
+        return number_format($p,2,'.','');
 
     }
 }

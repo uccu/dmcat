@@ -13,7 +13,7 @@ use App\Project\Model\LessionModel as Lession;
 use Model;
 use Uccu\DmcatTool\Tool\E;
 use Uccu\DmcatTool\Tool\LocalConfig;
-
+use App\Car\Tool\Func;
 
 
 use View;
@@ -100,4 +100,11 @@ class TestController extends Controller{
         View::hamlReader('Test/sock','App');
     }
 
+
+    function c(){
+
+        $out = Func::getDistance('37.22','118.02',31.15,121.10);
+        AJAX::success($out);
+
+    }
 }
