@@ -421,12 +421,14 @@ class UserController extends Controller{
      * @param mixed $longitude 
      * @return mixed 
      */
-    function getDrivers($latitude,$longitude,DriverOnlineModel $model){
+    function getDrivers($latitude = 0,$longitude = 0,DriverOnlineModel $model){
 
         $latitudeRange = [latitude - 0.1,latitude + 0.1];
         $longitudeRange = [longitude - 0.1,longitude + 0.1];
 
-        $list = $model->where('latitude BWTWEEN %a AND longitude BWTWEEN %a',$latitudeRange,$longitudeRange)->get()->toArray();
+        // $model->where('latitude BETWEEN %a AND longitude BETWEEN %a',$latitudeRange,$longitudeRange);
+
+        $list = $model->get()->toArray();
 
         $out['list'] = $list;
         AJAX::success($out);
