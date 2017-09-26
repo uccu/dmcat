@@ -13,6 +13,7 @@ use Uccu\DmcatTool\Tool\AJAX;
 
 # 数据模型
 use App\Car\Model\UserModel;
+use App\Car\Model\DriverOnlineModel;
 use App\Car\Model\MessageModel;
 use App\Car\Model\TripModel;
 use App\Car\Model\OrderDrivingModel;
@@ -410,6 +411,25 @@ class UserController extends Controller{
         $userApplyModel->set($data)->add(true);
 
         AJAX::success();
+
+    }
+
+
+    /** 获取附近的司机
+     * getDrivers
+     * @param mixed $latitude 
+     * @param mixed $longitude 
+     * @return mixed 
+     */
+    function getDrivers($latitude,$longitude,DriverOnlineModel $model){
+
+        $latitudeRange = [latitude - 0.1,latitude + 0.1];
+        $longitudeRange = [longitude - 0.1,longitude + 0.1];
+
+        $list = $model->where('latitude BWTWEEN %a AND longitude BWTWEEN %a',$latitudeRange,$longitudeRange)->get()->toArray();
+
+        $out['list'] = $list;
+        AJAX::success($out);
 
     }
     

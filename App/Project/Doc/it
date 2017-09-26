@@ -255,6 +255,28 @@ limit 每页数量
 
 
 
+
+
+ws.2.1 司机登录
+@
+type 固定login
+driver_token 司机TOKEN
+latitude 纬度（可选）
+longitude 经度（可选）
+{}
+{}
+
+
+ws.2.2 司机更新位置
+@
+type 固定updPostion
+latitude 纬度
+longitude 经度 
+{}
+{}
+
+
+
 3.1 上传图片（强制100x100）
 home/upAvatar
 file 图片二进制
