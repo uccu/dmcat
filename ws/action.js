@@ -10,10 +10,9 @@ let
 
 module.exports = {
 
-    driverGetOrders(){
+    driverGetOrders(a,o,f){
 
-        db.find('select * from c_order_driving where user_id=? and status in (1,2,3,4)',[con.user_id],function(result){})
-
+        db.find('select * from c_trip where where start_latitude between ? and ? and start_longitude between ? and ? and driver_id=0 order by create_time desc',[a-0.1,a+0.1,o-0.1,o+0.1],f)
 
     }
 

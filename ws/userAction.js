@@ -2,8 +2,9 @@ const post = require('./post')
 const content = d => d instanceof Object ? JSON.stringify(d) : '{}'
 let data = require('./data'),
 db = require('./db'),
+action = require('./action'),
 UserInfo = function(){},getDrivers = function(){
-    
+
 },
 z = function(obj,con){
 
@@ -82,7 +83,11 @@ z = function(obj,con){
 
                     let id = 0;
 
-                    let ids = db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
+                    db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
+
+                        for(let i in ids){
+                            ids[i] = ids[i].driver_id
+                        }
 
                         db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id],function(e){
                             /** 创建订单 */
@@ -90,15 +95,20 @@ z = function(obj,con){
                             obj.id = id
 
                             /** 创建行程 */
-                            db.insert('insert into c_trip set type=1,id=?,user_id=?,create_time=?',[id,con.user_id,create_time])
+                            db.insert('insert into c_trip set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=1,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price])
 
                             /** 发送成功信息 */
                             con.sendText(content({status:200,type:'askForDriving',info:obj}))
                             let drivers = []
                             for(let k in ids){
-                                drivers.push(ids[k].driver_id)
-                                let driver = data.DriverMap.get(ids[k].driver_id+'')
-                                driver && driver.con.sendText(content({status:200,type:'askForDriving',info:obj}))
+                                drivers.push(ids[k])
+                                let driver = data.DriverMap.get(ids[k]+'')
+
+                                driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
+
+                                    driver.con.sendText(content({status:200,type:'askForDriving',list:r}))
+                                })
+                                
                             }
                             
                             db.update('update c_order_driving set driver_ids=? where id=?',[drivers.join(','),id])

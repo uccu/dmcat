@@ -28,8 +28,8 @@ z = function(obj,con){
                 driver.id = d.data.info.id
                 data.DriverMap.set(d.data.info.id,driver)
 
-                let latitude = obj.latitude
-                let longitude = obj.longitude
+                let latitude = driver.latitude = obj.latitude
+                let longitude = driver.longitude = obj.longitude
                 if(latitude && longitude)db.replace('replace into c_driver_online (driver_id,latitude,longitude) VALUES(?,?,?)',[d.data.info.id,latitude,longitude])
 
                 else db.replace('replace into c_driver_online (driver_id) VALUES(?)',[d.data.info.id])
@@ -44,8 +44,9 @@ z = function(obj,con){
             break;
         case 'updPostion':
             if(con.driver_id){
-                let latitude = obj.latitude
-                let longitude = obj.longitude
+                let driver = data.DriverMap.get(con.driver_id)
+                let latitude = driver.latitude = obj.latitude
+                let longitude = driver.longitude = obj.longitude
                 db.replace('update c_driver_online set latitude=?,longitude=? where driver_id=?',[latitude,longitude,con.driver_id])
                 console.log(`driver ${con.driver_id} updated position`)
             }
