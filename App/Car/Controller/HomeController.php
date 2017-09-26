@@ -99,4 +99,18 @@ class HomeController extends Controller{
     }
 
 
+
+    function area($id,AreaModel $areaModel){
+
+        if(!$id){
+
+            $list = $areaModel->where(['parent_id'=>0])->order('pinyin')->get_field('areaName','id')->toArray();
+        }else{
+
+            $list = $areaModel->where(['parent_id'=>$id])->order('pinyin')->get_field('areaName','id')->toArray();
+        }
+        $out['list'] = $list;
+        AJAX::success($out);
+    }
+
 }

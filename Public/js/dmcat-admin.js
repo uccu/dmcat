@@ -163,6 +163,56 @@
                         +'<select/></div></div>')
                         pa.find('select').val(m.info[para.name]||para.default||'')
                         break;
+                    case 'selects':
+                        var url = para.url
+                        var pa = $('<div>')
+                        for(var i in para.detail){
+                            i = parseInt(i)
+
+                            var pa0 = j('<div class="form-group" url="'+url+'" all="'+(para.detail[i].all?'1':'0')+'" work="'+para.detail[i].name+'" default="'+(m.info[para.detail[i].name]||para.detail[i].default||0)+'" next-work="'+(para.detail[i+1]?para.detail[i+1].name:'')+'"><label class="col-sm-2 control-label">'+para.detail[i].title+'</label><div class="col-sm-'+(para.detail[i].size || 2)+'"><select class="form-control" '+(para.disabled?'disabled':'')+' name="'+para.detail[i].name+'"><select/></div></div>')
+                            if(pa0.attr('next-work')){
+                                pa0.find('select').change(function(){
+                                    var next = j(this).parent().parent().attr('next-work')
+                                    var ele = j('[name="'+next+'"]')
+                                    var url = ele.parent().parent().attr('url')
+                                    var all = ele.parent().parent().attr('all')
+                                    var that = this
+                                    var defaults = ele.parent().parent().attr('default')
+                                    curl(url,{id:j(that).val()},function(w){
+                                        j(ele).html((all=='1'?'<option value="0">全部</option>':'')+(function(o){
+                                            var d = '';
+                                            for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
+                                            return d
+                                        })(w.list))
+                                        if(j(ele).find('[value="'+defaults+'"]').length)j(ele).val(defaults).change()
+                                    })
+
+                                })
+                            }
+                            if(i==0){
+                                var selects_dd = pa0.find('select')
+
+                                curl(url,{},function(w){
+                                    var defaults = selects_dd.parent().parent().attr('default')
+                                    var all = selects_dd.parent().parent().attr('all')
+                                    selects_dd.html((all=='1'?'<option value="0">全部</option>':'')+(function(o){
+                                        var d = '';
+                                        for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
+                                        return d
+                                    })(w.list))
+                                    if(j(selects_dd).find('[value="'+defaults+'"]').length)j(selects_dd).val(defaults).change()
+                                })
+
+                            }
+                            pa.append(pa0)
+                        }
+
+                        
+                        
+                        
+
+                        
+                        break;
                     case 'option':
                         var pa = j('<div>')
                         for(var i in m.info[para.name]){

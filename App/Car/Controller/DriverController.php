@@ -148,7 +148,7 @@ class DriverController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function register(DriverModel $model,$password = null,$phone = null,$phone_captcha,$cookie = false,$parent_id = 0){
+    function register(DriverModel $model,$password = null,$phone = null,$phone_captcha,$cookie = false,$parent_id = 0,$city_id = 0){
         
         
         //是否储存登录信息到cookie
@@ -166,6 +166,7 @@ class DriverController extends Controller{
             $info->parent_id = $parent_id;
         }
         $info->phone        = $phone;
+        $info->city_id      = $city_id;
         $info->salt         = Func::randWord(6);
         $info->password     = $this->encrypt_password($password,$info->salt);
         $this->_add_user($info);

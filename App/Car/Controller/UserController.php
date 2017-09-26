@@ -18,6 +18,7 @@ use App\Car\Model\TripModel;
 use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\OrderTaxiModel;
 use App\Car\Model\LocationModel;
+use App\Car\Model\UserApplyModel;
 
 
 class UserController extends Controller{
@@ -320,8 +321,13 @@ class UserController extends Controller{
             }elseif($v->type == 3){
                 $v->orderInfo = false;
             }
+            
             if(!$v->orderInfo)unset($list[$k]);
+            else{
 
+                $v->orderInfo->create_date = Func::time_calculate($v->orderInfo->create_time);
+
+            }
         }
 
         $out['list'] = $list;
@@ -377,6 +383,34 @@ class UserController extends Controller{
         $locationModel->set($data)->add(true);
 
         AJAX::success();
+    }
+
+
+    /** 申请成为顺风车司机
+     * apply
+     * @param mixed $userApplyModel 
+     * @param mixed $car_number 
+     * @param mixed $brand 
+     * @return mixed 
+     */
+    function apply(UserApplyModel $userApplyModel,$car_number,$brand){
+
+        !$this->L->id && AJAX::error('未登录');
+        
+        // $info = $userApplyModel->find($this->L->id);
+
+        $data['id'] = $this->L->id;
+        $data['car_number'] = $car_number;
+        $data['brand'] = $brand;
+        $data['driving_permit'] = Func::uploadFiles('driving_permit');
+        $data['driving_license'] = Func::uploadFiles('driving_license');
+        $data['status'] = 0;
+        $data['create_time'] = TIME_NOW;
+
+        $userApplyModel->set($data)->add(true);
+
+        AJAX::success();
+
     }
     
 }

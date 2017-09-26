@@ -9,12 +9,12 @@ class AreaModel extends Model{
 
     public function area_t(){
 
-        return $this->join(areaCopyModel::class,'id','parent_id');
+        return $this->join(AreaCopyModel::class,'id','parent_id');
     }
 
     public function area_b(){
 
-        return $this->join(areaCopyModel::class,'parent_id','id');
+        return $this->join(AreaCopyModel::class,'parent_id','id');
     }
 
 }

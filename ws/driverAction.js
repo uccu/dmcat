@@ -50,6 +50,9 @@ z = function(obj,con){
                 console.log(`driver ${con.driver_id} updated position`)
             }
             break;
+        case 'order':
+            
+            break;
         default:
             break;
     }

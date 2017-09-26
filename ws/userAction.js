@@ -73,6 +73,7 @@ z = function(obj,con){
                     let estimated_price = obj.estimated_price || 0
                     let phone = obj.phone || ''
                     let name = obj.name || ''
+                    let city_id = obj.city_id || 0
 
                     let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
                     let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
@@ -81,7 +82,7 @@ z = function(obj,con){
 
                     let ids = db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
 
-                        db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name],function(e){
+                        db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id],function(e){
                             /** 创建订单 */
                             id = e
                             obj.id = id
