@@ -63,20 +63,20 @@ z = function(obj,con){
                         return
                     }
 
-                    let start_latitude = obj.start_latitude || 0
-                    let start_longitude = obj.start_longitude || 0
-                    let end_latitude = obj.end_latitude || 0
-                    let end_longitude = obj.end_longitude || 0
+                    let start_latitude = parseFloat(obj.start_latitude || 0)
+                    let start_longitude = parseFloat(obj.start_longitude || 0)
+                    let end_latitude = parseFloat(obj.end_latitude || 0)
+                    let end_longitude = parseFloat(obj.end_longitude || 0)
                     
                     let start_name = obj.start_name || ''
                     let end_name = obj.end_name || ''
                     let create_time = parseInt(Date.now() / 1000)
-                    let distance = obj.distance || 0
-                    let start_time = obj.start_time || 0
-                    let estimated_price = obj.estimated_price || 0
+                    let distance = parseInt(obj.distance || 0)
+                    let start_time = parseInt(obj.start_time || 0)
+                    let estimated_price = parseFloat(obj.estimated_price || 0)
                     let phone = obj.phone || ''
                     let name = obj.name || ''
-                    let city_id = obj.city_id || 0
+                    let city_id = parseInt(obj.city_id || 0)
 
                     let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
                     let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
@@ -88,18 +88,20 @@ z = function(obj,con){
                         for(let i in ids){
                             ids[i] = ids[i].driver_id
                         }
-
+                        console.log(ids,1,latitudeRange,longitudeRange)
                         db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id],function(e){
                             /** 创建订单 */
+                            console.log(ids,2)
                             id = e
                             obj.id = id
 
                             /** 创建行程 */
-                            db.insert('insert into c_trip set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=1,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price])
+                            db.insert('insert into c_trip set status=1,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=1,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price])
 
                             /** 发送成功信息 */
                             con.sendText(content({status:200,type:'askForDriving',info:obj}))
                             let drivers = []
+                            console.log(ids)
                             for(let k in ids){
                                 drivers.push(ids[k])
                                 let driver = data.DriverMap.get(ids[k]+'')
@@ -130,27 +132,31 @@ z = function(obj,con){
                         if([1,2].indexOf(parseInt(result.status))!==-1){
                             db.update('update c_order_driving set status=0 where id=?',[id],function(){
                                 con.sendText(content({status:200,type:'cancelAskForDriving',id:id}))
-                            })
-                            if(result.status == 2){
-                                let driver = data.DriverMap.get(result.driver_id+'')
-                                driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
 
-                                    driver.con.sendText(content({type:'fleshDrivingList','mode':'cancel',list:r}))
-                                })
-                            }else{
-                                let driver_ids = result.driver_ids
-                                if(driver_ids){
-                                    driver_ids = driver_ids.split(',')
-                                    for(let k in driver_ids){
-                                        let driver = data.DriverMap.get(driver_ids[k]+'')
+                                db.update('update c_trip set status=0 where id=? and type=1',[id],function(){
+                                    if(result.status == 2){
+                                        let driver = data.DriverMap.get(result.driver_id+'')
                                         driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
-
+        
                                             driver.con.sendText(content({type:'fleshDrivingList','mode':'cancel',list:r}))
                                         })
+                                    }else{
+                                        let driver_ids = result.driver_ids
+                                        if(driver_ids){
+                                            driver_ids = driver_ids.split(',')
+                                            for(let k in driver_ids){
+                                                let driver = data.DriverMap.get(driver_ids[k]+'')
+                                                if(driver.serving)continue
+                                                driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
+        
+                                                    driver.con.sendText(content({type:'fleshDrivingList','mode':'cancel',list:r}))
+                                                })
+                                            }
+                                        }
                                     }
-                                }
-
-                            }
+                                })
+                            })
+                            
                         }
                     }
                 })

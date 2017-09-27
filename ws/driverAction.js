@@ -28,13 +28,16 @@ z = function(obj,con){
                 driver.id = d.data.info.id
                 data.DriverMap.set(d.data.info.id,driver)
 
-                let latitude = driver.latitude = obj.latitude || 0
-                let longitude = driver.longitude = obj.longitude || 0
+                let latitude = driver.latitude = parseFloat(obj.latitude || 0)
+                let longitude = driver.longitude = parseFloat(obj.longitude || 0)
                 db.replace('replace into c_driver_online (driver_id,latitude,longitude) VALUES(?,?,?)',[d.data.info.id,latitude,longitude])
 
+                db.find('select * from c_trip where driver_id=? and status in(2,3,4)',[driver.id],function(re){
+                    if(re)driver.serving = 1;
+                })
 
                 console.log(`driver ${d.data.info.id} linked`)
-
+                con.sendText(content({status:200,type:'login'}))
                 
 
             })
@@ -44,8 +47,8 @@ z = function(obj,con){
             if(con.driver_id){
                 let id = obj.id
                 let driver = data.DriverMap.get(con.driver_id)
-                let latitude = driver.latitude = obj.latitude || 0
-                let longitude = driver.longitude = obj.longitude || 0
+                let latitude = driver.latitude = parseFloat(obj.latitude || 0)
+                let longitude = driver.longitude = parseFloat(obj.longitude || 0)
                 db.replace('update c_driver_online set latitude=?,longitude=? where driver_id=?',[latitude,longitude,con.driver_id])
                 console.log(`driver ${con.driver_id} updated position`)
             }
@@ -55,17 +58,21 @@ z = function(obj,con){
                 let id = obj.id
                 db.find('select * from c_order_driving where id=?',[id],function(result){
                     if(result){
-                        db.update('update c_order_driving set driver_id=? where id=?',[con.driver_id,id],function(){
-                            db.update('update c_trip set driver_id=? where id=? and type=1',[con.driver_id,id],function(){
+                        /** 更新订单 */
+                        db.update('update c_order_driving set driver_id=?,status=2 where id=?',[con.driver_id,id],function(){
+                            /** 更新行程 */
+                            db.update('update c_trip set driver_id=?,status=2 where id=? and type=1',[con.driver_id,id],function(){
                                 let driver_ids = result.driver_ids
+                                let driver = data.DriverMap.get(con.driver_id)
+                                /** 设置司机状态为服务中 */
+                                driver.serving = 1;
                                 con.sendText(content({status:200,type:'orderDriving',id:id}))
                                 if(driver_ids){
                                     driver_ids = driver_ids.split(',')
                                     for(let k in driver_ids){
-                                        if(driver_ids[k] == con.driver_id)continue;
                                         let driver = data.DriverMap.get(driver_ids[k]+'')
+                                        if(driver.serving)continue
                                         driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
-
                                             driver.con.sendText(content({type:'fleshDrivingList','mode':'order',list:r}))
                                         })
                                     }
