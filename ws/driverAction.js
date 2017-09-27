@@ -2,6 +2,7 @@ const post = require('./post')
 const content = d => d instanceof Object ? JSON.stringify(d) : '{}'
 let data = require('./data'),
 db = require('./db'),
+action = require('./action'),
 UserInfo = function(){},
 z = function(obj,con){
 
