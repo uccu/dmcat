@@ -3,9 +3,9 @@
 namespace App\Car\Model;
 use Model;
 
-class OrderTaxiModel extends Model{
+class OrderWayModel extends Model{
 
-    public $table = 'order_taxi';
+    public $table = 'order_way';
 
     public function user(){
 

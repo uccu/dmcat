@@ -34,6 +34,9 @@ z = function(obj,con){
 
                 db.find('select * from c_trip where driver_id=? and status in(2,3,4)',[driver.id],function(re){
                     if(re)driver.serving = 1;
+                    action.driverGetOrders(driver.latitude,driver.longitude,function(r){
+                        driver.con.sendText(content({type:'fleshDrivingList','mode':'order',list:r}))
+                    })
                 })
 
                 console.log(`driver ${d.data.info.id} linked`)

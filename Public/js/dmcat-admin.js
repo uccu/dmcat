@@ -511,7 +511,7 @@
                             }else{
                                 var checkbox = j('<div class="state icheckbox_square-green">');
                                 ti == '1' && checkbox.addClass('checked');
-                                
+                                checkbox.appendTo(td)
                             }
                             break;
                         default:
