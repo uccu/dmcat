@@ -394,7 +394,7 @@ class UserController extends Controller{
      * @param mixed $brand 
      * @return mixed 
      */
-    function apply(UserApplyModel $userApplyModel,$car_number,$brand){
+    function apply(UserApplyModel $userApplyModel,$car_number,$brand,$city_id = 0){
 
         !$this->L->id && AJAX::error('未登录');
         
@@ -406,6 +406,7 @@ class UserController extends Controller{
         $data['driving_permit'] = Func::uploadFiles('driving_permit');
         $data['driving_license'] = Func::uploadFiles('driving_license');
         $data['status'] = 0;
+        $data['city_id'] = $city_id;
         $data['create_time'] = TIME_NOW;
 
         $userApplyModel->set($data)->add(true);

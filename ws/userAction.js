@@ -108,7 +108,7 @@ z = function(obj,con){
 
                                 driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
 
-                                    driver.con.sendText(content({type:'fleshDrivingList','mode':'create',list:r}))
+                                    driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'create',list:r}))
                                 })
                                 
                             }
@@ -138,7 +138,7 @@ z = function(obj,con){
                                         let driver = data.DriverMap.get(result.driver_id+'')
                                         driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
         
-                                            driver.con.sendText(content({type:'fleshDrivingList','mode':'cancel',list:r}))
+                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
                                         })
                                     }else{
                                         let driver_ids = result.driver_ids
@@ -149,7 +149,7 @@ z = function(obj,con){
                                                 if(driver.serving)continue
                                                 driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
         
-                                                    driver.con.sendText(content({type:'fleshDrivingList','mode':'cancel',list:r}))
+                                                    driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
                                                 })
                                             }
                                         }
