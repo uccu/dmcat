@@ -7,6 +7,9 @@ class DriverOnlineModel extends Model{
 
     public $table = 'driver_online';
 
+    public function driver(){
 
+        return $this->join(DriverModel::class,'id','driver_id');
+    }
 
 }

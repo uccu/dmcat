@@ -427,8 +427,8 @@ class UserController extends Controller{
         $latitudeRange = [latitude - 0.1,latitude + 0.1];
         $longitudeRange = [longitude - 0.1,longitude + 0.1];
 
-        if($type == 1)$model->where(['type_driving'=>1]);
-        elseif($type == 2)$model->where(['type_taxi'=>1]);
+        if($type == 1)$model->where(['driver.type_driving'=>1]);
+        elseif($type == 2)$model->where(['driver.type_taxi'=>1]);
 
         $model->where('latitude BETWEEN %a AND longitude BETWEEN %a',$latitudeRange,$longitudeRange);
 
