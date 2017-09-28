@@ -112,6 +112,8 @@ brand 车品牌
 
 1.14 查看周围的司机
 user/getDrivers
+latitude 纬度
+longitude 经度
 {"data":{"list":[{"driver_id":"1","latitude":"31.23170600","longitude":"121.47264400"}]},"code":200,"url":"","message":""}
 {}
 
