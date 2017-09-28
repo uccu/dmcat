@@ -120,7 +120,6 @@ class MoneyController extends Controller{
     }
     function admin_pay_get(PaymentModel $model,$id){
         $this->L->adminPermissionCheck(118);
-        $model->find($id)->type > 0 && AJAX::error('无权限！');
         $name = '';
         # 允许操作接口
         $opt = 

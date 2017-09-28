@@ -156,7 +156,6 @@ class StaffController extends Controller{
     function admin_user_get(UserModel $model,$id){
 
         $this->L->adminPermissionCheck(68);
-        $model->find($id)->type > 0 && AJAX::error('无权限！');
         $name = '用户管理';
 
         # 允许操作接口
@@ -222,7 +221,6 @@ class StaffController extends Controller{
     }
     function admin_user_upd(UserModel $model,$id,$pwd){
         $this->L->adminPermissionCheck(68);
-        $model->find($id)->type > 0 && AJAX::error('无权限！');
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
         unset($data['type']);
@@ -371,7 +369,6 @@ class StaffController extends Controller{
     function admin_driver_get(DriverModel $model,$id){
 
         $this->L->adminPermissionCheck(75);
-        $model->find($id)->type > 0 && AJAX::error('无权限！');
         $name = '用户管理';
 
         # 允许操作接口
@@ -454,7 +451,6 @@ class StaffController extends Controller{
     }
     function admin_driver_upd(DriverModel $model,$id,$pwd){
         $this->L->adminPermissionCheck(75);
-        $model->find($id)->type > 0 && AJAX::error('无权限！');
         !$model->field && AJAX::error('字段没有公有化！');
         
         $data = Request::getSingleInstance()->request($model->field);
