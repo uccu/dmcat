@@ -64,6 +64,7 @@ let serverCallback = function(con){
             console.warn('message not obj',str)
             return
         }
+        if(!obj)return
 
         if(path == 'user'){
             userAction(obj,con)
