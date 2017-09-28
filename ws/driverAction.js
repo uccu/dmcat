@@ -27,6 +27,8 @@ z = function(obj,con){
                 driver = new UserInfo
                 driver.con = con
                 driver.id = d.data.info.id
+                driver.type_driving = d.data.info.type_driving == 1?1:0
+                driver.type_taxi = d.data.info.type_taxi == 1?1:0
                 data.DriverMap.set(d.data.info.id,driver)
 
                 let latitude = driver.latitude = parseFloat(obj.latitude || 0)
@@ -35,9 +37,13 @@ z = function(obj,con){
 
                 db.find('select * from c_trip where driver_id=? and status in(2,3,4)',[driver.id],function(re){
                     if(re)driver.serving = 1;
-                    action.driverGetOrders(driver.latitude,driver.longitude,function(r){
-                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
-                    })
+                    if(driver.serving)return
+                    let g = function(r){
+                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'login',list:r}))
+                    };
+                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
                 })
 
                 console.log(`driver ${d.data.info.id} linked`)
@@ -75,10 +81,16 @@ z = function(obj,con){
                                     driver_ids = driver_ids.split(',')
                                     for(let k in driver_ids){
                                         let driver = data.DriverMap.get(driver_ids[k]+'')
-                                        if(driver.serving)continue
-                                        driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
-                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
-                                        })
+                                        
+                                        if(driver){
+                                            if(driver.serving)continue
+                                            let g = function(r){
+                                                driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
+                                            };
+                                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g)
+                                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g)
+                                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g)
+                                        }
                                     }
                                 }
                             })

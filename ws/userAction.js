@@ -106,10 +106,15 @@ z = function(obj,con){
                                 drivers.push(ids[k])
                                 let driver = data.DriverMap.get(ids[k]+'')
 
-                                driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
-
-                                    driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'create',list:r}))
-                                })
+                                if(driver){
+                                    if(driver.serving)continue
+                                    let g = function(r){
+                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'create',list:r}))
+                                    };
+                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g)
+                                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g)
+                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g)
+                                }
                                 
                             }
                             
@@ -136,21 +141,29 @@ z = function(obj,con){
                                 db.update('update c_trip set status=0 where id=? and type=1',[id],function(){
                                     if(result.status == 2){
                                         let driver = data.DriverMap.get(result.driver_id+'')
-                                        driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
-        
-                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
-                                        })
+                                        if(driver){
+                                            let g = function(r){
+                                                driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
+                                            };
+                                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g)
+                                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g)
+                                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g)
+                                        }
                                     }else{
                                         let driver_ids = result.driver_ids
                                         if(driver_ids){
                                             driver_ids = driver_ids.split(',')
                                             for(let k in driver_ids){
                                                 let driver = data.DriverMap.get(driver_ids[k]+'')
-                                                if(driver.serving)continue
-                                                driver && action.driverGetOrders(driver.latitude,driver.longitude,function(r){
-        
-                                                    driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
-                                                })
+                                                if(driver){
+                                                    if(driver.serving)continue
+                                                    let g = function(r){
+                                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
+                                                    };
+                                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g)
+                                                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g)
+                                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g)
+                                                }
                                             }
                                         }
                                     }

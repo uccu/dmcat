@@ -64,11 +64,8 @@ let serverCallback = function(con){
             console.warn('message not obj',str)
             return
         }
-<<<<<<< HEAD
+
         if(!obj || !(obj instanceof Object))return
-=======
-        if(!obj)return
->>>>>>> 2eb8aec15061c896f62cb5ee9593bb3d05aefcbc
 
         if(path == 'user'){
             userAction(obj,con)
