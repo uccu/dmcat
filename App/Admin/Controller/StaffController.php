@@ -251,7 +251,7 @@ class StaffController extends Controller{
 
 
     # 管理司机
-    function admin_driver(DriverModel $model,$page = 1,$limit = 10,$search,$type_driving,$type_taxi){
+    function admin_driver(DriverModel $model,$page = 1,$limit = 10,$search,$typee){
         
         $this->L->adminPermissionCheck(75);
 
@@ -272,16 +272,16 @@ class StaffController extends Controller{
                     ],
                     [
                         'title'=>'代驾',
-                        'name'=>'type_driving',
-                        'type'=>'checkbox',
-                        'size'=>'2'
+                        'name'=>'typee',
+                        'type'=>'select',
+                        'size'=>'2',
+                        'option'=>[
+                            '0'=>'全部',
+                            '1'=>'代驾',
+                            '2'=>'出租车'
+                        ],'default'=>'0'
                     ],
-                    [
-                        'title'=>'出租车',
-                        'name'=>'type_taxi',
-                        'type'=>'checkbox',
-                        'size'=>'2'
-                    ],
+
                 ]
             ];
 
@@ -330,8 +330,8 @@ class StaffController extends Controller{
             $where['city_id'] = $this->L->userInfo->city_id;
         }
 
-        if($type_driving)$where['type_driving'] = 1;
-        if($type_taxi)$where['type_taxi'] = 1;
+        if($typee == 1)$where['type_driving'] = 1;
+        elseif($typee == 2)$where['type_taxi'] = 1;
         
         if($search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
@@ -404,6 +404,16 @@ class StaffController extends Controller{
                     'type'  =>  'avatar',
                 ],
                 [
+                    'title' =>  '类型',
+                    'name'  =>  'typee',
+                    'type'  =>  'select',
+                    'option'=>[
+                        '0'=>'请选择',
+                        '1'=>'代驾',
+                        '2'=>'出租车'
+                    ],'default'=>'0'
+                ],
+                [
                     
                     'type'  =>  'selects',
                     'url'   =>  '/home/area',
@@ -432,6 +442,8 @@ class StaffController extends Controller{
         $info = AdminFunc::get($model,$id);
         $info->province_id = AreaModel::copyMutiInstance()->find($info->city_id)->parent_id;
 
+        $info->typee = $info->type_driving ? 1:2;
+
         if(!$info->province_id){
             $info->province_id = '';
         }
@@ -449,11 +461,19 @@ class StaffController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_driver_upd(DriverModel $model,$id,$pwd){
+    function admin_driver_upd(DriverModel $model,$id,$pwd,$typee){
         $this->L->adminPermissionCheck(75);
         !$model->field && AJAX::error('字段没有公有化！');
         
         $data = Request::getSingleInstance()->request($model->field);
+        if(!$typee)AJAX::error('请选择类型');
+        if($typee == 1){
+            $data['type_driving'] = 1;
+            $data['type_taxi'] = 0;
+        }else{
+            $data['type_driving'] = 0;
+            $data['type_taxi'] = 1;
+        }
 
         if(!$data['city_id'])AJAX::error('请选择城市');
         unset($data['type']);
