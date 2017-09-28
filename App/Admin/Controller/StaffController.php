@@ -253,7 +253,7 @@ class StaffController extends Controller{
 
 
     # 管理司机
-    function admin_driver(DriverModel $model,$page = 1,$limit = 10,$search){
+    function admin_driver(DriverModel $model,$page = 1,$limit = 10,$search,$type_driving,$type_taxi){
         
         $this->L->adminPermissionCheck(75);
 
@@ -271,6 +271,18 @@ class StaffController extends Controller{
                         'title'=>'搜索',
                         'name'=>'search',
                         'size'=>'3'
+                    ],
+                    [
+                        'title'=>'代驾',
+                        'name'=>'type_driving',
+                        'type'=>'checkbox',
+                        'size'=>'2'
+                    ],
+                    [
+                        'title'=>'出租车',
+                        'name'=>'type_taxi',
+                        'type'=>'checkbox',
+                        'size'=>'2'
                     ],
                 ]
             ];
@@ -319,6 +331,9 @@ class StaffController extends Controller{
         }elseif($this->L->userInfo->type == 1){
             $where['city_id'] = $this->L->userInfo->city_id;
         }
+
+        if($type_driving)$where['type_driving'] = 1;
+        if($type_taxi)$where['type_taxi'] = 1;
         
         if($search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
