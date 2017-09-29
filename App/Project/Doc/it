@@ -225,8 +225,8 @@ phone 手机号
 
 2.4 司机我的信息
 driver/getMyInfo
-{"data":{"info":{"avatar":"noavatar.png","name":"\u7528\u6237000041","sex":"0","phone":"13661730893","id":"41"}},"code":200,"url":"","message":""}
-{sex:性别1男2女0无}
+{"data":{"info":{"avatar":"noavatar.png","name":"\u7528\u6237000041","sex":"0","phone":"13661730893","brand":"","car_number":"","type_driving":"1","type_taxi":"0","id":"1","judge_score":"0.0","money_today":"100.00","order_today":"0"}},"code":200,"url":"","message":""}
+{sex:性别1男2女0无,judge_score:评分,money_today:今日收益,order_today:今日订单,car_number:车牌,brand:车型}
 
 
 2.5 司机修改我的信息
