@@ -328,7 +328,13 @@ class UserController extends Controller{
             else{
 
                 $v->orderInfo->create_date = Func::time_calculate($v->orderInfo->create_time);
-
+                if($v->driver_id){
+                    $v->driverInfo = UserModel::copyMutiInstance()->select('avatar','name','sex','phone','judge_score','car_number','brand')->find($v->driver_id);
+                    if(!$v->driverInfo)$v->driver_id = '0';
+                    else{
+                        $v->driverInfo->order_count = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('type<2')->where(['driver_id'=>$v->driver_id])->find()->c;
+                    }
+                }
             }
         }
 
