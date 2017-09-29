@@ -18,7 +18,8 @@ use App\Car\Model\DriverFeedbackModel;
 use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\OrderTaxiModel;
 use App\Car\Model\TripModel;
-use App\Car\Model\DriverFundModel;
+use App\Car\Model\DriverFundModel; 
+use App\Car\Model\UserModel; 
 
 class DriverController extends Controller{
 
