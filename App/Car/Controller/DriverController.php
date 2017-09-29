@@ -18,6 +18,7 @@ use App\Car\Model\DriverFeedbackModel;
 use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\OrderTaxiModel;
 use App\Car\Model\TripModel;
+use App\Car\Model\DriverFundModel;
 
 class DriverController extends Controller{
 
@@ -135,6 +136,8 @@ class DriverController extends Controller{
             'id'=>$info->id,
             'avatar'=>$info->avatar,
             'name'=>$info->name,
+            'tpye_driving'=>$info->tpye_driving,
+            'tpye_taxi'=>$info->tpye_taxi,
             
         ];
         
@@ -224,7 +227,7 @@ class DriverController extends Controller{
 
     # 我的信息
     function getMyInfo(){
-
+        
         !$this->L->id && AJAX::error('未登录');
 
         $info['avatar'] = $this->L->userInfo->avatar;
@@ -236,7 +239,12 @@ class DriverController extends Controller{
         $info['type_driving'] = $this->L->userInfo->type_driving;
         $info['type_taxi'] = $this->L->userInfo->type_taxi;
         $info['id'] = $this->L->id;
-
+        $info['judge_score'] = $this->L->userInfo->judge_score;
+        
+        
+        $info['money_today'] = DriverFundModel::copyMutiInstance()->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
+        if(!$info['money_today'])$info['money_today'] = '0.00';
+        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('type<2')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         $out['info'] = $info;
 
         AJAX::success($out);
