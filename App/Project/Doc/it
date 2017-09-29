@@ -263,6 +263,12 @@ limit 每页数量
 
 
 
+2.9 获取行程(订单)
+driver/getTripList
+page 页数
+limit 每页数量
+{"data":{"list":[{"trip_id":"2","type":"1","id":"2","user_id":"41","create_time":"1506056065","orderInfo":{"start_latitude":"31.23170600","start_longitude":"121.47264400","end_latitude":"31.23170600","end_longitude":"121.47264400","start_name":"\u5f00\u59cb\u4f4d\u7f6e","end_name":"\u7ed3\u675f\u4e3a\u6b62","create_time":"1506056065","status":"0","driver_id":"0","create_date":"昨天 17:00"}}]},"code":200,"url":"","message":""}
+{type:1代驾2出租车3顺风车,status:0取消1创建(未接单)2接单（未接乘客）3接到乘客（路中）4到达终点（未付款）5已付款（未评价）6已评价，完成,driver_id:司机ID}
 
 
 

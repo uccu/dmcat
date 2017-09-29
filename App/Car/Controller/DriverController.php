@@ -15,7 +15,9 @@ use Uccu\DmcatTool\Tool\AJAX;
 use App\Car\Model\DriverModel;
 use App\Car\Model\DriverMessageModel;
 use App\Car\Model\DriverFeedbackModel;
-
+use App\Car\Model\OrderDrivingModel;
+use App\Car\Model\OrderTaxiModel;
+use App\Car\Model\TripModel;
 
 class DriverController extends Controller{
 
@@ -302,6 +304,39 @@ class DriverController extends Controller{
         $model->set(['driver_id'=>$this->L->id,'content'=>$content])->add();
 
         AJAX::success();
+
+    }
+
+
+    /** 获取行程 */
+    function getTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel){
+
+        // $this->L->id = 3;
+        !$this->L->id && AJAX::error('未登录');
+        $where['driver_id'] = $this->L->id;
+        $where['type'] = ['type<3'];
+        $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
+
+        $select = 'start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,status,driver_id';
+
+        foreach($list as $k=>&$v){
+
+            if($v->type == 1){
+                $v->orderInfo = $orderDrivingModel->select($select,'RAW')->find($v->id);
+            }elseif($v->type == 2){
+                $v->orderInfo = $orderTaxiModel->select($select,'RAW')->find($v->id);
+            }
+            
+            if(!$v->orderInfo)unset($list[$k]);
+            else{
+
+                $v->orderInfo->create_date = Func::time_calculate($v->orderInfo->create_time);
+
+            }
+        }
+
+        $out['list'] = $list;
+        AJAX::success($out);
 
     }
     

@@ -19,7 +19,8 @@ use App\Car\Model\TripModel;
 use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\OrderTaxiModel;
 use App\Car\Model\LocationModel;
-use App\Car\Model\UserApplyModel;
+use App\Car\Model\UserApplyModel; 
+use App\Car\Model\OrderWayModel; 
 
 
 class UserController extends Controller{
@@ -305,7 +306,7 @@ class UserController extends Controller{
 
 
     /** 获取行程 */
-    function getTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel){
+    function getTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
 
         !$this->L->id && AJAX::error('未登录');
         $where['user_id'] = $this->L->id;
@@ -320,7 +321,7 @@ class UserController extends Controller{
             }elseif($v->type == 2){
                 $v->orderInfo = $orderTaxiModel->select($select,'RAW')->find($v->id);
             }elseif($v->type == 3){
-                $v->orderInfo = false;
+                $v->orderInfo = $orderWayModel->select($select,'RAW')->find($v->id);
             }
             
             if(!$v->orderInfo)unset($list[$k]);
