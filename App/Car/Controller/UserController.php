@@ -21,6 +21,7 @@ use App\Car\Model\OrderTaxiModel;
 use App\Car\Model\LocationModel;
 use App\Car\Model\UserApplyModel; 
 use App\Car\Model\OrderWayModel; 
+use App\Car\Model\DriverModel; 
 
 
 class UserController extends Controller{
