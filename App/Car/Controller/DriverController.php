@@ -341,9 +341,9 @@ class DriverController extends Controller{
             else{
 
                 $v->orderInfo->create_date = Func::time_calculate($v->orderInfo->create_time);
-                if($v->driver_id){
-                    $v->driverInfo = DriverModel::copyMutiInstance()->select('avatar','name','sex','phone')->find($v->driver_id);
-                    if(!$v->driverInfo)$v->driver_id = '0';
+                if($v->user_id){
+                    $v->userInfo = UserModel::copyMutiInstance()->select('avatar','name','sex','phone')->find($v->user_id);
+                    if(!$v->userInfo)$v->user_id = '0';
                 }
 
             }
