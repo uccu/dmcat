@@ -329,6 +329,8 @@ class DriverController extends Controller{
 
         foreach($list as $k=>&$v){
 
+            
+
             if($v->type == 1){
                 $v->orderInfo = $orderDrivingModel->select($select,'RAW')->find($v->id);
             }elseif($v->type == 2){
@@ -339,6 +341,10 @@ class DriverController extends Controller{
             else{
 
                 $v->orderInfo->create_date = Func::time_calculate($v->orderInfo->create_time);
+                if($v->driver_id){
+                    $v->driverInfo = DriverModel::copyMutiInstance()->select('avatar','name','sex','phone')->find($v->driver_id);
+                    if(!$v->driverInfo)$v->driver_id = '0';
+                }
 
             }
         }
