@@ -701,8 +701,6 @@ class StaffController extends Controller{
             foreach($ids as $i){
                 $model->where('city_id LIKE %n AND id != %n','%'.$i.'%',$id)->find() && AJAX::error('城市已经有人管理！');
             }
-            
-
         }
 
         $upd = AdminFunc::upd($model,$id,$data);

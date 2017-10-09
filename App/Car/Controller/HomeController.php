@@ -113,4 +113,66 @@ class HomeController extends Controller{
         AJAX::success($out);
     }
 
+
+    function time(){
+
+        $h = date('H',TIME_NOW);
+        $i = date('i',TIME_NOW);
+
+        $t = TIME_TODAY + 2*24*3600;
+        $t2 = TIME_TODAY + 24*3600;
+
+        for($e = TIME_YESTERDAY;$e < $t;$e += 600){
+
+            if($e < TIME_NOW){
+
+            }elseif($e < $t2){
+                $data['t1'][date('H',$e)][] = [
+                    'timestamp'=>$e,
+                    'name'=>date('i',$e)
+                ];
+                // echo date('H',$e).'<br>';
+            }else{
+                $data['t2'][date('H',$e)][] = [
+                    'timestamp'=>$e,
+                    'name'=>date('i',$e)
+                ];
+            }
+
+
+        }
+
+        foreach($data['t1'] as $k=>&$v){
+
+            $v = [
+                'name'=>$k,
+                'list'=>$v
+            ];
+        }
+        $data['t1'] = array_values($data['t1']);
+
+        foreach($data['t2'] as $k=>&$v){
+
+            $v = [
+                'name'=>$k,
+                'list'=>$v
+            ];
+        }
+        $data['t2'] = array_values($data['t2']);
+
+        $data = [
+            [
+                'name'=>'今天',
+                'list'=>$data['t1']
+            ],[
+                'name'=>'明天',
+                'list'=>$data['t2']
+            ]
+        ];
+
+        AJAX::success(['data'=>$data]);
+
+
+    }
+
 }
