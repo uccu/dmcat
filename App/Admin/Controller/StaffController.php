@@ -461,21 +461,26 @@ class StaffController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_driver_upd(DriverModel $model,$id,$pwd,$typee){
+    function admin_driver_upd(DriverModel $model,$id,$pwd,$typee,$active){
         $this->L->adminPermissionCheck(75);
         !$model->field && AJAX::error('字段没有公有化！');
         
         $data = Request::getSingleInstance()->request($model->field);
-        if(!$typee)AJAX::error('请选择类型');
-        if($typee == 1){
-            $data['type_driving'] = 1;
-            $data['type_taxi'] = 0;
-        }else{
-            $data['type_driving'] = 0;
-            $data['type_taxi'] = 1;
-        }
 
-        if(!$data['city_id'])AJAX::error('请选择城市');
+        if(is_null($active)){
+            if(!$typee)AJAX::error('请选择类型');
+            if($typee == 1){
+                $data['type_driving'] = 1;
+                $data['type_taxi'] = 0;
+            }else{
+                $data['type_driving'] = 0;
+                $data['type_taxi'] = 1;
+            }
+            if(!$data['city_id'])AJAX::error('请选择城市');
+        }
+        
+
+        
         unset($data['type']);
         unset($data['salt']);
         unset($data['id']);
@@ -903,15 +908,17 @@ class StaffController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_suser_upd(UserModel $model,$id,$pwd){
+    function admin_suser_upd(UserModel $model,$id,$pwd,$active){
         $this->L->adminPermissionCheck(117);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
         unset($data['salt']);
         unset($data['id']);
-        if(!$data['city_id'])AJAX::error('请选择城市');
-        $model->where('phone = %n AND id != %d',$data['phone'],$id)->find() && AJAX::error('手机号已存在，请更改为其他手机号！');
 
+        if(is_null($active)){
+            if(!$data['city_id'])AJAX::error('请选择城市');
+            $model->where('phone = %n AND id != %d',$data['phone'],$id)->find() && AJAX::error('手机号已存在，请更改为其他手机号！');
+        }
         if(!$id){
             $data['salt'] = Func::randWord(6);
             $data['password'] = $this->encrypt_password($pwd,$data['salt']);
