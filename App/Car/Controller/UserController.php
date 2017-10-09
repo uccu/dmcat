@@ -317,6 +317,7 @@ class UserController extends Controller{
 
         foreach($list as $k=>&$v){
 
+            # 行程的类型
             if($v->type == 1){
                 $v->orderInfo = $orderDrivingModel->select($select,'RAW')->find($v->id);
             }elseif($v->type == 2){

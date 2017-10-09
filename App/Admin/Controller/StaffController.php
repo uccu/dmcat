@@ -671,7 +671,7 @@ class StaffController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_admin_upd(AdminModel $model,$id,$pwd,$active,$city_id){
+    function admin_admin_upd(AdminModel $model,AreaModel $aModel,$id,$pwd,$active,$city_id){
         $this->L->adminPermissionCheck(67);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
@@ -699,7 +699,11 @@ class StaffController extends Controller{
             $ids = explode(',',$city_id);
 
             foreach($ids as $i){
-                $model->where('city_id LIKE %n AND id != %n','%'.$i.'%',$id)->find() && AJAX::error('城市已经有人管理！');
+                if($model->where('city_id LIKE %n AND id != %n','%'.$i.'%',$id)->find()){
+                    $name = $aModel->find($i)->areaName;
+                    AJAX::error('`'.$name.'`已经有人管理！');
+                }
+                
             }
         }
 

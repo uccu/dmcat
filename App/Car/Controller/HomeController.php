@@ -100,6 +100,12 @@ class HomeController extends Controller{
 
 
 
+    /** 获取省市
+     * area
+     * @param mixed $id 
+     * @param mixed $areaModel 
+     * @return mixed 
+     */
     function area($id,AreaModel $areaModel){
 
         if(!$id){
@@ -114,6 +120,7 @@ class HomeController extends Controller{
     }
 
 
+     # 获取预约时间
     function time(){
 
         $h = date('H',TIME_NOW);
@@ -131,7 +138,6 @@ class HomeController extends Controller{
                     'timestamp'=>$e,
                     'name'=>date('i',$e)
                 ];
-                // echo date('H',$e).'<br>';
             }else{
                 $data['t2'][date('H',$e)][] = [
                     'timestamp'=>$e,
