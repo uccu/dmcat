@@ -186,7 +186,7 @@ class Api extends Controller{
 
     
 
-    function delete(Request $request,Resource $resource){
+    function delete(Request $request,Resource $resource,SiteResource $siteResource){
         $id = $request->request('id');
         
 
@@ -209,7 +209,7 @@ class Api extends Controller{
 
             $ids = explode(',',$id);
         }
-
+        $siteResource->where('%N IN (%c)','resource_id',$ids)->remove();
         $data['count'] = $resource->where('%N IN (%c)','id',$ids)->remove()->getStatus();
         $data['ids'] = $ids;
 
