@@ -327,7 +327,7 @@ class StaffController extends Controller{
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
         }elseif($this->L->userInfo->type == 1){
-            $where['city_id'] = $this->L->userInfo->city_id;
+            $where['city_id'] = ['%F IN (%n)','city_id',$this->L->userInfo->city_id];
         }
 
         if($typee == 1)$where['type_driving'] = 1;
@@ -640,7 +640,7 @@ class StaffController extends Controller{
                     'url'   =>  '/home/area',
                     'detail'=>[
                         ['name'=>'province_id' ,'title' =>  '管理省'],
-                        ['name'=>'city_id'     ,'title' =>  '管理市','all'=>true]
+                        ['name'=>'city_id'     ,'title' =>  '管理市','all'=>true,'type'=>'checkboxs','size'=>'8']
                     ]
                 ],
                 [
@@ -671,7 +671,7 @@ class StaffController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_admin_upd(AdminModel $model,$id,$pwd){
+    function admin_admin_upd(AdminModel $model,$id,$pwd,$active,$city_id){
         $this->L->adminPermissionCheck(67);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
@@ -679,11 +679,12 @@ class StaffController extends Controller{
         unset($data['salt']);
         unset($data['id']);
 
-        if($data['province_id'])$data['type'] = 2;
-        else AJAX::error('请选择管理的省');
-        if($data['city_id'])$data['type'] = 1;
-        $model->where('phone = %n AND id != %d',$data['phone'],$id)->find() && AJAX::error('手机号已存在，请更改为其他手机号！');
-
+        if(!$id || !is_numeric($active)){
+            if($data['province_id'])$data['type'] = 2;
+            else AJAX::error('请选择管理的省');
+            if($data['city_id'])$data['type'] = 1;
+            $model->where('phone = %n AND id != %d',$data['phone'],$id)->find() && AJAX::error('手机号已存在，请更改为其他手机号！');
+        }
         if(!$id){
             $data['salt'] = Func::randWord(6);
             $data['password'] = $this->encrypt_password($pwd,$data['salt']);
@@ -691,6 +692,17 @@ class StaffController extends Controller{
         }elseif($pwd){
             $salt = $model->find($id)->salt;
             $data['password'] = $this->encrypt_password($pwd,$salt);
+        }
+
+        if($city_id){
+
+            $ids = explode(',',$city_id);
+
+            foreach($ids as $i){
+                $model->where('city_id LIKE %n AND id != %n','%'.$i.'%',$id)->find() && AJAX::error('城市已经有人管理！');
+            }
+            
+
         }
 
         $upd = AdminFunc::upd($model,$id,$data);
@@ -772,7 +784,7 @@ class StaffController extends Controller{
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
         }elseif($this->L->userInfo->type == 1){
-            $where['city_id'] = $this->L->userInfo->city_id;
+            $where['city_id'] = ['%F IN (%n)','city_id',$this->L->userInfo->city_id];
         }
         
         if($search){

@@ -169,7 +169,12 @@
                         for(var i in para.detail){
                             i = parseInt(i)
 
-                            var pa0 = j('<div class="form-group" url="'+url+'" all="'+(para.detail[i].all?'1':'0')+'" work="'+para.detail[i].name+'" default="'+(m.info[para.detail[i].name]||para.detail[i].default||0)+'" next-work="'+(para.detail[i+1]?para.detail[i+1].name:'')+'"><label class="col-sm-2 control-label">'+para.detail[i].title+'</label><div class="col-sm-'+(para.detail[i].size || 2)+'"><select class="form-control" '+(para.disabled?'disabled':'')+' name="'+para.detail[i].name+'"><select/></div></div>')
+                            var pa0 = j('<div class="form-group" url="'+url+'" all="'+(para.detail[i].all?'1':'0')+'" work="'+para.detail[i].name+'" work-type="'+para.detail[i].type+'" default="'+(m.info[para.detail[i].name]||para.detail[i].default||0)+'" next-work="'+(para.detail[i+1]?para.detail[i+1].name:'')+'"><label class="col-sm-2 control-label">'+para.detail[i].title+'</label><div class="col-sm-'+(para.detail[i].size || 2)+'"><select class="form-control" '+(para.disabled?'disabled':'')+' name="'+para.detail[i].name+'"><select/></div></div>')
+                            if(para.detail[i].type == 'checkboxs'){
+                                var sp = pa0.find('select').parent()
+                                pa0.find('select').remove()
+                                sp.append('<input type="hidden" name="'+para.detail[i].name+'">')
+                            }
                             if(pa0.attr('next-work')){
                                 pa0.find('select').change(function(){
                                     var next = j(this).parent().parent().attr('next-work')
@@ -178,17 +183,42 @@
                                     var all = ele.parent().parent().attr('all')
                                     var that = this
                                     var defaults = ele.parent().parent().attr('default')
-                                    curl(url,{id:j(that).val()},function(w){
-                                        j(ele).html((all=='1'?'<option value="0">全部</option>':'<option value="0">请选择</option>')+(function(o){
-                                            var d = '';
-                                            for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
-                                            return d
-                                        })(w.list))
-                                        if(j(ele).find('[value="'+defaults+'"]').length)j(ele).val(defaults).change()
+                                    var work_type = ele.parent().parent().attr('work-type')
+                                    if(j(that).val() != '0')curl(url,{id:j(that).val()},function(w){
+                                        if(work_type == 'checkboxs'){
+                                            ele.parent().find('label').remove()
+                                            ele.parent().append((function(o){
+                                                var d = '';
+                                                for(var q in o)d += '<label><input type="checkbox" data-id="'+q+'">'+o[q]+'</label>'
+                                                return d
+                                            })(w.list))
+                                            ele.parent().find('input').click(function(){
+                                                var val = [];
+                                                ele.parent().find('input:checked').each(function(){
+                                                    val.push(j(this).attr('data-id'))
+                                                })
+                                                ele.val(val)
+                                            })
+                                            if(defaults)defaults = defaults.split(',')
+                                            for(var i in defaults){
+                                                ele.parent().find('input[data-id="'+defaults[i]+'"]').click()
+
+                                            }
+                                        }else{
+                                            j(ele).html((all=='1'?'<option value="0">全部</option>':'<option value="0">请选择</option>')+(function(o){
+                                                var d = '';
+                                                for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
+                                                return d
+                                            })(w.list))
+                                            if(j(ele).find('[value="'+defaults+'"]').length)j(ele).val(defaults).change()
+                                        }
+                                        
+                                        
                                     })
 
                                 })
                             }
+                            
                             if(i==0){
                                 var selects_dd = pa0.find('select')
 

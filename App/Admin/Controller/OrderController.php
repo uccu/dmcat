@@ -116,7 +116,7 @@ class OrderController extends Controller{
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
         }elseif($this->L->userInfo->type == 1){
-            $where['city_id'] = $this->L->userInfo->city_id;
+            $where['city_id'] = ['%F IN (%n)','city_id',$this->L->userInfo->city_id];
         }
         
         if($search){
@@ -298,7 +298,7 @@ class OrderController extends Controller{
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
         }elseif($this->L->userInfo->type == 1){
-            $where['city_id'] = $this->L->userInfo->city_id;
+            $where['city_id'] = ['%F IN (%n)','city_id',$this->L->userInfo->city_id];
         }
         
         if($search){
@@ -473,7 +473,7 @@ class OrderController extends Controller{
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
         }elseif($this->L->userInfo->type == 1){
-            $where['city_id'] = $this->L->userInfo->city_id;
+            $where['city_id'] = ['%F IN (%n)','city_id',$this->L->userInfo->city_id];
         }
         
         if($search){
@@ -659,7 +659,7 @@ class OrderController extends Controller{
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
         }elseif($this->L->userInfo->type == 1){
-            $where['city_id'] = $this->L->userInfo->city_id;
+            $where['city_id'] = ['%F IN (%n)','city_id',$this->L->userInfo->city_id];
         }
         
         if($search){

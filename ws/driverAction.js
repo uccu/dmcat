@@ -103,6 +103,18 @@ z = function(obj,con){
             break;
         case 'orderTaxi':
             break;
+        case 'addDistanceDriving':
+            break;
+        case 'addDistanceTaxi':
+            break;
+        case 'startDriving':
+            break;
+        case 'startTaxi':
+            break;
+        case 'endDriving':
+            break;
+        case 'endTaxi':
+            break;
         default:
             break;
     }
