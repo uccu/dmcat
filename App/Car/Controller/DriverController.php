@@ -137,8 +137,8 @@ class DriverController extends Controller{
             'id'=>$info->id,
             'avatar'=>$info->avatar,
             'name'=>$info->name,
-            'tpye_driving'=>$info->tpye_driving,
-            'tpye_taxi'=>$info->tpye_taxi,
+            'tpye_driving'=>$info->type_driving,
+            'tpye_taxi'=>$info->type_taxi,
             
         ];
         
