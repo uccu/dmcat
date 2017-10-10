@@ -350,7 +350,12 @@ class DriverController extends Controller{
             }
         }
 
+
+        $order_count = $tripModel->select('COUNT(*) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('status>3')->where('type<2')->find()->c;
+
         $out['list'] = $list;
+        $out['order_count'] = $order_count;
+        $out['judge_score'] = $this->L->userInfo->judge_score;
         AJAX::success($out);
 
     }

@@ -22,6 +22,7 @@ use App\Car\Model\LocationModel;
 use App\Car\Model\UserApplyModel; 
 use App\Car\Model\OrderWayModel; 
 use App\Car\Model\DriverModel; 
+use App\Car\Model\JudgeModel; 
 
 
 class UserController extends Controller{
@@ -448,4 +449,81 @@ class UserController extends Controller{
 
     }
     
+    /** 评价
+     * judge
+     * @param mixed $judgeModel 
+     * @param mixed $tripModel 
+     * @param mixed $id 
+     * @param mixed $comment 
+     * @param mixed $tag 
+     * @param mixed $orderDrivingModel 
+     * @param mixed $orderTaxiModel 
+     * @param mixed $orderWayModel 
+     * @return mixed 
+     */
+    function judge(DriverModel $driverModel,JudgeModel $judgeModel,TripModel $tripModel,$score,$id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $trip = $tripModel->find($id);
+
+        !$trip && AJAX::error('行程不存在');
+        $trip->user_id != $this->L->id && AJAX::error('用户不符'.$trip->user_id.','.$this->L->id);
+        $trip->status != 5 && AJAX::error('已评价');
+
+        $obj = new stdClass;
+
+        $score = floor($score);
+        if($score>5)$score = 5;
+
+        $obj->driver_id = $trip->driver_id;
+        $obj->trip_id = $id;
+        $obj->comment = $comment;
+        $obj->score = $score;
+        $obj->tag = $tag;
+        $obj->user_id = $trip->user_id;
+        $obj->type = $trip->type;
+
+        DB::start();
+
+        $judgeModel->set($obj)->add();
+
+        $trip->status = 6;
+        $trip->save();
+
+        if($trip->type == 1){
+
+            $orderDrivingModel->set(['status'=>6])->save($trip->id);
+            
+        }elseif($trip->type == 2){
+
+            $orderTaxiModel->set(['status'=>6])->save($trip->id);
+            
+        }elseif($trip->type == 3){
+
+            $orderWayModel->set(['status'=>6])->save($trip->id);
+            
+        }
+
+        if($trip->type != 3){
+            $score = $judgeModel->select('AVG(score) AS c','RAW')->where(['driver_id'=>$trip->driver_id])->where('type<3')->find()->c;
+            !$score && $score = 0;
+            $driverModel->set(['judge_score'=>$score])->save($trip->driver_id);
+        }else{
+            $score = $judgeModel->select('AVG(score) AS c','RAW')->where(['driver_id'=>$trip->driver_id])->where('type=3')->find()->c;
+            !$score && $score = 0;
+            // $driverModel->set(['judge_score'=>$score])->save($trip->driver_id);
+
+        }
+
+
+        DB::commit();
+
+        AJAX::success(['score'=>$score]);
+
+
+
+    }
+
+
 }
