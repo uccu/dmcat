@@ -308,6 +308,37 @@ id
 {}
 
 
+ws.2.5 司机接到乘客（开始计费）代驾
+@
+type 固定startDriving
+id
+{}
+{}
+
+
+ws.2.6 司机接到乘客（开始计费）出租车
+@
+type 固定startTaxi
+id
+{}
+{}
+
+
+ws.2.7 司机到达终点代驾
+@
+type 固定endDriving
+id
+{}
+{}
+
+
+ws.2.8 司机到达终点出租车
+@
+type 固定endTaxi
+id
+{}
+{}
+
 
 3.1 上传图片（强制100x100）
 home/upAvatar
