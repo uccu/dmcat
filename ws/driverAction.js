@@ -102,6 +102,42 @@ z = function(obj,con){
             }
             break;
         case 'orderTaxi':
+            if(con.driver_id){
+                let id = obj.id
+                db.find('select * from c_order_taxi where id=?',[id],function(result){
+                    if(result){
+                        /** 更新订单 */
+                        db.update('update c_order_taxi set driver_id=?,status=2 where id=?',[con.driver_id,id],function(){
+                            /** 更新行程 */
+                            db.update('update c_trip set driver_id=?,status=2 where id=? and type=2',[con.driver_id,id],function(){
+                                let driver_ids = result.driver_ids
+                                let driver = data.DriverMap.get(con.driver_id)
+                                /** 设置司机状态为服务中 */
+                                driver.serving = 1;
+                                con.sendText(content({status:200,type:'orderDriving',id:id}))
+                                let user = data.UserMap.get(result.user_id)
+                                if(user)user.con.sendText(content({status:200,type:'orderDriving',id:id}))
+                                if(driver_ids){
+                                    driver_ids = driver_ids.split(',')
+                                    for(let k in driver_ids){
+                                        let driver = data.DriverMap.get(driver_ids[k]+'')
+                                        
+                                        if(driver){
+                                            if(driver.serving)continue
+                                            let g = function(r){
+                                                driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
+                                            };
+                                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                        }
+                                    }
+                                }
+                            })
+                        })
+                    }
+                })
+            }
             break;
         case 'addDistanceDriving':
             break;
@@ -149,6 +185,45 @@ z = function(obj,con){
             }
             break;
         case 'startTaxi':
+            /** 司机是否登录 */
+            if(con.driver_id){
+
+                /** 获取订单ID */
+                let id = obj.id
+
+                /** 查询订单 */
+                db.find('select * from c_order_taxi where id=?',[id],function(result){
+
+                    /** 订单是否存在 */
+                    if(!result)return;
+
+                    /** 订单是否属于登录司机 */
+                    if(result.driver_id != con.driver_id)return;
+
+                    /** 订单是否是带接客状态 */
+                    if(result.status != 2)return;
+
+                        /** 更新订单 */
+                        db.update('update c_order_taxi set status=3 where id=?',[id],function(){
+
+                            /** 更新行程 */
+                            db.update('update c_trip set driver_id=?,status=3 where id=? and type=2',[con.driver_id,id],function(){
+
+                                /** 获取司机 */
+                                let driver = data.DriverMap.get(con.driver_id)
+                                /** 设置司机状态为服务中 */
+                                driver.serving = 1;
+                                con.sendText(content({status:200,type:'startDriving',id:id}))
+
+                                /** 获取用户 */
+                                let user = data.UserMap.get(result.user_id)
+                                if(user)user.con.sendText(content({status:200,type:'startDriving',id:id}))
+                                
+                            })
+                        })
+                    
+                })
+            }
             break;
         case 'endDriving':
         
@@ -193,6 +268,45 @@ z = function(obj,con){
             }
             break;
         case 'endTaxi':
+            /** 司机是否登录 */
+            if(con.driver_id){
+
+                /** 获取订单ID */
+                let id = obj.id
+
+                /** 查询订单 */
+                db.find('select * from c_order_taxi where id=?',[id],function(result){
+
+                    /** 订单是否存在 */
+                    if(!result)return;
+
+                    /** 订单是否属于登录司机 */
+                    if(result.driver_id != con.driver_id)return;
+
+                    /** 订单是否是带接客状态 */
+                    if(result.status != 3)return;
+
+                        /** 更新订单 */
+                        db.update('update c_order_taxi set status=4 where id=?',[id],function(){
+
+                            /** 更新行程 */
+                            db.update('update c_trip set driver_id=?,status=4 where id=? and type=2',[con.driver_id,id],function(){
+
+                                /** 获取司机 */
+                                let driver = data.DriverMap.get(con.driver_id)
+                                /** 设置司机状态 */
+                                driver.serving = 0;
+                                con.sendText(content({status:200,type:'endDriving',id:id}))
+
+                                /** 获取用户 */
+                                let user = data.UserMap.get(result.user_id)
+                                if(user)user.con.sendText(content({status:200,type:'endDriving',id:id}))
+                                
+                            })
+                        })
+                    
+                })
+            }
             break;
         default:
             break;
