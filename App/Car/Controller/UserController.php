@@ -435,16 +435,16 @@ class UserController extends Controller{
      */
     function getDrivers($latitude = 0,$longitude = 0,DriverOnlineModel $model,$type = 0){
 
-        $latitudeRange = [latitude - 0.1,latitude + 0.1];
-        $longitudeRange = [longitude - 0.1,longitude + 0.1];
+        $latitudeRange = [$latitude - 0.1,$latitude + 0.1];
+        $longitudeRange = [$longitude - 0.1,$longitude + 0.1];
 
         if($type == 1)$model->where(['driver.type_driving'=>1]);
         elseif($type == 2)$model->where(['driver.type_taxi'=>1]);
 
         $model->where('latitude BETWEEN %a AND longitude BETWEEN %a',$latitudeRange,$longitudeRange);
-
+        
         $list = $model->get()->toArray();
-
+        // echo $model->sql;die();
         $out['list'] = $list;
         AJAX::success($out);
 
