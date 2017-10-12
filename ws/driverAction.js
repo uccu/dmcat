@@ -77,7 +77,7 @@ z = function(obj,con){
                                 /** 设置司机状态为服务中 */
                                 driver.serving = 1;
                                 con.sendText(content({status:200,type:'orderDriving',id:id}))
-                                let user = data.UserMap.get(result.user_id)
+                                let user = data.UserMap.get(result.user_id+'')
                                 if(user)user.con.sendText(content({status:200,type:'orderDriving',id:id}))
                                 if(driver_ids){
                                     driver_ids = driver_ids.split(',')
@@ -115,7 +115,7 @@ z = function(obj,con){
                                 /** 设置司机状态为服务中 */
                                 driver.serving = 1;
                                 con.sendText(content({status:200,type:'orderDriving',id:id}))
-                                let user = data.UserMap.get(result.user_id)
+                                let user = data.UserMap.get(result.user_id+'')
                                 if(user)user.con.sendText(content({status:200,type:'orderDriving',id:id}))
                                 if(driver_ids){
                                     driver_ids = driver_ids.split(',')
@@ -175,7 +175,7 @@ z = function(obj,con){
                                 con.sendText(content({status:200,type:'startDriving',id:id}))
 
                                 /** 获取用户 */
-                                let user = data.UserMap.get(result.user_id)
+                                let user = data.UserMap.get(result.user_id+'')
                                 if(user)user.con.sendText(content({status:200,type:'startDriving',id:id}))
                                 
                             })
@@ -216,7 +216,7 @@ z = function(obj,con){
                                 con.sendText(content({status:200,type:'startDriving',id:id}))
 
                                 /** 获取用户 */
-                                let user = data.UserMap.get(result.user_id)
+                                let user = data.UserMap.get(result.user_id+'')
                                 if(user)user.con.sendText(content({status:200,type:'startDriving',id:id}))
                                 
                             })
@@ -258,7 +258,7 @@ z = function(obj,con){
                                 con.sendText(content({status:200,type:'endDriving',id:id}))
 
                                 /** 获取用户 */
-                                let user = data.UserMap.get(result.user_id)
+                                let user = data.UserMap.get(result.user_id+'')
                                 if(user)user.con.sendText(content({status:200,type:'endDriving',id:id}))
                                 
                             })
@@ -299,7 +299,7 @@ z = function(obj,con){
                                 con.sendText(content({status:200,type:'endDriving',id:id}))
 
                                 /** 获取用户 */
-                                let user = data.UserMap.get(result.user_id)
+                                let user = data.UserMap.get(result.user_id+'')
                                 if(user)user.con.sendText(content({status:200,type:'endDriving',id:id}))
                                 
                             })
