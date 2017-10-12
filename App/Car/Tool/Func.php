@@ -9,6 +9,7 @@ use App\Car\Model\MessageModel;
 use App\Car\Model\CaptchaModel;
 use App\Car\Model\UploadModel;
 use App\Car\Model\UserModel;
+use App\Car\Model\PaymentModel;
 use Model;
 use stdClass;
 
@@ -532,6 +533,74 @@ class Func {
 
         
         return number_format($p,2,'.','');
+
+    }
+
+
+
+    public static function finishPay($payment_id,$online = 1){
+
+        $paymentModel = PaymentModel::copyMutiInstance();
+        $payment = $paymentModel->find($payment_id);
+        if(!$payment)return false;
+        if(!$payment->success_time)return false;
+
+        /** 获取行程 */
+        $tripModel = TripModel::copyMutiInstance();
+        $trip = $tripModel->find($payment->trip_id);
+
+        /** 司机不存在 */
+        if(!$trip->driver_id)return false;
+        $driver = DriverModel::copyMutiInstance()->find($trip->driver_id);
+        if(!$driver)return false;
+
+        /** 状态不为待支付 */
+        if($trip->status != 4)return false;
+
+        /** 获取金额 */
+        $money = $payment->total_fee;
+
+        /** 代驾/出租车 */
+        if($trip->type < 3){
+
+            if($online){
+
+                /** 减少用户现金 */
+
+                /** 增加司机现金 */
+
+            }else{
+
+
+                
+            }
+
+            
+            
+
+        }else{
+
+            if($online){
+
+                /** 减少用户现金 */
+
+                /** 增加司机现金 */
+
+            }
+
+        }
+
+
+
+        $trip->status = 5;
+        $trip->save();
+
+        if($trip->type == 1)OrderDriving::copyMutiInstance()->set(['status'=>5])->save($trip->id);
+        elseif($trip->type == 2)OrderTaxi::copyMutiInstance()->set(['status'=>5])->save($trip->id);
+        elseif($trip->type == 3)OrderWay::copyMutiInstance()->set(['status'=>5])->save($trip->id);
+
+
+        return true;
 
     }
 }

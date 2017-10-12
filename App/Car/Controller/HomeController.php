@@ -97,11 +97,11 @@ class HomeController extends Controller{
         $price = Func::getEstimatedPrice($distance->distance);
         if(!$price)AJAX::error('预估价获取失败');
 
-        $out['area'] = $area;
-        $out['distance'] = $distance;
-        $out['price'] = $price;
-        $out['totalPrice'] = $price;
-        $out['coupon'] = '0.00';
+        $out['area']        = $area;
+        $out['distance']    = $distance;
+        $out['price']       = $price;
+        $out['totalPrice']  = $price;
+        $out['coupon']      = '0.00';
 
         AJAX::success($out);
 

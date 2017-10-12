@@ -635,8 +635,44 @@ class UserController extends Controller{
      * createOrder
      * @return mixed 
      */
-    function createOrder(OrderWayModel $orderWayModel){}
+    function createOrder(OrderWayModel $orderWayModel){
+
+
+    }
 
 
 
+    function fakePay($id,TripModel $tripModel,PaymentModel $paymentModel){
+    
+        !$this->L->id && AJAX::error('未登录');
+
+
+        $trip = $tripModel->find($id);
+
+        $trip->user_id != $this->L->id && AJAX::error('error');
+        $trip->status != 4 && AJAX::error('error');
+
+
+        $data['user_id'] = $this->L->id;
+        $data['ctime'] = TIME_NOW;
+        $data['success_time'] = TIME_NOW;
+        $data['total_fee'] = 0;
+        $data['out_trade_no'] = DATE_TODAY.Func::randWord(10,3);
+        $data['pay_type'] = 'fake';
+        $data['update_time'] = TIME_NOW;
+        $data['success_date'] = date('Y-m-d',TIME_NOW);
+        $data['trip_id'] = $id;
+
+        $paymentModel->set($data)->add();
+
+        
+
+
+    }
+
+
+
+
+
+        
 }
