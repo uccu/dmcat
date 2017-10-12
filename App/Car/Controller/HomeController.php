@@ -79,7 +79,7 @@ class HomeController extends Controller{
         $area = Func::getArea($start_latitude,$start_longitude);
         if(!$area)AJAX::error('位置获取失败');
 
-        $areaModel = Model('area_t');
+        // $areaModel = Model('area_t');
 
         $area->cityId = $areaModel->where(['areaName'=>$area->city,'area_t.areaName'=>$area->province])->find()->id;
 
