@@ -74,10 +74,12 @@ class HomeController extends Controller{
      * @param mixed $type 
      * @return mixed 
      */
-    function getLocationInfo($start_latitude,$start_longitude,$end_latitude,$end_longitude,AreaModel $areaModel,$type = 0){
+    function getLocationInfo($start_latitude,$start_longitude,$end_latitude,$end_longitude /**,AreaModel $areaModel*/ ,$type = 0){
 
         $area = Func::getArea($start_latitude,$start_longitude);
         if(!$area)AJAX::error('位置获取失败');
+
+        $areaModel = Model('area_t');
 
         $area->cityId = $areaModel->where(['areaName'=>$area->city,'area_t.areaName'=>$area->province])->find()->id;
         !$area->cityId && AJAX::error('区域ID获取失败！');
