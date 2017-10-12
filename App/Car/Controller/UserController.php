@@ -23,6 +23,7 @@ use App\Car\Model\UserApplyModel;
 use App\Car\Model\OrderWayModel; 
 use App\Car\Model\DriverModel; 
 use App\Car\Model\JudgeModel; 
+use App\Car\Model\DriverWayModel; 
 
 
 class UserController extends Controller{
@@ -524,6 +525,118 @@ class UserController extends Controller{
 
 
     }
+
+
+
+
+    /** 顺丰车司机发布路线
+     * releaseRoute
+     * @return mixed 
+     */
+    function releaseRoute(DriverWayModel $driverWayModel,$start_latitude,$start_longitude,$end_latitude,$end_longitude,$start_name,$end_name,$time){
+
+        !$this->L->id && AJAX::error('未登录');
+        $this->L->userInfo->type != 1 && AJAX::error('请申请成为顺风车司机');
+
+
+        $data['user_id'] = $this->L->id;
+        $data['status'] = 1;
+
+        $driverWayModel->where($data)->find() && AJAX::success('不能重复发布行程');
+
+
+        $data['start_latitude'] = $start_latitude;
+        $data['start_longitude'] = $start_longitude;
+        $data['end_latitude'] = $end_latitude;
+        $data['end_longitude'] = $end_longitude;
+        $data['start_name'] = $start_name;
+        $data['end_name'] = $end_name;
+        $data['start_time'] = $time;
+        
+
+        $driverWayModel->set($data)->add();
+
+        AJAX::success();
+
+    }
+
+    /** 取消顺风车路线
+     * cancelRoute
+     * @param mixed $driverWayModel 
+     * @param mixed $id 
+     * @return mixed 
+     */
+    function cancelRoute(DriverWayModel $driverWayModel,$id){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $data['user_id'] = $this->L->id;
+        $data['status'] = 1;
+
+        $driverWayModel->set(['status'=>0])->where($data)->save();
+
+        AJAX::success();
+
+    }
+
+
+    /** 获取顺风车顺路的用户
+     * getWay
+     * @param mixed $driverWayModel 
+     * @param mixed $orderWayModel 
+     * @return mixed 
+     */
+    function getWay(DriverWayModel $driverWayModel,OrderWayModel $orderWayModel){
+
+        !$this->L->id && AJAX::error('未登录');
+        $this->L->userInfo->type != 1 && AJAX::error('请申请成为顺风车司机');
+
+        $where['user_id'] = $this->L->id;
+        $where['status'] = 1;
+
+        $route = $driverWayModel->where($where)->find();
+        !$route && AJAX::success('未发布行程');
+
+        $where = [];
+        $latitudeRange = [$route->start_latitude - 0.2, $route->start_latitude + 0.2];
+        $longitudeRange = [$route->start_longitude - 0.2, $route->start_longitude + 0.2];
+
+        $where['x1'] = ['start_latitude BETWEEN %a AND start_longitude BETWEEN %a',$latitudeRange,$longitudeRange];
+
+        $list = $orderWayModel->where($where)->select(['*,ABS(%F-%f) + ABS(%F-%f) AS `mul`','start_latitude',$route->start_latitude,'start_longitude',$route->start_longitude],'RAW')->order('mul desc','RAW')->get()->toArray();
+        // echo $orderWayModel->sql;die();
+
+        $out['list'] = $list;
+        AJAX::success($out);
+    }
+
+
+    /** 抢单
+     * orderRoute
+     * @return mixed 
+     */
+    function orderRoute(OrderWayModel $orderWayModel,$id,TripModel $tripModel){
+
+        !$this->L->id && AJAX::error('未登录');
+        $this->L->userInfo->type != 1 && AJAX::error('请申请成为顺风车司机');
+
+        $data['status'] = 2;
+        $data['driver_id'] = $this->L->id;
+
+        $orderWayModel->set($data)->save($id);
+        $tripModel->set($data)->save($id);
+
+        AJAX::success();
+
+    }
+
+
+    /** 发布顺风车订单
+     * createOrder
+     * @return mixed 
+     */
+    function createOrder(OrderWayModel $orderWayModel){}
+
 
 
 }
