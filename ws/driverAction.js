@@ -114,9 +114,9 @@ z = function(obj,con){
                                 let driver = data.DriverMap.get(con.driver_id)
                                 /** 设置司机状态为服务中 */
                                 driver.serving = 1;
-                                con.sendText(content({status:200,type:'orderDriving',id:id}))
+                                con.sendText(content({status:200,type:'orderTaxi',id:id}))
                                 let user = data.UserMap.get(result.user_id+'')
-                                if(user)user.con.sendText(content({status:200,type:'orderDriving',id:id}))
+                                if(user)user.con.sendText(content({status:200,type:'orderTaxi',id:id}))
                                 if(driver_ids){
                                     driver_ids = driver_ids.split(',')
                                     for(let k in driver_ids){
