@@ -488,6 +488,7 @@ class UserController extends Controller{
         $obj->tag = $tag;
         $obj->user_id = $trip->user_id;
         $obj->type = $trip->type;
+        $obj->create_time = TIME_NOW;
 
         DB::start();
 
