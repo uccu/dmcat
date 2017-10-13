@@ -350,7 +350,7 @@ z = function(obj,con){
                     db.insert('insert into c_trip set status=1,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=3,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price])
 
                     /** 发送成功信息 */
-                    con.sendText(content({status:200,type:'callTaxi',info:obj}))
+                    con.sendText(content({status:200,type:'callWay',info:obj}))
                     console.log(`user ${con.user_id} create an order`)
 
                 })
