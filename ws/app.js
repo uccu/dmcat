@@ -66,11 +66,15 @@ let serverCallback = function(con){
         }
 
         if(!obj || !(obj instanceof Object))return
-
-        if(path == 'user'){
-            userAction(obj,con)
-        }else if(path == 'driver'){
-            driverAction(obj,con)
+        try{
+            if(path == 'user'){
+                userAction(obj,con)
+            }else if(path == 'driver'){
+                driverAction(obj,con)
+            }
+        }catch(e){
+            console.warn('obj has problem',str)
+            return
         }
         
 

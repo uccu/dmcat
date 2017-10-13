@@ -622,6 +622,14 @@ class UserController extends Controller{
         $list = $orderWayModel->where($where)->select(['*,ABS(%F-%f) + ABS(%F-%f) AS `mul`','start_latitude',$route->start_latitude,'start_longitude',$route->start_longitude],'RAW')->order('mul desc','RAW')->get()->toArray();
         // echo $orderWayModel->sql;die();
 
+        foreach($list as &$v){
+
+            if($v->user_id){
+                $v->userInfo = UserModel::copyMutiInstance()->select('avatar','name','sex','phone')->find($v->user_id);
+                if(!$v->userInfo)$v->user_id = '0';
+            }
+        }
+
         $out['list'] = $list;
         AJAX::success($out);
     }
@@ -640,7 +648,7 @@ class UserController extends Controller{
         $data['driver_id'] = $this->L->id;
 
         $orderWayModel->set($data)->save($id);
-        $tripModel->set($data)->save($id);
+        $tripModel->set($data)->where(['type'=>3,'id'=>$id])->save();
 
         AJAX::success();
 

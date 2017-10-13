@@ -143,6 +143,43 @@ id 行程ID
 {}
 
 
+
+1.18 顺丰车司机发布路线
+user/releaseRoute
+start_latitude 开始纬度
+start_longitude 开始经度
+end_latitude 结束纬度
+end_longitude 结束经度
+start_name 开始地名
+end_name 结束地名
+time 出发时间
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
+1.19 取消顺风车路线
+user/cancelRoute
+id id
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+1.20 获取顺风车顺路的用户
+user/getWay
+{"data":{"list":[{"id":"33","user_id":"43","driver_id":"0","start_latitude":"31.20085400","start_longitude":"121.26694100","end_latitude":"31.18836700","end_longitude":"121.29920400","start_name":"\u6cd5\u59ec\u5a1c\u5927\u53a6","end_name":"\u5f90\u6cfe\u4e1c(\u5730\u94c1\u7ad9)","create_time":"1506488253","order_time":"0","status":"1","distance":"6634.000","estimated_price":"20.95","start_time":"0","phone":"","name":"","driver_ids":"3","city_id":"4522848","coupon":"0.00","fee":"0.00","total_fee":"0.00","mul":"0.20000000","userInfo":{"avatar":"20170922\/13.41.15.650017.jpg","name":"\u5c0f\u706c\u6770\u4e28","sex":"1","phone":"18516779543"}}]},"code":200,"url":"","message":""}
+{}
+
+
+
+1.21 顺风车抢单
+user/orderRoute
+id id
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
 ws.1.1 用户登录
 @
 type 固定login
