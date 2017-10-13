@@ -136,6 +136,11 @@ tag 标签名字，逗号隔开
 {}
 
 
+1.17 模拟支付
+user/fakePay
+id 行程ID
+{"data":{},"code":200,"url":"","message":""}
+{}
 
 
 ws.1.1 用户登录

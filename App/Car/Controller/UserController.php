@@ -25,6 +25,8 @@ use App\Car\Model\DriverModel;
 use App\Car\Model\JudgeModel; 
 use App\Car\Model\DriverWayModel; 
 use App\Car\Model\TagModel; 
+use App\Car\Model\PaymentModel; 
+use Model; 
 
 
 class UserController extends Controller{
@@ -656,6 +658,13 @@ class UserController extends Controller{
 
 
 
+    /** 模拟支付
+     * fakePay
+     * @param mixed $id 
+     * @param mixed $tripModel 
+     * @param mixed $paymentModel 
+     * @return mixed 
+     */
     function fakePay($id,TripModel $tripModel,PaymentModel $paymentModel){
     
         !$this->L->id && AJAX::error('未登录');
@@ -663,8 +672,8 @@ class UserController extends Controller{
 
         $trip = $tripModel->find($id);
 
-        $trip->user_id != $this->L->id && AJAX::error('error');
-        $trip->status != 4 && AJAX::error('error');
+        $trip->user_id != $this->L->id && AJAX::error('无权限');
+        $trip->status != 4 && AJAX::error('该订单已过期');
 
 
         $data['user_id'] = $this->L->id;
@@ -677,16 +686,29 @@ class UserController extends Controller{
         $data['success_date'] = date('Y-m-d',TIME_NOW);
         $data['trip_id'] = $id;
 
+        DB::start();
+
+
         $paymentModel->set($data)->add();
 
+        $trip->status = 5;
+        $trip->save();
+
+        if($trip->type == 1){
+            Model::copyMutiInstance('order_driving')->set(['status'=>5])->save($trip->id);
+        }elseif($trip->type == 2){
+            Model::copyMutiInstance('order_taxi')->set(['status'=>5])->save($trip->id);
+        }elseif($trip->type == 3){
+            Model::copyMutiInstance('order_way')->set(['status'=>5])->save($trip->id);
+        }
         
+
+        DB::commit();
+
+        AJAX::success();
 
 
     }
-
-
-
-
 
         
 }
