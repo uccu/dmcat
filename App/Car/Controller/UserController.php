@@ -26,6 +26,7 @@ use App\Car\Model\JudgeModel;
 use App\Car\Model\DriverWayModel; 
 use App\Car\Model\TagModel; 
 use App\Car\Model\PaymentModel; 
+use App\Car\Model\AreaModel; 
 use Model; 
 
 
@@ -409,7 +410,7 @@ class UserController extends Controller{
      * @param mixed $brand 
      * @return mixed 
      */
-    function apply(UserApplyModel $userApplyModel,$driving_permit,$driving_license,$car_number,$brand,$city_id = 0,$latitude,$longitude){
+    function apply(UserApplyModel $userApplyModel,$driving_permit,$driving_license,$car_number = '',$brand = '',$city_id = 0,$latitude,$longitude, AreaModel $areaModel){
 
         !$this->L->id && AJAX::error('未登录');
         
