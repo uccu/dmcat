@@ -364,6 +364,13 @@ driver/offlinePay
 {}
 
 
+
+1.11 获取评论
+driver/getJudge
+{"data":{"info":{"avatar":"noavatar.png","name":"\u7528\u6237000041","sex":"0","phone":"13661730893","brand":"","car_number":"","type_driving":"1","type_taxi":"0","id":"1","judge_score":"3.7","money_today":"0.00","order_today":"0"}},"code":200,"url":"","message":""}
+{}
+
+
 ws.2.1 司机登录
 @
 type 固定login

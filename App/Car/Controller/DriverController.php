@@ -21,6 +21,7 @@ use App\Car\Model\TripModel;
 use App\Car\Model\DriverFundModel; 
 use App\Car\Model\UserModel; 
 use App\Car\Model\PaymentModel;
+use App\Car\Model\JudgeModel;
 use Model; 
 
 class DriverController extends Controller{
@@ -247,7 +248,7 @@ class DriverController extends Controller{
         
         $info['money_today'] = DriverFundModel::copyMutiInstance()->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         if(!$info['money_today'])$info['money_today'] = '0.00';
-        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type<2')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
+        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type<3')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         $out['info'] = $info;
 
         AJAX::success($out);
@@ -424,6 +425,21 @@ class DriverController extends Controller{
         DB::commit();
 
         AJAX::success();
+
+
+    }
+
+
+
+    function getJudge($page = 1 ,$limit = 10,JudgeModel $judgeModel){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $list = $judgeModel->select('*','user.name','user.avatar')->where('type<3')->where(['driver_id'=>$this->L->id])->order('create_time desc')->page($page,$limit)->get()->toArray();
+
+        $out['list'] = $list;
+
+        AJAX::success($out);
 
 
     }
