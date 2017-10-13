@@ -353,7 +353,7 @@ class DriverController extends Controller{
         }
 
 
-        $order_count = $tripModel->select('COUNT(*) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('status>3')->where('type<2')->find()->c;
+        $order_count = $tripModel->select('COUNT(*) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('status>3')->where('type<3')->find()->c;
 
         $out['list'] = $list;
         $out['order_count'] = $order_count;

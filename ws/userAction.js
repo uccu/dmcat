@@ -376,7 +376,7 @@ z = function(obj,con){
                         con.sendText(content({status:200,type:'cancelCallWay',id:id}))
 
                         /** 更新行程表 */
-                        db.update('update c_trip set status=0 where id=? and type=2',[id])
+                        db.update('update c_trip set status=0 where id=? and type=3',[id])
                     })
                 })
             }
