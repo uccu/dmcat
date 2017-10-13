@@ -24,6 +24,7 @@ use App\Car\Model\OrderWayModel;
 use App\Car\Model\DriverModel; 
 use App\Car\Model\JudgeModel; 
 use App\Car\Model\DriverWayModel; 
+use App\Car\Model\TagModel; 
 
 
 class UserController extends Controller{
@@ -526,7 +527,20 @@ class UserController extends Controller{
 
     }
 
+    /** 标签
+     * tagList
+     * @param mixed $model 
+     * @return mixed 
+     */
+    function tagList(TagModel $model){
 
+        $list = $model->get()->toArray();
+        
+        $out['list'] = $list;
+
+        AJAX::success($out);
+
+    }
 
 
     /** 顺丰车司机发布路线

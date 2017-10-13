@@ -119,6 +119,24 @@ longitude 经度
 
 
 
+1.15 查看标签列表
+user/tagList
+{"data":{"list":[{"id":"1","name":"\u5389\u5bb3\u5389\u5bb3"},{"id":"2","name":"\u53ef\u4ee5\u53ef\u4ee5"}]},"code":200,"url":"","message":""}
+{}
+
+
+
+1.16 评价
+user/judge
+score 分数
+id 行程ID
+comment 评论内容
+tag 标签名字，逗号隔开
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
 
 ws.1.1 用户登录
 @

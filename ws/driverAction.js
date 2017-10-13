@@ -67,7 +67,7 @@ z = function(obj,con){
             if(con.driver_id){
                 let id = obj.id
 
-                db.find('select * from c_order_driving where driver_id=? and status in(2,3,4)',[con.driver_id],function(r){
+                db.find('select * from c_order_driving where driver_id=? and status in(2,3)',[con.driver_id],function(r){
 
                     if(r){
                         con.sendText(content({status:400,type:'orderDriving',id:id,'message':'不能重复接单'}))
@@ -116,7 +116,7 @@ z = function(obj,con){
             if(con.driver_id){
                 let id = obj.id
 
-                db.find('select * from c_order_taxi where driver_id=? and status in(2,3,4)',[con.driver_id],function(r){
+                db.find('select * from c_order_taxi where driver_id=? and status in(2,3)',[con.driver_id],function(r){
 
                     if(r){
                         con.sendText(content({status:400,type:'orderTaxi',id:id,'message':'不能重复接单'}))
