@@ -409,11 +409,24 @@ class UserController extends Controller{
      * @param mixed $brand 
      * @return mixed 
      */
-    function apply(UserApplyModel $userApplyModel,$car_number,$brand,$city_id = 0){
+    function apply(UserApplyModel $userApplyModel,$car_number,$brand,$city_id = 0,$latitude,$longitude){
 
         !$this->L->id && AJAX::error('未登录');
         
-        // $info = $userApplyModel->find($this->L->id);
+        if(!$city_id){
+
+            $area = Func::getArea($latitude,$longitude);
+            if(!$area)AJAX::error('位置获取失败');
+            $city_id = $areaModel->where(['areaName'=>$area->city,'area_t.areaName'=>$area->province])->find()->id;
+
+            if(!$city_id){
+
+                $city_id = $areaModel->where(['areaName'=>$area->district,'area_t.areaName'=>$area->city])->find()->id;
+
+            }
+
+            !$city_id && AJAX::error('区域ID获取失败！');
+        }
 
         $data['id'] = $this->L->id;
         $data['car_number'] = $car_number;
@@ -423,6 +436,8 @@ class UserController extends Controller{
         $data['status'] = 0;
         $data['city_id'] = $city_id;
         $data['create_time'] = TIME_NOW;
+
+        
 
         $userApplyModel->set($data)->add(true);
 
