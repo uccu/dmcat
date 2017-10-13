@@ -35,7 +35,7 @@ z = function(obj,con){
                 let longitude = driver.longitude = parseFloat(obj.longitude || 0)
                 db.replace('replace into c_driver_online (driver_id,latitude,longitude) VALUES(?,?,?)',[d.data.info.id,latitude,longitude])
 
-                db.find('select * from c_trip where driver_id=? and status in(2,3,4)',[driver.id],function(re){
+                db.find('select * from c_trip where driver_id=? and status in(2,3)',[driver.id],function(re){
                     if(re)driver.serving = 1;
                     if(driver.serving)return
                     let g = function(r){
