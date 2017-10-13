@@ -651,6 +651,7 @@ class UserController extends Controller{
         }
 
         $out['list'] = $list;
+        $out['route'] = $route;
         AJAX::success($out);
     }
 
