@@ -144,6 +144,7 @@ class UserController extends Controller{
             'id'=>$info->id,
             'avatar'=>$info->avatar,
             'name'=>$info->name,
+            'type'=>$info->type,
             
         ];
         

@@ -230,7 +230,7 @@ class DriverController extends Controller{
 
     # 我的信息
     function getMyInfo(){
-        
+        // $this->L->id = 3;
         !$this->L->id && AJAX::error('未登录');
 
         $info['avatar'] = $this->L->userInfo->avatar;
@@ -247,7 +247,7 @@ class DriverController extends Controller{
         
         $info['money_today'] = DriverFundModel::copyMutiInstance()->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         if(!$info['money_today'])$info['money_today'] = '0.00';
-        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('type<2')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
+        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type<2')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         $out['info'] = $info;
 
         AJAX::success($out);
