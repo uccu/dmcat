@@ -648,8 +648,10 @@ class UserController extends Controller{
                 $v->userInfo = UserModel::copyMutiInstance()->select('avatar','name','sex','phone')->find($v->user_id);
                 if(!$v->userInfo)$v->user_id = '0';
             }
-        }
 
+            $v->start_date = Func::time_calculate($v->start_time);
+        }
+        $route->start_date = Func::time_calculate($route->start_time);
         $out['list'] = $list;
         $out['route'] = $route;
         AJAX::success($out);
