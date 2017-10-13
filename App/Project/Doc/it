@@ -256,6 +256,32 @@ id 发起出租车的编号ID
 
 
 
+ws.1.7 发起顺风车
+@
+type 固定callWay
+start_latitude 开始纬度
+start_longitude 开始经度
+end_latitude 结束纬度
+end_longitude 结束经度
+start_name 开始地名
+end_name 结束地名
+distance 距离
+estimated_price 预估价
+start_time 出发时间（可选，预约限定）
+phone 联系人电话（代叫限定）
+name 联系人称呼（代叫限定）
+city_id 城市ID
+{}
+{}
+
+
+ws.1.8 取消顺风车
+@
+type 固定cancelCallWay
+id 发起顺风车的编号ID
+{}
+{}
+
 
 2.1 司机登录
 driver/login
