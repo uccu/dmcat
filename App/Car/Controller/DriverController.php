@@ -20,6 +20,8 @@ use App\Car\Model\OrderTaxiModel;
 use App\Car\Model\TripModel;
 use App\Car\Model\DriverFundModel; 
 use App\Car\Model\UserModel; 
+use App\Car\Model\PaymentModel;
+use Model; 
 
 class DriverController extends Controller{
 
@@ -357,6 +359,72 @@ class DriverController extends Controller{
         $out['order_count'] = $order_count;
         $out['judge_score'] = $this->L->userInfo->judge_score;
         AJAX::success($out);
+
+    }
+
+
+
+
+    /** 线下支付
+     * offlinePay
+     * @param mixed $id 
+     * @param mixed $tripModel 
+     * @param mixed $paymentModel 
+     * @return mixed 
+     */
+    function offlinePay($id,TripModel $tripModel,PaymentModel $paymentModel){
+    
+        !$this->L->id && AJAX::error('未登录');
+
+
+        $trip = $tripModel->find($id);
+
+        $trip->driver_id != $this->L->id && AJAX::error('无权限');
+        $trip->status != 4 && AJAX::error('该订单已过期');
+
+
+        $data['user_id'] = $trip->user_id;
+        $data['ctime'] = TIME_NOW;
+        $data['success_time'] = TIME_NOW;
+
+        if($trip->type == 1){
+            $order = Model::copyMutiInstance('order_driving')->find($trip->id);
+        }elseif($trip->type == 2){
+            $order = Model::copyMutiInstance('order_taxi')->find($trip->id);
+        }elseif($trip->type == 3){
+            $order = Model::copyMutiInstance('order_way')->find($trip->id);
+        }
+
+        !$order && AJAX::error('error');
+        
+        $data['total_fee'] = $order->total_fee;
+        $data['out_trade_no'] = DATE_TODAY.Func::randWord(10,3);
+        $data['pay_type'] = 'offline';
+        $data['update_time'] = TIME_NOW;
+        $data['success_date'] = date('Y-m-d',TIME_NOW);
+        $data['trip_id'] = $id;
+
+        DB::start();
+
+
+        $paymentModel->set($data)->add();
+
+        $trip->status = 5;
+        $trip->save();
+
+        if($trip->type == 1){
+            Model::copyMutiInstance('order_driving')->set(['status'=>5])->save($trip->id);
+        }elseif($trip->type == 2){
+            Model::copyMutiInstance('order_taxi')->set(['status'=>5])->save($trip->id);
+        }elseif($trip->type == 3){
+            Model::copyMutiInstance('order_way')->set(['status'=>5])->save($trip->id);
+        }
+        
+
+        DB::commit();
+
+        AJAX::success();
+
 
     }
     

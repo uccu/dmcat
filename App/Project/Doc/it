@@ -295,6 +295,12 @@ limit 每页数量
 
 
 
+2.10 线下付款
+driver/offlinePay
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
 ws.2.1 司机登录
 @
 type 固定login
