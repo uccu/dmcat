@@ -327,7 +327,7 @@ class StaffController extends Controller{
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
         }elseif($this->L->userInfo->type == 1){
-            $where['city_id'] = ['%F IN (%n)','city_id',$this->L->userInfo->city_id];
+            $where['city_id'] = ['%F IN (%c)','city_id',explode(',', $this->L->userInfo->city_id)];
         }
 
         if($typee == 1)$where['type_driving'] = 1;
@@ -791,7 +791,7 @@ class StaffController extends Controller{
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
         }elseif($this->L->userInfo->type == 1){
-            $where['city_id'] = ['%F IN (%n)','city_id',$this->L->userInfo->city_id];
+            $where['city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
         }
         
         if($search){
@@ -799,6 +799,7 @@ class StaffController extends Controller{
         }
 
         $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        // echo $model->sql;die();
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
         }
@@ -883,9 +884,9 @@ class StaffController extends Controller{
 
             ];
         
-        if($this->L->userInfo->type == 2 || $this->L->userInfo->type == 1){
-            unset($tbody[4]);
-        }
+        // if($this->L->userInfo->type == 2 || $this->L->userInfo->type == 1){
+        //     unset($tbody[4]);
+        // }
         !$model->field && AJAX::error('字段没有公有化！');
 
 
