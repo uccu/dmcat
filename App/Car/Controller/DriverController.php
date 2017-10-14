@@ -469,6 +469,7 @@ class DriverController extends Controller{
         $list2 = [];
 
         foreach($list as $v){
+            $v->create_date = Func::time_calculate($v->create_time);
             $list2[$v->month][] = $v;
         }
 
