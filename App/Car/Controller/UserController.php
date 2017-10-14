@@ -315,7 +315,7 @@ class UserController extends Controller{
 
     /** 获取行程 */
     function getTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
-
+        $this->L->id = 47;
         !$this->L->id && AJAX::error('未登录');
         $where['user_id'] = $this->L->id;
         $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
@@ -338,7 +338,8 @@ class UserController extends Controller{
 
                 $v->orderInfo->create_date = Func::time_calculate($v->orderInfo->create_time);
                 if($v->driver_id){
-                    $v->driverInfo = DriverModel::copyMutiInstance()->select('avatar','name','sex','phone','judge_score','car_number','brand')->find($v->driver_id);
+                    if($v->type == 3)$v->driverInfo = UserModel::copyMutiInstance()->select('avatar','name','sex','phone','judge_score','car_number','brand')->find($v->driver_id);
+                    else $v->driverInfo = DriverModel::copyMutiInstance()->select('avatar','name','sex','phone','judge_score','car_number','brand')->find($v->driver_id);
                     if(!$v->driverInfo)$v->driver_id = '0';
                     else{
                         $v->driverInfo->order_count = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('type<2')->where(['driver_id'=>$v->driver_id])->find()->c;
@@ -356,7 +357,7 @@ class UserController extends Controller{
     /** 获取行程 */
     function getDriverTripList($page=1,$limit=10,TripModel $tripModel,OrderWayModel $orderWayModel){
 
-        // $this->L->id = 3;
+        // $this->L->id = 47;
         !$this->L->id && AJAX::error('未登录');
         $where['driver_id'] = $this->L->id;
         $where['type'] = 3;
@@ -711,10 +712,10 @@ class UserController extends Controller{
 
         $data['status'] = 2;
         $data['driver_id'] = $this->L->id;
-
+        DB::start();
         $orderWayModel->set($data)->save($id);
         $tripModel->set($data)->where(['type'=>3,'id'=>$id])->save();
-
+        DB::commit();
         AJAX::success();
 
     }

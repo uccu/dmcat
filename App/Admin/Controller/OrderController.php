@@ -772,7 +772,7 @@ class OrderController extends Controller{
 
         if($status == 1){
             
-            UserModel::copyMutiInstance()->set(['type'=>1,'city_id'=>$app->city_id])->save($id);
+            UserModel::copyMutiInstance()->set(['type'=>1,'city_id'=>$app->city_id,'car_number'=>$app->car_number,'brand'=>$app->brand])->save($id);
         }else{
             UserModel::copyMutiInstance()->set(['type'=>0,'city_id'=>$app->city_id])->save($id);
         }
