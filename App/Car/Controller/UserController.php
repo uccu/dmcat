@@ -27,6 +27,8 @@ use App\Car\Model\DriverWayModel;
 use App\Car\Model\TagModel; 
 use App\Car\Model\PaymentModel; 
 use App\Car\Model\AreaModel; 
+use App\Car\Model\UserScoreLogModel; 
+use App\Car\Model\UserMoneyLogModel; 
 use Model; 
 
 
@@ -889,6 +891,40 @@ class UserController extends Controller{
         $out['list'] = $list2;
         AJAX::success($out);
     }
+
+
+    /** 我的积分
+     * score
+     * @param mixed $userScoreLogModel 
+     * @param mixed $page 
+     * @param mixed $limit 
+     * @return mixed 
+     */
+    function myScore(UserScoreLogModel $userScoreLogModel,$page = 1,$limit = 20){
+
+        !$this->L->id && AJAX::error('未登录');
+        $list = $userScoreLogModel->where(['user_id'=>$this->L->id])->order('create_time desc')->page($page,$limit)->get()->toArray();
+
+        $out['list'] = $list;
+        $out['score'] = $this->L->userInfo->score;
+
+        AJAX::success($out);
+
+    }
+
+
+    function myMoney(UserMoneyLogModel $model,$page = 1,$limit = 20){
+
+        !$this->L->id && AJAX::error('未登录');
+        $list = $model->where(['user_id'=>$this->L->id])->order('create_time desc')->page($page,$limit)->get()->toArray();
+
+        $out['list'] = $list;
+        $out['money'] = $this->L->userInfo->money;
+
+        AJAX::success($out);
+
+    }
+
 
 
 }
