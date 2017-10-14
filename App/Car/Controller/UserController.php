@@ -527,7 +527,7 @@ class UserController extends Controller{
      * @param mixed $orderWayModel 
      * @return mixed 
      */
-    function judge(DriverModel $driverModel,JudgeModel $judgeModel,TripModel $tripModel,$score,$id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
+    function judge(UserModel $userModel,DriverModel $driverModel,JudgeModel $judgeModel,TripModel $tripModel,$score,$id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -579,7 +579,7 @@ class UserController extends Controller{
         }else{
             $score = $judgeModel->select('AVG(score) AS c','RAW')->where(['driver_id'=>$trip->driver_id])->where('type=3')->find()->c;
             !$score && $score = 0;
-            // $driverModel->set(['judge_score'=>$score])->save($trip->driver_id);
+            $userModel->set(['judge_score'=>$score])->save($trip->driver_id);
 
         }
 
