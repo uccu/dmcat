@@ -377,7 +377,7 @@ z = function(obj,con){
 
                         let driver_id = result.driver_id
                         let driver = data.UserMap.get(driver_id)
-                        con.sendText(content({status:200,type:'cancelCallWayDriver',id:id}))
+                        driver.con.sendText(content({status:200,type:'cancelCallWayDriver',id:id}))
 
                         /** 更新行程表 */
                         db.update('update c_trip set status=0 where id=? and type=3',[id])
