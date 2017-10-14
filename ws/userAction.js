@@ -480,6 +480,7 @@ z = function(obj,con){
                 let id = obj.id
                 let user = data.UserMap.get(id+'')
                 if(user)user.con.sendText(content({status:200,type:'orderWay',driver_id:con.user_id}))
+                con.sendText(content({status:200,type:'orderWay',user_id:con.id}))
             }
             break;
         default:
