@@ -423,6 +423,12 @@ limit 每页数量
 {}
 
 
+
+2.12 我的收入
+driver/income
+{"data":{"month":"199.00","all":"199.00","list":{"201710":[{"id":"1","driver_id":"1","type":"1","money":"199.00","user_id":"41","create_time":"1507951350","month":"201710","trip_id":"0","start_name":"","end_name":"","create_date":"4\u65f615\u5206\u524d"}]}},"code":200,"url":"","message":""}
+{}
+
 ws.2.1 司机登录
 @
 type 固定login
