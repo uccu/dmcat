@@ -325,6 +325,14 @@ id
 {}
 
 
+ws.1.11 顺风车司机抢单通知
+@
+type 固定orderWay
+id 用户ID
+{}
+{}
+
+
 2.1 司机登录
 driver/login
 phone 手机号

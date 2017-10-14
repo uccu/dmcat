@@ -406,15 +406,20 @@ z = function(obj,con){
                             /** 更新行程 */
                             db.update('update c_trip set driver_id=?,status=3 where id=? and type=3',[con.user_id,id],function(){
 
-                                /** 获取司机 */
-                                let driver = data.UserMap.get(con.user_id)
-                                /** 设置司机状态为服务中 */
-                                driver.serving = 1;
-                                con.sendText(content({status:200,type:'startWay',id:id}))
+                                db.update('update c_driver_way set status=0 where user_id=? and status=1',[con.user_id,con.user_id],function(){
 
-                                /** 获取用户 */
-                                let user = data.UserMap.get(result.user_id+'')
-                                if(user)user.con.sendText(content({status:200,type:'startWay',id:id}))
+                                    /** 获取司机 */
+                                    let driver = data.UserMap.get(con.user_id)
+                                    /** 设置司机状态为服务中 */
+                                    driver.serving = 1;
+                                    con.sendText(content({status:200,type:'startWay',id:id}))
+
+                                    /** 获取用户 */
+                                    let user = data.UserMap.get(result.user_id+'')
+                                    if(user)user.con.sendText(content({status:200,type:'startWay',id:id}))
+
+                                })
+
                                 
                             })
                         })
@@ -462,6 +467,15 @@ z = function(obj,con){
                         })
                     
                 })
+            }
+            break;
+
+        case 'orderWay':
+            /** 司机是否登录 */
+            if(con.user_id){
+                let id = obj.id
+                let user = data.UserMap.get(id+'')
+                if(user)user.con.sendText(content({status:200,type:'orderWay',driver_id:con.user_id}))
             }
             break;
         default:
