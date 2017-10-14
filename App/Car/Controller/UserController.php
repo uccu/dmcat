@@ -681,7 +681,7 @@ class UserController extends Controller{
         $longitudeRange = [$route->start_longitude - 0.2, $route->start_longitude + 0.2];
 
         $where['x1'] = ['start_latitude BETWEEN %a AND start_longitude BETWEEN %a',$latitudeRange,$longitudeRange];
-
+        $where['status'] = 1;
         $list = $orderWayModel->where($where)->select(['*,ABS(%F-%f) + ABS(%F-%f) AS `mul`','start_latitude',$route->start_latitude,'start_longitude',$route->start_longitude],'RAW')->order('mul desc','RAW')->get()->toArray();
         // echo $orderWayModel->sql;die();
 
@@ -709,6 +709,9 @@ class UserController extends Controller{
 
         !$this->L->id && AJAX::error('未登录');
         $this->L->userInfo->type != 1 && AJAX::error('请申请成为顺风车司机');
+
+        $order = $orderWayModel->find($id);
+        if($order->status != 1)AJAX::error('抢单失败');
 
         $data['status'] = 2;
         $data['driver_id'] = $this->L->id;
