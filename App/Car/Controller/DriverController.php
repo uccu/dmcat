@@ -23,6 +23,8 @@ use App\Car\Model\UserModel;
 use App\Car\Model\PaymentModel;
 use App\Car\Model\JudgeModel;
 use App\Car\Model\IncomeModel;
+use App\Car\Model\DriverBankModel;
+use App\Car\Model\DriverMoneyLogModel;
 use Model; 
 
 class DriverController extends Controller{
@@ -475,6 +477,87 @@ class DriverController extends Controller{
 
         $out['list'] = $list2;
         AJAX::success($out);
+    }
+
+
+
+    function myMoney(DriverMoneyLogModel $model,$page = 1,$limit = 20){
+
+        !$this->L->id && AJAX::error('未登录');
+        $list = $model->where(['driver_id'=>$this->L->id])->order('create_time desc')->page($page,$limit)->get()->toArray();
+
+        $out['list'] = $list;
+        $out['money'] = $this->L->userInfo->money;
+
+        AJAX::success($out);
+
+    }
+
+    function myBank(DriverBankModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+        $list = $model->where(['driver_id'=>$this->L->id])->order('update_time desc')->get()->toArray();
+        $out['list'] = $list;
+        AJAX::success($out);
+
+    }
+
+    function updBank(DriverBankModel $model,$id = 0,$code,$bank_id,$bank_name,$name){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $data['code'] = $code;
+        $data['bank_id'] = $bank_id;
+        $data['bank_name'] = $bank_name;
+        $data['name'] = $name;
+        $data['update_time'] = TIME_NOW;
+        $data['driver_id'] = $this->L->id;
+
+        if($id){
+
+            $b = $model->find($id);
+            if($b->driver_id != $this->L->id)AJAX::error('err');
+            $model->set($data)->save($id);
+        }else{
+            $model->set($data)->add();
+
+        }
+        AJAX::success();
+
+    }
+
+    function delBank(DriverBankModel $model,$id = 0){
+
+        !$this->L->id && AJAX::error('未登录');
+        $b = $model->find($id);
+        if($b->driver_id != $this->L->id)AJAX::error('err');
+
+        $model->remove($id);
+        AJAX::success();
+
+    }
+
+    /** 申请提现
+     * cashApply
+     * @param mixed $model 
+     * @return mixed 
+     */
+    function cashApply(DriverMoneyLogModel $model,$money,$bank_id){
+        
+        !$this->L->id && AJAX::error('未登录');
+
+        $model->where(['driver_id'=>$this->L->id,'status'=>0])->find() && AJAX::error('已有一条提现申请正在处理中！');
+
+        $data['money'] = $money;
+        $data['bank_id'] = $bank_id;
+        $data['create_time'] = TIME_NOW;
+        $data['content'] = '提现';
+
+        $model->set($data)->add();
+
+        AJAX::success();
+
+
     }
     
 }
