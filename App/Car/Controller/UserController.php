@@ -858,5 +858,37 @@ class UserController extends Controller{
 
 
     }
-        
+    
+
+    /** 我的收入
+     * income
+     * @param mixed $incomeModel 
+     * @return mixed 
+     */
+    function income(IncomeModel $incomeModel){
+
+        !$this->L->id && AJAX::error('未登录');
+        $month = date('Ym');
+
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type=3')->where(['driver_id'=>$this->L->id,'month'=>$month])->find()->m;
+        if(!$money)$money = '0.00';
+        $out['month'] = $money;
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type=3')->where(['driver_id'=>$this->L->id])->find()->m;
+        if(!$money)$money = '0.00';
+        $out['all'] = $money;
+
+        $list = $incomeModel->select('*','trip.start_name','trip.end_name')->where('type=3')->where(['driver_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
+
+        $list2 = [];
+
+        foreach($list as $v){
+            $v->create_date = Func::time_calculate($v->create_time);
+            $list2[$v->month][] = $v;
+        }
+
+        $out['list'] = $list2;
+        AJAX::success($out);
+    }
+
+
 }
