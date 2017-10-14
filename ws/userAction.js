@@ -381,6 +381,89 @@ z = function(obj,con){
                 })
             }
             break;
+        case 'startWay':
+            /** 司机是否登录 */
+            if(con.user_id){
+
+                /** 获取订单ID */
+                let id = obj.id
+
+                /** 查询订单 */
+                db.find('select * from c_order_way where id=?',[id],function(result){
+
+                    /** 订单是否存在 */
+                    if(!result)return;
+
+                    /** 订单是否属于登录司机 */
+                    if(result.driver_id != con.user_id)return;
+
+                    /** 订单是否是带接客状态 */
+                    if(result.status != 2)return;
+
+                        /** 更新订单 */
+                        db.update('update c_order_way set status=3 where id=?',[id],function(){
+
+                            /** 更新行程 */
+                            db.update('update c_trip set driver_id=?,status=3 where id=? and type=3',[con.user_id,id],function(){
+
+                                /** 获取司机 */
+                                let driver = data.UserMap.get(con.user_id)
+                                /** 设置司机状态为服务中 */
+                                driver.serving = 1;
+                                con.sendText(content({status:200,type:'startWay',id:id}))
+
+                                /** 获取用户 */
+                                let user = data.UserMap.get(result.user_id+'')
+                                if(user)user.con.sendText(content({status:200,type:'startWay',id:id}))
+                                
+                            })
+                        })
+                    
+                })
+            }
+            break;
+        case 'endDriving':
+        
+            /** 司机是否登录 */
+            if(con.user_id){
+
+                /** 获取订单ID */
+                let id = obj.id
+
+                /** 查询订单 */
+                db.find('select * from c_order_way where id=?',[id],function(result){
+
+                    /** 订单是否存在 */
+                    if(!result)return;
+
+                    /** 订单是否属于登录司机 */
+                    if(result.driver_id != con.user_id)return;
+
+                    /** 订单是否是带接客状态 */
+                    if(result.status != 3)return;
+
+                        /** 更新订单 */
+                        db.update('update c_order_way set status=4 where id=?',[id],function(){
+
+                            /** 更新行程 */
+                            db.update('update c_trip set driver_id=?,status=4 where id=? and type=3',[con.driver_id,id],function(){
+
+                                /** 获取司机 */
+                                let driver = data.DriverMap.get(con.driver_id)
+                                /** 设置司机状态 */
+                                driver.serving = 0;
+                                con.sendText(content({status:200,type:'endWay',id:id}))
+
+                                /** 获取用户 */
+                                let user = data.UserMap.get(result.user_id+'')
+                                if(user)user.con.sendText(content({status:200,type:'endWay',id:id}))
+                                
+                            })
+                        })
+                    
+                })
+            }
+            break;
         default:
             break;
     }

@@ -199,6 +199,12 @@ limit 每页数量
 {}
 
 
+1.24 线下付款
+user/offlinePay
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
 ws.1.1 用户登录
 @
 type 固定login
@@ -298,6 +304,23 @@ ws.1.8 取消顺风车
 @
 type 固定cancelCallWay
 id 发起顺风车的编号ID
+{}
+{}
+
+
+
+ws.1.9 顺风车司机接到乘客（开始计费）
+@
+type 固定startWay
+id
+{}
+{}
+
+
+ws.1.10 顺风车司机到达终点
+@
+type 固定endWay
+id
 {}
 {}
 

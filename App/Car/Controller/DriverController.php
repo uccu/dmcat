@@ -22,6 +22,7 @@ use App\Car\Model\DriverFundModel;
 use App\Car\Model\UserModel; 
 use App\Car\Model\PaymentModel;
 use App\Car\Model\JudgeModel;
+use App\Car\Model\IncomeModel;
 use Model; 
 
 class DriverController extends Controller{
@@ -382,7 +383,7 @@ class DriverController extends Controller{
 
         $trip->driver_id != $this->L->id && AJAX::error('无权限');
         $trip->status != 4 && AJAX::error('该订单已过期');
-
+        $trip->type == 3 && AJAX::error('error');
 
         $data['user_id'] = $trip->user_id;
         $data['ctime'] = TIME_NOW;
@@ -446,11 +447,33 @@ class DriverController extends Controller{
 
 
 
-    function income(){
+    /** 我的收入
+     * income
+     * @param mixed $incomeModel 
+     * @return mixed 
+     */
+    function income(IncomeModel $incomeModel){
 
-        
+        !$this->L->id && AJAX::error('未登录');
+        $month = date('Ym');
 
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type<3')->where(['driver_id'=>$this->L->id,'month'=>$month])->find()->m;
+        if(!$money)$money = '0.00';
+        $out['month'] = $money;
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type<3')->where(['driver_id'=>$this->L->id])->find()->m;
+        if(!$money)$money = '0.00';
+        $out['all'] = $money;
 
+        $list = $incomeModel->select('*','trip.start_name','trip.end_name')->where('type<3')->where(['driver_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
+
+        $list2 = [];
+
+        foreach($list as $v){
+            $list2[$v->month][] = $v;
+        }
+
+        $out['list'] = $list2;
+        AJAX::success($out);
     }
     
 }
