@@ -94,9 +94,9 @@ class Func {
             if($time > TIME_NOW){
 
                 if(date('Ymd',$time) == date('Ymd',TIME_NOW)){
-                    return '今天'.date('H:i');
+                    return '今天'.date('H:i',$time);
                 }elseif(date('Ymd',$time) == date('Ymd',TIME_NOW + 24 * 3600)){
-                    return '明天'.date('H:i');
+                    return '明天'.date('H:i',$time);
                 }else{
                     return date('Y-m-d',$time);
                 }
