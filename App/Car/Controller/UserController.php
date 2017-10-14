@@ -693,6 +693,8 @@ class UserController extends Controller{
             }
 
             $v->start_date = Func::time_calculate($v->start_time);
+
+            $v->sil = floor(100 - $v->mul * 100) . '%';
         }
         $route->start_date = Func::time_calculate($route->start_time);
         $out['list'] = $list;
