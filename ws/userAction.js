@@ -422,7 +422,7 @@ z = function(obj,con){
                 })
             }
             break;
-        case 'endDriving':
+        case 'endWay':
         
             /** 司机是否登录 */
             if(con.user_id){
