@@ -377,8 +377,10 @@ z = function(obj,con){
 
                         let driver_id = result.driver_id
                         let driver = data.UserMap.get(driver_id+'')
-                        if(driver)driver.con.sendText(content({status:200,type:'cancelCallWayDriver',id:id}))
-
+                        if(driver){
+                            console.log('one driver get cancelCallWayDriver request');
+                            driver.con.sendText(content({status:200,type:'cancelCallWayDriver',id:id}))
+                        }
                         /** 更新行程表 */
                         db.update('update c_trip set status=0 where id=? and type=3',[id])
                     })
@@ -481,6 +483,7 @@ z = function(obj,con){
                 let user = data.UserMap.get(id+'')
                 if(user)user.con.sendText(content({status:200,type:'orderWay',driver_id:con.user_id}))
                 con.sendText(content({status:200,type:'orderWay',user_id:con.id}))
+                console.log('one driver get the order')
             }
             break;
         default:
