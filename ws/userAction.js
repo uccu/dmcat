@@ -446,10 +446,10 @@ z = function(obj,con){
                         db.update('update c_order_way set status=4 where id=?',[id],function(){
 
                             /** 更新行程 */
-                            db.update('update c_trip set driver_id=?,status=4 where id=? and type=3',[con.driver_id,id],function(){
+                            db.update('update c_trip set driver_id=?,status=4 where id=? and type=3',[con.user_id,id],function(){
 
                                 /** 获取司机 */
-                                let driver = data.DriverMap.get(con.driver_id)
+                                let driver = data.UserMap.get(con.user_id)
                                 /** 设置司机状态 */
                                 driver.serving = 0;
                                 con.sendText(content({status:200,type:'endWay',id:id}))
