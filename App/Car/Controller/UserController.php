@@ -353,6 +353,48 @@ class UserController extends Controller{
     }
 
 
+    /** 获取行程 */
+    function getDriverTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel){
+
+        // $this->L->id = 3;
+        !$this->L->id && AJAX::error('未登录');
+        $where['driver_id'] = $this->L->id;
+        $where['type'] = 3;
+        $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
+
+        $select = 'start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,status,driver_id';
+
+        foreach($list as $k=>&$v){
+
+            
+
+            
+            $v->orderInfo = $orderWayModel->select($select,'RAW')->find($v->id);
+            
+            
+            if(!$v->orderInfo)unset($list[$k]);
+            else{
+
+                $v->orderInfo->create_date = Func::time_calculate($v->orderInfo->create_time);
+                if($v->user_id){
+                    $v->userInfo = UserModel::copyMutiInstance()->select('avatar','name','sex','phone')->find($v->user_id);
+                    if(!$v->userInfo)$v->user_id = '0';
+                }
+
+            }
+        }
+
+
+        $order_count = $tripModel->select('COUNT(*) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('status>3')->where('type=3')->find()->c;
+
+        $out['list'] = $list;
+        $out['order_count'] = $order_count;
+        $out['judge_score'] = $this->L->userInfo->judge_score;
+        AJAX::success($out);
+
+    }
+
+
     
     /** 获取默认地址
      * getLocation
