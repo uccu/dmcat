@@ -720,11 +720,15 @@ class UserController extends Controller{
     }
 
 
-    /** 发布顺风车订单
-     * createOrder
-     * @return mixed 
-     */
-    function createOrder(OrderWayModel $orderWayModel){
+    function getJudge($page = 1 ,$limit = 10,JudgeModel $judgeModel){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $list = $judgeModel->select('*','user.name','user.avatar')->where('type=3')->where(['driver_id'=>$this->L->id])->order('create_time desc')->page($page,$limit)->get()->toArray();
+
+        $out['list'] = $list;
+
+        AJAX::success($out);
 
 
     }
