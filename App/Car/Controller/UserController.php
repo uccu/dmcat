@@ -354,7 +354,7 @@ class UserController extends Controller{
 
 
     /** 获取行程 */
-    function getDriverTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel){
+    function getDriverTripList($page=1,$limit=10,TripModel $tripModel,OrderWayModel $orderWayModel){
 
         // $this->L->id = 3;
         !$this->L->id && AJAX::error('未登录');
