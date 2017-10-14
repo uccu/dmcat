@@ -315,7 +315,7 @@ class UserController extends Controller{
 
     /** 获取行程 */
     function getTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
-        $this->L->id = 47;
+        // $this->L->id = 47;
         !$this->L->id && AJAX::error('未登录');
         $where['user_id'] = $this->L->id;
         $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
