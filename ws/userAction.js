@@ -20,7 +20,7 @@ z = function(obj,con){
                     con.sendText(content({status:400,type:'login',message:d.message}))
                     return
                 }
-                let user = data.UserMap.get(d.data.info.id)
+                let user = data.UserMap.get(d.data.info.id+'')
                 if(user){
                     if(user.con === con)return
                     delete user.con.user_id
@@ -376,7 +376,7 @@ z = function(obj,con){
                         con.sendText(content({status:200,type:'cancelCallWay',id:id}))
 
                         let driver_id = result.driver_id
-                        let driver = data.UserMap.get(driver_id)
+                        let driver = data.UserMap.get(driver_id+'')
                         if(driver)driver.con.sendText(content({status:200,type:'cancelCallWayDriver',id:id}))
 
                         /** 更新行程表 */
@@ -413,7 +413,7 @@ z = function(obj,con){
                                 db.update('update c_driver_way set status=0 where user_id=? and status=1',[con.user_id,con.user_id],function(){
 
                                     /** 获取司机 */
-                                    let driver = data.UserMap.get(con.user_id)
+                                    let driver = data.UserMap.get(con.user_id+'')
                                     /** 设置司机状态为服务中 */
                                     driver.serving = 1;
                                     con.sendText(content({status:200,type:'startWay',id:id}))
@@ -458,7 +458,7 @@ z = function(obj,con){
                             db.update('update c_trip set driver_id=?,status=4 where id=? and type=3',[con.user_id,id],function(){
 
                                 /** 获取司机 */
-                                let driver = data.UserMap.get(con.user_id)
+                                let driver = data.UserMap.get(con.user_id+'')
                                 /** 设置司机状态 */
                                 driver.serving = 0;
                                 con.sendText(content({status:200,type:'endWay',id:id}))
