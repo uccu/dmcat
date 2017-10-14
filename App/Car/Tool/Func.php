@@ -91,17 +91,28 @@ class Func {
      */
     static public function time_calculate( $time ){
         if($time>=TIME_TODAY){
+            if($time > TIME_NOW){
+
+                if(date('Ymd',$time) == date('Ymd',TIME_NOW)){
+                    return '今天'.date('H:i');
+                }elseif(date('Ymd',$time) == date('Ymd',TIME_NOW + 24 * 3600)){
+                    return '明天'.date('H:i');
+                }else{
+                    return date('Y-m-d',$time);
+                }
+
+            }
             $time = TIME_NOW - $time;
             $second = $time % 60 ;
             $time = ( $time - $second ) / 60 ;
             if(!$time)return $second.'秒前';
             $minute = $time % 60 ;
             $hour = ( $time - $minute ) / 60 ;
-            if(!$hour)return $minute.'分'.($second?($second<10?'0':'').$second.'秒':'').'前';
-            return $hour.'时'.($minute?($minute<10?'0':'').$minute.'分':'').'前';
+            if(!$hour)return $minute.'分'.($second?($second<10?'0':''):'').'前';
+            return $hour.'时'.($minute?($minute<10?'0':''):'').'前';
         
         }elseif($time>=TIME_YESTERDAY){
-            return '昨日'.date('H时i分',$time);
+            return '昨日'.date('H:i',$time);
         }else{
             return date('Y-m-d',$time);
             
