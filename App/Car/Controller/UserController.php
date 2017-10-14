@@ -29,6 +29,7 @@ use App\Car\Model\PaymentModel;
 use App\Car\Model\AreaModel; 
 use App\Car\Model\UserScoreLogModel; 
 use App\Car\Model\UserMoneyLogModel; 
+use App\Car\Model\UserBankModel; 
 use Model; 
 
 
@@ -922,6 +923,73 @@ class UserController extends Controller{
         $out['money'] = $this->L->userInfo->money;
 
         AJAX::success($out);
+
+    }
+
+    function myBank(UserBankModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+        $list = $model->where(['user_id'=>$this->L->id])->order('update_time desc')->get()->toArray();
+        $out['list'] = $list;
+        AJAX::success($out);
+
+    }
+
+    function updBank(UserBankModel $model,$id = 0,$code,$bank_id,$bank_name,$name){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $data['code'] = $code;
+        $data['bank_id'] = $bank_id;
+        $data['bank_name'] = $bank_name;
+        $data['name'] = $name;
+        $data['update_time'] = TIME_NOW;
+        $data['user_id'] = $this->L->id;
+
+        if($id){
+
+            $b = $model->find($id);
+            if($b->user_id != $this->L->id)AJAX::error('err');
+            $model->set($data)->save($id);
+        }else{
+            $model->set($data)->add();
+
+        }
+        AJAX::success();
+
+    }
+
+    function delBank(UserBankModel $model,$id = 0){
+
+        !$this->L->id && AJAX::error('未登录');
+        $b = $model->find($id);
+        if($b->user_id != $this->L->id)AJAX::error('err');
+
+        $model->remove($id);
+        AJAX::success();
+
+    }
+
+    /** 申请提现
+     * cashApply
+     * @param mixed $model 
+     * @return mixed 
+     */
+    function cashApply(UserMoneyLogModel $model,$money,$bank_id){
+        
+        !$this->L->id && AJAX::error('未登录');
+
+        $model->where(['user_id'=>$this->L->id,'status'=>0])->find() && AJAX::error('已有一条提现申请正在处理中！');
+
+        $data['money'] = $money;
+        $data['bank_id'] = $bank_id;
+        $data['create_time'] = TIME_NOW;
+        $data['content'] = '提现';
+
+        $model->set($data)->add();
+
+        AJAX::success();
+
 
     }
 

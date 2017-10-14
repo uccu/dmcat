@@ -10,6 +10,7 @@ use Request;
 use stdClass;
 use App\Car\Tool\Func;
 use App\Car\Model\AreaModel;
+use Model;
 
 class HomeController extends Controller{
 
@@ -188,6 +189,14 @@ class HomeController extends Controller{
         AJAX::success(['data'=>$data]);
 
 
+    }
+
+
+    function bank(){
+
+        $list = Model::copyMutiInstance('bank')->get()->toArray();
+        $out['list'] = $list;
+        AJAX::success($out);
     }
 
 }

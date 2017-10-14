@@ -211,6 +211,56 @@ user/income
 {}
 
 
+
+1.26 我的积分
+user/myScore
+page 页数
+limit 每页数量
+{"data":{"list":[{"id":"1","user_id":"41","score":"11","create_time":"111","content":"111"}],"score":"0"},"code":200,"url":"","message":""}
+{}
+
+
+1.27 我的余额
+user/myMoney
+page 页数
+limit 每页数量
+{"data":{"list":[{"id":"1","user_id":"41","money":"11.00","content":"111","create_time":"11","status":"1","bank_id":"1"}],"money":"0.00"},"code":200,"url":"","message":""}
+{}
+
+
+1.28 我的银行
+user/myBank
+{"data":{"list":[{"id":"1","user_id":"41","name":"xxx","code":"xxx","bank_id":"1","update_time":"111","bank_name":"xxx"}]},"code":200,"url":"","message":""}
+{}
+
+
+1.29 修改我的银行
+user/updBank
+code 银行账号
+bank_id 银行ID
+bank_name 分行名字
+name 姓名
+id 我的银行ID（如果为0则为新增）
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+1.30 删除我的银行
+user/delBank
+id 我的银行ID
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+1.31 提现申请
+user/cashApply
+money 金额
+bank_id 银行ID
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
 ws.1.1 用户登录
 @
 type 固定login
@@ -526,3 +576,10 @@ end_latitude 结束纬度
 end_longitude 结束经度
 {"data":{"area":{"province":"\u4e0a\u6d77\u5e02","city":"\u4e0a\u6d77\u5e02","district":"\u9752\u6d66\u533a","name":"\u76c8\u6d66\u8857\u9053","cityId":"4522848"},"distance":{"origin_id":"1","dest_id":"1","distance":"857443","duration":"34140"},"price":"20.00","totalPrice":"20.00","coupon":"0.00"},"code":200,"url":"","message":""}
 {cityId:市ID,distance:距离（米）,duration:时间（秒）,price:里程价格,totalPrice:总价格,coupon:优惠券抵扣}
+
+
+
+3.4 获取银行列表
+home/bank
+{"data":{"list":[{"id":"1","thumb":"nopic.jpg","name":"\u6d4b\u8bd5\u94f6\u884c"}]},"code":200,"url":"","message":""}
+{}
