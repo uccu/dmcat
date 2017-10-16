@@ -890,7 +890,9 @@ class UserController extends Controller{
         !$this->L->id && AJAX::error('未登录');
         $month = date('Ym');
 
-        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type=3')->where(['driver_id'=>$this->L->id,'month'=>$month])->find()->m;
+        $week = TIME_TODAY - (date('w') - 1) * 24 * 3600;
+
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type=3')->where(['driver_id'=>$this->L->id])->where('create_time>%n',$week)->find()->m;
         if(!$money)$money = '0.00';
         $out['month'] = $money;
         $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type=3')->where(['driver_id'=>$this->L->id])->find()->m;
