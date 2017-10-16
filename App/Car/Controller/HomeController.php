@@ -11,6 +11,7 @@ use stdClass;
 use App\Car\Tool\Func;
 use App\Car\Model\AreaModel;
 use App\Car\Model\UserCouponModel;
+use App\Car\Model\H5Model;
 use App\Car\Middleware\L;
 use Model;
 
@@ -50,6 +51,15 @@ class HomeController extends Controller{
         $out['fpath'] = '/pic/file.jpg';
         $out['apath'] = Func::fullPicAddr('file.jpg');
         AJAX::success($out);
+    }
+
+    function h5($id,H5Model $model){
+
+        $m = $model->find($id);
+
+        if($m)View::addData(['title'=>$m->name,'content'=>$m->content]);
+
+        View::hamlReader('h5','App');
     }
 
     function getArea($latitude,$longitude){

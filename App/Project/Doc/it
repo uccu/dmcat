@@ -635,3 +635,11 @@ end_longitude 结束经度
 home/bank
 {"data":{"list":[{"id":"1","thumb":"nopic.jpg","name":"\u6d4b\u8bd5\u94f6\u884c"}]},"code":200,"url":"","message":""}
 {}
+
+
+
+3.5 h5
+home/h5?id=xxx
+id GET参数，h5页面的ID
+{}
+{}
