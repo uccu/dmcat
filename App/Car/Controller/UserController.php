@@ -30,6 +30,7 @@ use App\Car\Model\AreaModel;
 use App\Car\Model\UserScoreLogModel; 
 use App\Car\Model\UserMoneyLogModel; 
 use App\Car\Model\UserBankModel; 
+use App\Car\Model\UserCouponModel; 
 use Model; 
 
 
@@ -998,9 +999,24 @@ class UserController extends Controller{
 
 
 
-    function myCoupon(){
+    /** 我的优惠券
+     * myCoupon
+     * @param mixed $model 
+     * @return mixed 
+     */
+    function myCoupon(UserCouponModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $where['user_id'] = $this->L->id;
 
 
+        $list = $model->where($where)->where('end_time>%n',TIME_NOW)->order('end_time desc')->get()->toArray();
+
+        $out['list'] = $list;
+
+        AJAX::success($out);
+        
         
     }
 

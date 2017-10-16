@@ -261,6 +261,14 @@ bank_id 银行ID
 
 
 
+1.32 我的优惠券
+user/myCoupon
+{"data":{"list":[{"id":"1","user_id":"41","money":"10.00","get_time":"1508135553","end_time":"1508195553","type":"1"}]},"code":200,"url":"","message":""}
+{type:1代驾2出租车3顺风车}
+
+
+
+
 ws.1.1 用户登录
 @
 type 固定login
