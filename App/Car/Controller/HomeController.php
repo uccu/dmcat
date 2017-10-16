@@ -10,6 +10,7 @@ use Request;
 use stdClass;
 use App\Car\Tool\Func;
 use App\Car\Model\AreaModel;
+use App\Car\Model\UserCouponModel;
 use Model;
 
 class HomeController extends Controller{
@@ -75,7 +76,7 @@ class HomeController extends Controller{
      * @param mixed $type 
      * @return mixed 
      */
-    function getLocationInfo($start_latitude,$start_longitude,$end_latitude,$end_longitude,AreaModel $areaModel,$type = 0){
+    function getLocationInfo(UserCouponModel $userCouponModel,$start_latitude,$start_longitude,$end_latitude,$end_longitude,AreaModel $areaModel,$type = 0){
 
         $area = Func::getArea($start_latitude,$start_longitude);
         if(!$area)AJAX::error('位置获取失败');
@@ -101,8 +102,19 @@ class HomeController extends Controller{
         $out['area']        = $area;
         $out['distance']    = $distance;
         $out['price']       = $price;
-        $out['totalPrice']  = $price;
+        
         $out['coupon']      = '0.00';
+
+        if($this->L->id){
+
+            $coupon = $userCouponModel->where(['user_id'=>$this->L->id])->where('end_time>%n',TIME_NOW)->where(['type'=>$type])->order('money desc')->find();
+            if($coupon) $out['coupon'] = $coupon->money;
+            
+        }
+
+        $out['totalPrice']  = $price - $out['coupon'];
+        if($out['totalPrice'] < 0)$out['totalPrice'] = '0.00';
+        
 
         AJAX::success($out);
 
