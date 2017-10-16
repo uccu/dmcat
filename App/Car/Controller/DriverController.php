@@ -454,7 +454,7 @@ class DriverController extends Controller{
      * @param mixed $incomeModel 
      * @return mixed 
      */
-    function income(IncomeModel $incomeModel){
+    function income(IncomeModel $incomeModel,$arr = 0){
 
         !$this->L->id && AJAX::error('未登录');
         $month = date('Ym');
@@ -476,6 +476,7 @@ class DriverController extends Controller{
         }
 
         $out['list'] = $list2;
+        if($arr)$out['list'] = array_values($list2);
         AJAX::success($out);
     }
 
