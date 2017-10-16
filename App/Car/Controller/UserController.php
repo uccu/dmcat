@@ -985,6 +985,7 @@ class UserController extends Controller{
         $data['bank_id'] = $bank_id;
         $data['create_time'] = TIME_NOW;
         $data['content'] = '提现';
+        $data['user_id'] = $this->L->id;
 
         $model->set($data)->add();
 
