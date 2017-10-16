@@ -929,7 +929,7 @@ class UserController extends Controller{
     function myBank(UserBankModel $model){
 
         !$this->L->id && AJAX::error('未登录');
-        $list = $model->select('*','bank.thumb','bank.name')->where(['user_id'=>$this->L->id])->order('update_time desc')->get()->toArray();
+        $list = $model->select('*','bank.thumb','bank.name>bank')->where(['user_id'=>$this->L->id])->order('update_time desc')->get()->toArray();
         $out['list'] = $list;
         AJAX::success($out);
 
