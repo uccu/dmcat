@@ -496,7 +496,7 @@ class DriverController extends Controller{
     function myBank(DriverBankModel $model){
 
         !$this->L->id && AJAX::error('未登录');
-        $list = $model->where(['driver_id'=>$this->L->id])->order('update_time desc')->get()->toArray();
+        $list = $model->select('*','bank.thumb','bank.name')->where(['driver_id'=>$this->L->id])->order('update_time desc')->get()->toArray();
         $out['list'] = $list;
         AJAX::success($out);
 
