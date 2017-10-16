@@ -11,6 +11,7 @@ use stdClass;
 use App\Car\Tool\Func;
 use App\Car\Model\AreaModel;
 use App\Car\Model\UserCouponModel;
+use App\Car\Middleware\L;
 use Model;
 
 class HomeController extends Controller{
@@ -113,6 +114,7 @@ class HomeController extends Controller{
         
         $out['coupon']      = '0.00';
 
+        // $this->L->id = 43;
         if($this->L->id){
 
             $coupon = $userCouponModel->where(['user_id'=>$this->L->id])->where('end_time>%n',TIME_NOW)->where(['type'=>$type])->order('money desc')->find();
