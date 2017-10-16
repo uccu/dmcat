@@ -15,6 +15,14 @@ use Model;
 
 class HomeController extends Controller{
 
+
+    function __construct(){
+
+        $this->L = L::getSingleInstance();
+
+    }
+
+
     function upAvatar(){
 
         $out['path'] = Func::uploadFiles('file',100,100);
