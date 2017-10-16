@@ -471,7 +471,7 @@ class DriverController extends Controller{
         $list = $incomeModel->select('*','trip.start_name','trip.end_name')->page($page,$limit)->where('type<3')->where(['driver_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
 
         foreach($list as &$v){
-            $v->create_date = Func::time_calculate($v->create_time);
+            $v->create_date = date('m-d H:i',$v->create_time);
         }
 
         $out['list'] = $list;

@@ -904,8 +904,7 @@ class UserController extends Controller{
         // $list2 = [];
 
         foreach($list as &$v){
-            $v->create_date = Func::time_calculate($v->create_time);
-            // $list2[$v->month][] = $v;
+            $v->create_date = date('m-d H:i',$v->create_time);
         }
 
         $out['list'] = $list;
