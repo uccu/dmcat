@@ -31,6 +31,7 @@ use App\Car\Model\UserScoreLogModel;
 use App\Car\Model\UserMoneyLogModel; 
 use App\Car\Model\UserBankModel; 
 use App\Car\Model\UserCouponModel; 
+use App\Car\Model\IncomeModel; 
 use Model; 
 
 
@@ -318,13 +319,19 @@ class UserController extends Controller{
 
 
     /** 获取行程 */
-    function getTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
+    function getTripList(UserCouponModel $userCouponModel,$page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
         // $this->L->id = 47;
         !$this->L->id && AJAX::error('未登录');
         $where['user_id'] = $this->L->id;
         $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
 
         $select = 'start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,status,driver_id,coupon';
+
+
+
+        $coupon = $userCouponModel->where(['user_id'=>$this->L->id])->where('end_time>%n',TIME_NOW)->where(['type'=>$type])->order('money desc')->find();
+        
+
 
         foreach($list as $k=>&$v){
 
@@ -336,10 +343,19 @@ class UserController extends Controller{
             }elseif($v->type == 3){
                 $v->orderInfo = $orderWayModel->select($select,'RAW')->find($v->id);
             }
+
+            
             
             if(!$v->orderInfo)unset($list[$k]);
             else{
-
+                if($v->status < 5){
+                    $v->total_fee = $v->fee = $v->estimated_price;
+                }
+                if($v->status < 5 && $coupon){
+                    $v->coupon = $coupon->money;
+                    $v->total_fee = $v->fee - $v->coupon;
+                    if($v->total_fee < 0 )$v->total_fee = '0.00';
+                }
                 $v->orderInfo->create_date = Func::time_calculate($v->orderInfo->create_time);
                 if($v->driver_id){
                     if($v->type == 3)$v->driverInfo = UserModel::copyMutiInstance()->select('avatar','name','sex','phone','judge_score','car_number','brand')->find($v->driver_id);
