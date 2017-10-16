@@ -997,7 +997,7 @@ class UserController extends Controller{
         
         !$this->L->id && AJAX::error('未登录');
 
-        $this->L->userInfo->money < $money && AJAX::success('余额不足！');
+        $this->L->userInfo->money < $money && AJAX::error('余额不足！');
 
         $model->where(['user_id'=>$this->L->id,'status'=>0])->find() && AJAX::error('已有一条提现申请正在处理中！');
 
