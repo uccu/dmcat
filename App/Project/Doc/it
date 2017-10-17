@@ -643,3 +643,13 @@ home/h5?id=xxx
 id GET参数，h5页面的ID
 {}
 {}
+
+
+3.6 验证城市
+home/checkCity
+start_latitude 开始纬度
+start_longitude 开始经度
+end_latitude 结束纬度
+end_longitude 结束经度
+{}
+{}

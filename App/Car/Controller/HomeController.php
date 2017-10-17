@@ -231,4 +231,16 @@ class HomeController extends Controller{
         AJAX::success($out);
     }
 
+
+    function checkCity($start_latitude,$start_longitude,$end_latitude,$end_longitude){
+
+        $area = Func::getArea($end_latitude,$start_longitude);
+        $area2 = Func::getArea($end_latitude,$end_longitude);
+        if(!$area || !$area2)AJAX:: error('地址坐标获取失败');
+        $area->city == $area2->city && AJAX::error('起始地与目的地不能同市！');
+
+        AJAX::success();
+    }
+
+    
 }
