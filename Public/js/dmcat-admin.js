@@ -261,6 +261,7 @@
                         
                         break;
                     case 'h5':
+                        
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 9)+'"><div class="summernote" data-name="'+para.name+'">'+(m.info[para.name]||para.default||'')+'</div></div>');
                         var su = pa.find(".summernote").summernote({
                             toolbar: [
@@ -272,7 +273,7 @@
                                 ['height', ['height']],
                                 ['para', ['ul', 'ol', 'paragraph']],
                                 ['e',['picture','link']],
-                                ['o',['codeview']],
+                                ['o',['codeview','fullscreen']],
                             ],
                             height: 300,
                             minHeight: 300,

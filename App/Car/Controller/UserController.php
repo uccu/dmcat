@@ -644,6 +644,11 @@ class UserController extends Controller{
         $driverWayModel->where($data)->find() && AJAX::success('不能重复发布行程');
 
 
+        $area = Func::getArea($start_longitude,$end_latitude);
+        $area2 = Func::getArea($end_latitude,$end_longitude);
+        if(!$area || !$area2)AJAX:: error('地址坐标获取失败');
+        $area->city == $area2->city && AJAX::error('起始地与目的地不能同市！');
+
         $data['start_latitude'] = $start_latitude;
         $data['start_longitude'] = $start_longitude;
         $data['end_latitude'] = $end_latitude;

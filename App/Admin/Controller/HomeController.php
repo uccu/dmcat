@@ -12,6 +12,7 @@ use Uccu\DmcatTool\Tool\AJAX;
 
 # 数据模型
 use App\Car\Model\H5Model;
+use App\Car\Model\BankModel;
 
 class HomeController extends Controller{
 
@@ -37,12 +38,6 @@ class HomeController extends Controller{
     function index(){
 
         View::hamlReader('home','Admin');
-    }
-
-    function banner(){
-
-        View::addData(['getList'=>'/home/admin_banner']);
-        View::hamlReader('home/list','Admin');
     }
 
     function admin_h5_get(H5Model $model,$id){
@@ -103,6 +98,160 @@ class HomeController extends Controller{
 
         $upd = AdminFunc::upd($model,$id,$data);
         $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+
+    function bank(){
+
+        View::addData(['getList'=>'admin_bank']);
+        View::hamlReader('home/list','Admin');
+    }
+
+    function admin_bank(BankModel $model){
+        
+        $this->L->adminPermissionCheck(126);
+
+        $name = '';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../home/admin_bank_get',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '../home/admin_bank_del',
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                'ID',
+                '名字',
+                '图片',
+                
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                
+                'id',
+                'name',
+                [
+                    'name'=>'thumb',
+                    'type'=>'pic'
+                ]
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        
+
+        $list = $model->order('id')->where($where)->get()->toArray();
+        foreach($list as &$v){
+            $v->thumb = Func::fullPicAddr($v->thumb);
+        }
+
+
+        # 分页内容
+        $page   = 1;
+        $max    = count($list);
+        $limit  = count($list);
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_bank_get(BankModel $model,$id){
+        
+        $this->L->adminPermissionCheck(126);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../home/admin_bank_get',
+            'upd'   => '../home/admin_bank_upd',
+            'back'  => 'home/bank',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+            [
+                'title' =>  '图片',
+                'name'  =>  'thumb',
+                'type'  =>  'pic',
+
+            ],
+            [
+                'title' =>  '名字',
+                'name'  =>  'name',
+
+            ],
+                
+                
+                
+                
+            ];
+            
+        !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+        $info = AdminFunc::get($model,$id);
+        if($info->status != 0)$tbody[1]['disabled'] = true;
+            
+        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
+            
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_bank_upd(BankModel $model,$id){
+        $this->L->adminPermissionCheck(126);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+
+
+    function admin_bank_del(BankModel $model,$id){
+        $this->L->adminPermissionCheck(126);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
         AJAX::success($out);
     }
 
