@@ -589,7 +589,7 @@ class MoneyController extends Controller{
     # 优惠券
     function admin_coupon(UserModel $model,$search){
 
-        $this->L->adminPermissionCheck(68);
+        $this->L->adminPermissionCheck(127);
 
         $name = '用户';
         # 允许操作接口
@@ -678,7 +678,7 @@ class MoneyController extends Controller{
 
     function admin_coupon_send(UserModel $model,$search,$end_time,$money,$type){
 
-        $this->L->adminPermissionCheck(68);
+        $this->L->adminPermissionCheck(127);
 
         if($search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
