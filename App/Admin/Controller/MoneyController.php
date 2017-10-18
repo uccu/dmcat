@@ -16,6 +16,7 @@ use App\Car\Model\PaymentModel;
 use App\Car\Model\UserMoneyLogModel;
 use App\Car\Model\UserModel;
 use App\Car\Model\DriverModel;
+use App\Car\Model\UserCouponModel;
 use App\Car\Model\DriverMoneyLogModel;
 
 
@@ -33,6 +34,11 @@ class MoneyController extends Controller{
 
         View::addData(['getList'=>'admin_pay']);
         View::hamlReader('home/list','Admin');
+    }
+    function coupon(){
+
+        View::addData(['getList'=>'admin_coupon']);
+        View::hamlReader('money/coupon','Admin');
     }
 
     function cash_user(){
@@ -387,6 +393,7 @@ class MoneyController extends Controller{
         AJAX::success($out);
     }
 
+    # 司机提现申请
     function admin_cash_driver(DriverMoneyLogModel $model,$page = 1,$limit = 10,$search,$type = -2){
         
         $this->L->adminPermissionCheck(121);
@@ -577,4 +584,126 @@ class MoneyController extends Controller{
         $out['upd'] = $upd;
         AJAX::success($out);
     }
+
+
+    # 优惠券
+    function admin_coupon(UserModel $model,$search){
+
+        $this->L->adminPermissionCheck(68);
+
+        $name = '用户';
+        # 允许操作接口
+        $opt = 
+            [
+
+
+                'req'   =>[
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search',
+                        'size'=>'3'
+                    ],
+                ]
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '用户ID',
+                '手机号',
+                '名字',
+
+
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'id',
+                'phone',
+                'name',
+
+
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        
+        if($search){
+            $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        }
+
+        $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+        }
+
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+
+    function admin_coupon_send(UserModel $model,$search,$end_time,$money,$type){
+
+        $this->L->adminPermissionCheck(68);
+
+        if($search){
+            $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        }
+
+        $list = $model->where($where)->get()->toArray();
+
+        $end_time = strtotime($end_time);
+
+        $data['end_time'] = $end_time +3600*24 - 1;
+        $data['money'] = $money;
+        $data['type'] = $type;
+        $data['get_time']  = TIME_NOW;
+        
+        $model = UserCouponModel::copyMutiInstance();
+
+        foreach($list as $v){
+
+            $data['user_id'] = $v->id;
+            $model->set($data)->add();
+
+        }
+
+        AJAX::success();
+
+    }
+
 }
