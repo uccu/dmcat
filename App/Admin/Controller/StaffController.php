@@ -423,6 +423,16 @@ class StaffController extends Controller{
                     ]
                 ],
                 [
+                    'title' =>  '品牌',
+                    'name'  =>  'brand',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '车牌',
+                    'name'  =>  'car_number',
+                    'size'  =>  '4',
+                ],
+                [
                     'title' =>  '修改密码',
                     'name'  =>  'pwd',
                     'size'  =>  '4',
@@ -873,6 +883,16 @@ class StaffController extends Controller{
                         ['name'=>'province_id' ,'title' =>  '省'],
                         ['name'=>'city_id'     ,'title' =>  '市','all'=>true]
                     ]
+                ],
+                [
+                    'title' =>  '品牌',
+                    'name'  =>  'brand',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '车牌',
+                    'name'  =>  'car_number',
+                    'size'  =>  '4',
                 ],
                 [
                     'title' =>  '修改密码',
