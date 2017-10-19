@@ -276,7 +276,7 @@ z = function(obj,con){
                                 driver.serving = 0;
                                 con.sendText(content({status:200,type:'endDriving',id:id}))
                                 if(driver){
-                                    if(driver.serving)continue
+
                                         let g = function(r){
                                             driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'end',list:r}))
                                         };
@@ -326,10 +326,10 @@ z = function(obj,con){
                                 driver.serving = 0;
                                 con.sendText(content({status:200,type:'endTaxi',id:id}))
                                 if(driver){
-                                    if(driver.serving)continue
-                                        let g = function(r){
-                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'end',list:r}))
-                                        };
+
+                                    let g = function(r){
+                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'end',list:r}))
+                                    };
                                     (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
                                     (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
                                     (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
