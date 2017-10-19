@@ -29,17 +29,14 @@ let z = function(url,data,cb){
             let obj,f = cb instanceof Function ? 1 : 0
             try{
                 obj = JSON.parse(gData)
-                // if(obj.code != 200){
-                //     console.warn(obj.message,gData)
-                //     f && cb(false)
-                //     return
-                // }
-                f && cb(obj)
+
             }catch(e){
-                f && cb(false)
+                obj = false
                 console.warn(e.message,gData)
                 return
             }
+
+            f && cb(obj)
         })
     })
 
