@@ -85,6 +85,15 @@ z = function(obj,con){
                                     /** 设置司机状态为服务中 */
                                     driver.serving = 1;
                                     con.sendText(content({status:200,type:'orderDriving',id:id}))
+                                    if(driver){
+
+                                        let g = function(r){
+                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
+                                        };
+                                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                    }
                                     let user = data.UserMap.get(result.user_id+'')
                                     if(user)user.con.sendText(content({status:200,type:'orderDriving',id:id}))
                                     if(driver_ids){
@@ -133,6 +142,15 @@ z = function(obj,con){
                                     /** 设置司机状态为服务中 */
                                     driver.serving = 1;
                                     con.sendText(content({status:200,type:'orderTaxi',id:id}))
+                                    if(driver){
+
+                                        let g = function(r){
+                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
+                                        };
+                                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                    }
                                     let user = data.UserMap.get(result.user_id+'')
                                     if(user)user.con.sendText(content({status:200,type:'orderTaxi',id:id}))
                                     if(driver_ids){
