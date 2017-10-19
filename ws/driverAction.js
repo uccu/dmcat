@@ -275,6 +275,15 @@ z = function(obj,con){
                                 /** 设置司机状态 */
                                 driver.serving = 0;
                                 con.sendText(content({status:200,type:'endDriving',id:id}))
+                                if(driver){
+                                    if(driver.serving)continue
+                                        let g = function(r){
+                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'end',list:r}))
+                                        };
+                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                }
 
                                 /** 获取用户 */
                                 let user = data.UserMap.get(result.user_id+'')
@@ -316,7 +325,15 @@ z = function(obj,con){
                                 /** 设置司机状态 */
                                 driver.serving = 0;
                                 con.sendText(content({status:200,type:'endTaxi',id:id}))
-
+                                if(driver){
+                                    if(driver.serving)continue
+                                        let g = function(r){
+                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'end',list:r}))
+                                        };
+                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                }
                                 /** 获取用户 */
                                 let user = data.UserMap.get(result.user_id+'')
                                 if(user)user.con.sendText(content({status:200,type:'endTaxi',id:id}))
