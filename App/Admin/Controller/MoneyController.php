@@ -18,6 +18,7 @@ use App\Car\Model\UserModel;
 use App\Car\Model\DriverModel;
 use App\Car\Model\UserCouponModel;
 use App\Car\Model\DriverMoneyLogModel;
+use App\Car\Model\CouponModel;
 
 
 
@@ -39,6 +40,11 @@ class MoneyController extends Controller{
 
         View::addData(['getList'=>'admin_coupon']);
         View::hamlReader('money/coupon','Admin');
+    }
+    function coupon_setting(){
+
+        View::addData(['getList'=>'admin_coupon_setting']);
+        View::hamlReader('home/list','Admin');
     }
 
     function cash_user(){
@@ -286,7 +292,7 @@ class MoneyController extends Controller{
                 '1'=>'审核通过',
                 '-1'=>'审核失败'
             ][$v->status];
-            $v->date = date('Y-m-d H:i');
+            $v->date = date('Y-m-d H:i',$v->create_time);
         }
 
 
@@ -470,7 +476,7 @@ class MoneyController extends Controller{
                 '1'=>'审核通过',
                 '-1'=>'审核失败'
             ][$v->status];
-            $v->date = date('Y-m-d H:i');
+            $v->date = date('Y-m-d H:i',$v->create_time);
         }
 
 
@@ -676,9 +682,14 @@ class MoneyController extends Controller{
 
     }
 
-    function admin_coupon_send(UserModel $model,$search,$end_time,$money,$type){
+    function admin_coupon_send(UserModel $model,CouponModel $cmodel,$search,$coupon_id = 0){
 
         $this->L->adminPermissionCheck(127);
+
+        !$coupon_id && AJAX::error('请选择优惠券');
+        $coupon = $cmodel->find($coupon_id);
+        !$coupon && AJAX::error('请选择优惠券');
+
 
         if($search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
@@ -686,11 +697,10 @@ class MoneyController extends Controller{
 
         $list = $model->where($where)->get()->toArray();
 
-        $end_time = strtotime($end_time);
 
-        $data['end_time'] = $end_time +3600*24 - 1;
-        $data['money'] = $money;
-        $data['type'] = $type;
+        $data['end_time'] = $coupon->end_time;
+        $data['money'] = $coupon->money;
+        $data['type'] = $coupon->type;
         $data['get_time']  = TIME_NOW;
         
         $model = UserCouponModel::copyMutiInstance();
@@ -704,6 +714,183 @@ class MoneyController extends Controller{
 
         AJAX::success();
 
+    }
+
+
+
+    function admin_coupon_setting(CouponModel $model,$page = 1,$limit = 10,$type = 0){
+        
+        $this->L->adminPermissionCheck(129);
+
+        $name = '';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../money/admin_coupon_setting_get',
+                'upd'   => '../money/admin_coupon_setting_upd',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '../money/admin_coupon_setting_del',
+                'view'  => 'home/upd',
+                'req'   =>[
+
+                    [
+                        'title'=>'类型',
+                        'name'=>'type',
+                        'type'=>'select',
+                        'option'=>[
+                            '0'=>'全部',
+                            '1'=>'代驾',
+                            '2'=>'出租车',
+                            '3'=>'顺风车'
+                        ],'default'=>'0',
+                        'size'=>'2'
+                    ]
+                ]
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                'ID',
+                '优惠券金额',
+                '到期时间',
+                '类型',
+                
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                'id',
+                'money',
+                'end_date',
+                'type_name',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        
+        if($type){
+            $where['type'] = $type;
+        }
+
+
+        $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        foreach($list as &$v){
+            $v->type_name = [
+                '1'=>'代驾',
+                '2'=>'出租车',
+                '3'=>'顺风车'
+            ][$v->type];
+            $v->end_date = date('Y-m-d H:i:s',$v->end_time);
+        }
+
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_coupon_setting_get(CouponModel $model,$id){
+        
+        $this->L->adminPermissionCheck(129);
+        $name = '优惠券';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../money/admin_coupon_setting_get',
+            'upd'   => '../money/admin_coupon_setting_upd',
+            'back'  => 'money/coupon_setting',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+            [
+                'title' =>  '类型',
+                'name'  =>  'type',
+                'type'  =>  'select',
+                'option'=>[
+                    '1'=>'代驾',
+                    '2'=>'出租车',
+                    '3'=>'顺风车'
+                ],'default'=>'1'
+            ],
+            [
+                'title'     =>  '金额',
+                'name'      =>  'money',
+                'default'   =>'0.00'
+            ],
+            [
+                'title'     =>  '到期时间',
+                'name'      =>  'end_date',
+                'type'      =>  'laydate',
+                'default'   =>  date('Y-m-d')
+            ],
+                
+                
+                
+                
+            ];
+            
+        !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+        $info = AdminFunc::get($model,$id);
+        if($info->end_time)$info->end_date = date('Y-m-d',$info->end_time);
+
+            
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_coupon_setting_upd(CouponModel $model,$id,$end_date){
+        $this->L->adminPermissionCheck(129);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        $data['end_time'] = strtotime($end_date) + 3600 * 24 - 1;
+        if(!$data['money'] || $data['money'] == 0)AJAX::error('金额设置为0！');
+        unset($data['id']);
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
     }
 
 }

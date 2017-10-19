@@ -26,22 +26,19 @@
     
                     .ibox-content.tc.animated.fadeInLeft
                         %form.form-horizontal.animated(method="post" onsubmit="return false;")
-                            
-                            .form-group
-                                %label.col-sm-2.control-label 金额
-                                .col-sm-2
-                                    %input.form-control(name="money" value="" placeholder="0.00")
-                            .form-group
-                                %label.col-sm-2.control-label 到期时间
-                                .col-sm-2
-                                    %input.form-control.end_time(id="end_time" name="end_time" value="" placeholder="YYYY-MM-DD")
                             .form-group
                                 %label.col-sm-2.control-label 类型
                                 .col-sm-2
-                                    %select.form-control(name="type")
+                                    %select.form-control(name="type" value="1")
                                         %option(value="1") 代驾
                                         %option(value="2") 出租车
                                         %option(value="3") 顺风车
+                            .form-group
+                                %label.col-sm-2.control-label 优惠券
+                                .col-sm-6
+                                    %select.form-control(name="coupon_id")
+                                        
+                            
                             .form-group
                                 .col-sm-1
                                 .col-sm-2
@@ -57,25 +54,34 @@
     %script(src="/js/plugins/summernote/summernote-zh-CN.js")
     :javascript
         $(function(){
-            laydate({elem:'#end_time',type:'datetime',event:"focus",choose:function(e){
-                $(this.elem).keyup()
-            }});
+
             var e = window.e = new Dmcat.admin('#{getList}')
             window.flesh = function(){
                 e.flesh()
             }
             $('.allSend').iCheck({checkboxClass: 'icheckbox_square-green',radioClass: 'iradio_square-green'})
 
+            $('[name="type"]').change(function(){
+                var type = $(this).val()
+                curl('admin_coupon_setting',{type:type},function(d){
+                    var c = $('[name="coupon_id"]')
+                    c.html('')
+
+                    for(var i in d.list){
+                        c.append('<option value="'+d.list[i].id+'">金额：'+d.list[i].money +'元 到期时间：'+ d.list[i].end_date +'</option>')
+
+                    }
+
+                })
+            }).change()
+
             $('.push').on('click',function(){
                 var f = {};
                 for(var i in e.req.param)f[i]=e.req.param[i]
                 delete f.page
 
-                f.money = $('[name="money"]').val();
-                f.type = $('[name="type"]').val();
-                f.end_time = $('[name="end_time"]').val();
-                if(!f.money){toastr['error']('金额不能为空');return}
-                if(!f.end_time){toastr['error']('到期时间不能为空');return}
+                f.coupon_id = $('[name="coupon_id"]').val();
+                if(!f.coupon_id){toastr['error']('请选择优惠券');return}
                 curl('admin_coupon_send',f,function(){
                     curl_succ('赠送成功！')
                 });
