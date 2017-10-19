@@ -139,7 +139,7 @@ z = function(obj,con){
                                         let driver = data.DriverMap.get(result.driver_id+'')
                                         if(driver){
                                             let g = function(r){
-                                                driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}));
+                                                driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
                                                 driver.serving = 0;
                                             };
                                             (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
@@ -276,7 +276,7 @@ z = function(obj,con){
                                 if(!driver)return;
 
                                 let g = function(r){
-                                    driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}));
+                                    driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
                                     driver.serving = 0;
                                 };
                                 (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
