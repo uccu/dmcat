@@ -641,7 +641,7 @@ class UserController extends Controller{
         $data['user_id'] = $this->L->id;
         $data['status'] = 1;
 
-        $driverWayModel->where($data)->find() && AJAX::success('不能重复发布行程');
+        $driverWayModel->where($data)->find() && AJAX::error('不能重复发布行程');
 
 
         $area = Func::getArea($end_latitude,$start_longitude);
