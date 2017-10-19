@@ -191,7 +191,7 @@ class Using{
                         $ret .= implode(',',$this->quote($arg[$find]));
                         break;
                     case 'a':
-                        $ret .= implode(' AND ',$thisl->quote($arg[$find]));
+                        $ret .= implode(' AND ',$this->quote($arg[$find]));
                         break;
                     default:
                         $ret .= $this->quote($arg[$find]);

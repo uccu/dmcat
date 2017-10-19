@@ -113,7 +113,7 @@ Class Route{
                 }
 
                 if(!$method)return;
-                elseif(!method_exists($controller,$method))E::throwEx('Method Not Exist');
+                elseif(!method_exists($controller,$method))E::throwEx('Method '.$method.'() Not Exist');
                 else{
 
                     $this->getMethod($controller,$method);
