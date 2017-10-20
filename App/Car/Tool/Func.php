@@ -355,16 +355,24 @@ class Func {
         )->select('COUNT(*) AS c','RAW')->find()->c;
 
         if($count > 3){
-            AJAX::error('发送验证码过于频繁，请稍候再试！');
+            // AJAX::error('发送验证码过于频繁，请稍候再试！');
         }
 
-        // $sm = urlencode('【嘀嗒出行】校验码：'.$rand.'，请勿向任何人提供您收到的短信校验码。');
-        // $phone = preg_replace('/^0/','',$phone);
-        // $re = self::curl('http://222.73.117.140:8044/mt?un=I2367747&pw=GnTvRmS4eN6266&da='.$add.$phone.'&sm='.$sm.'&rd=1&tf=3&rf=2');
+        $data['content'] = '【壹键出行】您的手机验证码是：'.$rand.'，若非本人操作，请忽略！';
+        $data['userid'] = 179;
+        $data['account'] = 'dsxx';
+        $data['password'] = 'dsxx';
+        $data['action'] = 'send';
+        // $data['action'] = 'checkkeyword';
+        $data['mobile'] = $phone;
+        $data['sendTime'] = '';
+        $data['extno'] = '';
 
-        // $u = json_decode($re);
+        $re = self::curl('http://59.110.69.166:8080/sms.aspx',$data);
 
-        // if(!$u || !$u->success)AJAX::error('发送失败：'.($u ? $u->r : '网络连接失败！'));
+        $u = simplexml_load_string($re);
+        // echo $re;die();
+        if($u->returnstatus == 'Faild')AJAX::error('发送失败：'.($u ? $u->message : '网络连接失败！'));
 
         return true;
 
