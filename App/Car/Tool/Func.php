@@ -355,7 +355,7 @@ class Func {
         )->select('COUNT(*) AS c','RAW')->find()->c;
 
         if($count > 3){
-            // AJAX::error('发送验证码过于频繁，请稍候再试！');
+            AJAX::error('发送验证码过于频繁，请稍候再试！');
         }
 
         $data['content'] = '【壹键出行】您的手机验证码是：'.$rand.'，若非本人操作，请忽略！';
