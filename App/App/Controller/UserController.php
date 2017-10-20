@@ -14,6 +14,8 @@ use Uccu\DmcatTool\Tool\AJAX;
 # 数据模型
 use App\App\Model\UserModel;
 use App\App\Model\MessageModel;
+use App\App\Model\UserDateModel;
+use App\App\Model\DoctorModel;
 use Model; 
 
 
@@ -250,7 +252,7 @@ class UserController extends Controller{
 
 
     # 我的信息
-    function getMyInfo(){
+    function getMyInfo(UserDateModel $userDateModel){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -259,7 +261,18 @@ class UserController extends Controller{
         unset($info->password);
         unset($info->salt);
 
+        $list = $userDateModel->select('*','date.start_time','date.end_time','doctor.name')->where('status>2')->order('create_time desc')->get()->toArray();
+
+        $year = [];
+
+        foreach($list as $v){
+            $year[$v->year][] = $v;
+        }
+
+
+
         $out['info'] = $info;
+        $out['year'] = array_values( $year );
 
         AJAX::success($out);
     }
@@ -316,18 +329,104 @@ class UserController extends Controller{
      * @param mixed $content 反馈内容
      * @return mixed 
      */
-    function feedback($content,FeedbackModel $model){
+    function feedback($content,UserFeedbackModel $model){
 
         !$this->L->id && AJAX::error('未登录');
         !$content && AJAX::error('内容不能为空！');
 
-        $model->set(['user_id'=>$this->L->id,'content'=>$content])->add();
+        $model->set(['user_id'=>$this->L->id,'content'=>$content,'create_time'=>TIME_NOW])->add();
 
         AJAX::success();
 
     }
 
 
+    /** 预约
+     * date_15
+     * @param mixed $clinic_id 
+     * @param mixed $doctor_id 
+     * @param mixed $userDateModel 
+     * @param mixed $doctorModel 
+     * @return mixed 
+     */
+    function date($clinic_id,$doctor_id,UserDateModel $userDateModel,DoctorModel $doctorModel){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $doctor = $doctorModel->find($doctor_id);
+
+        !$doctor && AJAX::error('医生不存在！');
+        $data['clinic_id'] = $clinic_id;
+        $data['doctor_id'] = $doctor->id;
+        $data['user_id'] = $this->L->id;
+
+        $userDateModel->where($data)->where(['status<2'])->find() && AJAX::error('您已经预约过了，不能重复预约！');
+
+        $data['create_time']  = TIME_NOW;
+        $data['year'] = date('Y',TIME_NOW);
+        $data['month'] = date('m',TIME_NOW);
+        $data['day'] = date('d',TIME_NOW);
+
+        $data['status'] = $doctor->status ? '1' : '0';
+
+        AJAX::success();
+
+    }
+
+    /** 我的预约
+     * myDate
+     * @param mixed $userDateModel 
+     * @param mixed $page=1 
+     * @param mixed $limit=10 
+     * @param mixed $type 
+     * @return mixed 
+     */
+    function myDate(UserDateModel $userDateModel,$page=1,$limit=10,$type = 1){
+        
+        !$this->L->id && AJAX::error('未登录');
+
+        $where['user_id'] = $this->L->id;
+
+        if($type == 1){
+            $where['z1'] = ['status BETWEEN 0 AND 2'];
+        }elseif($type == 2){
+            $where['status'] = 3;
+        }elseif($type == 3){
+            $where['status'] = 4;
+        }
+
+        $list = $userDateModel->select('*','date.start_time','date.end_time','doctor.name','doctor.avatar','doctor.experience','doctor.skill','doctor.status>doctor_status')->where($where)->page($page,$limit)->get()->toArray();
+
+        // echo $userDateModel->sql;die();
+        $out['list'] = $list;
+        AJAX::success($out);
+
+    }
+
+    /** 评价
+     * judge
+     * @param mixed $userDateModel 
+     * @param mixed $id 
+     * @param mixed $comment 
+     * @param mixed $star 
+     * @return mixed 
+     */
+    function judge(UserDateModel $userDateModel,$id,$comment,$star){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        !$comment && AJAX::error('评论不能为空！');
+        (!$star || $star<0 || $star > 5) && AJAX::error('评星错误！');
+
+        $info = $userDateModel->find($id);
+        $info->status != 3 && AJAX::error('该订单还不能评价！');
+
+        $info->comment = $comment;
+        $info->star = $star;
+        $info->save();
+
+        AJAX::success();
 
 
+    }
 }
