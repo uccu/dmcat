@@ -723,6 +723,8 @@ class UserController extends Controller{
             $v->sil = floor(100 - $v->mul * 100) . '%';
 
             $v->toDistance = Func::getSDistance($route->start_latitude, $route->start_longitude,$v->start_latitude, $v->start_longitude);
+            if($v->toDistance>1000)$v->toDistance = number_format($v->toDistance/1000,1,'.','').'公里';
+            else $v->toDistance = $v->toDistance.'米';
 
         }
         $route->start_date = Func::time_calculate($route->start_time);
