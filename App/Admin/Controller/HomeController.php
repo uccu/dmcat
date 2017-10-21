@@ -14,6 +14,8 @@ use Uccu\DmcatTool\Tool\AJAX;
 use App\Car\Model\H5Model;
 use App\Car\Model\BankModel;
 use App\Car\Model\TagModel;
+use App\Car\Model\FeedbackModel;
+use App\Car\Model\DriverFeedbackModel;
 
 class HomeController extends Controller{
 
@@ -395,6 +397,291 @@ class HomeController extends Controller{
     }
     function admin_tag_del(TagModel $model,$id){
         $this->L->adminPermissionCheck(130);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+    function user_feedback(){
+
+        View::addData(['getList'=>'admin_user_feedback']);
+        View::hamlReader('home/list','Admin');
+    }
+
+    function driver_feedback(){
+
+        View::addData(['getList'=>'admin_driver_feedback']);
+        View::hamlReader('home/list','Admin');
+    }
+
+
+    function admin_user_feedback(FeedbackModel $model){
+        
+        $this->L->adminPermissionCheck(132);
+
+        $name = '';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../home/admin_user_feedback_get',
+                'view'  => 'home/upd',
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                'ID',
+                '名字',
+                '反馈时间'
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                
+                'id',
+                'name',
+                'date'
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        
+
+        $list = $model->select('*','user.name')->order('id')->where($where)->get()->toArray();
+        foreach($list as &$v){
+            $v->date = date('Y-m-d H:i:s',$v->create_time);
+        }
+
+
+        # 分页内容
+        $page   = 1;
+        $max    = count($list);
+        $limit  = count($list);
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_user_feedback_get(FeedbackModel $model,$id){
+        
+        $this->L->adminPermissionCheck(132);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../home/admin_user_feedback_get',
+            'back'  => 'home/user_feedback',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+
+            [
+                'title' =>  '内容',
+                'name'  =>  'content',
+                'type'  =>  'textarea',
+                'disabled'=>true
+
+            ],
+                
+                
+                
+                
+            ];
+            
+        !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+        $info = AdminFunc::get($model,$id);
+        if($info->status != 0)$tbody[1]['disabled'] = true;
+            
+        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
+            
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_user_feedback_upd(FeedbackModel $model,$id){
+        $this->L->adminPermissionCheck(132);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_user_feedback_del(FeedbackModel $model,$id){
+        $this->L->adminPermissionCheck(132);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+    function admin_driver_feedback(DriverFeedbackModel $model){
+        
+        $this->L->adminPermissionCheck(133);
+
+        $name = '';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../home/admin_driver_feedback_get',
+                'view'  => 'home/upd',
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                'ID',
+                '名字',
+                '反馈时间'
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                
+                'id',
+                'name',
+                'date'
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        
+
+        $list = $model->select('*','driver.name')->order('create_time desc')->where($where)->get()->toArray();
+        foreach($list as &$v){
+            $v->date = date('Y-m-d H:i:s',$v->create_time);
+        }
+
+
+        # 分页内容
+        $page   = 1;
+        $max    = count($list);
+        $limit  = count($list);
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_driver_feedback_get(DriverFeedbackModel $model,$id){
+        
+        $this->L->adminPermissionCheck(133);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../home/admin_driver_feedback_get',
+            'back'  => 'home/driver_feedback',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+
+            [
+                'title' =>  '内容',
+                'name'  =>  'content',
+                'type'  =>  'textarea',
+                'disabled'=>true
+            ],
+                
+                
+                
+                
+            ];
+            
+        !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+        $info = AdminFunc::get($model,$id);
+        if($info->status != 0)$tbody[1]['disabled'] = true;
+            
+        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
+            
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_driver_feedback_upd(DriverFeedbackModel $model,$id){
+        $this->L->adminPermissionCheck(133);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_driver_feedback_del(DriverFeedbackModel $model,$id){
+        $this->L->adminPermissionCheck(133);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
         AJAX::success($out);

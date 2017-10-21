@@ -32,6 +32,7 @@ use App\Car\Model\UserMoneyLogModel;
 use App\Car\Model\UserBankModel; 
 use App\Car\Model\UserCouponModel; 
 use App\Car\Model\IncomeModel; 
+use App\Car\Model\FeedbackModel; 
 use Model; 
 
 
