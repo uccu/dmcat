@@ -16,4 +16,8 @@ class UserDateModel extends Model{
 
         return $this->join(DoctorModel::class,'id','doctor_id');
     }
+    public function user(){
+
+        return $this->join(UserModel::class,'id','user_id');
+    }
 }

@@ -15,6 +15,7 @@ use Uccu\DmcatTool\Tool\AJAX;
 use App\App\Model\UserModel;
 use App\App\Model\MessageModel;
 use App\App\Model\UserDateModel;
+use App\App\Model\UserTagModel;
 use App\App\Model\DoctorModel;
 use Model; 
 
@@ -316,6 +317,52 @@ class DoctorController extends Controller{
     }
 
 
+
+    function getUser(UserDateModel $userDateModel,UserTagModel $userTagModel,$page=1,$limit=10,$status = 0,$name,$year,$month,$day){
+        
+        !$this->L->id && AJAX::error('未登录');
+
+        $where['user_id'] = $this->L->id;
+
+        if($status == 3){
+            $where['status'] = ['status BETWEEN 3 AND 4'];
+        }elseif($status == 2){
+            $where['status'] = 2;
+        }elseif($status == 1){
+            $where['status'] = 1;
+        }elseif($status == 0){
+            $where['status'] = 0;
+        }elseif($status == -1){
+            $where['status'] = -1;
+        }
+
+        /** 搜索患者名字 */
+        if($name){
+            $where['s'] = ['user.name LIKE %n','%'.$name.'%'];
+        }
+
+        /** 搜索日期 */
+        if($year && $month && $day){
+
+            $where['year'] = $year;
+            $where['month'] = $month;
+            $where['day'] = $day;
+
+        }
+
+        $list = $userDateModel->select('*','date.start_time','date.end_time','user.name','user.avatar','user.phone','user.age')->where($where)->page($page,$limit)->get()->toArray();
+
+        foreach($list as &$v){
+            $v->tags = [];
+            $tags = $userTagModel->select('tag.name')->order('times desc')->get()->toArray();
+            foreach($tags as $v2)$v->tags[] = $v2->name;
+
+        }
+
+        $out['list'] = $list;
+        AJAX::success($out);
+
+    }
     
 
     /** 评价
