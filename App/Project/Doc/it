@@ -279,3 +279,9 @@ shop/detail?id=xxxx
 id 商品ID
 {}
 {}
+
+
+6.1 检查用户类型
+phone 手机号
+{"data":{"type":"doctor"},"code":200,"url":"","message":""}
+{type:doctor医生user用户no没有注册}
