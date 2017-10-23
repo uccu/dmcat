@@ -87,6 +87,12 @@ class TestController extends Controller{
         AJAX::error();
     }
 
+    # 更新代码
+    function pull(){
+
+        system("cd ".BASE_ROOT." && \"C:\Program Files\Git\git-cmd.exe\" git pull");
+    }
+
 
 
 }

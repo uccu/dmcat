@@ -17,7 +17,7 @@ class L2 extends Middleware{
 
     public $config;
     public $doctor_token;
-    public $userInfo;
+    public $doctorInfo;
     public $id;
 
     function __construct(){
@@ -51,8 +51,8 @@ class L2 extends Middleware{
 
 
         /*查询需要验证登陆的用户信息*/
-        $user = DoctorModel::copyMutiInstance();
-        $info = $user->find($id);
+        $doctor = DoctorModel::copyMutiInstance();
+        $info = $doctor->find($id);
         if(!$info){
             Response::getSingleInstance()->cookie('doctor_token','',-3600);
             return;
@@ -64,7 +64,7 @@ class L2 extends Middleware{
         }
         /*验证登陆合法性*/
         if($hash === sha1($info->password.$salt.$time)){
-            $this->userInfo = $info;
+            $this->doctorInfo = $info;
             $this->id = $info->id;
             return;
         }

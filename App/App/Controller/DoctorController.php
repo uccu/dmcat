@@ -15,8 +15,10 @@ use Uccu\DmcatTool\Tool\AJAX;
 use App\App\Model\UserModel;
 use App\App\Model\MessageModel;
 use App\App\Model\UserDateModel;
+use App\App\Model\DateModel;
 use App\App\Model\UserTagModel;
 use App\App\Model\DoctorModel;
+use App\App\Model\TagModel;
 use Model; 
 
 
@@ -92,7 +94,7 @@ class DoctorController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function login($type = 0,$code = '',$phone = null,$password =null,DoctorModel $model,$cookie = null){
+    function login($phone = null,$password =null,DoctorModel $model,$cookie = null){
 
 
         //检查参数是否存在
@@ -112,17 +114,7 @@ class DoctorController extends Controller{
 
         !$info->active && AJAX::error('账号已被禁用，请联系管理员！');
 
-        if($type == 1){
-            
-            !$code && AJAX::error('无法识别第三方标示！');
-            $model->where(['qq'=>$code])->find() && AJAX::error('已绑定账号，请勿重复绑定！');
-            $info->qq = $code;
-        }elseif($type == 2){
-
-            !$code && AJAX::error('无法识别第三方标示！');
-            $model->where(['wx'=>$code])->find() && AJAX::error('已绑定账号，请勿重复绑定！');
-            $info->wx = $code;
-        }
+        
 
         $info->save();
         
@@ -165,7 +157,7 @@ class DoctorController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function register($type = 0,$code = '',$terminal = 0,DoctorModel $model,$password = null,$phone = null,$phone_captcha,$cookie = false,$parent_id = 0){
+    function register($terminal = 0,DoctorModel $model,$password = null,$phone = null,$phone_captcha,$cookie = false,$parent_id = 0){
         
         
         //是否储存登录信息到cookie
@@ -187,17 +179,6 @@ class DoctorController extends Controller{
         $info->salt         = Func::randWord(6);
         $info->password     = $this->encrypt_password($password,$info->salt);
 
-        if($type == 1){
-            
-            !$code && AJAX::error('无法识别第三方标示！');
-            $model->where(['qq'=>$code])->find() && AJAX::error('已绑定账号，请勿重复绑定！');
-            $info->qq = $code;
-        }elseif($type == 2){
-
-            !$code && AJAX::error('无法识别第三方标示！');
-            $model->where(['wx'=>$code])->find() && AJAX::error('已绑定账号，请勿重复绑定！');
-            $info->wx = $code;
-        }
 
         $this->_add_doctor($info);
     }
@@ -318,7 +299,20 @@ class DoctorController extends Controller{
 
 
 
-    function getUser(UserDateModel $userDateModel,UserTagModel $userTagModel,$page=1,$limit=10,$status = 0,$name,$year,$month,$day){
+    /** 获取用户
+     * getUser
+     * @param mixed $userDateModel 
+     * @param mixed $userTagModel 
+     * @param mixed $page=1 
+     * @param mixed $limit=10 
+     * @param mixed $status 
+     * @param mixed $name 
+     * @param mixed $year 
+     * @param mixed $month 
+     * @param mixed $day 
+     * @return mixed 
+     */
+    function getUserList(UserDateModel $userDateModel,UserTagModel $userTagModel,$page=1,$limit=10,$status = 0,$name,$year,$month,$day){
         
         !$this->L->id && AJAX::error('未登录');
 
@@ -363,32 +357,141 @@ class DoctorController extends Controller{
         AJAX::success($out);
 
     }
+
+    /** 获取预约详情
+     * getUserInfo
+     * @param mixed $userDateModel 
+     * @param mixed $userTagModel 
+     * @param mixed $id 
+     * @return mixed 
+     */
+    function getUserInfo(UserDateModel $userDateModel,UserTagModel $userTagModel,$id){
+
+        !$this->L->id && AJAX::error('未登录');
+        $info = $userDateModel->select('*','date.start_time','date.end_time','user.name','user.avatar','user.phone','user.age')->find($id);
+
+        !$info && AJAX::error('预约不存在！');
+        $info->tags = [];
+        $tags = $userTagModel->select('tag.name')->order('times desc')->get()->toArray();
+        foreach($tags as $v2)$info->tags[] = $v2->name;
+
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
+
+    /** 设定时间段
+     * setTime
+     * @param mixed $user_id 
+     * @param mixed $time 
+     * @return mixed 
+     */
+    function setTime($id,$date_id,UserDateModel $userDateModel){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $date = $userDateModel->find($id);
+        !$date && AJAX::error('预约不存在！');
+        !$date->doctor != $this->L->id && AJAX::error('无权限操作！');
+
+        $date->date_id = $date_id;
+        $date->status = 2;
+        $date->save();
+
+        AJAX::success();
+    }
+
+    /** 取消预约
+     * cancel
+     * @param mixed $userDateModel 
+     * @param mixed $id 
+     * @return mixed 
+     */
+    function cancel(UserDateModel $userDateModel,$id){
+
+        !$this->L->id && AJAX::error('未登录');
+        $userDateModel->set(['status'=>-1])->save();
+        AJAX::success();
+    }
     
 
     /** 评价
      * judge
-     * @param mixed $doctorDateModel 
+     * @param mixed $userDateModel 
      * @param mixed $id 
      * @param mixed $comment 
      * @param mixed $star 
      * @return mixed 
      */
-    function judge(UserDateModel $doctorDateModel,$id,$comment,$star){
+    function judge(UserDateModel $userDateModel,$id,$content,$tooth,$tags,TagModel $tagModel,UserTagModel $userTagModel){
 
         !$this->L->id && AJAX::error('未登录');
 
-        !$comment && AJAX::error('评论不能为空！');
-        (!$star || $star<0 || $star > 5) && AJAX::error('评星错误！');
+        !$content && AJAX::error('评论不能为空！');
 
-        $info = $doctorDateModel->find($id);
-        $info->status != 3 && AJAX::error('该订单还不能评价！');
+        $info = $userDateModel->find($id);
+        $info->status != 2 && AJAX::error('该订单还不能评价！');
 
-        $info->comment = $comment;
-        $info->star = $star;
+        $info->content = $content;
+        $info->tooth = $tooth;
+        $info->status = 3;
+        
+
+        $tags = $tags ? explode(',',$tags) : [];
+        $tag = $tagModel->where('id IN (%c)',$tags)->get()->toArray();
+
+        $tag_names = [];
+
+        foreach($tag as $v){
+            $tag_names[] = $v->name;
+            
+            $m = $userTagModel->where(['user_id'=>$info->user_id,'tag_id'=>$v->id])->find();
+            if($m){
+                $m->times += 1;
+                $m->save();
+            }else{
+                $userTagModel->set(['user_id'=>$info->user_id,'tag_id'=>$v->id])->add();
+            }
+
+        }
+        $tag_names = implode($tag_names);
+        $info->tags = $tag_names;
+        
+        
+        
         $info->save();
-
         AJAX::success();
 
 
     }
+
+
+    /** 获取预约时间段列表
+     * getTime
+     * @return mixed 
+     */
+    function getTimeList(DateModel $model,UserDateModel $userDateModel){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $list = $model->get()->toArray();
+
+        
+        $year = date('Y');
+        $month = date('m');
+        $day = date('d');
+        $date_ids = $userDateModel->where(['doctor_id'=>$this->L->id,'year'=>$year,'month'=>$month,'day'=>$day])->get_field('date_id')->toArray();
+
+        foreach($list as &$v){
+
+            $v->disabled = $v->start_time < date('H:i') ? '1' : '0';
+            if(in_array($v->id,$date_ids))$v->disabled = '1';
+        }
+
+        $out['list'] = $list;
+        $out['date_ids'] = $date_ids;
+        AJAX::success($out);
+    }
+
+
+    
 }

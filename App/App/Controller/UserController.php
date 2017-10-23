@@ -93,37 +93,35 @@ class UserController extends Controller{
      */
     function login($type = 0,$code = '',$phone = null,$password =null,UserModel $model,$cookie = null){
 
+        if($type == 0){
+            //检查参数是否存在
+            !$phone && AJAX::error('账号不能为空！');
+            !$password && AJAX::error('密码不能为空！');
+            
+            //找到对应手机号的用户
+            $info = $model->where('phone=%n',$phone)->find();
+            !$info && AJAX::error('用户不存在');
 
-        //检查参数是否存在
-        !$phone && AJAX::error('账号不能为空！');
-        !$password && AJAX::error('密码不能为空！');
-        
-        //找到对应手机号的用户
-        $info = $model->where('phone=%n',$phone)->find();
-        !$info && AJAX::error('用户不存在');
+            //是否储存登录信息到cookie
+            if($cookie)$this->cookie = true;
 
-        //是否储存登录信息到cookie
-        if($cookie)$this->cookie = true;
+            # 验证密码 加密算法采用  sha1(网站干扰码+md5(密码)+用户干扰码)
+            $encryptedPassword = $this->encrypt_password($password,$info->salt);
+            if($encryptedPassword!=$info->password)AJAX::error('密码错误');
 
-        # 验证密码 加密算法采用  sha1(网站干扰码+md5(密码)+用户干扰码)
-        $encryptedPassword = $this->encrypt_password($password,$info->salt);
-        if($encryptedPassword!=$info->password)AJAX::error('密码错误');
-
-        !$info->active && AJAX::error('账号已被禁用，请联系管理员！');
-
+            
+        }
         if($type == 1){
             
             !$code && AJAX::error('无法识别第三方标示！');
-            $model->where(['qq'=>$code])->find() && AJAX::error('已绑定账号，请勿重复绑定！');
-            $info->qq = $code;
+            $info = $model->where(['qq'=>$code])->find();
         }elseif($type == 2){
 
             !$code && AJAX::error('无法识别第三方标示！');
-            $model->where(['wx'=>$code])->find() && AJAX::error('已绑定账号，请勿重复绑定！');
-            $info->wx = $code;
+            $info = $model->where(['wx'=>$code])->find();
         }
-
-        $info->save();
+        !$info && AJAX::error('用户不存在',401);
+        !$info->active && AJAX::error('账号已被禁用，请联系管理员！');
         
         //输出登录返回信息
         $this->_out_info($info);
@@ -176,11 +174,7 @@ class UserController extends Controller{
 
         $info = new stdClass;
 
-        if($id){
-            $parent = $model->find($parent_id);
-            !$parent && AJAX::error('推荐人不存在！');
-            $info->parent_id = $parent_id;
-        }
+        
         $info->phone        = $phone;
         $info->terminal     = floor($terminal);
         $info->salt         = Func::randWord(6);
@@ -260,8 +254,10 @@ class UserController extends Controller{
 
         unset($info->password);
         unset($info->salt);
+        unset($info->qq);
+        unset($info->wx);
 
-        $list = $userDateModel->select('*','date.start_time','date.end_time','doctor.name')->where('status>2')->order('create_time desc')->get()->toArray();
+        $list = $userDateModel->select('*','date.start_time','date.end_time','doctor.name>doctor_name','clinic.name>clinic_name')->where('status>2')->order('create_time desc')->get()->toArray();
 
         $year = [];
 
@@ -423,6 +419,7 @@ class UserController extends Controller{
 
         $info->comment = $comment;
         $info->star = $star;
+        $info->status = 4;
         $info->save();
 
         AJAX::success();

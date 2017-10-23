@@ -20,4 +20,8 @@ class UserDateModel extends Model{
 
         return $this->join(UserModel::class,'id','user_id');
     }
+    public function clinic(){
+
+        return $this->join(ClinicModel::class,'id','clinic_id');
+    }
 }
