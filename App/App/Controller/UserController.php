@@ -16,7 +16,6 @@ use App\App\Model\UserModel;
 use App\App\Model\MessageModel;
 use App\App\Model\UserDateModel;
 use App\App\Model\DoctorModel;
-use App\App\Model\FeedbackModel;
 use Model; 
 
 
@@ -326,7 +325,7 @@ class UserController extends Controller{
      * @param mixed $content 反馈内容
      * @return mixed 
      */
-    function feedback($content,FeedbackModel $model){
+    function feedback($content,UserFeedbackModel $model){
 
         !$this->L->id && AJAX::error('未登录');
         !$content && AJAX::error('内容不能为空！');
