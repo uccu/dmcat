@@ -653,3 +653,22 @@ end_latitude 结束纬度
 end_longitude 结束经度
 {}
 {}
+
+
+3.7 获取品牌
+home/brand
+{"data":{"list":{"B":[{"id":"3","name":"\u5b9d\u9a6c","pinyin":"baoma","first":"B"}],"K":[{"id":"1","name":"\u51ef\u8fea\u62c9\u514b","pinyin":"kaidilake","first":"K"}]}},"code":200,"url":"","message":""}
+{}
+
+
+3.8 获取对应品牌的车型
+home/model
+brand_id 品牌ID
+{"data":{"list":[{"id":"9","brand_id":"1","name":"ATS-L","pinyin":"ATS-L"},{"id":"10","brand_id":"1","name":"CT6","pinyin":"CT6"}]},"code":200,"url":"","message":""}
+{}
+
+
+3.9 获取颜色
+home/color
+{"data":{"list":[{"id":"2","name":"\u767d\u8272","pinyin":"baise"},{"id":"1","name":"\u9ed1\u8272","pinyin":"heise"}]},"code":200,"url":"","message":""}
+{}

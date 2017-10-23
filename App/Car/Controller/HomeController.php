@@ -242,5 +242,34 @@ class HomeController extends Controller{
         AJAX::success();
     }
 
+
+    function brand(){
+
+        $list = Model::copyMutiInstance('car_brand')->order('pinyin')->get()->toArray();
+
+        $list2 = [];
+        foreach($list as $v){
+            $list2[$v->first][] = $v;
+        }
+
+        $out['list'] = $list2;
+        AJAX::success($out);
+    }
+
+    function model($brand_id){
+
+        $list = Model::copyMutiInstance('car_model')->where(['brand_id'=>$brand_id])->order('pinyin')->get()->toArray();
+
+        $out['list'] = $list;
+        AJAX::success($out);
+    }
+
+    function color(){
+
+        $list = Model::copyMutiInstance('color')->order('pinyin')->get()->toArray();
+
+        $out['list'] = $list;
+        AJAX::success($out);
+    }
     
 }

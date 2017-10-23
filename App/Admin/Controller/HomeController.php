@@ -9,6 +9,8 @@ use App\Car\Middleware\L3;
 use App\Car\Tool\Func;
 use App\Car\Tool\AdminFunc;
 use Uccu\DmcatTool\Tool\AJAX;
+use fengqi\Hanzi\Hanzi;
+use Model;
 
 # 数据模型
 use App\Car\Model\H5Model;
@@ -16,6 +18,8 @@ use App\Car\Model\BankModel;
 use App\Car\Model\TagModel;
 use App\Car\Model\FeedbackModel;
 use App\Car\Model\DriverFeedbackModel;
+use App\Car\Model\BrandModel;
+use App\Car\Model\ColorModel;
 
 class HomeController extends Controller{
 
@@ -682,6 +686,312 @@ class HomeController extends Controller{
     }
     function admin_driver_feedback_del(DriverFeedbackModel $model,$id){
         $this->L->adminPermissionCheck(133);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+
+    function brand(){
+
+        View::addData(['getList'=>'admin_brand']);
+        View::hamlReader('home/list','Admin');
+    }
+
+    function admin_brand(BrandModel $model){
+        
+        $this->L->adminPermissionCheck(136);
+
+        $name = '';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../home/admin_brand_get',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '../home/admin_brand_del',
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                'ID',
+                '名字',
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                
+                'id',
+                'name',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        
+
+        $list = $model->order('pinyin')->where($where)->get()->toArray();
+
+
+
+        # 分页内容
+        $page   = 1;
+        $max    = count($list);
+        $limit  = count($list);
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_brand_get(BrandModel $model,$id){
+        
+        $this->L->adminPermissionCheck(136);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../home/admin_brand_get',
+            'upd'   => '../home/admin_brand_upd',
+            'back'  => 'home/brand',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+
+            [
+                'title' =>  '名字',
+                'name'  =>  'name',
+                'size'  =>  '2'
+            ],
+            [
+                'title' =>  '车型',
+                'type'  =>  'option',
+                'name'  =>  'modelx',
+                'size'  =>  '2'
+            ]
+                
+                
+                
+                
+        ];
+            
+        !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+        $info = AdminFunc::get($model,$id);
+        
+        $info->modelx = Model::copyMutiInstance('car_model')->where(['brand_id'=>$info->id])->order('pinyin')->get()->toArray();
+            
+        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
+            
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_brand_upd(BrandModel $model,$id,$name){
+        $this->L->adminPermissionCheck(136);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+
+        $pinyin = Hanzi::pinyin($name);
+        $data['pinyin'] = $pinyin['pinyin'];
+        $data['first'] = strtoupper(substr( $pinyin['pinyin'],0,1));
+
+        $upd = AdminFunc::upd($model,$id,$data);
+
+        !$id && $id = $upd;
+
+        $modelx = Request::getSingleInstance()->request('modelx','raw');
+
+        $model2 = Model::copyMutiInstance('car_model');
+        
+        $model2->where(['brand_id'=>$id])->remove();
+
+
+        foreach($modelx as $v){
+            $pinyin = Hanzi::pinyin($v)['pinyin'];
+            $model2->set(['brand_id'=>$id,'name'=>$v,'pinyin'=>$pinyin])->add();
+        }
+        
+        
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_brand_del(BrandModel $model,$id){
+        $this->L->adminPermissionCheck(136);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+    function color(){
+
+        View::addData(['getList'=>'admin_color']);
+        View::hamlReader('home/list','Admin');
+    }
+    function admin_color(ColorModel $model){
+        
+        $this->L->adminPermissionCheck(137);
+
+        $name = '';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../home/admin_color_get',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '../home/admin_color_del',
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                'ID',
+                '名字',
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                
+                'id',
+                'name',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        
+
+        $list = $model->order('pinyin')->where($where)->get()->toArray();
+
+
+
+        # 分页内容
+        $page   = 1;
+        $max    = count($list);
+        $limit  = count($list);
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_color_get(ColorModel $model,$id){
+        
+        $this->L->adminPermissionCheck(137);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../home/admin_color_get',
+            'upd'   => '../home/admin_color_upd',
+            'back'  => 'home/color',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+
+            [
+                'title' =>  '名字',
+                'name'  =>  'name',
+                'size'  =>  '2'
+            ],
+
+                
+                
+                
+        ];
+            
+        !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+        $info = AdminFunc::get($model,$id);
+        
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_color_upd(ColorModel $model,$id,$name){
+        $this->L->adminPermissionCheck(137);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+        $pinyin = Hanzi::pinyin($name);
+        $data['pinyin'] = $pinyin['pinyin'];
+        $upd = AdminFunc::upd($model,$id,$data);
+   
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_color_del(ColorModel $model,$id){
+        $this->L->adminPermissionCheck(137);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
         AJAX::success($out);
