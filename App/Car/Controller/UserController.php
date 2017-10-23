@@ -312,7 +312,7 @@ class UserController extends Controller{
         !$this->L->id && AJAX::error('未登录');
         !$content && AJAX::error('内容不能为空！');
 
-        $model->set(['user_id'=>$this->L->id,'content'=>$content])->add();
+        $model->set(['user_id'=>$this->L->id,'content'=>$content,'create_time'=>TIME_NOW])->add();
 
         AJAX::success();
 
