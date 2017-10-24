@@ -20,6 +20,7 @@ use App\Car\Model\FeedbackModel;
 use App\Car\Model\DriverFeedbackModel;
 use App\Car\Model\BrandModel;
 use App\Car\Model\ColorModel;
+use App\Car\Model\QuestionModel;
 
 class HomeController extends Controller{
 
@@ -428,7 +429,7 @@ class HomeController extends Controller{
         $opt = 
             [
                 'get'   => '../home/admin_user_feedback_get',
-                'view'  => 'home/upd',
+                // 'view'  => 'home/upd',
             ];
 
         # 头部标题设置
@@ -437,6 +438,7 @@ class HomeController extends Controller{
 
                 'ID',
                 '名字',
+                '反馈内容',
                 '反馈时间'
             ];
 
@@ -448,6 +450,7 @@ class HomeController extends Controller{
                 
                 'id',
                 'name',
+                'content',
                 'date'
 
             ];
@@ -565,7 +568,7 @@ class HomeController extends Controller{
         $opt = 
             [
                 'get'   => '../home/admin_driver_feedback_get',
-                'view'  => 'home/upd',
+                // 'view'  => 'home/upd',
             ];
 
         # 头部标题设置
@@ -574,6 +577,7 @@ class HomeController extends Controller{
 
                 'ID',
                 '名字',
+                '反馈内容',
                 '反馈时间'
             ];
 
@@ -585,6 +589,7 @@ class HomeController extends Controller{
                 
                 'id',
                 'name',
+                'content',
                 'date'
 
             ];
@@ -992,6 +997,148 @@ class HomeController extends Controller{
     }
     function admin_color_del(ColorModel $model,$id){
         $this->L->adminPermissionCheck(137);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+
+    function question(){
+
+        View::addData(['getList'=>'admin_question']);
+        View::hamlReader('home/list','Admin');
+    }
+    function admin_question(QuestionModel $model){
+        
+        $this->L->adminPermissionCheck(139);
+
+        $name = '';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../home/admin_question_get',
+                'view'  => 'home/upd',
+                'add'   => 'home/upd',
+                'del'   => '../home/admin_question_del',
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                'ID',
+                '问题',
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                
+                'id',
+                'name',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        
+
+        $list = $model->where($where)->get()->toArray();
+
+
+
+        # 分页内容
+        $page   = 1;
+        $max    = count($list);
+        $limit  = count($list);
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_question_get(QuestionModel $model,$id){
+        
+        $this->L->adminPermissionCheck(139);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../home/admin_question_get',
+            'upd'   => '../home/admin_question_upd',
+            'back'  => 'home/question',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+
+            [
+                'title' =>  '问题',
+                'name'  =>  'name',
+                'size'  =>  '2'
+            ],
+            [
+                'title' =>  '回答',
+                'name'  =>  'content',
+                'type'  =>  'textarea'
+            ],
+
+                
+                
+                
+        ];
+            
+        !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+        $info = AdminFunc::get($model,$id);
+        
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_question_upd(QuestionModel $model,$id,$name){
+        $this->L->adminPermissionCheck(139);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+        $upd = AdminFunc::upd($model,$id,$data);
+   
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_question_del(QuestionModel $model,$id){
+        $this->L->adminPermissionCheck(139);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
         AJAX::success($out);

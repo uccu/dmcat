@@ -271,5 +271,21 @@ class HomeController extends Controller{
         $out['list'] = $list;
         AJAX::success($out);
     }
+
+    function questionList(){
+
+        $list = Model::copyMutiInstance('question')->get()->toArray();
+
+        $out['list'] = $list;
+        AJAX::success($out);
+    }
+
+    function questionInfo($id){
+
+        $info = Model::copyMutiInstance('question')->find($id);
+        !$info && AJAX::error('错误！');
+        $out['info'] = $info;
+        AJAX::success($out);
+    }
     
 }
