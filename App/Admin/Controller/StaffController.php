@@ -206,8 +206,6 @@ class StaffController extends Controller{
 
         $info = AdminFunc::get($model,$id);
 
-        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
-
         $out = 
             [
                 'info'  =>  $info,
@@ -396,11 +394,6 @@ class StaffController extends Controller{
                 
 
             ];
-
-        if($this->L->userInfo->type == 2 || $this->L->userInfo->type == 1){
-            unset($tbody[4]);
-        }
-
         !$model->field && AJAX::error('字段没有公有化！');
 
 
@@ -608,7 +601,6 @@ class StaffController extends Controller{
 
         $info = AdminFunc::get($model,$id);
 
-        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
         $out = 
             [
