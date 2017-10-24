@@ -227,6 +227,7 @@ limit 每页数量
 
 
 3.2 招聘详情
+recruit/info
 id 信息ID
 {"data":{"info":{"id":"1","distict_id":"1111","name":"\u62db\u8058","company":"\u62db\u8058\u516c\u53f8","money":"10000","phone":"13666666666","create_time":"100000000","description":"\u62db\u8058\u516c\u53f8\u62db\u8058\u516c\u53f8\u62db\u8058\u516c\u53f8\u62db\u8058\u516c\u53f8\u62db\u8058\u516c\u53f8","active":"1"}},"code":200,"url":"","message":""}
 {distict_id:地区ID,name:标题,company:公司,money:薪资,phone:电话,crete_time:创建时间,description:描述}
@@ -282,6 +283,7 @@ id 商品ID
 
 
 6.1 检查用户类型
+home/checkUserType
 phone 手机号
 {"data":{"type":"doctor"},"code":200,"url":"","message":""}
 {type:doctor医生user用户no没有注册}
