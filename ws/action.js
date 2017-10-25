@@ -28,7 +28,7 @@ module.exports = {
             if(w.length){
                 for(let i in w){
                     w[i].toDistance = dis(a,o,w[i].start_latitude,w[i].start_longitude)
-                    if(w[i].toDistance < 1000)w[i].toDistance = w[i].toDistance + '米';
+                    if(w[i].toDistance < 1000)w[i].toDistance = parseInt(w[i].toDistance) + '米';
                     else w[i].toDistance = parseInt(w[i].toDistance/100)/10 + '公里';
                 }
             }
@@ -43,7 +43,7 @@ module.exports = {
             if(w.length){
                 for(let i in w){
                     w[i].toDistance = dis(a,o,w[i].start_latitude,w[i].start_longitude)
-                    if(w[i].toDistance < 1000)w[i].toDistance = w[i].toDistance + '米';
+                    if(w[i].toDistance < 1000)w[i].toDistance = parseInt(w[i].toDistance) + '米';
                     else w[i].toDistance = parseInt(w[i].toDistance/100)/10 + '公里';
                 }
             }
@@ -58,7 +58,7 @@ module.exports = {
             if(w.length){
                 for(let i in w){
                     w[i].toDistance = dis(a,o,w[i].start_latitude,w[i].start_longitude)
-                    if(w[i].toDistance < 1000)w[i].toDistance = w[i].toDistance + '米';
+                    if(w[i].toDistance < 1000)w[i].toDistance = parseInt(w[i].toDistance) + '米';
                     else w[i].toDistance = parseInt(w[i].toDistance/100)/10 + '公里';
                 }
             }
