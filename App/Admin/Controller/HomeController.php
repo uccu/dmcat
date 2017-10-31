@@ -119,7 +119,7 @@ class HomeController extends Controller{
     }
 
 
-    function admin_user_feedback(UserFeedbackModel $model){
+    function admin_user_feedback(UserFeedbackModel $model,$page,$limit){
         
         $this->L->adminPermissionCheck(132);
 
@@ -164,9 +164,9 @@ class HomeController extends Controller{
 
 
         # 分页内容
-        $page   = 1;
-        $max    = count($list);
-        $limit  = count($list);
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
 
         # 输出内容
         $out = 
@@ -256,7 +256,7 @@ class HomeController extends Controller{
     }
 
 
-    function admin_doctor_feedback(DoctorFeedbackModel $model){
+    function admin_doctor_feedback(DoctorFeedbackModel $model,$limit,$page){
         
         $this->L->adminPermissionCheck(133);
 
@@ -301,9 +301,9 @@ class HomeController extends Controller{
 
 
         # 分页内容
-        $page   = 1;
-        $max    = count($list);
-        $limit  = count($list);
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
 
         # 输出内容
         $out = 

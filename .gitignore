@@ -1,5 +1,5 @@
 .vscode
 Log/*.log
-Public/pic
+Public/pic/20*
 composer.lock
 vendor
