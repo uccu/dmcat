@@ -1103,7 +1103,7 @@ class HomeController extends Controller{
             [
                 'title' =>  '回答',
                 'name'  =>  'content',
-                'type'  =>  'textarea'
+                'type'  =>  'h5'
             ],
 
                 
