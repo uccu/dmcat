@@ -287,5 +287,14 @@ class HomeController extends Controller{
         $out['info'] = $info;
         AJAX::success($out);
     }
+
+    function questionInfo_h5($id){
+
+        $info = Model::copyMutiInstance('question')->find($id);
+        !$info && AJAX::error('错误！');
+
+        View::addData(['title'=>$m->name,'content'=>$m->content]);
+        View::hamlReader('h5','App');
+    }
     
 }
