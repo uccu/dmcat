@@ -274,7 +274,7 @@ class HomeController extends Controller{
 
     function questionList(){
 
-        $list = Model::copyMutiInstance('question')->get()->toArray();
+        $list = Model::copyMutiInstance('question')->selectExcept('content')->get()->toArray();
 
         $out['list'] = $list;
         AJAX::success($out);
