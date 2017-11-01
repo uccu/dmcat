@@ -724,6 +724,7 @@ class HomeController extends Controller{
 
                 'ID',
                 '名字',
+                '缩略图'
             ];
 
 
@@ -734,6 +735,13 @@ class HomeController extends Controller{
                 
                 'id',
                 'name',
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                
 
             ];
             
@@ -744,6 +752,9 @@ class HomeController extends Controller{
 
         $list = $model->order('pinyin')->where($where)->get()->toArray();
 
+        foreach($list as &$v){
+            $v->fullPic = Func::fullPicAddr($v->thumb);
+        }
 
 
         # 分页内容
@@ -796,11 +807,17 @@ class HomeController extends Controller{
                 'size'  =>  '2'
             ],
             [
+                'title' =>  '缩略图',
+                'type'  =>  'pic',
+                'name'  =>  'thumb',
+            ],
+            [
                 'title' =>  '车型',
                 'type'  =>  'option',
                 'name'  =>  'modelx',
                 'size'  =>  '2'
-            ]
+            ],
+            
                 
                 
                 
@@ -848,7 +865,7 @@ class HomeController extends Controller{
         $model2->where(['brand_id'=>$id])->remove();
 
 
-        foreach($modelx as $v){
+        if($modelx)foreach($modelx as $v){
             $pinyin = Hanzi::pinyin($v)['pinyin'];
             $model2->set(['brand_id'=>$id,'name'=>$v,'pinyin'=>$pinyin])->add();
         }
