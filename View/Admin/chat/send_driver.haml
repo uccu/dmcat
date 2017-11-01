@@ -1,0 +1,122 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    :css
+                        .topw .row>div{
+                            padding-bottom:20px
+                        }
+                    .ibox-title.topw(style="padding-top:20px")
+                        .row
+                .load1.sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                
+                .ibox.mainList.float-e-margins
+
+                .ibox.sendBox.float-e-margins
+    
+                    .ibox-content.tc.animated.fadeInLeft
+                        %form.form-horizontal.animated(method="post" onsubmit="return false;")
+                            
+                            .form-group
+                                %label.col-sm-2.control-label 消息
+                                .col-sm-6
+                                    %textarea.form-control(name="content" style="resize:none;height:200px")
+                            .form-group.dn
+                                %label.col-sm-2.control-label H5
+                                .col-sm-10.tl
+                                    .summernote(data-name="h5")
+                            .form-group
+                                .col-sm-3
+                                    .input-group.dn
+                                        %span.input-group-addon 发送给所有人
+                                        %div(style="padding: 7px 0 3px 8px;border: 1px solid #E5E6E7;width: 37px;")
+                                            %input.allSend(type="checkbox" checked)
+                                .col-sm-2
+                                    %button.btn.btn-success.mail.dn 发送短信
+                                .col-sm-2
+                                    %button.btn.btn-primary.push 发送推送
+                                            
+
+- block otherCss
+    %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
+    %link(href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet")
+
+- block otherScript
+    %script(src="/js/plugins/summernote/summernote.min.js")
+    %script(src="/js/plugins/summernote/summernote-zh-CN.js")
+    :javascript
+        $(function(){
+            var e = window.e = new Dmcat.admin('#{getList}')
+            window.flesh = function(){
+                e.flesh()
+            }
+            $('.allSend').iCheck({checkboxClass: 'icheckbox_square-green',radioClass: 'iradio_square-green'})
+            var su = $('.sendBox .summernote').summernote({
+                toolbar: [
+                    ['style', ['style']],
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname',['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['height', ['height']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['e',['picture','link']],
+                    ['o',['codeview']],
+                ],
+                height: 300,
+                minHeight: 300,
+                maxHeight: null,
+                focus: true,
+                lang:"zh-CN",
+                callbacks: {
+                    onImageUpload: function(files) {
+                        curl('/home/uploadPic',packFormData(files),function(d){
+                            var imgNode = new Image
+                            imgNode.src = d.fpath
+                            su.summernote('insertNode', imgNode);
+                        },1);
+                    }
+                }
+            })
+            $('.mail').on('click',function(){
+                var toAll = $('.allSend')[0].checked?'1':'0'
+                var f = {};
+                for(var i in e.req.param)f[i]=e.req.param[i]
+                delete f.page
+                f.toAll = toAll
+                f.message = $('.sendBox textarea').val();
+                if(!f.message){toastr['error']('消息不能为空！');return}
+                curl('/admin/chat/sendMail_driver',f,function(){
+                    curl_succ('发送成功！')
+                });
+            })
+            $('.push').on('click',function(){
+                var toAll = $('.allSend')[0].checked?'1':'0'
+                var f = {};
+                for(var i in e.req.param)f[i]=e.req.param[i]
+                delete f.page
+                var h5 = $('.sendBox .summernote').summernote('code').replace(/<xml>[\s\S]*<\/xml>/ig,'')
+                if(!$(h5).text())h5 = '';
+                f.h5 = h5
+                f.toAll = toAll
+                f.message = $('.sendBox textarea').val();
+                if(!f.message){toastr['error']('消息不能为空！');return}
+                curl('/admin/chat/sendPush_driver',f,function(){
+                    curl_succ('发送成功！')
+                });
+            })
+        })
+            
+        
+        
+            
