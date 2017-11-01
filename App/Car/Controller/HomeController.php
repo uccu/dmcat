@@ -251,8 +251,15 @@ class HomeController extends Controller{
         foreach($list as $v){
             $list2[$v->first][] = $v;
         }
+        $list3 = [];
+        foreach($list2 as $k=>$v){
+            $list3[] = [
+                'key'=>$k,
+                'value'=>$v
+            ];
+        }
 
-        $out['list'] = $list2;
+        $out['list'] = $list3;
         AJAX::success($out);
     }
 
