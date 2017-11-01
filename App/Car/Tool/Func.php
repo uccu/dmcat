@@ -434,7 +434,7 @@ class Func {
 
         try{
             $z2 = $client2->push()
-                ->options(['apns_production'=>true])
+                // ->options(['apns_production'=>true])
                 ->setPlatform('all')
                 ->addAlias($user_id)
                 ->androidNotification($content,['extras'=>$extras])
@@ -472,7 +472,7 @@ class Func {
 
         try{
             $z2 = $client2->push()
-                ->options(['apns_production'=>true])
+                // ->options(['apns_production'=>true])
                 ->setPlatform('all')
                 ->addAlias($user_id)
                 ->androidNotification($content,['extras'=>$extras])
