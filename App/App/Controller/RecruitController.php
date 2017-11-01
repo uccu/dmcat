@@ -33,7 +33,7 @@ class RecruitController extends Controller{
      * @param mixed $model 
      * @return mixed 
      */
-    function list($page = 1,$limit = 10,RecruitModel $model){
+    function lists($page = 1,$limit = 10,RecruitModel $model){
         
         $where['active'] = 1;
         $list = $model->selectExcept('description')->where($where)->page($page,$limit)->get()->toArray();

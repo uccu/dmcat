@@ -33,7 +33,7 @@ class ShopController extends Controller{
      * @param mixed $shopModel 
      * @return mixed 
      */
-    function list($page = 1,$limit = 10,ShopModel $shopModel){
+    function lists($page = 1,$limit = 10,ShopModel $shopModel){
         
         $where['active'] = 1;
         $list = $shopModel->selectExcept('detail','param')->where($where)->page($page,$limit)->get()->toArray();
