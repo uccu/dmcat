@@ -37,7 +37,7 @@ class ClinicController extends Controller{
      * @param mixed $distict_id 
      * @return mixed 
      */
-    function list(ClinicModel $clinicModel,$latitude = 0, $longitude = 0,$page = 1,$limit = 10,$sort_type,$distict_id = 0){
+    function lists(ClinicModel $clinicModel,$latitude = 0, $longitude = 0,$page = 1,$limit = 10,$sort_type,$distict_id = 0){
 
         // $latitude = 31.10079300;
         // $longitude = 121.16671300;
