@@ -257,18 +257,24 @@ class UserController extends Controller{
         unset($info->qq);
         unset($info->wx);
 
-        $list = $userDateModel->select('*','date.start_time','date.end_time','doctor.name>doctor_name','clinic.name>clinic_name')->where('status>2')->order('create_time desc')->get()->toArray();
+        $list = $userDateModel->select('*','date.start_time','date.end_time','doctor.name>doctor_name','clinic.name>clinic_name')->where(['user_id'=>$this->L->id])->where('status>2')->order('create_time desc')->get()->toArray();
 
         $year = [];
 
         foreach($list as $v){
             $year[$v->year][] = $v;
         }
-
+        $year2 = [];
+        foreach($year as $k=>$v){
+            $year2[] = [
+                'key'=>$k,
+                'value'=>$v
+            ];
+        }
 
 
         $out['info'] = $info;
-        $out['year'] = array_values( $year );
+        $out['year'] = $year2;
 
         AJAX::success($out);
     }
