@@ -433,13 +433,6 @@ class Func {
 
 
         try{
-            // $z1 = $client->push()
-            //     ->options(['apns_production'=>1])
-            //     ->setPlatform('ios')
-            //     ->addAlias($user_id)
-            //     ->androidNotification($content,['extras'=>$extras])
-            //     ->iosNotification($content,['extras'=>$extras,'sound'=>'default'])
-            //     ->send();
             $z2 = $client2->push()
                 ->options(['apns_production'=>true])
                 ->setPlatform('all')
@@ -453,10 +446,47 @@ class Func {
         
         }
 
-        return [$z1,$z2];
+        return [$z2];
 
     }
-    
+    public static function push_driver($user_id = 0,$content,$extras = ['type'=>'1']){
+
+        if(!$user_id)return false;
+        
+        if(!is_array($user_id)){
+            $user_id = [$user_id];
+        }
+        foreach($user_id as &$v){
+            $v = 'A'.$v;
+        }
+        
+
+        $L = L::getSingleInstance();
+
+        $app_key = $L->config->push_app_key2;
+        $master_secret = $L->config->push_master_secret2;
+
+        $client = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
+        $client2 = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
+
+
+        try{
+            $z2 = $client2->push()
+                ->options(['apns_production'=>true])
+                ->setPlatform('all')
+                ->addAlias($user_id)
+                ->androidNotification($content,['extras'=>$extras])
+                ->iosNotification($content,['badge' => '1','extras'=>$extras,'sound'=>'default'])
+                ->send();
+        }catch(\Error $e){
+        
+        }catch(\Exception $e){
+        
+        }
+
+        return [$z2];
+
+    }
 
 
     # 增加未结算收益
