@@ -147,6 +147,8 @@ name 用户名
 avatar 头像（路径）
 age 年龄
 introduce 介绍
+skill 擅长
+resume 履历
 {"data":{},"code":200,"url":"","message":""}
 {}
 

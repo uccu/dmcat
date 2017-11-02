@@ -250,7 +250,7 @@ class DoctorController extends Controller{
     }
 
     # 修改我的信息
-    function changeMyInfo($name,$avatar,$age,$introduce){
+    function changeMyInfo($name,$avatar,$age,$introduce,$skill,$resume){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -258,6 +258,8 @@ class DoctorController extends Controller{
         $introduce && $this->L->doctorInfo->introduce = $introduce;
         $avatar && $this->L->doctorInfo->avatar = $avatar;
         $age && $this->L->doctorInfo->age = $age;
+        $skill && $this->L->doctorInfo->skill = $skill;
+        $resume && $this->L->doctorInfo->resume = $resume;
 
         $this->L->doctorInfo->save();
 
