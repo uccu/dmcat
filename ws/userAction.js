@@ -51,6 +51,20 @@ z = function(obj,con){
                 let longitude = obj.longitude
                 db.replace('update c_user_online set latitude=?,longitude=? where user_id=?',[latitude,longitude,con.user_id])
                 console.log(`user ${con.user_id} updated position`)
+
+                db.find('select * from c_trip where driver_id=? AND type=3 AND status=3',[con.user_id],
+                function(d){
+                    if(d.last_longitude == '0'){
+
+                        db.update('update c_trip set last_latitude=?,last_longitude=? where driver_id=? AND type=3 AND status=3',[latitude,longitude,con.user_id])
+
+                    }else{
+                        let di = dis(d.last_latitude,d.last_longitude,latitude,longitude)
+                        di += d.real_distance
+                        db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type=3 AND status=3',[latitude,longitude,di,con.user_id])
+                        console.log('Move distance: '+ di)
+                    }
+                })
             }
             break;
         case 'askForDriving':
