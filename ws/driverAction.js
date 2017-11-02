@@ -4,6 +4,16 @@ let data = require('./data'),
 db = require('./db'),
 action = require('./action'),
 UserInfo = function(){},
+dis = function (lat1, lng1, lat2, lng2) {
+    var radLat1 = lat1 * Math.PI / 180.0;
+    var radLat2 = lat2 * Math.PI / 180.0;
+    var a = radLat1 - radLat2;
+    var b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
+    var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.co(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+    s = s * 6378.137;
+    s = Math.round(s * 10000) / 10000;
+    return s
+};
 z = function(obj,con){
 
     switch(obj.type){
@@ -61,6 +71,21 @@ z = function(obj,con){
                 let longitude = driver.longitude = parseFloat(obj.longitude || 0)
                 db.replace('update c_driver_online set latitude=?,longitude=? where driver_id=?',[latitude,longitude,con.driver_id])
                 console.log(`driver ${con.driver_id} updated position`)
+
+                if(driver.serving)db.find('select * from c_trip where driver_id=? AND type<3 AND status=3',[con.driver_id],
+                function(d){
+                    if(d.last_longitude == '0'){
+
+                        db.update('update c_trip set last_latitude=?,last_longitude=? where driver_id=? AND type<3 AND status=3',[latitude,longitude,con.driver_id])
+
+                    }else{
+                        let di = dis(d.last_latitude,d.last_longitude,latitude,longitude)
+                        di += d.real_distance
+                        db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type<3 AND status=3',[latitude,longitude,di,con.driver_id])
+                    }
+                })
+
+
             }
             break;
         case 'orderDriving':
@@ -283,10 +308,12 @@ z = function(obj,con){
                     if(result.status != 3)return;
 
                         /** 更新订单 */
-                        db.update('update c_order_driving set status=4 where id=?',[id],function(){
+                        db.update('update c_trip set driver_id=?,status=4 where id=? and type=1',[con.driver_id,id],function(trip){
+
+                            db.update('update c_order_driving set status=4,distance=? where id=?',[trip.real_distance,id],function(){
 
                             /** 更新行程 */
-                            db.update('update c_trip set driver_id=?,status=4 where id=? and type=1',[con.driver_id,id],function(){
+                            
 
                                 /** 获取司机 */
                                 let driver = data.DriverMap.get(con.driver_id)
