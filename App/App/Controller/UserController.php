@@ -362,7 +362,7 @@ class UserController extends Controller{
         $data['doctor_id'] = $doctor->id;
         $data['user_id'] = $this->L->id;
 
-        $userDateModel->where($data)->where(['status<2'])->find() && AJAX::error('您已经预约过了，不能重复预约！');
+        $userDateModel->where($data)->where('status<2')->find() && AJAX::error('您已经预约过了，不能重复预约！');
 
         $data['create_time']  = TIME_NOW;
         $data['year'] = date('Y',TIME_NOW);
