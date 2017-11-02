@@ -362,11 +362,14 @@ z = function(obj,con){
                     /** 订单是否是带接客状态 */
                     if(result.status != 3)return;
 
+                    db.find('select * from c_trip where id=? and type=2',[id],function(trip){
+                        
+                        db.update('update c_trip set driver_id=?,status=4 where id=? and type=2',[con.driver_id,id],function(){
                         /** 更新订单 */
-                        db.update('update c_order_taxi set status=4 where id=?',[id],function(){
+                            db.update('update c_order_taxi set status=4,distance=? where id=?',[trip.real_distance,id],function(){
 
                             /** 更新行程 */
-                            db.update('update c_trip set driver_id=?,status=4 where id=? and type=2',[con.driver_id,id],function(){
+                            
 
                                 /** 获取司机 */
                                 let driver = data.DriverMap.get(con.driver_id)
@@ -388,7 +391,7 @@ z = function(obj,con){
                                 
                             })
                         })
-                    
+                    })
                 })
             }
             break;
