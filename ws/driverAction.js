@@ -308,8 +308,9 @@ z = function(obj,con){
                     /** 订单是否是带接客状态 */
                     if(result.status != 3)return;
 
+                    db.find('select * from c_trip where id=? and type=1',[id],function(trip){
                         /** 更新订单 */
-                        db.update('update c_trip set driver_id=?,status=4 where id=? and type=1',[con.driver_id,id],function(trip){
+                        if(trip)db.update('update c_trip set driver_id=?,status=4 where id=? and type=1',[con.driver_id,id],function(){
 
                             db.update('update c_order_driving set status=4,distance=? where id=?',[trip.real_distance,id],function(){
 
@@ -337,6 +338,7 @@ z = function(obj,con){
                                 
                             })
                         })
+                    })
                     
                 })
             }
