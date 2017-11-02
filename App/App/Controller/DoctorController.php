@@ -318,7 +318,7 @@ class DoctorController extends Controller{
         
         !$this->L->id && AJAX::error('未登录');
 
-        $where['user_id'] = $this->L->id;
+        $where['doctor_id'] = $this->L->id;
 
         if($status == 3){
             $where['status'] = ['status BETWEEN 3 AND 4'];
@@ -347,7 +347,7 @@ class DoctorController extends Controller{
         }
 
         $list = $userDateModel->select('*','date.start_time','date.end_time','user.name','user.avatar','user.phone','user.age')->where($where)->page($page,$limit)->get()->toArray();
-
+        // echo $userDateModel->sql;die();
         foreach($list as &$v){
             $v->tags = [];
             $tags = $userTagModel->select('tag.name')->order('times desc')->get()->toArray();
