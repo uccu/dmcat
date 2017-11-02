@@ -13,7 +13,7 @@ dis = function (lat1, lng1, lat2, lng2) {
     s = s * 6378.137;
     s = Math.round(s * 10000) / 10;
     return s
-};
+},
 z = function(obj,con){
 
     switch(obj.type){
