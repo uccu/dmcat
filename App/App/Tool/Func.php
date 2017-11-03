@@ -173,16 +173,23 @@ class Func {
         return $name?$paths[$name]:$paths;
     }
     /* 上传图片 */
-    static function uploadFiles($name = null,$width = 0,$height = 0,$cut = 0){
+    static function uploadFiles($name = null,$width = 0,$height = 0,$cut = 0,$muti = 0){
         if(!$_FILES)return [];
         
         $paths = [];
         $upn = $upa = [];
         foreach($_FILES as $k=>$file){
+            if(!is_array($file['tmp_name']))$tmp_name = [$file['tmp_name']];
+            else $tmp_name = $file['tmp_name'];
+
             $upn[] = $k;
             if(!$name || $k==$name){
                 $upa[] = $k;
-                $paths[$k] = self::uploadPic($file['tmp_name'],0,$width,$height,$cut);
+                foreach($tmp_name as $v){
+                    $paths[$k][] = self::uploadPic($v,0,$width,$height,$cut);
+                }
+                if(!$muti)$paths[$k] = $paths[$k][0];
+                
             }
             
         }
