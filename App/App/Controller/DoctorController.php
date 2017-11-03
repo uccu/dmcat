@@ -19,6 +19,7 @@ use App\App\Model\DateModel;
 use App\App\Model\UserTagModel;
 use App\App\Model\DoctorModel;
 use App\App\Model\TagModel;
+use App\App\Model\DoctorFeedbackModel;
 use Model; 
 
 
