@@ -127,6 +127,50 @@
                         +(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
 
                         break;
+                    case 'picss':
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 10)+'">')
+                        pa.find('div').append(
+                        (function(p){
+                            var s = j('<div>');
+                            p = p.split(',');
+                            for(var i in p){
+                                var r = j('<span class="dib pr"><i class="pa cp" style="right:5px;top:-3px;color:#fff;border-radius:50%;background:red;width:12px;height:12px"></i><a href="/pic/'+p[i]+'" target="_blank"><img class="cp picImg" src="/pic/'+p[i]+'" style="max-width:100%;max-height:100px;margin-right: 10px;margin-bottom: 10px;"></a><input type="hidden" name="'+para.name+'[]" value="'+p[i]+'"></span>')
+                                r.find('i').click(function(){
+                                    var t = j(this)
+                                    curl_check(function(){
+                                        t.parent().remove();
+                                    })
+                                })
+                                s.append(
+                                    r
+                                )
+                            }
+                            var v = j('<span class="dib pr cp"><strong>上传</strong><input style="display:none" accept="image/*" type="file"></span>')
+                            upPic(v.find('input'),'/home/uploadPic',function(d,f){
+                                console.log(f.parent().parent().parent())
+                                var r = j('<span class="dib pr"><i class="pa cp" style="right:5px;top:-3px;color:#fff;border-radius:50%;background:red;width:12px;height:12px"></i><a href="/pic/'+d.path+'" target="_blank"><img class="cp picImg" src="/pic/'+d.path+'" style="max-width:100%;max-height:100px;margin-right: 10px;margin-bottom: 10px;"></a><input type="hidden" name="'+f.parent().parent().parent().parent().attr('work')+'[]" value="'+d.path+'"></span>')
+                                r.find('i').click(function(){
+                                    var t = j(this)
+                                    curl_check(function(){
+                                        t.parent().remove();
+                                    })
+                                })
+                                f.parent().before(r)
+                            })
+                            v.find('strong').click(function(){
+                                j(this).parent().find('input').click()
+                            })
+                            s.append(
+                                    v
+                                )
+                            return s
+
+                        })(m.info[para.name]||para.default||'nopic.jpg')
+                        
+                        
+                        )
+
+                        break;
                     case 'file':
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 1)+'">'+'<i class="fa fa-plus-square-o cp picImg add" style="font-size:40px"></i>'+'<img class="cp picImg dn img" src="/pic/'+'file.jpg'+'" style="max-width:100%;max-height:100px;"><input class="picFile" type="file" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'"></div><label class="col-sm-2 control-label dn del" style="text-align:left"><i class="fa fa-times cp"></i></label>'+(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         upPic(pa.find('.picFile'),'/home/uploadFile',function(d,f){

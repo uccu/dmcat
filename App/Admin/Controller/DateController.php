@@ -31,7 +31,7 @@ class DateController extends Controller{
         View::hamlReader('home/list','Admin');
     }
 
-    function admin_date(UserDateModel $model,$page,$limit,$status = -2){
+    function admin_date(UserDateModel $model,$page,$limit,$status = -2,$search = ''){
         
         $this->L->adminPermissionCheck(139);
 
@@ -56,6 +56,11 @@ class DateController extends Controller{
                             '-1'=>  '已取消',
                         ],
                         'default'=>'-2'
+                    ],
+                    [
+                        'title' =>  '搜索',
+                        'name'  =>  'search',
+                        
                     ]   
                     
                 ]
@@ -92,6 +97,11 @@ class DateController extends Controller{
         
         if($status != -2){
             $where['status'] = $status;
+        }
+
+        if($search){
+
+            $where['search'] = ['doctor.name LIKE %n OR user.name LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
 
         $list = $model->select('*','doctor.name>doctor_name','user.name>user_name','clinic.name>clinic_name')->order('create_time desc')->where($where)->get()->toArray();

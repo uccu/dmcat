@@ -412,7 +412,7 @@ class DoctorController extends Controller{
     function cancel(UserDateModel $userDateModel,$id){
 
         !$this->L->id && AJAX::error('未登录');
-        $userDateModel->set(['status'=>-1])->save();
+        $userDateModel->set(['status'=>-1])->save($id);
         AJAX::success();
     }
     
