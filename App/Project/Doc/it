@@ -696,3 +696,8 @@ brand_id 品牌ID
 home/color
 {"data":{"list":[{"id":"2","name":"\u767d\u8272","pinyin":"baise"},{"id":"1","name":"\u9ed1\u8272","pinyin":"heise"}]},"code":200,"url":"","message":""}
 {}
+
+3.10
+home/getVersion
+{"data":{"driver_version":"dw","driver_version_file":"19","driver_version_file_path":"http:\/\/121.199.8.244:3500\/download\/file\/19","user_version":"11","user_version_file":"19","user_version_file_path":"http:\/\/121.199.8.244:3500\/download\/file\/19"},"code":200,"url":"","message":""}
+{}
