@@ -122,7 +122,7 @@ class HomeController extends Controller{
         $out['distance']    = $distance;
         $out['price']       = $price;
 
-        switch($type){
+        switch($num){
 
             case 2:
                 $out['price'] = $price * 1.7;
