@@ -371,6 +371,8 @@ class UserController extends Controller{
 
         $data['status'] = $doctor->status ? '1' : '0';
 
+        $userDateModel->set($data)->add();
+
         AJAX::success();
 
     }
