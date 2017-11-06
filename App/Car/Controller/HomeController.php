@@ -325,7 +325,7 @@ class HomeController extends Controller{
         
         if($info['driver_version_file']){
 
-            $info['driver_version_file_path'] = Func::fullAddr('download/file/'.$info['driver_version_file']);
+            $info['driver_version_file_path'] = Func::fullAddr('download/getVersionFile_driver');
         }
 
         $info['user_version'] = $this->L->config->user_version;
@@ -333,7 +333,7 @@ class HomeController extends Controller{
 
         if($info['user_version_file']){
 
-            $info['user_version_file_path'] = Func::fullAddr('download/file/'.$info['user_version_file']);
+            $info['user_version_file_path'] = Func::fullAddr('download/getVersionFile_user');
         }
 
         AJAX::success($info);

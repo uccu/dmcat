@@ -7,13 +7,16 @@ use Controller;
 use Response;
 use Request;
 use View;
+use App\Car\Middleware\L;
 use App\Car\Model\UploadModel;
+use App\Car\Tool\Func;
 
 class DownloadController extends Controller{
 
 
     function __construct(){
 
+        $this->L = L::getSingleInstance();
         $this->salt = $this->L->config->site_salt;
 
     }
@@ -46,5 +49,15 @@ class DownloadController extends Controller{
         fclose($fp);
 
 
+    }
+
+    function getVersionFile_driver(){
+
+        header('Location:'.Func::fullAddr('download/file/'.$this->L->config->driver_version_file));
+        
+    }
+    function getVersionFile_user(){
+
+        header('Location:'.Func::fullAddr('download/file/'.$this->L->config->user_version_file));
     }
 }

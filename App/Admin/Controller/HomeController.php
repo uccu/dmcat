@@ -154,7 +154,7 @@ class HomeController extends Controller{
         
         if($info['driver_version_file']){
 
-            $tbody[2]['description'] = Func::fullAddr('download/file/'.$info['driver_version_file']);
+            $tbody[2]['description'] = Func::fullAddr('download/getVersionFile_driver');
         }
             
         $out = 
@@ -222,7 +222,7 @@ class HomeController extends Controller{
 
         if($info['user_version_file']){
 
-            $tbody[2]['description'] = Func::fullAddr('download/file/'.$info['user_version_file']);
+            $tbody[2]['description'] = Func::fullAddr('download/getVersionFile_user');
         }
             
             
