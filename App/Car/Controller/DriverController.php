@@ -140,7 +140,7 @@ class DriverController extends Controller{
         $driver_token = $this->encrypt_token($info);
         $this->cookie && Response::getSingleInstance()->cookie('driver_token',$driver_token,0);
 
-        $where['user_id'] = $this->L->id;
+        $where['driver_id'] = $this->L->id;
         $where['isread'] = 0;
         $e = DriverMessageModel::copyMutiInstance()->where($where)->find();
 
@@ -621,7 +621,7 @@ class DriverController extends Controller{
 
         !$this->L->id && AJAX::error('未登录');
 
-        $where['user_id'] = $this->L->id;
+        $where['driver_id'] = $this->L->id;
         $where['isread'] = 0;
         $e = $model->where($where)->find();
 
