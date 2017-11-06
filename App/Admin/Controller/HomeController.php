@@ -21,6 +21,7 @@ use App\Car\Model\DriverFeedbackModel;
 use App\Car\Model\BrandModel;
 use App\Car\Model\ColorModel;
 use App\Car\Model\QuestionModel;
+use App\Car\Model\ConfigModel;
 
 class HomeController extends Controller{
 
@@ -108,6 +109,145 @@ class HomeController extends Controller{
         $out['upd'] = $upd;
         AJAX::success($out);
     }
+
+
+    # 版本控制
+    function admin_driver_version_get($id){
+        
+        $this->L->adminPermissionCheck(149);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../home/admin_driver_version_get',
+            'upd'   => '../home/admin_driver_version_upd',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+            [
+                'title' =>  '版本号',
+                'name'  =>  'driver_version',
+                'size'  =>  '3'
+            ],
+            [
+                'title' =>  '安装文件',
+                'name'  =>  'driver_version_file',
+                'type'  =>  'file'
+            ]
+                
+                
+                
+                
+            ];
+            
+            
+            
+        $info['driver_version'] = $this->L->config->driver_version;
+        $info['driver_version_file'] = $this->L->config->driver_version_file;
+        
+        if($info['driver_version_file']){
+
+            $tbody[2]['description'] = Func::fullAddr('download/file/'.$info['driver_version_file']);
+        }
+            
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_driver_version_upd($id,ConfigModel $model,$driver_version,$driver_version_file){
+        $this->L->adminPermissionCheck(149);
+
+        $upd = $model->set(['value'=>$driver_version,'name'=>'driver_version'])->add(true);
+        $upd = $model->set(['value'=>$driver_version_file,'name'=>'driver_version_file'])->add(true);
+        
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+
+
+    function admin_user_version_get($id){
+        
+        $this->L->adminPermissionCheck(149);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../home/admin_user_version_get',
+            'upd'   => '../home/admin_user_version_upd',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+            [
+                'title' =>  '版本号',
+                'name'  =>  'user_version',
+                'size'  =>  '3'
+            ],
+            [
+                'title' =>  '安装文件',
+                'name'  =>  'user_version_file',
+                'type'  =>  'file',
+                'description'=>''
+            ]
+                
+                
+                
+                
+            ];
+            
+            
+            
+        $info['user_version'] = $this->L->config->user_version;
+        $info['user_version_file'] = $this->L->config->user_version_file;
+
+        if($info['user_version_file']){
+
+            $tbody[2]['description'] = Func::fullAddr('download/file/'.$info['user_version_file']);
+        }
+            
+            
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_user_version_upd($id,ConfigModel $model,$user_version,$user_version_file){
+        $this->L->adminPermissionCheck(149);
+
+        $upd = $model->set(['value'=>$user_version,'name'=>'user_version'])->add(true);
+        $upd = $model->set(['value'=>$user_version_file,'name'=>'user_version_file'])->add(true);
+        
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+
+
 
     function bank(){
 

@@ -317,5 +317,26 @@ class HomeController extends Controller{
         View::addData(['title'=>$info->name,'content'=>$info->content]);
         View::hamlReader('h5','App');
     }
+
+    function getVersion(){
+
+        $info['driver_version'] = $this->L->config->driver_version;
+        $info['driver_version_file'] = $this->L->config->driver_version_file;
+        
+        if($info['driver_version_file']){
+
+            $info['driver_version_file_path'] = Func::fullAddr('download/file/'.$info['driver_version_file']);
+        }
+
+        $info['user_version'] = $this->L->config->user_version;
+        $info['user_version_file'] = $this->L->config->user_version_file;
+
+        if($info['user_version_file']){
+
+            $info['user_version_file_path'] = Func::fullAddr('download/file/'.$info['user_version_file']);
+        }
+
+        AJAX::success($info);
+    }
     
 }
