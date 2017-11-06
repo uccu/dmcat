@@ -140,6 +140,13 @@ class DriverController extends Controller{
         $driver_token = $this->encrypt_token($info);
         $this->cookie && Response::getSingleInstance()->cookie('driver_token',$driver_token,0);
 
+        $where['user_id'] = $this->L->id;
+        $where['isread'] = 0;
+        $e = DriverMessageModel::copyMutiInstance()->where($where)->find();
+
+        if($e)$data['hasMessage'] = '1';
+        else $data['hasMessage'] = '0';
+
         $out = [
             'driver_token'=>$driver_token,
             'id'=>$info->id,
@@ -147,6 +154,7 @@ class DriverController extends Controller{
             'name'=>$info->name,
             'tpye_driving'=>$info->type_driving,
             'tpye_taxi'=>$info->type_taxi,
+            'hasMessage'=>$data['hasMessage']
             
         ];
         
@@ -606,6 +614,21 @@ class DriverController extends Controller{
         AJAX::success();
 
 
+    }
+
+
+    function hasMessage(DriverMessageModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $where['user_id'] = $this->L->id;
+        $where['isread'] = 0;
+        $e = $model->where($where)->find();
+
+        if($e)$data['hasMessage'] = '1';
+        else $data['hasMessage'] = '0';
+
+        AJAX::success($data);
     }
     
 }

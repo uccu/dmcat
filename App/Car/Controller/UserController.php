@@ -146,12 +146,20 @@ class UserController extends Controller{
         $user_token = $this->encrypt_token($info);
         $this->cookie && Response::getSingleInstance()->cookie('user_token',$user_token,0);
 
+        $where['user_id'] = $this->L->id;
+        $where['isread'] = 0;
+        $e = MessageModel::copyMutiInstance()->where($where)->find();
+
+        if($e)$data['hasMessage'] = '1';
+        else $data['hasMessage'] = '0';
+
         $out = [
             'user_token'=>$user_token,
             'id'=>$info->id,
             'avatar'=>$info->avatar,
             'name'=>$info->name,
             'type'=>$info->type,
+            'hasMessage'=>$data['hasMessage']
             
         ];
         
@@ -1046,6 +1054,21 @@ class UserController extends Controller{
         AJAX::success($out);
         
         
+    }
+
+    function hasMessage(MessageModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $where['user_id'] = $this->L->id;
+        $where['isread'] = 0;
+        $e = $model->where($where)->find();
+
+        if($e)$data['hasMessage'] = '1';
+        else $data['hasMessage'] = '0';
+
+        AJAX::success($data);
+
     }
 
 
