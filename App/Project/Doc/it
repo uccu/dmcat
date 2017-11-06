@@ -268,6 +268,11 @@ user/myCoupon
 
 
 
+1.33 是否有消息
+user/hasMessage
+{"data":{"hasMessage":"1"},"code":200,"url":"","message":""}
+{}
+
 
 ws.1.1 用户登录
 @
@@ -548,6 +553,11 @@ type 1代驾2出租车
 {"data":{},"code":200,"url":"","message":""}
 {}
 
+
+2.19 是否有消息
+driver/hasMessage
+{"data":{"hasMessage":"1"},"code":200,"url":"","message":""}
+{}
 
 
 
