@@ -536,6 +536,20 @@ bank_id 银行ID
 
 
 
+2.18 申请成为司机
+driver/apply
+driving_license 驾照（二进制）
+driving_permit 行驶证（二进制）
+car_number 车牌号
+brand 车品牌
+latitude 纬度
+longitude 经度
+type 1代驾2出租车
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
 
 ws.2.1 司机登录
 @

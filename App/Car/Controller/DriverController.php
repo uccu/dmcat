@@ -25,6 +25,8 @@ use App\Car\Model\JudgeModel;
 use App\Car\Model\IncomeModel;
 use App\Car\Model\DriverBankModel;
 use App\Car\Model\DriverMoneyLogModel;
+use App\Car\Model\AreaModel;
+
 use Model; 
 
 class DriverController extends Controller{
@@ -152,6 +154,7 @@ class DriverController extends Controller{
     }
 
 
+
     /** 注册
      * register
      * @param mixed $password 
@@ -182,6 +185,51 @@ class DriverController extends Controller{
         $info->salt         = Func::randWord(6);
         $info->password     = $this->encrypt_password($password,$info->salt);
         $this->_add_user($info);
+    }
+
+
+    /** 申请成为司机
+     * apply
+     * @param mixed $driverApplyModel 
+     * @param mixed $car_number 
+     * @param mixed $brand 
+     * @return mixed 
+     */
+    function apply(DriverApplyModel $driverApplyModel,$driving_permit,$driving_license,$car_number = '',$brand = '',$city_id = 0,$latitude,$longitude,$type=0, AreaModel $areaModel){
+
+        !$this->L->id && AJAX::error('未登录');
+        
+        if(!$city_id){
+
+            $area = Func::getArea($latitude,$longitude);
+            if(!$area)AJAX::error('位置获取失败');
+            $city_id = $areaModel->where(['areaName'=>$area->city,'area_t.areaName'=>$area->province])->find()->id;
+
+            if(!$city_id){
+
+                $city_id = $areaModel->where(['areaName'=>$area->district,'area_t.areaName'=>$area->city])->find()->id;
+
+            }
+
+            !$city_id && AJAX::error('区域ID获取失败！');
+        }
+
+        $data['id'] = $this->L->id;
+        $data['car_number'] = $car_number;
+        $data['brand'] = $brand;
+        $data['type'] = $type;
+        if($driving_permit)$data['driving_permit'] = $driving_permit;
+        else $data['driving_permit'] = Func::uploadFiles('driving_permit');
+        if($driving_license)$data['driving_license'] = $driving_license;
+        else $data['driving_license'] = Func::uploadFiles('driving_license');
+        $data['status'] = 0;
+        $data['city_id'] = $city_id;
+        $data['create_time'] = TIME_NOW;
+
+        $driverApplyModel->set($data)->add(true);
+
+        AJAX::success();
+
     }
 
 
@@ -247,7 +295,8 @@ class DriverController extends Controller{
         $info['type_taxi'] = $this->L->userInfo->type_taxi;
         $info['id'] = $this->L->id;
         $info['judge_score'] = $this->L->userInfo->judge_score;
-        
+        $info['tpye_driving'] = $this->L->userInfo->type_driving;
+        $info['tpye_taxi'] = $this->L->userInfo->type_taxi;
         
         $info['money_today'] = DriverFundModel::copyMutiInstance()->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         if(!$info['money_today'])$info['money_today'] = '0.00';
