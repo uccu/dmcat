@@ -16,6 +16,8 @@ use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\OrderTaxiModel;
 use App\Car\Model\OrderWayModel;
 use App\Car\Model\UserApplyModel;
+use App\Car\Model\DriverApplyModel;
+use App\Car\Model\DriverModel;
 use App\Car\Model\UserModel;
 
 
@@ -52,7 +54,11 @@ class OrderController extends Controller{
         View::addData(['getList'=>'admin_apply']);
         View::hamlReader('home/list','Admin');
     }
+    function driver_apply(){
 
+        View::addData(['getList'=>'admin_driver_apply']);
+        View::hamlReader('home/list','Admin');
+    }
     
 
 
@@ -775,6 +781,227 @@ class OrderController extends Controller{
             UserModel::copyMutiInstance()->set(['type'=>1,'city_id'=>$app->city_id,'car_number'=>$app->car_number,'brand'=>$app->brand])->save($id);
         }else{
             UserModel::copyMutiInstance()->set(['type'=>0,'city_id'=>$app->city_id])->save($id);
+        }
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+
+
+
+
+    function admin_driver_apply(DriverApplyModel $model,$page = 1,$limit = 10,$search,$type){
+        
+        $this->L->adminPermissionCheck(146);
+
+        $name = '';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../order/admin_driver_apply_get',
+                'view'  => 'home/upd',
+                'req'   =>[
+                    [
+                        'title'=>'申请类型',
+                        'name'=>'type',
+                        'type'=>'select',
+                        'option'=>[
+                            '0'=>'请选择',
+                            '1'=>'代驾',
+                            '2'=>'出租车'
+                        ],'default'=>'0',
+                        'size'=>2
+                    ],
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search',
+                        'size'=>'3'
+                    ],
+                ]
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '用户ID',
+                '名字',
+                '品牌',
+                '车牌',
+                '驾照',
+                '行驶证',
+                '城市',
+                '状态',
+                '申请时间'
+                
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                
+                'id',
+                'name',
+                'brand',
+                'car_number',
+                [
+                    'type'=>'pic',
+                    'name'=>'driving_license',
+                    'href'=>true
+                ],
+                [
+                    'type'=>'pic',
+                    'name'=>'driving_permit',
+                    'href'=>true
+                ],
+                'city',
+                'status_name',
+                'date',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+
+        if($type){
+            $where['type'] = $type;
+        }
+
+        if($this->L->userInfo->type == 2){
+            $where['city.parent_id'] = $this->L->userInfo->province_id;
+        }elseif($this->L->userInfo->type == 1){
+            $where['city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
+        }
+        
+        if($search){
+            $where['search'] = ['driver.name LIKE %n OR driver.phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        }
+
+        $list = $model->select('*','driver.name','city.areaName>city')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        foreach($list as &$v){
+            $v->status_name = [
+                '0'=>'申请中',
+                '1'=>'审核通过',
+                '-1'=>'审核失败'
+            ][$v->status];
+            $v->driving_license = Func::fullPicAddr($v->driving_license);
+            $v->driving_permit = Func::fullPicAddr($v->driving_permit);
+            $v->date = date('Y-m-d H:i');
+        }
+
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    
+    function admin_driver_apply_get(DriverApplyModel $model,$id){
+        
+        $this->L->adminPermissionCheck(146);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../order/admin_driver_apply_get',
+            'upd'   => '../order/admin_driver_apply_upd',
+            'back'  => 'order/driver_apply',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+            [
+                'title' =>  '状态',
+                'name'  =>  'status',
+                'type'  =>  'select',
+                'option'=>[
+                    '0'=>'申请中',
+                    '1'=>'审核通过',
+                    '-1'=>'审核失败'
+                    ]
+                ],
+                
+                
+                
+                
+            ];
+            
+            !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+            $info = AdminFunc::get($model,$id);
+            
+            if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
+            
+            $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+            AJAX::success($out);
+            
+        }
+        
+        
+
+
+
+    function admin_driver_apply_upd(DriverApplyModel $model,$id,$status,$type){
+        $this->L->adminPermissionCheck(146);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        
+        $app = $model->find($id);
+        !$app && AJAX::error('error');
+
+        if($status == 1){
+            if($type==1){
+                $data2['type_driving'] = 1;
+                $data2['type_taxi'] = 0;
+            }elseif($type==2){
+                $data2['type_taxi'] = 1;
+                $data2['type_driving'] = 0;
+            }
+
+            $data2['city_id'] = $app->city_id;
+            $data2['car_number'] = $app->car_number;
+            $data2['brand'] = $app->brand;
+
+            
+            DriverModel::copyMutiInstance()->set($data2)->save($id);
+        }else{
+            DriverModel::copyMutiInstance()->set(['type'=>0,'city_id'=>$app->city_id])->save($id);
         }
 
         $upd = AdminFunc::upd($model,$id,$data);
