@@ -53,11 +53,11 @@ class DownloadController extends Controller{
 
     function getVersionFile_driver(){
 
-        header('Location:'.Func::fullAddr('download/file/'.$this->L->config->driver_version_file));
+        header('Location:'.Func::fullAddr('download/file/'.$this->L->config->driver_version_file).'/m.apk');
         
     }
     function getVersionFile_user(){
 
-        header('Location:'.Func::fullAddr('download/file/'.$this->L->config->user_version_file));
+        header('Location:'.Func::fullAddr('download/file/'.$this->L->config->user_version_file).'/m.apk');
     }
 }
