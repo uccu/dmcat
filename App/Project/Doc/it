@@ -289,3 +289,9 @@ home/checkUserType
 phone 手机号
 {"data":{"type":"doctor"},"code":200,"url":"","message":""}
 {type:doctor医生user用户no没有注册}
+
+
+6.2 标签
+home/tags
+{"data":{"list":[{"id":"1","name":"\u5e74\u9f84\u5c0f"}]},"code":200,"url":"","message":""}
+{}

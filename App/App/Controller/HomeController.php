@@ -16,6 +16,7 @@ use View;
 use App\App\Model\UserModel;
 use App\App\Model\DoctorModel;
 use App\App\Model\AreaModel;
+use App\App\Model\TagModel;
 use Model; 
 
 
@@ -84,6 +85,20 @@ class HomeController extends Controller{
 
             $list = $areaModel->where(['parent_id'=>$id])->order('pinyin')->get_field('areaName','id')->toArray();
         }
+        $out['list'] = $list;
+        AJAX::success($out);
+    }
+
+
+    /** 标签列表
+     * tags
+     * @param mixed $model 
+     * @return mixed 
+     */
+    function tags(TagModel $model){
+
+        $list = $model->get()->toArray();
+
         $out['list'] = $list;
         AJAX::success($out);
     }
