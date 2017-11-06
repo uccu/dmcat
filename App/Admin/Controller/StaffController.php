@@ -391,13 +391,11 @@ class StaffController extends Controller{
                     'size'  =>  '4',
                 ],
                 [
-                    
-                'type'  =>  'selects',
-                'url'   =>  '/admin/clinic/clinic_list',
-                'detail'=>[
-                    ['name'=>'clinic_id' ,'title' =>  ''],
-                    
-                ]
+                    'type'  =>  'selects',
+                    'url'   =>  '/admin/clinic/clinic_list',
+                    'detail'=>[
+                        ['name'=>'clinic_id' ,'title' =>  '选择诊所'],
+                    ]
             ],
                 
                 

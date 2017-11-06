@@ -245,13 +245,12 @@ class ClinicController extends Controller{
         
         $this->L->adminPermissionCheck(75);
 
-        $list = $model->get()->toArray();
+        $list = $model->get_field('name','id')->toArray();
 
-        $list2 = [];
 
-        foreach($list as $v){
+        foreach($list as $k=>&$v){
 
-            $list2[] = $v->id.'.'.$v->name;
+            $v = $k.'.'.$v;
         }
 
 
@@ -259,7 +258,7 @@ class ClinicController extends Controller{
         $out = 
             [
 
-                'list'  =>  $list2,
+                'list'  =>  $list,
 
             
             ];
