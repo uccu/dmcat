@@ -12,4 +12,14 @@ class JudgeModel extends Model{
         return $this->join(UserModel::class,'id','user_id');
     }
 
+    public function driver(){
+
+        return $this->join(DriverModel::class,'id','driver_id');
+    }
+
+    public function user_driver(){
+
+        return $this->join(UserModel::class,'id','driver_id');
+    }
+
 }

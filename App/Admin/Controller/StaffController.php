@@ -16,6 +16,7 @@ use App\Car\Model\UserModel;
 use App\Car\Model\DriverModel;
 use App\Car\Model\AdminModel;
 use App\Car\Model\AreaModel;
+use App\Car\Model\JudgeModel;
 
 
 class StaffController extends Controller{
@@ -55,6 +56,19 @@ class StaffController extends Controller{
 
         View::addData(['getList'=>'admin_admin']);
         View::hamlReader('home/list','Admin');
+    }
+
+    function judge_driver($id){
+
+        View::addData(['getList'=>'admin_judge_driver?id='.$id]);
+        View::hamlReader('home/list','Admin');
+
+    }
+    function judge($id){
+
+        View::addData(['getList'=>'admin_judge?id='.$id]);
+        View::hamlReader('home/list','Admin');
+
     }
 
 
@@ -294,7 +308,7 @@ class StaffController extends Controller{
                 '手机号',
                 '名字',
                 '启用',
-
+                '评价',
 
             ];
 
@@ -316,6 +330,10 @@ class StaffController extends Controller{
                     'name'=>'active',
                     'type'=>'checkbox',
                 ],
+                [
+                    'name'=>'judge',
+                    'href'=>true
+                ]
 
 
             ];
@@ -340,6 +358,8 @@ class StaffController extends Controller{
         $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->judge = '查看';
+            $v->judge_href = 'staff/judge_driver?id='.$v->id;
         }
 
 
@@ -768,6 +788,7 @@ class StaffController extends Controller{
                 '手机号',
                 '名字',
                 '启用',
+                '评价'
 
 
             ];
@@ -790,6 +811,10 @@ class StaffController extends Controller{
                     'name'=>'active',
                     'type'=>'checkbox',
                 ],
+                [
+                    'name'=>'judge',
+                    'href'=>true
+                ]
 
 
             ];
@@ -812,6 +837,8 @@ class StaffController extends Controller{
         // echo $model->sql;die();
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->judge = '查看';
+            $v->judge_href = 'staff/judge?id='.$v->id;
         }
 
 
@@ -959,4 +986,182 @@ class StaffController extends Controller{
         $out['del'] = $del;
         AJAX::success($out);
     }
+
+
+    # 评价
+    function admin_judge_driver(JudgeModel $model,$page = 1,$limit = 5,$id){
+        
+        $this->L->adminPermissionCheck(75);
+
+        $name = '用户';
+        # 允许操作接口
+        $opt = 
+            [
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '乘客ID',
+                '手机号',
+                '名字',
+                '星级',
+                '标签',
+                '评价',
+                '评价时间',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'user_id',
+                'phone',
+                'name',
+                'score',
+                'tag',
+                'comment',
+                'date'
+
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+
+        $where['driver_id'] = $id;
+        $where['type'] = ['type<3'];
+
+        $list = $model->select('*','user.name','user.avatar','user.phone')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->judge = '查看';
+            $v->judge_href = 'staff/judge_driver?id='.$v->id;
+            $v->date = date('Y-m-d H:i:s');
+        }
+
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+
+
+    function admin_judge(JudgeModel $model,$page = 1,$limit = 5,$id){
+        
+        $this->L->adminPermissionCheck(75);
+
+        $name = '用户';
+        # 允许操作接口
+        $opt = 
+            [
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '',
+                '乘客ID',
+                '手机号',
+                '名字',
+                '星级',
+                '标签',
+                '评价',
+                '评价时间'
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                [
+                    'name'=>'fullPic',
+                    'type'=>'pic',
+                    'href'=>false,
+                    'size'=>'30',
+                ],
+                'user_id',
+                'phone',
+                'name',
+                'score',
+                'tag',
+                'comment',
+                'date'
+
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+
+        $where['driver_id'] = $id;
+        $where['type'] = 3;
+
+        $list = $model->select('*','user.name','user.avatar','user.phone')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        foreach($list as &$v){
+            $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->judge = '查看';
+            $v->judge_href = 'staff/judge_driver?id='.$v->id;
+            $v->date = date('Y-m-d H:i:s');
+        }
+
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+
 }
