@@ -390,6 +390,15 @@ class StaffController extends Controller{
                     'name'  =>  'pwd',
                     'size'  =>  '4',
                 ],
+                [
+                    
+                'type'  =>  'selects',
+                'url'   =>  '/admin/clinic/clinic_list',
+                'detail'=>[
+                    ['name'=>'clinic_id' ,'title' =>  ''],
+                    
+                ]
+            ],
                 
                 
 

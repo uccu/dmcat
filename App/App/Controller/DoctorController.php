@@ -354,6 +354,8 @@ class DoctorController extends Controller{
             $tags = $userTagModel->select('tag.name')->order('times desc')->get()->toArray();
             foreach($tags as $v2)$v->tags[] = $v2->name;
 
+            $v2->tags = explode(',',$v2->tags);
+
         }
 
         $out['list'] = $list;
