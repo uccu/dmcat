@@ -120,19 +120,21 @@ class HomeController extends Controller{
 
         $out['area']        = $area;
         $out['distance']    = $distance;
-        $out['price']       = $price;
+        
 
         switch($num){
 
             case 2:
-                $out['price'] = $price * 1.7;
+                $price = $price * 1.7;
                 break;
             case 3:
-                $out['price'] = $price * 2.8;
+                $price = $price * 2.8;
                 break;
             default:
                 break;
         }
+            
+        $out['price']       = $price;
         
         $out['coupon']      = '0.00';
 
