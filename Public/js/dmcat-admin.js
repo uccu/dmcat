@@ -45,18 +45,20 @@
         if(typeof v==="object")for(d in v)if(typeof v[d]==="object")form.append(v[d].name,v[d].value);else form.append(d,v[d]);
         if(file instanceof FileList);
         else file = file[0].files;
-        if(file.length)form.append("file",file[0]);else{toastr['error']('error image');return}
+        if(file.length)form.append("file",file[0]);else{toastr['error']('error image');return false}
         if(!file[0])return;
         return typeof x==='function'?x(form):form
     }
-    var upPic = function(f,n,i){
+    var upPic = function(f,n,i,b,r){
         f.on('change',function(){
+            if(b instanceof Function)b(f);
             var u = packFormData(f)
             if(u)curl(n,u,function(d){
                 f.parent().find('.picText').val(d.path)
                 f.parent().find('img').attr('src',d.fpath)
                 if(i instanceof Function)i(d,f)
             },1);
+            else if(r instanceof Function)r(f)
         })
     }
     var admin = function(u,d,i){
@@ -131,8 +133,15 @@
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 1)+'">'+'<i class="fa fa-plus-square-o cp picImg add" style="font-size:40px"></i>'+'<img class="cp picImg dn img" src="/pic/'+'file.jpg'+'" style="max-width:100%;max-height:100px;"><input class="picFile" type="file" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'"></div><label class="col-sm-2 control-label dn del" style="text-align:left"><i class="fa fa-times cp"></i></label>'+(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         upPic(pa.find('.picFile'),'/home/uploadFile',function(d,f){
                             f.parent().find('img').show();
+                            f.parent().find('.loading').remove();
                             f.parent().find('.add').hide();
                             f.parent().parent().parent().parent().find('.del').show();
+                        },function(f){
+                            f.parent().find('img').hide();
+                            f.parent().find('img').after('<div class="loading sk-spinner sk-spinner-three-bounce dn"><div class="sk-bounce1"></div><div class="sk-bounce2"></div><div class="sk-bounce3"></div></div>');
+                        },function(f){
+                            f.parent().find('img').show();
+                            f.parent().find('.loading').remove();
                         })
                         pa.find('.picImg').on('click',function(){j(this).parent().find('.picFile').click()})
                         pa.find('.del').click(function(){
