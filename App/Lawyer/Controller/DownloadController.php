@@ -20,7 +20,7 @@ class DownloadController extends Controller{
 
     function file($id = 0,UploadModel $model){
 
-        if(!$id)echo $id = Request::getSingleInstance()->folder[2];
+        if(!$id)$id = Request::getSingleInstance()->folder[2];
 
         $file = $model->find($id);
         !$file && Response::getSingleInstance()->r302('/404.html');
