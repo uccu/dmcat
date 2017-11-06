@@ -318,7 +318,7 @@ class DoctorController extends Controller{
     function getUserList(UserDateModel $userDateModel,UserTagModel $userTagModel,$page=1,$limit=10,$status = 0,$name,$year,$month,$day){
         
         !$this->L->id && AJAX::error('未登录');
-
+        // $this->L->id = 4;
         $where['doctor_id'] = $this->L->id;
 
         if($status == 3){
@@ -354,7 +354,7 @@ class DoctorController extends Controller{
             $tags = $userTagModel->select('tag.name')->order('times desc')->get()->toArray();
             foreach($tags as $v2)$v->tags[] = $v2->name;
 
-            $v2->tags = implode(',',$v2->tags);
+            $v->tags =  implode(',',$v->tags);
 
         }
 
