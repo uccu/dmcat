@@ -41,7 +41,7 @@
                                         %span.input-group-addon 发送给所有人
                                         %div(style="padding: 7px 0 3px 8px;border: 1px solid #E5E6E7;width: 37px;")
                                             %input.allSend(type="checkbox" checked)
-                                .col-sm-2.dn
+                                .col-sm-2
                                     %button.btn.btn-success.mail 发送短信
                                 .col-sm-2
                                     %button.btn.btn-primary.push 发送推送
@@ -88,7 +88,7 @@
                     }
                 }
             })
-            $('.mail').on('click',function(){
+            $('.mail').on('click1',function(){
                 var toAll = $('.allSend')[0].checked?'1':'0'
                 var f = {};
                 for(var i in e.req.param)f[i]=e.req.param[i]
