@@ -137,8 +137,9 @@
                             f.parent().find('.add').hide();
                             f.parent().parent().parent().parent().find('.del').show();
                         },function(f){
+                            f.parent().find('img').after('<div class="loading sk-spinner sk-spinner-three-bounce"><div class="sk-bounce1"></div><div class="sk-bounce2"></div><div class="sk-bounce3"></div></div>');
                             f.parent().find('img').hide();
-                            f.parent().find('img').after('<div class="loading sk-spinner sk-spinner-three-bounce dn"><div class="sk-bounce1"></div><div class="sk-bounce2"></div><div class="sk-bounce3"></div></div>');
+                            
                         },function(f){
                             f.parent().find('img').show();
                             f.parent().find('.loading').remove();
