@@ -149,7 +149,7 @@ class OrderController extends Controller{
 
         $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
-            $v->status_name = ['取消','待接单','接客种','服务中','待付款','待评价','已完成'][$v->status];
+            $v->status_name = ['取消','待接单','接客','服务中','待付款','待评价','已完成'][$v->status];
         }
 
 
@@ -393,7 +393,7 @@ class OrderController extends Controller{
 
         $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
-            $v->status_name = ['取消','待接单','接客种','服务中','待付款','待评价','已完成'][$v->status];
+            $v->status_name = ['取消','待接单','接客中','服务中','待付款','待评价','已完成'][$v->status];
         }
 
 
@@ -630,7 +630,7 @@ class OrderController extends Controller{
 
         $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
-            $v->status_name = ['取消','待接单','接客种','服务中','待付款','待评价','已完成'][$v->status];
+            $v->status_name = ['取消','待接单','接客中','服务中','待付款','待评价','已完成'][$v->status];
         }
 
 
