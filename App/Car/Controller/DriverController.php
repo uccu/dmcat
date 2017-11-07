@@ -26,6 +26,7 @@ use App\Car\Model\IncomeModel;
 use App\Car\Model\DriverBankModel;
 use App\Car\Model\DriverMoneyLogModel;
 use App\Car\Model\AreaModel;
+use App\Car\Model\DriverApplyModel;
 
 use Model; 
 
