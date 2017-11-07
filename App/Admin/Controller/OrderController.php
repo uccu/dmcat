@@ -258,12 +258,12 @@ class OrderController extends Controller{
 
         if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
-        // if($info->status != 1){
-        //     $tbody[7]['disabled'] = true;
-        //     $tbody[7]['suggest'] = '';
-        // }else{
+        if($info->status != 1){
+            $tbody[7]['disabled'] = true;
+            $tbody[7]['suggest'] = '';
+        }else{
             $tbody[7]['suggest'] = '/admin/staff/admin_driver?latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
-        // }
+        }
         $out = 
             [
                 'info'  =>  $info,
