@@ -12,4 +12,9 @@ class DriverModel extends Model{
         return $this->join(AreaModel::class,'id','city_id');
     }
 
+    public function online(){
+
+        return $this->join(DriverOnlineModel::class,'driver_id','id');
+    }
+
 }

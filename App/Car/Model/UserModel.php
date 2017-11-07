@@ -12,5 +12,10 @@ class UserModel extends Model{
         return $this->join(AreaModel::class,'id','city_id');
     }
 
+    public function online(){
+
+        return $this->join(UserOnlineModel::class,'user_id','id');
+    }
+
 
 }

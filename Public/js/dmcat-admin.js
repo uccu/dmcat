@@ -106,7 +106,9 @@
             for(var i in m.tbody){
                 var para = m.tbody[i];
                 switch(para.type){
-                    
+                    case 'suggest':
+                        
+                        break;
                     case 'pic':
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 3)+'"><img class="cp picImg" src="/pic/'+(m.info[para.name]||para.default||'nopic.jpg')+'" style="max-width:100%;max-height:100px"><input class="picFile" type="file" accept="image/*" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'nopic.jpg')+'"></div>'+(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         upPic(pa.find('.picFile'),'/home/uploadPic')
@@ -321,7 +323,40 @@
                         })
                         break;
                     default:
-                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'" '+(para.disabled?'disabled':'')+' value="'+(m.info[para.name]||para.default||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><div class="input-group"><input class="form-control" name="'+para.name+'" '+(para.disabled?'disabled':'')+' value="'+(m.info[para.name]||para.default||'')+'"></div></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
+                        
+                        if(para.suggest){
+                            pa.find('input').after('<div class="input-group-btn"><button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" role="menu"></ul></div><!-- /btn-group -->');
+                            pa.find('input').attr('data-fields',JSON.stringify(para.fields))
+                            var para33 = para;
+                            pa.find('input').bsSuggest({
+                                indexId:0,
+                                indexKey:0,
+                                idField:'id',
+                                allowNoKeyword:true,
+                                multiWord:false,
+                                separator:",",
+                                getDataMethod:"url",
+                                effectiveFieldsAlias:para.fields,
+                                showHeader:false,
+                                url:para.suggest,
+                                processData:function(json){
+                                    json = json.data;
+                                    var i,len,data={value:[]};
+                                    if(!json||!json.list||json.list.length==0){return false}
+                                    
+                                    len=json.list.length;
+                                    for(i=0;i<len;i++){
+                                        
+                                        var obj = {};
+                                        for(var s in para33.fields)obj[s] = json.list[i][s]
+                                        data.value.push(obj)
+                                    }
+                                    console.log(data);return data
+                                }
+                            })
+                        }
+                    
                         break;
                 }
                 pa.appendTo('form')

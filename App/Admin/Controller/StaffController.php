@@ -264,8 +264,10 @@ class StaffController extends Controller{
     }
 
 
+
+
     # 管理司机
-    function admin_driver(DriverModel $model,$page = 1,$limit = 10,$search,$typee){
+    function admin_driver(DriverModel $model,$page = 1,$limit = 10,$search,$typee,$longitude,$latitude){
         
         $this->L->adminPermissionCheck(75);
 
@@ -355,11 +357,26 @@ class StaffController extends Controller{
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
 
-        $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+
+        if($longitude){
+
+            $model->select(['*,ABS(%F-%f) + ABS(%F-%f) AS `mul`,online.latitude,online.longitude','online.latitude',$latitude,'online.longitude',$longitude],'RAW')->order('mul desc','RAW');
+        }else{
+            $model->order('create_time desc');
+        }
+
+
+        $list = $model->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
             $v->judge = '查看';
             $v->judge_href = 'staff/judge_driver?id='.$v->id;
+            if($longitude){
+
+                $v->dis = Func::getSDistance($v->latitude,$v->longitude,$latitude,$longitude);
+                if($v->dis < 1000)$v->dis = $v->dis.'米';
+                else $v->dis = number_format( $v->dis/1000,1,'.','').'公里';
+            }
         }
 
 
@@ -757,7 +774,7 @@ class StaffController extends Controller{
 
     
     # 管理顺风车司机
-    function admin_suser(UserModel $model,$page = 1,$limit = 10,$search){
+    function admin_suser(UserModel $model,$page = 1,$limit = 10,$search,$longitude,$latitude){
         
         $this->L->adminPermissionCheck(117);
 
@@ -833,12 +850,27 @@ class StaffController extends Controller{
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
 
-        $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        if($longitude){
+
+            $model->select(['*,ABS(%F-%f) + ABS(%F-%f) AS `mul`,online.latitude,online.longitude','online.latitude',$latitude,'online.longitude',$longitude],'RAW')->order('mul desc','RAW');
+        }else{
+            $model->order('create_time desc');
+        }
+
+        
+
+        $list = $model->where($where)->page($page,$limit)->get()->toArray();
         // echo $model->sql;die();
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
             $v->judge = '查看';
             $v->judge_href = 'staff/judge?id='.$v->id;
+            if($longitude){
+
+                $v->dis = Func::getSDistance($v->latitude,$v->longitude,$latitude,$longitude);
+                if($v->dis < 1000)$v->dis = $v->dis.'米';
+                else $v->dis = number_format( $v->dis/1000,1,'.','').'公里';
+            }
         }
 
 

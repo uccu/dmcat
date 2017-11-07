@@ -10,6 +10,7 @@ use App\Car\Middleware\L3;
 use App\Car\Tool\Func;
 use App\Car\Tool\AdminFunc;
 use Uccu\DmcatTool\Tool\AJAX;
+use DB;
 
 # 数据模型
 use App\Car\Model\OrderDrivingModel;
@@ -19,6 +20,7 @@ use App\Car\Model\UserApplyModel;
 use App\Car\Model\DriverApplyModel;
 use App\Car\Model\DriverModel;
 use App\Car\Model\UserModel;
+use App\Car\Model\TripModel;
 
 
 class OrderController extends Controller{
@@ -63,7 +65,7 @@ class OrderController extends Controller{
 
 
     # 管理代驾订单
-    function admin_driving(OrderDrivingModel $model,$page = 1,$limit = 10,$search){
+    function admin_driving(OrderDrivingModel $model,$page = 1,$limit = 10,$search,$status = -1){
         
         $this->L->adminPermissionCheck(113);
 
@@ -79,6 +81,21 @@ class OrderController extends Controller{
                         'title'=>'搜索',
                         'name'=>'search',
                         'size'=>'3'
+                    ],
+                    [
+                        'title'=>'状态',
+                        'name'=>'status',
+                        'type'=>'select',
+                        'option'=>[
+                            '-1'=>'请选择',
+                            '0'=>'取消',
+                            '1'=>'创建订单',
+                            '2'=>'正在接客',
+                            '3'=>'行程中',
+                            '4'=>'待付款',
+                            '5'=>'待评价',
+                            '6'=>'完成',
+                        ],'default'=>'-1'
                     ],
                 ]
             ];
@@ -118,6 +135,7 @@ class OrderController extends Controller{
 
         # 列表内容
         $where = [];
+        if($status != -1)$where['status'] = $status;
 
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
@@ -169,6 +187,7 @@ class OrderController extends Controller{
                 'get'   => '../order/admin_driving_get',
                 'back'  => 'order/driving',
                 'view'  => 'home/upd',
+                'upd'   => '../order/admin_driving_upd',
 
             ];
         $tbody = 
@@ -213,6 +232,18 @@ class OrderController extends Controller{
                     'size'  =>  '4',
                     'disabled'=>true
                 ],
+                [
+                    'title' =>'派单',
+                    'name'  =>'toDriver',
+                    'size'  =>'4',
+                    'suggest'=>'/admin/staff/admin_driver?search=',
+                    'fields'=>[
+                        'id'=>'id',
+                        'name'=>'名字',
+                        'brand'=>'品牌',
+                        'car_number'=>'车牌号'
+                    ]
+                ]
 
                 
                 
@@ -226,6 +257,12 @@ class OrderController extends Controller{
 
         if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
+        if($info->status != 1){
+            $tbody[7]['disabled'] = true;
+            $tbody[7]['suggest'] = '';
+        }else{
+            $tbody[7]['suggest'] = '/admin/staff/admin_suser?latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+        }
         $out = 
             [
                 'info'  =>  $info,
@@ -237,11 +274,37 @@ class OrderController extends Controller{
         AJAX::success($out);
 
     }
+    function admin_driving_upd(OrderDrivingModel $model,$id,$toDriver,DriverModel $driverModel,TripModel $tripModel){
+        $this->L->adminPermissionCheck(113);
+        
+        $driver = $driverModel->find($toDriver);
+        !$driver && AJAX::error('司机不存在');
+        $app = $model->find($id);
+        !$app && AJAX::error('订单不存在');
+
+        $trip = $tripModel->where(['type'=>1,'id'=>$id])->find();
+
+        DB::start();
+
+        $app->driver_id = $driver->id;
+        $app->status = 2;
+        $app->save();
+        $trip->driver_id = $driver->id;
+        $trip->status = 2;
+        $trip->save();
+
+        DB::commit();
+
+        Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'driving']);
+
+        $out['upd'] = 1;
+        AJAX::success($out);
+    }
     
 
 
     # 管理出租车
-    function admin_taxi(OrderTaxiModel $model,$page = 1,$limit = 10,$search){
+    function admin_taxi(OrderTaxiModel $model,$page = 1,$limit = 10,$search,$status = -1){
         
         $this->L->adminPermissionCheck(114);
 
@@ -256,6 +319,21 @@ class OrderController extends Controller{
                         'title'=>'搜索',
                         'name'=>'search',
                         'size'=>'3'
+                    ],
+                    [
+                        'title'=>'状态',
+                        'name'=>'status',
+                        'type'=>'select',
+                        'option'=>[
+                            '-1'=>'请选择',
+                            '0'=>'取消',
+                            '1'=>'创建订单',
+                            '2'=>'正在接客',
+                            '3'=>'行程中',
+                            '4'=>'待付款',
+                            '5'=>'待评价',
+                            '6'=>'完成',
+                        ],'default'=>'-1'
                     ],
                 ]
             ];
@@ -300,6 +378,7 @@ class OrderController extends Controller{
 
         # 列表内容
         $where = [];
+        if($status != -1)$where['status'] = $status;
 
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
@@ -351,6 +430,7 @@ class OrderController extends Controller{
                 'get'   => '../order/admin_taxi_get',
                 'back'  => 'order/taxi',
                 'view'  => 'home/upd',
+                'upd'   => '../order/admin_taxi_upd',
 
             ];
         $tbody = 
@@ -395,7 +475,18 @@ class OrderController extends Controller{
                     'size'  =>  '4',
                     'disabled'=>true
                 ],
-
+                [
+                    'title' =>'派单',
+                    'name'  =>'toDriver',
+                    'size'  =>'4',
+                    'suggest'=>'/admin/staff/admin_driver?search=',
+                    'fields'=>[
+                        'id'=>'id',
+                        'name'=>'名字',
+                        'brand'=>'品牌',
+                        'car_number'=>'车牌号'
+                    ]
+                ]
                 
                 
 
@@ -408,6 +499,13 @@ class OrderController extends Controller{
 
         if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
+        if($info->status != 1){
+            $tbody[7]['disabled'] = true;
+            $tbody[7]['suggest'] = '';
+        }else{
+            $tbody[7]['suggest'] = '/admin/staff/admin_suser?latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+        }
+
         $out = 
             [
                 'info'  =>  $info,
@@ -419,10 +517,36 @@ class OrderController extends Controller{
         AJAX::success($out);
 
     }
+    function admin_taxi_upd(OrderTaxiModel $model,$id,$toDriver,DriverModel $driverModel,TripModel $tripModel){
+        $this->L->adminPermissionCheck(114);
+        
+        $driver = $driverModel->find($toDriver);
+        !$driver && AJAX::error('司机不存在');
+        $app = $model->find($id);
+        !$app && AJAX::error('订单不存在');
+
+        $trip = $tripModel->where(['type'=>2,'id'=>$id])->find();
+
+        DB::start();
+
+        $app->driver_id = $driver->id;
+        $app->status = 2;
+        $app->save();
+        $trip->driver_id = $driver->id;
+        $trip->status = 2;
+        $trip->save();
+
+        DB::commit();
+
+        Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'taxi']);
+
+        $out['upd'] = 1;
+        AJAX::success($out);
+    }
 
 
     # 管理顺风车
-    function admin_way(OrderWayModel $model,$page = 1,$limit = 10,$search){
+    function admin_way(OrderWayModel $model,$page = 1,$limit = 10,$search,$status = -1){
         
         $this->L->adminPermissionCheck(115);
 
@@ -437,6 +561,21 @@ class OrderController extends Controller{
                         'title'=>'搜索',
                         'name'=>'search',
                         'size'=>'3'
+                    ],
+                    [
+                        'title'=>'状态',
+                        'name'=>'status',
+                        'type'=>'select',
+                        'option'=>[
+                            '-1'=>'请选择',
+                            '0'=>'取消',
+                            '1'=>'创建订单',
+                            '2'=>'正在接客',
+                            '3'=>'行程中',
+                            '4'=>'待付款',
+                            '5'=>'待评价',
+                            '6'=>'完成',
+                        ],'default'=>'-1'
                     ],
                 ]
             ];
@@ -475,6 +614,7 @@ class OrderController extends Controller{
 
         # 列表内容
         $where = [];
+        if($status != -1)$where['status'] = $status;
 
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
@@ -526,6 +666,7 @@ class OrderController extends Controller{
                 'get'   => '../order/admin_way_get',
                 'back'  => 'order/way',
                 'view'  => 'home/upd',
+                'upd'   => '../order/admin_way_upd',
 
             ];
         $tbody = 
@@ -570,7 +711,19 @@ class OrderController extends Controller{
                     'size'  =>  '4',
                     'disabled'=>true
                 ],
-
+                [
+                    'title' =>'派单',
+                    'name'  =>'toDriver',
+                    'size'  =>'4',
+                    'suggest'=>'/admin/staff/admin_suser',
+                    'fields'=>[
+                        'id'=>'id',
+                        'name'=>'名字',
+                        'brand'=>'品牌',
+                        'car_number'=>'车牌号',
+                        'dis'=>'距离'
+                    ]
+                ]
                 
                 
 
@@ -583,6 +736,13 @@ class OrderController extends Controller{
 
         if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
+        if($info->status != 1){
+            $tbody[7]['disabled'] = true;
+            $tbody[7]['suggest'] = '';
+        }else{
+            $tbody[7]['suggest'] = '/admin/staff/admin_suser?latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+        }
+
         $out = 
             [
                 'info'  =>  $info,
@@ -593,6 +753,32 @@ class OrderController extends Controller{
 
         AJAX::success($out);
 
+    }
+    function admin_way_upd(OrderWayModel $model,$id,$toDriver,UserModel $driverModel,TripModel $tripModel){
+        $this->L->adminPermissionCheck(115);
+        
+        $driver = $driverModel->find($toDriver);
+        !$driver && AJAX::error('司机不存在');
+        $app = $model->find($id);
+        !$app && AJAX::error('订单不存在');
+
+        $trip = $tripModel->where(['type'=>3,'id'=>$id])->find();
+
+        DB::start();
+
+        $app->driver_id = $driver->id;
+        $app->status = 2;
+        $app->save();
+        $trip->driver_id = $driver->id;
+        $trip->status = 2;
+        $trip->save();
+
+        DB::commit();
+
+        Func::push($toDriver,'平台已指定派单，请接乘客。',['type'=>'way']);
+
+        $out['upd'] = 1;
+        AJAX::success($out);
     }
 
 
