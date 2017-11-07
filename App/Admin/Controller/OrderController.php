@@ -241,7 +241,8 @@ class OrderController extends Controller{
                         'id'=>'id',
                         'name'=>'名字',
                         'brand'=>'品牌',
-                        'car_number'=>'车牌号'
+                        'car_number'=>'车牌号',
+                        'dis'=>'距离'
                     ]
                 ]
 
@@ -257,12 +258,12 @@ class OrderController extends Controller{
 
         if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
-        if($info->status != 1){
-            $tbody[7]['disabled'] = true;
-            $tbody[7]['suggest'] = '';
-        }else{
-            $tbody[7]['suggest'] = '/admin/staff/admin_suser?latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
-        }
+        // if($info->status != 1){
+        //     $tbody[7]['disabled'] = true;
+        //     $tbody[7]['suggest'] = '';
+        // }else{
+            $tbody[7]['suggest'] = '/admin/staff/admin_driver?latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+        // }
         $out = 
             [
                 'info'  =>  $info,
@@ -484,7 +485,8 @@ class OrderController extends Controller{
                         'id'=>'id',
                         'name'=>'名字',
                         'brand'=>'品牌',
-                        'car_number'=>'车牌号'
+                        'car_number'=>'车牌号',
+                        'dis'=>'距离'
                     ]
                 ]
                 
@@ -503,7 +505,7 @@ class OrderController extends Controller{
             $tbody[7]['disabled'] = true;
             $tbody[7]['suggest'] = '';
         }else{
-            $tbody[7]['suggest'] = '/admin/staff/admin_suser?latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+            $tbody[7]['suggest'] = '/admin/staff/admin_driver?latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
         }
 
         $out = 
