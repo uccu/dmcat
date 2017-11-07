@@ -306,6 +306,9 @@ class DriverController extends Controller{
         $info['judge_score'] = $this->L->userInfo->judge_score;
         $info['tpye_driving'] = $this->L->userInfo->type_driving;
         $info['tpye_taxi'] = $this->L->userInfo->type_taxi;
+
+        $info['apply_status'] = DriverApplyModel::copyMutiInstance()->where(['driver_id'=>$this->L->id])->order('create_time desc')->find()->status;
+        !$info['apply_status'] && $info['apply_status'] = '-2';
         
         $info['money_today'] = DriverFundModel::copyMutiInstance()->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         if(!$info['money_today'])$info['money_today'] = '0.00';
