@@ -86,9 +86,9 @@ module.exports = {
             let distance_r = 0;
             if(level == 1){
             
-                if(time < 7)start_price = 95;
-                else if(time < 22)start_price = 35;
-                else if(time < 23)start_price = 55;
+                if(hours < 7)start_price = 95;
+                else if(hours < 22)start_price = 35;
+                else if(hours < 23)start_price = 55;
                 else start_price = 75;
 
                 if(distance < 10){
@@ -99,8 +99,8 @@ module.exports = {
                 }
             }else if(level == 2){
 
-                if(time < 7)start_price = 55;
-                else if(time < 22)start_price = 35;
+                if(hours < 7)start_price = 55;
+                else if(hours < 22)start_price = 35;
                 else start_price = 55;
 
                 if(distance < 10){
@@ -110,8 +110,8 @@ module.exports = {
                     distance_price = distance_r * 20;
                 }
             }else if(level == 3){
-                if(time < 7)start_price = 29;
-                else if(time < 21)start_price = 19;
+                if(hours < 7)start_price = 29;
+                else if(hours < 21)start_price = 19;
                 else start_price = 29;
 
                 if(distance < 5){
