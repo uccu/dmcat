@@ -334,7 +334,7 @@ class UserController extends Controller{
         $where['user_id'] = $this->L->id;
         $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
 
-        $select = 'start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,status,driver_id,coupon';
+        $select = 'start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,status,driver_id,coupon,total_fee';
 
 
 
