@@ -94,7 +94,7 @@ module.exports = {
                 if(distance < 10){
                     distance_price = 0;
                 }else{
-                    distance_r = ceil(distance / 10 ) - 1;
+                    distance_r = Math.ceil(distance / 10 ) - 1;
                     distance_price = distance_r * 25;
                 }
             }else if(level == 2){
@@ -106,7 +106,7 @@ module.exports = {
                 if(distance < 10){
                     distance_price = 0;
                 }else{
-                    distance_r = ceil(distance / 5 ) - 2;
+                    distance_r = Math.ceil(distance / 5 ) - 2;
                     distance_price = distance_r * 20;
                 }
             }else if(level == 3){
@@ -117,7 +117,7 @@ module.exports = {
                 if(distance < 5){
                     distance_price = 0;
                 }else{
-                    distance_r = ceil(distance / 5 ) - 1;
+                    distance_r = Math.ceil(distance / 5 ) - 1;
                     distance_price = distance_r * 20;
                 }
             }
