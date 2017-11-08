@@ -431,10 +431,11 @@ class Func {
         $client = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
         $client2 = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
 
+        $apns_production = $L->config->apns_production ? true : false;
 
         try{
             $z2 = $client2->push()
-                ->options(['apns_production'=>true])
+                ->options(['apns_production'=>$apns_production])
                 ->setPlatform('all')
                 ->addAlias($user_id)
                 ->androidNotification($content,['extras'=>$extras])
