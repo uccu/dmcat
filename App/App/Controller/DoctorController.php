@@ -442,7 +442,8 @@ class DoctorController extends Controller{
         
 
         $tags = $tags ? explode(',',$tags) : [];
-        $tag = $tagModel->where('id IN (%c)',$tags)->get()->toArray();
+        if($tags)$tags->where('id IN (%c)',$tags);
+        $tag = $tagModel->get()->toArray();
 
         $tag_names = [];
 
