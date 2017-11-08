@@ -10,8 +10,10 @@ use App\Car\Model\CaptchaModel;
 use App\Car\Model\UploadModel;
 use App\Car\Model\UserModel;
 use App\Car\Model\PaymentModel;
+use App\Car\Model\AreaModel;
 use Model;
 use stdClass;
+
 
 class Func {
     
@@ -688,18 +690,19 @@ class Func {
      */
     public static function getDrivingPrice($city_id,$time,$distance){
 
-        $city = AreaModel::copyMutiInstance()->find($city);
+        $city = AreaModel::copyMutiInstance()->find($city_id);
 
         if(!$level = $city->seq){
             AJAX::error('尚未开通所在城市的服务！');
+            // $level = 1;
         }
 
         if($level == 1){
-
+            
             if($time < '07:00')$start_price = 95;
             elseif($time < '22:00')$start_price = 35;
             elseif($time < '23:00')$start_price = 55;
-            else$start_price = 75;
+            else $start_price = 75;
 
             if($distance < 10){
                 $distance_price = 0;
@@ -711,7 +714,7 @@ class Func {
 
             if($time < '07:00')$start_price = 55;
             elseif($time < '22:00')$start_price = 35;
-            else$start_price = 55;
+            else $start_price = 55;
 
             if($distance < 10){
                 $distance_price = 0;
@@ -722,7 +725,7 @@ class Func {
         }elseif($level == 3){
             if($time < '07:00')$start_price = 29;
             elseif($time < '21:00')$start_price = 19;
-            else$start_price = 29;
+            else $start_price = 29;
 
             if($distance < 5){
                 $distance_price = 0;
