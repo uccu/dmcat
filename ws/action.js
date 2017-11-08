@@ -65,10 +65,14 @@ module.exports = {
             f && f(w)
         })
 
+    },
+
+
+    getDrivingPrice(){
+
+        
+
     }
-
-
-
 
 
 

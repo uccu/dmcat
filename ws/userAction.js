@@ -434,7 +434,7 @@ z = function(obj,con){
                         db.update('update c_order_way set status=3 where id=?',[id],function(){
 
                             /** 更新行程 */
-                            db.update('update c_trip set driver_id=?,status=3 where id=? and type=3',[con.user_id,id],function(){
+                            db.update('update c_trip set driver_id=?,status=3,in_time=? where id=? and type=3',[con.user_id,parseInt(Date.now() / 1000),id],function(){
 
                                 db.update('update c_driver_way set status=0 where user_id=? and status=1',[con.user_id,con.user_id],function(){
 
@@ -481,7 +481,7 @@ z = function(obj,con){
                         db.update('update c_order_way set status=4 where id=?',[id],function(){
 
                             /** 更新行程 */
-                            db.update('update c_trip set driver_id=?,status=4 where id=? and type=3',[con.user_id,id],function(){
+                            db.update('update c_trip set driver_id=?,status=4,out_time=? where id=? and type=3',[con.user_id,parseInt(Date.now() / 1000),id],function(){
 
                                 /** 获取司机 */
                                 let driver = data.UserMap.get(con.user_id+'')
