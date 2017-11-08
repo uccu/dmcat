@@ -231,7 +231,8 @@ z = function(obj,con){
                         gTime  =result.order_time;
                     }
 
-                    let lay_fee = Math.floor((gTime - parseInt(Date.now() / 1000)) / 1800) * 20
+                    let lay_fee = Math.floor((parseInt(Date.now() / 1000) - gTime) / 1800) * 20
+                    if(lay_fee<0)lay_fee = 0;
 
                         /** 更新订单 */
                         db.update('update c_order_driving set status=3,lay_fee=? where id=?',[lay_fee,id],function(){
