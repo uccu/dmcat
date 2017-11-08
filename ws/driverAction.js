@@ -104,7 +104,7 @@ z = function(obj,con){
                     db.find('select * from c_order_driving where id=?',[id],function(result){
                         if(result){
                             /** 更新订单 */
-                            db.update('update c_order_driving set driver_id=?,status=2 where id=?',[con.driver_id,id],function(){
+                            db.update('update c_order_driving set driver_id=?,status=2,order_time=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
                                 /** 更新行程 */
                                 db.update('update c_trip set driver_id=?,status=2 where id=? and type=1',[con.driver_id,id],function(){
                                     let driver_ids = result.driver_ids
@@ -161,7 +161,7 @@ z = function(obj,con){
                     db.find('select * from c_order_taxi where id=?',[id],function(result){
                         if(result){
                             /** 更新订单 */
-                            db.update('update c_order_taxi set driver_id=?,status=2 where id=?',[con.driver_id,id],function(){
+                            db.update('update c_order_taxi set driver_id=?,status=2,order_time=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
                                 /** 更新行程 */
                                 db.update('update c_trip set driver_id=?,status=2 where id=? and type=2',[con.driver_id,id],function(){
                                     let driver_ids = result.driver_ids
@@ -226,8 +226,15 @@ z = function(obj,con){
                     /** 订单是否是带接客状态 */
                     if(result.status != 2)return;
 
+                    let gTime = result.create_time;
+                    if(result.order_time){
+                        gTime  =result.order_time;
+                    }
+
+                    let lay_fee = Math.floor((gTime - parseInt(Date.now() / 1000)) / 1800) * 20
+
                         /** 更新订单 */
-                        db.update('update c_order_driving set status=3 where id=?',[id],function(){
+                        db.update('update c_order_driving set status=3,lay_fee=? where id=?',[lay_fee,id],function(){
 
                             /** 更新行程 */
                             db.update('update c_trip set driver_id=?,status=3,in_time=? where id=? and type=1',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
@@ -313,31 +320,39 @@ z = function(obj,con){
                         /** 更新订单 */
                         if(trip)db.update('update c_trip set driver_id=?,status=4,out_time=? where id=? and type=1',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
 
-                            db.update('update c_order_driving set status=4,distance=? where id=?',[trip.real_distance,id],function(){
 
-                            /** 更新行程 */
-                            
+                            action.getDrivingPrice(result.city_id,trip.in_time,trip.real_distance,function(prices){
 
-                                /** 获取司机 */
-                                let driver = data.DriverMap.get(con.driver_id)
-                                /** 设置司机状态 */
-                                driver.serving = 0;
-                                con.sendText(content({status:200,type:'endDriving',id:id}))
-                                if(driver){
+                                let fee = prices.total;
+                                let total_fee = fee - result.coupon;
+                                db.update('update c_order_driving set status=4,distance=?,fee=?,total_fee=? where id=?',[trip.real_distance,fee,total_fee,id],function(){
 
-                                        let g = function(r){
-                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'end',list:r}))
-                                        };
-                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
-                                }
-
-                                /** 获取用户 */
-                                let user = data.UserMap.get(result.user_id+'')
-                                if(user)user.con.sendText(content({status:200,type:'endDriving',id:id}))
+                                /** 更新行程 */
                                 
-                            })
+
+                                    /** 获取司机 */
+                                    let driver = data.DriverMap.get(con.driver_id)
+                                    /** 设置司机状态 */
+                                    driver.serving = 0;
+                                    con.sendText(content({status:200,type:'endDriving',id:id}))
+                                    if(driver){
+
+                                            let g = function(r){
+                                                driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'end',list:r}))
+                                            };
+                                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                    }
+
+                                    /** 获取用户 */
+                                    let user = data.UserMap.get(result.user_id+'')
+                                    if(user)user.con.sendText(content({status:200,type:'endDriving',id:id}))
+                                    
+                                })
+                            });
+
+                            
                         })
                     })
                     

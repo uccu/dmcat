@@ -68,10 +68,71 @@ module.exports = {
     },
 
 
-    getDrivingPrice(){
+    getDrivingPrice(city_id,in_time,distance,g){
 
-        
+        distance = parseFloat(distance)
+        in_time = parseFloat(in_time)
+        let date = new Date;
+        date.setTime(in_time * 1000)
+        let hours = date.getHours()
+        db.find('select * from c_area where id=?',[city_id],function(area){
 
+            if(!area)return;
+            let level = area.seq;
+            if(!level)return;
+
+            let start_price = 0;
+            let distance_price = 0;
+            let distance_r = 0;
+            if(level == 1){
+            
+                if(time < 7)start_price = 95;
+                else if(time < 22)start_price = 35;
+                else if(time < 23)start_price = 55;
+                else start_price = 75;
+
+                if(distance < 10){
+                    distance_price = 0;
+                }else{
+                    distance_r = ceil(distance / 10 ) - 1;
+                    distance_price = distance_r * 25;
+                }
+            }else if(level == 2){
+
+                if(time < 7)start_price = 55;
+                else if(time < 22)start_price = 35;
+                else start_price = 55;
+
+                if(distance < 10){
+                    distance_price = 0;
+                }else{
+                    distance_r = ceil(distance / 5 ) - 2;
+                    distance_price = distance_r * 20;
+                }
+            }else if(level == 3){
+                if(time < 7)start_price = 29;
+                else if(time < 21)start_price = 19;
+                else start_price = 29;
+
+                if(distance < 5){
+                    distance_price = 0;
+                }else{
+                    distance_r = ceil(distance / 5 ) - 1;
+                    distance_price = distance_r * 20;
+                }
+            }
+
+            let total = distance_price + start_price;
+
+            g({
+                total:total,
+                distance:distance_price,
+                start:start_price,
+            });
+
+
+
+        });
     }
 
 

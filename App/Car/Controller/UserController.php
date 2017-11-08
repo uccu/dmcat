@@ -756,9 +756,12 @@ class UserController extends Controller{
 
         $data['status'] = 2;
         $data['driver_id'] = $this->L->id;
+        
         DB::start();
-        $orderWayModel->set($data)->save($id);
         $tripModel->set($data)->where(['type'=>3,'id'=>$id])->save();
+        $data['order_time'] = TIME_NOW;
+        $orderWayModel->set($data)->save($id);
+        
         DB::commit();
         AJAX::success();
 
