@@ -326,7 +326,7 @@ z = function(obj,con){
 
                                 let fee = prices.total;
                                 let total_fee = fee - result.coupon;
-                                db.update('update c_order_driving set status=4,distance=?,fee=?,total_fee=? where id=?',[trip.real_distance,fee,total_fee,id],function(){
+                                db.update('update c_order_driving set status=4,distance=?,fee=?,total_fee=? where id=?',[trip.real_distance/1000,fee,total_fee,id],function(){
 
                                 /** 更新行程 */
                                 
@@ -383,7 +383,7 @@ z = function(obj,con){
                         
                         db.update('update c_trip set driver_id=?,status=4,out_time=? where id=? and type=2',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
                         /** 更新订单 */
-                            db.update('update c_order_taxi set status=4,distance=? where id=?',[trip.real_distance,id],function(){
+                            db.update('update c_order_taxi set status=4,distance=? where id=?',[trip.real_distance/1000,id],function(){
 
                             /** 更新行程 */
                             
