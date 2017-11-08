@@ -95,7 +95,7 @@ class HomeController extends Controller{
      * @param mixed $type 
      * @return mixed 
      */
-    function getLocationInfo(UserCouponModel $userCouponModel,$start_latitude,$start_longitude,$end_latitude,$end_longitude,AreaModel $areaModel,$num = 1,$type = 0){
+    function getLocationInfo(UserCouponModel $userCouponModel,$start_latitude,$start_longitude,$end_latitude,$end_longitude,AreaModel $areaModel,$num = 1,$type = 0,$time = '00:00'){
 
         $area = Func::getArea($start_latitude,$start_longitude);
         if(!$area)AJAX::error('位置获取失败');
@@ -114,8 +114,15 @@ class HomeController extends Controller{
 
         $distance = Func::getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude);
         if(!$distance)AJAX::error('距离获取失败');
-
-        $price = Func::getEstimatedPrice($distance->distance);
+        if($type == 1){
+            $data = Func::getDrivingPrice($area->cityId,$time,$distance);
+            $price = $data['total'];
+            $out['start_price'] = $data['start_price'];
+        }
+        else{
+            $price = Func::getEstimatedPrice($distance->distance);
+            $out['start_price'] = '20';
+        }
         if(!$price)AJAX::error('预估价获取失败');
 
         $out['area']        = $area;
@@ -153,6 +160,9 @@ class HomeController extends Controller{
         AJAX::success($out);
 
     }
+
+
+    
 
 
 

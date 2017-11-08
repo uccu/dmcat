@@ -676,4 +676,69 @@ class Func {
         $calculatedDistance = $earthRadius * $stepTwo;   
         return round($calculatedDistance);   
     }
+
+
+
+    /** 获取代驾的价格
+     * getDrivingPrice
+     * @param mixed $city_id 
+     * @param mixed $time 
+     * @param mixed $distance 
+     * @return mixed 
+     */
+    public static function getDrivingPrice($city_id,$time,$distance){
+
+        $city = AreaModel::copyMutiInstance()->find($city);
+
+        if(!$level = $city->seq){
+            AJAX::error('尚未开通所在城市的服务！');
+        }
+
+        if($level == 1){
+
+            if($time < '07:00')$start_price = 95;
+            elseif($time < '22:00')$start_price = 35;
+            elseif($time < '23:00')$start_price = 55;
+            else$start_price = 75;
+
+            if($distance < 10){
+                $distance_price = 0;
+            }else{
+                $distance_r = ceil($distance / 10 ) - 1;
+                $distance_price = $distance_r * 25;
+            }
+        }elseif($level == 2){
+
+            if($time < '07:00')$start_price = 55;
+            elseif($time < '22:00')$start_price = 35;
+            else$start_price = 55;
+
+            if($distance < 10){
+                $distance_price = 0;
+            }else{
+                $distance_r = ceil($distance / 5 ) - 2;
+                $distance_price = $distance_r * 20;
+            }
+        }elseif($level == 3){
+            if($time < '07:00')$start_price = 29;
+            elseif($time < '21:00')$start_price = 19;
+            else$start_price = 29;
+
+            if($distance < 5){
+                $distance_price = 0;
+            }else{
+                $distance_r = ceil($distance / 5 ) - 1;
+                $distance_price = $distance_r * 20;
+            }
+        }
+
+        $total = $distance_price + $start_price;
+
+        return [
+            'total'=>number_format($total,2,'.',''),
+            'distance'=>number_format($distance_price,2,'.',''),
+            'start'=>number_format($start_price,2,'.',''),
+        ];
+
+    }
 }
