@@ -325,7 +325,7 @@ z = function(obj,con){
                             action.getDrivingPrice(result.city_id,trip.in_time,trip.real_distance,function(prices){
 
                                 let fee = prices.total;
-                                let total_fee = fee - result.coupon;
+                                let total_fee = fee - result.coupon + result.lay_fee;
                                 db.update('update c_order_driving set status=4,distance=?,fee=?,total_fee=? where id=?',[trip.real_distance/1000,fee,total_fee,id],function(){
 
                                 /** 更新行程 */
