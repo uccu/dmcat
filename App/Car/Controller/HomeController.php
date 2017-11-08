@@ -117,7 +117,7 @@ class HomeController extends Controller{
         if($type == 1){
             if($timeLine)$time = date('H:i',$timeLine);
             if(!$time)$time = date('H:i');
-            $data = Func::getDrivingPrice($area->cityId,$time,$distance->distance);
+            $data = Func::getDrivingPrice($area->cityId,$time,$distance->distance / 1000);
             $price = $data['total'];
             $out['start_price'] = $data['start'];
         }
