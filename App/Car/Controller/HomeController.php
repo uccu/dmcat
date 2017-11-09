@@ -129,8 +129,10 @@ class HomeController extends Controller{
             $out['start_price'] = '20.00';
 
         }elseif($type == 2){
-
-            $price = Func::getTaxiPrice($area->cityId,$time,$distance->distance / 1000);
+            
+            if($timeLine)$time = date('H:i',$timeLine);
+            if(!$time)$time = date('H:i');
+            $data = Func::getTaxiPrice($area->cityId,$time,$distance->distance / 1000);
             $price = $data['total'];
             $out['start_price'] = $data['start'];
 
