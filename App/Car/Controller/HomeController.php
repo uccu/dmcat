@@ -125,13 +125,14 @@ class HomeController extends Controller{
 
         }elseif($type == 3){
 
-            $price = getWayPrice($distance->distance / 1000,$num);
+            $price = Func::getWayPrice($distance->distance / 1000,$num);
             $out['start_price'] = '20.00';
 
         }elseif($type == 2){
 
-            $price = getWayPrice($distance->distance / 1000,$num);
-            $out['start_price'] = '20.00';
+            $price = Func::getTaxiPrice($area->cityId,$time,$distance->distance / 1000);
+            $price = $data['total'];
+            $out['start_price'] = $data['start'];
 
         }else{
             $price = Func::getEstimatedPrice($distance->distance);

@@ -73,6 +73,14 @@ module.exports = {
         else if($distance<300)$price = 20 + 1.5 * (100 - 6) + 1.4 * ($distance - 100);
         else $price = $price = 20 + 1.5 * 94 + 1.4 * 200 + 1.3 * ($distance - 300);
 
+        if($num == 2){
+            $price *= 1.7;
+        }else if($num == 3){
+            $price *= 2.8;
+        }else if($num == 4){
+            $price *= 4.1;
+        }
+
         return $price;
     },
     getDrivingPrice(city_id,in_time,distance,g){

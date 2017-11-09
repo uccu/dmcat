@@ -753,7 +753,42 @@ class Func {
         elseif($distance<300)$price = 20 + 1.5 * (100 - 6) + 1.4 * ($distance - 100);
         else $price = $price = 20 + 1.5 * 94 + 1.4 * 200 + 1.3 * ($distance - 300);
 
+        if($num == 2){
+            $price *= 1.7;
+        }elseif($num == 3){
+            $price *= 2.8;
+        }elseif($num == 4){
+            $price *= 4.1;
+        }
+
         return number_format($price,2,'.','');
+
+    }
+
+    public static function getTaxiPrice($city_id,$time,$distance){
+
+        $city = AreaModel::copyMutiInstance()->find($city_id);
+
+        if($time < '5:00')$start_price = 14;
+        else if($time < '23:00')$start_price = 18;
+        else $start_price = 14;
+
+
+        if($time < 5 || $time > 23){
+            if($distance<3)$price = $start_price;
+            else if($distance<10)$price = $start_price + 3.1 * ($distance - 3);
+            else $price = $price = $start_price + 3.1 * 7 + 4.7 * ($distance - 10);
+        }else{
+            if($distance<3)$price = $start_price;
+            else if($distance<10)$price = $start_price + 2.4 * ($distance - 3);
+            else $price = $price = $start_price + 2.4 * 7 + 3.6 * ($distance - 10);
+        }
+
+        return [
+            'total'=>number_format($price,2,'.',''),
+            'start'=>number_format($start_price,2,'.',''),
+        ];
+
 
     }
 }
