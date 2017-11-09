@@ -148,6 +148,9 @@ class DriverController extends Controller{
         if($e)$data['hasMessage'] = '1';
         else $data['hasMessage'] = '0';
 
+        $info['apply_status'] = DriverApplyModel::copyMutiInstance()->where(['id'=>$info->id])->order('create_time desc')->find()->status;
+        ;
+
         $out = [
             'driver_token'=>$driver_token,
             'id'=>$info->id,
@@ -155,7 +158,8 @@ class DriverController extends Controller{
             'name'=>$info->name,
             'tpye_driving'=>$info->type_driving,
             'tpye_taxi'=>$info->type_taxi,
-            'hasMessage'=>$data['hasMessage']
+            'hasMessage'=>$data['hasMessage'],
+            'apply_status'=> NULL === $info['apply_status'] ? '-2' : $info['apply_status']
             
         ];
         

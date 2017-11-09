@@ -66,8 +66,15 @@ module.exports = {
         })
 
     },
+    getWayPrice($distance,$num){
+        var $price = 0;
+        if($distance<6)$price = 20;
+        else if($distance<100)$price = 20 + 1.5 * ($distance - 6);
+        else if($distance<300)$price = 20 + 1.5 * (100 - 6) + 1.4 * ($distance - 100);
+        else $price = $price = 20 + 1.5 * 94 + 1.4 * 200 + 1.3 * ($distance - 300);
 
-
+        return $price;
+    },
     getDrivingPrice(city_id,in_time,distance,g){
 
         distance = parseFloat(distance)
@@ -130,6 +137,49 @@ module.exports = {
                 start:start_price,
             });
 
+
+
+        });
+    },
+    getTaxiPrice(city_id,in_time,distance,g){
+
+        distance = parseFloat(distance)
+        in_time = parseFloat(in_time)
+        let date = new Date;
+        date.setTime(in_time * 1000)
+        let hours = date.getHours()
+        db.find('select * from c_area where id=?',[city_id],function(area){
+
+            if(!area)return;
+            let level = area.seq;
+            if(!level)return;
+
+            let start_price = 0;
+            let distance_price = 0;
+            let distance_r = 0;
+            let $price = 0;
+            
+            if(hours < 5)start_price = 14;
+            else if(hours < 23)start_price = 18;
+            else start_price = 14;
+
+            // if(area.parent_id == 4522847){
+
+
+
+            if(hours < 5 || hours > 23){
+                if($distance<3)$price = start_price;
+                else if($distance<10)$price = start_price + 3.1 * ($distance - 3);
+                else $price = $price = start_price + 3.1 * 7 + 4.7 * ($distance - 10);
+            }else{
+                if($distance<3)$price = start_price;
+                else if($distance<10)$price = start_price + 2.4 * ($distance - 3);
+                else $price = $price = start_price + 2.4 * 7 + 3.6 * ($distance - 10);
+            }
+
+            g($price)
+
+            
 
 
         });

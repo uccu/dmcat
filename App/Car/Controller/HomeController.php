@@ -114,14 +114,26 @@ class HomeController extends Controller{
 
         $distance = Func::getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude);
         if(!$distance)AJAX::error('距离获取失败');
+
         if($type == 1){
+
             if($timeLine)$time = date('H:i',$timeLine);
             if(!$time)$time = date('H:i');
             $data = Func::getDrivingPrice($area->cityId,$time,$distance->distance / 1000);
             $price = $data['total'];
             $out['start_price'] = $data['start'];
-        }
-        else{
+
+        }elseif($type == 3){
+
+            $price = getWayPrice($distance->distance / 1000,$num);
+            $out['start_price'] = '20.00';
+
+        }elseif($type == 2){
+
+            $price = getWayPrice($distance->distance / 1000,$num);
+            $out['start_price'] = '20.00';
+
+        }else{
             $price = Func::getEstimatedPrice($distance->distance);
             $out['start_price'] = '20.00';
         }
@@ -129,19 +141,7 @@ class HomeController extends Controller{
 
         $out['area']        = $area;
         $out['distance']    = $distance;
-        
 
-        switch($num){
-
-            case 2:
-                $price = $price * 1.7;
-                break;
-            case 3:
-                $price = $price * 2.8;
-                break;
-            default:
-                break;
-        }
             
         $out['price']       = $price;
         

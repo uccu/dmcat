@@ -744,4 +744,16 @@ class Func {
         ];
 
     }
+
+
+    public static function getWayPrice($distance = 0,$num = 1){
+
+        if($distance<6)$price = 20;
+        elseif($distance<100)$price = 20 + 1.5 * ($distance - 6);
+        elseif($distance<300)$price = 20 + 1.5 * (100 - 6) + 1.4 * ($distance - 100);
+        else $price = $price = 20 + 1.5 * 94 + 1.4 * 200 + 1.3 * ($distance - 300);
+
+        return number_format($price,2,'.','');
+
+    }
 }

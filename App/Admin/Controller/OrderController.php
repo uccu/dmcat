@@ -69,7 +69,7 @@ class OrderController extends Controller{
         
         $this->L->adminPermissionCheck(113);
 
-        $name = '';
+        $name = '代驾订单';
         # 允许操作接口
         $opt = 
             [
@@ -236,7 +236,7 @@ class OrderController extends Controller{
                     'title' =>'派单',
                     'name'  =>'toDriver',
                     'size'  =>'4',
-                    'suggest'=>'/admin/staff/admin_driver?search=',
+                    'suggest'=>'/admin/staff/admin_driver?typee=1&search=',
                     'fields'=>[
                         'id'=>'id',
                         'name'=>'名字',
@@ -262,7 +262,7 @@ class OrderController extends Controller{
             $tbody[7]['disabled'] = true;
             $tbody[7]['suggest'] = '';
         }else{
-            $tbody[7]['suggest'] = '/admin/staff/admin_driver?latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+            $tbody[7]['suggest'] = '/admin/staff/admin_driver?typee=1&latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
         }
         $out = 
             [
@@ -309,7 +309,7 @@ class OrderController extends Controller{
         
         $this->L->adminPermissionCheck(114);
 
-        $name = '';
+        $name = '出租车订单';
         # 允许操作接口
         $opt = 
             [
@@ -505,7 +505,7 @@ class OrderController extends Controller{
             $tbody[7]['disabled'] = true;
             $tbody[7]['suggest'] = '';
         }else{
-            $tbody[7]['suggest'] = '/admin/staff/admin_driver?latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+            $tbody[7]['suggest'] = '/admin/staff/admin_driver?typee=2&latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
         }
 
         $out = 

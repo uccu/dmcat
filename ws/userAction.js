@@ -360,6 +360,7 @@ z = function(obj,con){
                 let phone           = obj.phone || ''
                 let name            = obj.name || ''
                 let city_id         = parseInt(obj.city_id || 0)
+                let num         = parseInt(obj.num || 1)
 
                 let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
                 let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
@@ -367,7 +368,7 @@ z = function(obj,con){
 
 
                 /** 创建订单 */
-                db.insert('insert into c_order_way set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id],function(id){
+                db.insert('insert into c_order_way set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?,num=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id,num],function(id){
 
                     obj.id = id
 
@@ -477,9 +478,15 @@ z = function(obj,con){
 
                     /** 订单是否是带接客状态 */
                     if(result.status != 3)return;
+                    db.find('select * from c_trip where id=? and type=3',[id],function(trip){
+                        
+                        if(!trip)return;
+
+                        let fee = action.getWayPrice(result.distance,result.num);
+                        let total_fee = fee - result.coupon;
 
                         /** 更新订单 */
-                        db.update('update c_order_way set status=4 where id=?',[id],function(){
+                        db.update('update c_order_way set status=4,distance=?,fee=?,total_fee=? where id=?',[trip.real_distance/1000,fee,total_fee,id],function(){
 
                             /** 更新行程 */
                             db.update('update c_trip set driver_id=?,status=4,out_time=? where id=? and type=3',[con.user_id,parseInt(Date.now() / 1000),id],function(){
@@ -496,7 +503,7 @@ z = function(obj,con){
                                 
                             })
                         })
-                    
+                    })
                 })
             }
             break;
