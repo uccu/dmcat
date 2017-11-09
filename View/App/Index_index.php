@@ -164,11 +164,11 @@
             </div>
             <div class="right-content">
                 <div class="right-title"><?php echo lang('发展历程');?></div>
-                <a href="EnteredDorsey/develop"><img src="/pic/<?php echo $this->L->config->home_development_history;?>" style="height: 130px;"></a>
+                <a href="/Home/EnteredDorsey/develop"><img src="/pic/<?php echo $this->L->config->home_development_history;?>" style="height: 130px;"></a>
             </div>
             <div class="right-content" style="margin-top: 36px;">
                 <div class="right-title"><?php echo lang('社会责任');?></div>
-                <a href="EnteredDorsey/blame"><img src="/pic/<?php echo $this->L->config->home_social_responsibility;?>" style="height:203px;"></a>
+                <a href="/Home/EnteredDorsey/blame"><img src="/pic/<?php echo $this->L->config->home_social_responsibility;?>" style="height:203px;"></a>
             </div>
         </div>
     </div>
