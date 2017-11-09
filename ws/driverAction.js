@@ -382,30 +382,37 @@ z = function(obj,con){
                     db.find('select * from c_trip where id=? and type=2',[id],function(trip){
                         
                         db.update('update c_trip set driver_id=?,status=4,out_time=? where id=? and type=2',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
-                        /** 更新订单 */
-                            db.update('update c_order_taxi set status=4,distance=? where id=?',[trip.real_distance/1000,id],function(){
-
-                            /** 更新行程 */
                             
+                            action.getTaxiPrice(result.city_id,trip.in_time,trip.real_distance,function(price){
 
-                                /** 获取司机 */
-                                let driver = data.DriverMap.get(con.driver_id)
-                                /** 设置司机状态 */
-                                driver.serving = 0;
-                                con.sendText(content({status:200,type:'endTaxi',id:id}))
-                                if(driver){
+                                let fee = price;
+                                let total_fee = fee - result.coupon + result.lay_fee;
+                            
+                                /** 更新订单 */
+                                db.update('update c_order_taxi set status=4,distance=?,fee=?,total_fee=? where id=?',[trip.real_distance/1000,fee,total_fee,id],function(){
 
-                                    let g = function(r){
-                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'end',list:r}))
-                                    };
-                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
-                                }
-                                /** 获取用户 */
-                                let user = data.UserMap.get(result.user_id+'')
-                                if(user)user.con.sendText(content({status:200,type:'endTaxi',id:id}))
+                                /** 更新行程 */
                                 
+
+                                    /** 获取司机 */
+                                    let driver = data.DriverMap.get(con.driver_id)
+                                    /** 设置司机状态 */
+                                    driver.serving = 0;
+                                    con.sendText(content({status:200,type:'endTaxi',id:id}))
+                                    if(driver){
+
+                                        let g = function(r){
+                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'end',list:r}))
+                                        };
+                                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                    }
+                                    /** 获取用户 */
+                                    let user = data.UserMap.get(result.user_id+'')
+                                    if(user)user.con.sendText(content({status:200,type:'endTaxi',id:id}))
+                                    
+                                })
                             })
                         })
                     })
