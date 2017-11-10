@@ -149,7 +149,8 @@ age 年龄
 introduce 介绍
 skill 擅长
 resume 履历
-{"data":{},"code":200,"url":"","message":""}
+status 1忙绿0空闲
+{"data":{"status":"0"},"code":200,"url":"","message":""}
 {}
 
 
@@ -224,6 +225,8 @@ doctor/getTimeList
 recruit/lists
 page 页数
 limit 每页数量
+distict_id 区域ID
+time_desc 是否是时间倒序1是0否
 {"data":{"list":[{"id":"1","distict_id":"1111","name":"\u62db\u8058","company":"\u62db\u8058\u516c\u53f8","money":"10000","phone":"13666666666","create_time":"100000000","active":"1"}]},"code":200,"url":"","message":""}
 {distict_id:地区ID,name:标题,company:公司,money:薪资,phone:电话,crete_time:创建时间}
 

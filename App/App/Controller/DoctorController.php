@@ -251,7 +251,7 @@ class DoctorController extends Controller{
     }
 
     # 修改我的信息
-    function changeMyInfo($name,$avatar,$age,$introduce,$skill,$resume){
+    function changeMyInfo($name,$avatar,$age,$introduce,$skill,$resume,$status){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -261,10 +261,13 @@ class DoctorController extends Controller{
         $age && $this->L->doctorInfo->age = $age;
         $skill && $this->L->doctorInfo->skill = $skill;
         $resume && $this->L->doctorInfo->resume = $resume;
+        $status !== NULL && $this->L->doctorInfo->status = $status;
 
         $this->L->doctorInfo->save();
 
-        AJAX::success();
+        $out['status'] = $status;
+
+        AJAX::success($out);
     }
 
     # 修改头像
@@ -497,6 +500,8 @@ class DoctorController extends Controller{
         $out['date_ids'] = $date_ids;
         AJAX::success($out);
     }
+
+
 
 
     
