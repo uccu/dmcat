@@ -88,6 +88,18 @@ class HomeController extends Controller{
         $out['list'] = $list;
         AJAX::success($out);
     }
+    function area2($id,AreaModel $areaModel){
+
+        if(!$id){
+
+            $list = $areaModel->where(['parent_id'=>0])->where(['areaName'=>'福建省'])->order('pinyin')->get()->toArray();
+        }else{
+
+            $list = $areaModel->where(['parent_id'=>$id])->order('pinyin')->get()->toArray();
+        }
+        $out['list'] = $list;
+        AJAX::success($out);
+    }
 
 
     /** 标签列表

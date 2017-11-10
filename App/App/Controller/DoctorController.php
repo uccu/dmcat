@@ -318,7 +318,7 @@ class DoctorController extends Controller{
      * @param mixed $day 
      * @return mixed 
      */
-    function getUserList(UserDateModel $userDateModel,UserTagModel $userTagModel,$page=1,$limit=10,$status = 0,$name,$year,$month,$day){
+    function getUserList(UserDateModel $userDateModel,UserTagModel $userTagModel,$page=1,$limit=10,$status = 0,$name,$year,$month,$day,$start_time,$end_time){
         
         !$this->L->id && AJAX::error('未登录');
         // $this->L->id = 4;
@@ -350,6 +350,13 @@ class DoctorController extends Controller{
 
         }
 
+        if($start_time){
+            $where['start_time'] = ['start_time >= %n',TIME_NOW];
+        }
+        if($end_time){
+            $where['end_time'] = ['end_time <= %n',TIME_NOW];
+        }
+
         $list = $userDateModel->select('*','date.start_time','date.end_time','user.name','user.avatar','user.phone','user.age')->where($where)->page($page,$limit)->get()->toArray();
         // echo $userDateModel->sql;die();
         foreach($list as &$v){
@@ -360,7 +367,7 @@ class DoctorController extends Controller{
             $v->tags =  implode(',',$v->tags);
 
         }
-
+        $out['status'] = $this->L->doctorInfo->status;
         $out['list'] = $list;
         AJAX::success($out);
 
