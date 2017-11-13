@@ -389,7 +389,7 @@ class DoctorController extends Controller{
         $info->tags = [];
         $tags = $userTagModel->select('tag.name')->order('times desc')->get()->toArray();
         foreach($tags as $v2)$info->tags[] = $v2->name;
-
+        $info->tags = implode(',',$info->tags);
         $out['info'] = $info;
         AJAX::success($out);
     }
