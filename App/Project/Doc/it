@@ -7,6 +7,15 @@ password 密码
 
 
 
+1.1.2 第三方登录
+user/login
+type 1QQ2微信
+code 第三方的标示
+{"data":{"user_token":"PmO3h8PU9g0tEKBARu+JlTQ+i2JUBxsUBBE8sF5Q2\/Xxji0jTH4Ug66oZ\/QICRlPrBkMYbvAl7AD6Ls4Aco2Etub7BseppEThHq\/ZVZJi70I=","id":"41","avatar":"noavatar.png","name":"\u7528\u6237000041"},"code":200,"url":"","message":""}
+{user_token:用户TOKEN,id:用户ID}
+
+
+
 
 1.2 注册
 user/register
