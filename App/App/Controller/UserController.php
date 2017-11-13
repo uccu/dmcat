@@ -129,6 +129,49 @@ class UserController extends Controller{
 
     }
 
+
+    /** 登录绑定
+     * bind
+     * @param mixed $type 
+     * @param mixed $code 
+     * @param mixed $phone 
+     * @param mixed $password 
+     * @param mixed $model 
+     * @param mixed $cookie 
+     * @return mixed 
+     */
+    function bind($type = 0,$code = '',$phone = null,$password =null,UserModel $model,$cookie = null){
+
+        !$phone && AJAX::error('账号不能为空！');
+        !$password && AJAX::error('密码不能为空！');
+        
+        //找到对应手机号的用户
+        $info = $model->where('phone=%n',$phone)->find();
+        !$info && AJAX::error('用户不存在');
+        //是否储存登录信息到cookie
+        if($cookie)$this->cookie = true;
+        # 验证密码 加密算法采用  sha1(网站干扰码+md5(密码)+用户干扰码)
+        $encryptedPassword = $this->encrypt_password($password,$info->salt);
+        if($encryptedPassword!=$info->password)AJAX::error('密码错误');
+
+        if($type == 1){
+            
+            !$code && AJAX::error('无法识别第三方标示！');
+            $info->qq = $code;
+        }elseif($type == 2){
+
+            !$code && AJAX::error('无法识别第三方标示！');
+            $info->wx = $code;
+        }
+
+        !$info->active && AJAX::error('账号已被禁用，请联系管理员！');
+
+        $info-save();
+        
+        //输出登录返回信息
+        $this->_out_info($info);
+
+    }
     
 
     /** 输出用户登录信息
