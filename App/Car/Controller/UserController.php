@@ -1080,7 +1080,7 @@ class UserController extends Controller{
 
     function usedCarList($page = 1,$limit = 10,UsedCarModel $model,AreaModel $areaModel){
 
-        $list = $model->order('create_time desc')->page($page,$limit)->get();
+        $list = $model->order('create_time desc')->page($page,$limit)->get()->toArray();
 
         foreach($list as &$v){
 
