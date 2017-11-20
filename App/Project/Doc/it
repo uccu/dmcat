@@ -303,6 +303,33 @@ city_id 城市ID
 
 
 
+1.37 道路抢修列表
+user/roadList
+{"data":{"list":[{"id":"1","user_id":"41","brade":"\u5965\u8fea  A4L  \u767d\u8272","phone":"13858383318","address":"\u534e\u5f90\u516c\u8def888\u53f7\u4e2d\u56fd\u68a6\u8c37","detail":"\u5165\u624b\u65b0\u8f66,\u65e0\u4e8b\u6545\u8f66\u8f86\uff01","create_time":"1508467526","pic":"nopic.jpg","name":"xx","remark":"xx"}]},"code":200,"url":"","message":""}
+{}
+
+
+1.38 道路抢修详情
+user/roadList
+{"data":{"list":[{"id":"1","user_id":"41","brade":"\u5965\u8fea  A4L  \u767d\u8272","phone":"13858383318","address":"\u534e\u5f90\u516c\u8def888\u53f7\u4e2d\u56fd\u68a6\u8c37","detail":"\u5165\u624b\u65b0\u8f66,\u65e0\u4e8b\u6545\u8f66\u8f86\uff01","create_time":"1508467526","pic":"nopic.jpg","name":"xx","remark":"xx"}]},"code":200,"url":"","message":""}
+{}
+
+
+
+1.39 发布道路抢修
+user/roadAdd
+brade 车型
+phone 电话
+name 姓名
+address 地址
+detail 详情
+pic 图片，逗号隔开
+remark 备注
+{}
+{}
+
+
+
 ws.1.1 用户登录
 @
 type 固定login

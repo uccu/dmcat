@@ -24,6 +24,7 @@ use App\Car\Model\QuestionModel;
 use App\Car\Model\ConfigModel;
 use App\Car\Model\UsedCarModel;
 use App\Car\Model\AreaModel;
+use App\Car\Model\RoadModel;
 
 class HomeController extends Controller{
 
@@ -1531,6 +1532,207 @@ class HomeController extends Controller{
     }
     function admin_used_car_del(UsedCarModel $model,$id){
         $this->L->adminPermissionCheck(152);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+
+
+    function road(){
+
+        View::addData(['getList'=>'admin_road']);
+        View::hamlReader('home/list','Admin');
+    }
+    function admin_road(RoadModel $model,$status = 0,$page = 1,$limit = 10){
+        
+        $this->L->adminPermissionCheck(155);
+
+        $name = '道路抢修';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../home/admin_road_get',
+                'upd'   => '../home/admin_road_upd',
+                'view'  => 'home/upd',
+                // 'add'   => 'home/upd',
+                'del'   => '../home/admin_road_del',
+                'req'   =>[
+
+                ]
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                'ID',
+                '姓名',
+                '车型',
+                '发布时间',
+                '电话',
+                '故障描述',
+                '备注',
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                'id',
+                'name',
+                'brade',
+                'dime',
+                'phone',
+                'detail',
+                'remark',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+
+        $list = $model->where($where)->get()->toArray();
+        foreach($list as &$v){
+
+            $v->dime = date('Y-m-d H:i:s',$v->create_time);
+        }
+
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_road_get(RoadModel $model,$id){
+        
+        $this->L->adminPermissionCheck(155);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../home/admin_road_get',
+            'upd'   => '../home/admin_road_upd',
+            'back'  => 'home/road',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+
+            [
+                'title' =>  '车型',
+                'name'  =>  'brade',
+                'size'  =>  '3'
+            ],
+            [
+                'title' =>  '姓名',
+                'name'  =>  'name',
+                'size'  =>  '3'
+            ],
+
+            [
+                'title' =>  '详细地址',
+                'name'  =>  'address',
+                'size'  =>  '5'
+            ],
+            [
+                'title' =>  '电话',
+                'name'  =>  'phone',
+                'size'  =>  '2'
+            ],
+
+            
+            [
+                'title' =>  '故障描述',
+                'name'  =>  'detail',
+                'size'  =>  '6',
+                'type'  =>  'textarea'
+            ],
+            [
+                'title' =>  '备注',
+                'name'  =>  'remark',
+                'size'  =>  '6',
+            ],
+            [
+                'title' =>  '图片',
+                'name'  =>  'pic',
+                'type'  =>  'picss',
+                'size'  =>  '6'
+                
+            ],
+
+                
+                
+        ];
+            
+        !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+        $info = AdminFunc::get($model,$id);
+
+        $info->province_id = AreaModel::copyMutiInstance()->find($info->city_id)->parent_id;
+
+        if(!$info->province_id){
+            $info->province_id = '';
+        }
+        
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_road_upd(RoadModel $model,$id,$name){
+        $this->L->adminPermissionCheck(155);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+
+        $pic = Request::getSingleInstance()->request('pic','raw');
+        if($pic)$data['pic'] = implode(',',$pic);
+
+        // var_dump($pic);die();
+
+        $upd = AdminFunc::upd($model,$id,$data);
+   
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_road_del(RoadModel $model,$id){
+        $this->L->adminPermissionCheck(155);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
         AJAX::success($out);

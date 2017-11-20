@@ -35,6 +35,7 @@ use App\Car\Model\UserCouponModel;
 use App\Car\Model\IncomeModel; 
 use App\Car\Model\FeedbackModel; 
 use App\Car\Model\UsedCarModel; 
+use App\Car\Model\RoadModel; 
 use Model; 
 
 
@@ -1111,6 +1112,49 @@ class UserController extends Controller{
     }
 
     function usedCarAdd(UsedCarModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+        $data['user_id'] = $this->L->id;
+
+        $upd = AdminFunc::upd($model,0,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+
+
+    }
+
+
+
+    function roadList($page = 1,$limit = 10,RoadModel $model,AreaModel $areaModel){
+
+        // $where['status'] = 1;
+
+        $list = $model->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
+
+
+
+        $out['list'] = $list;
+        AJAX::success($out);
+
+    }
+
+    function roadInfo($id,RoadModel $model,AreaModel $areaModel){
+
+        $info = $model->find($id);
+        !$info && AJAX::error('信息不存在');
+
+
+
+        $out['info'] = $info;
+        AJAX::success($out);
+
+    }
+
+    function roadAdd(RoadModel $model){
 
         !$this->L->id && AJAX::error('未登录');
 
