@@ -10,6 +10,7 @@ use Request;
 use App\Car\Middleware\L;
 use App\Car\Tool\Func;
 use Uccu\DmcatTool\Tool\AJAX;
+use App\Car\Tool\AdminFunc;
 
 # 数据模型
 use App\Car\Model\UserModel;
@@ -33,6 +34,7 @@ use App\Car\Model\UserBankModel;
 use App\Car\Model\UserCouponModel; 
 use App\Car\Model\IncomeModel; 
 use App\Car\Model\FeedbackModel; 
+use App\Car\Model\UsedCarModel; 
 use Model; 
 
 
@@ -1071,6 +1073,54 @@ class UserController extends Controller{
         else $data['hasMessage'] = '0';
 
         AJAX::success($data);
+
+    }
+
+
+
+    function usedCarList($page = 1,$limit = 10,UsedCarModel $model,AreaModel $areaModel){
+
+        $list = $model->order('create_time desc')->page($page,$limit)->get();
+
+        foreach($list as &$v){
+
+            $city = $areaModel->find($v->city_id);
+            $v->cityName = $city->areaName;
+
+        }
+
+        $out['list'] = $list;
+        AJAX::success($out);
+
+    }
+
+    function usedCarInfo($id,UsedCarModel $model,AreaModel $areaModel){
+
+        $info = $model->find($id);
+        !$info && AJAX::error('信息不存在');
+
+        $city = $areaModel->find($info->city_id);
+        $info->cityName = $city->areaName;
+
+
+        $out['info'] = $info;
+        AJAX::success($out);
+
+    }
+
+    function usedCarAdd(UsedCarModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+        $data['user_id'] = $this->L->id;
+
+        $upd = AdminFunc::upd($model,0,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+
 
     }
 

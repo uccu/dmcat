@@ -274,6 +274,35 @@ user/hasMessage
 {}
 
 
+
+1.34 二手车列表
+user/usedCarList
+{"data":{"list":{"0":{"id":"1","user_id":"41","brade":"\u6caaC88888","add_time":"2017\u5e742\u6708","distance":"20","price":"20.00","phone":"13858383318","address":"123","detail":"123","create_time":"1508467526","pic":"nopic.jpg","status":"1","city_id":"4521986","cityName":"\u4e1c\u57ce\u533a"}}},"code":200,"url":"","message":""}
+{}
+
+
+1.35 二手车详情
+user/usedCarList
+{"data":{"info":{"id":"1","user_id":"41","brade":"\u6caaC88888","add_time":"2017\u5e742\u6708","distance":"20","price":"20.00","phone":"13858383318","address":"123","detail":"123","create_time":"1508467526","pic":"nopic.jpg","status":"1","city_id":"4521986","cityName":"\u4e1c\u57ce\u533a"}},"code":200,"url":"","message":""}
+{}
+
+
+1.36 发布二手车
+user/usedCarAdd
+brade 车牌号
+add_time 上牌时间
+distance 里程
+price 售价（万)
+phone 电话
+address 地址
+detail 详情
+pic 图片，逗号隔开
+city_id 城市ID
+{}
+{}
+
+
+
 ws.1.1 用户登录
 @
 type 固定login

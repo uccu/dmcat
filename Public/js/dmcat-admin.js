@@ -45,20 +45,18 @@
         if(typeof v==="object")for(d in v)if(typeof v[d]==="object")form.append(v[d].name,v[d].value);else form.append(d,v[d]);
         if(file instanceof FileList);
         else file = file[0].files;
-        if(file.length)form.append("file",file[0]);else{toastr['error']('error image');return false}
+        if(file.length)form.append("file",file[0]);else{toastr['error']('error image');return}
         if(!file[0])return;
         return typeof x==='function'?x(form):form
     }
-    var upPic = function(f,n,i,b,r){
+    var upPic = function(f,n,i){
         f.on('change',function(){
-            if(b instanceof Function)b(f);
             var u = packFormData(f)
             if(u)curl(n,u,function(d){
                 f.parent().find('.picText').val(d.path)
                 f.parent().find('img').attr('src',d.fpath)
                 if(i instanceof Function)i(d,f)
             },1);
-            else if(r instanceof Function)r(f)
         })
     }
     var admin = function(u,d,i){
@@ -106,9 +104,7 @@
             for(var i in m.tbody){
                 var para = m.tbody[i];
                 switch(para.type){
-                    case 'suggest':
-                        
-                        break;
+                    
                     case 'pic':
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 3)+'"><img class="cp picImg" src="/pic/'+(m.info[para.name]||para.default||'nopic.jpg')+'" style="max-width:100%;max-height:100px"><input class="picFile" type="file" accept="image/*" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'nopic.jpg')+'"></div>'+(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         upPic(pa.find('.picFile'),'/home/uploadPic')
@@ -131,20 +127,56 @@
                         +(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
 
                         break;
+                    case 'picss':
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 10)+'">')
+                        pa.find('div').append(
+                        (function(p){
+                            var s = j('<div>');
+                            p = p.split(',');
+                            for(var i in p){
+                                var r = j('<span class="dib pr"><i class="pa cp" style="right:5px;top:-3px;color:#fff;border-radius:50%;background:red;width:12px;height:12px"></i><a href="/pic/'+p[i]+'" target="_blank"><img class="cp picImg" src="/pic/'+p[i]+'" style="max-width:100%;max-height:100px;margin-right: 10px;margin-bottom: 10px;"></a><input type="hidden" name="'+para.name+'[]" value="'+p[i]+'"></span>')
+                                r.find('i').click(function(){
+                                    var t = j(this)
+                                    curl_check(function(){
+                                        t.parent().remove();
+                                    })
+                                })
+                                s.append(
+                                    r
+                                )
+                            }
+                            var v = j('<span class="dib pr cp"><strong>上传</strong><input style="display:none" accept="image/*" type="file"></span>')
+                            upPic(v.find('input'),'/home/uploadPic',function(d,f){
+                                console.log(f.parent().parent().parent())
+                                var r = j('<span class="dib pr"><i class="pa cp" style="right:5px;top:-3px;color:#fff;border-radius:50%;background:red;width:12px;height:12px"></i><a href="/pic/'+d.path+'" target="_blank"><img class="cp picImg" src="/pic/'+d.path+'" style="max-width:100%;max-height:100px;margin-right: 10px;margin-bottom: 10px;"></a><input type="hidden" name="'+f.parent().parent().parent().parent().attr('work')+'[]" value="'+d.path+'"></span>')
+                                r.find('i').click(function(){
+                                    var t = j(this)
+                                    curl_check(function(){
+                                        t.parent().remove();
+                                    })
+                                })
+                                f.parent().before(r)
+                            })
+                            v.find('strong').click(function(){
+                                j(this).parent().find('input').click()
+                            })
+                            s.append(
+                                    v
+                                )
+                            return s
+
+                        })(m.info[para.name]||para.default||'nopic.jpg')
+                        
+                        
+                        )
+
+                        break;
                     case 'file':
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 1)+'">'+'<i class="fa fa-plus-square-o cp picImg add" style="font-size:40px"></i>'+'<img class="cp picImg dn img" src="/pic/'+'file.jpg'+'" style="max-width:100%;max-height:100px;"><input class="picFile" type="file" style="display:none"><input class="form-control picText" type="hidden" name="'+para.name+'" value="'+(m.info[para.name]||para.default||'')+'"></div><label class="col-sm-2 control-label dn del" style="text-align:left"><i class="fa fa-times cp"></i></label>'+(para.description?'<label class="col-sm-4 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         upPic(pa.find('.picFile'),'/home/uploadFile',function(d,f){
                             f.parent().find('img').show();
-                            f.parent().find('.loading').remove();
                             f.parent().find('.add').hide();
                             f.parent().parent().parent().parent().find('.del').show();
-                        },function(f){
-                            f.parent().find('img').after('<div class="loading sk-spinner sk-spinner-three-bounce"><div class="sk-bounce1"></div><div class="sk-bounce2"></div><div class="sk-bounce3"></div></div>');
-                            f.parent().find('img').hide();
-                            
-                        },function(f){
-                            f.parent().find('img').show();
-                            f.parent().find('.loading').remove();
                         })
                         pa.find('.picImg').on('click',function(){j(this).parent().find('.picFile').click()})
                         pa.find('.del').click(function(){
@@ -323,40 +355,7 @@
                         })
                         break;
                     default:
-                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><div class="input-group"><input class="form-control" name="'+para.name+'" '+(para.disabled?'disabled':'')+' value="'+(m.info[para.name]||para.default||'')+'"></div></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
-                        
-                        if(para.suggest){
-                            pa.find('input').after('<div class="input-group-btn"><button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" role="menu"></ul></div><!-- /btn-group -->');
-                            pa.find('input').attr('data-fields',JSON.stringify(para.fields))
-                            var para33 = para;
-                            pa.find('input').bsSuggest({
-                                indexId:0,
-                                indexKey:0,
-                                idField:'id',
-                                allowNoKeyword:true,
-                                multiWord:false,
-                                separator:",",
-                                getDataMethod:"url",
-                                effectiveFieldsAlias:para.fields,
-                                showHeader:false,
-                                url:para.suggest,
-                                processData:function(json){
-                                    json = json.data;
-                                    var i,len,data={value:[]};
-                                    if(!json||!json.list||json.list.length==0){return false}
-                                    
-                                    len=json.list.length;
-                                    for(i=0;i<len;i++){
-                                        
-                                        var obj = {};
-                                        for(var s in para33.fields)obj[s] = json.list[i][s]
-                                        data.value.push(obj)
-                                    }
-                                    console.log(data);return data
-                                }
-                            })
-                        }
-                    
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'" '+(para.disabled?'disabled':'')+' value="'+(m.info[para.name]||para.default||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         break;
                 }
                 pa.appendTo('form')

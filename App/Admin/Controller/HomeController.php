@@ -22,6 +22,8 @@ use App\Car\Model\BrandModel;
 use App\Car\Model\ColorModel;
 use App\Car\Model\QuestionModel;
 use App\Car\Model\ConfigModel;
+use App\Car\Model\UsedCarModel;
+use App\Car\Model\AreaModel;
 
 class HomeController extends Controller{
 
@@ -1296,6 +1298,233 @@ class HomeController extends Controller{
     }
     function admin_question_del(QuestionModel $model,$id){
         $this->L->adminPermissionCheck(139);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+
+
+
+
+    function used_car(){
+
+        View::addData(['getList'=>'admin_used_car']);
+        View::hamlReader('home/list','Admin');
+    }
+    function admin_used_car(UsedCarModel $model,$status = 0){
+        
+        $this->L->adminPermissionCheck(152);
+
+        $name = '二手车';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../home/admin_used_car_get',
+                'upd'   => '../home/admin_used_car_upd',
+                'view'  => 'home/upd',
+                // 'add'   => 'home/upd',
+                'del'   => '../home/admin_used_car_del',
+                'req'   =>[
+
+                    [
+                        'type'=>'checkbox',
+                        'name'=>'status',
+                        'title'=>'通过'
+                    ]
+
+                ]
+            ];
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                'ID',
+                '用户',
+                '车牌',
+                '上牌时间',
+                '城市',
+                '电话',
+                '售价(万)',
+                '里程（公里）',
+                '状态'
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                'id',
+                'name',
+                'brade',
+                'add_time',
+                'city_name',
+                'phone',
+                'price',
+                'distance',
+                [
+                    'name'=>'status',
+                    'type'=>'checkbox'
+                ]
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        $where['status']  = $status;
+
+        $list = $model->select('*','user.name','city.areaName>city_name')->where($where)->get()->toArray();
+
+
+
+        # 分页内容
+        $page   = 1;
+        $max    = count($list);
+        $limit  = count($list);
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_used_car_get(UsedCarModel $model,$id){
+        
+        $this->L->adminPermissionCheck(152);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../home/admin_used_car_get',
+            'upd'   => '../home/admin_used_car_upd',
+            'back'  => 'home/used_car',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+
+            [
+                'title' =>  '车牌',
+                'name'  =>  'brade',
+                'size'  =>  '3'
+            ],
+            [
+                'title' =>  '上牌时间',
+                'name'  =>  'add_time',
+                'size'  =>  '3'
+            ],
+            [
+                    
+                'type'  =>  'selects',
+                'url'   =>  '/home/area',
+                'detail'=>[
+                    ['name'=>'province_id' ,'title' =>  '省'],
+                    ['name'=>'city_id'     ,'title' =>  '市','all'=>true]
+                ]
+            ],
+            [
+                'title' =>  '电话',
+                'name'  =>  'phone',
+                'size'  =>  '2'
+            ],
+            [
+                'title' =>  '售价(万)',
+                'name'  =>  'price',
+                'size'  =>  '2'
+            ],
+            [
+                'title' =>  '里程（公里）',
+                'name'  =>  'distance',
+                'size'  =>  '2'
+            ],
+            
+            [
+                'title' =>  '详情',
+                'name'  =>  'distance',
+                'size'  =>  '6',
+                'type'  =>  'textarea'
+            ],
+            [
+                'title' =>  '图片',
+                'name'  =>  'pic',
+                'type'  =>  'picss',
+                'size'  =>  '6'
+                
+            ],
+            [
+                'title' =>  '状态',
+                'name'  =>  'status',
+                'type'  =>  'select',
+                'option'=>[
+                    '0'=>'未通过',
+                    '1'=>'已通过',
+                ]
+            ],
+                
+                
+        ];
+            
+        !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+        $info = AdminFunc::get($model,$id);
+
+        $info->province_id = AreaModel::copyMutiInstance()->find($info->city_id)->parent_id;
+
+        if(!$info->province_id){
+            $info->province_id = '';
+        }
+        
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_used_car_upd(UsedCarModel $model,$id,$name){
+        $this->L->adminPermissionCheck(152);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        unset($data['id']);
+
+        $pic = Request::getSingleInstance()->request('pic','raw');
+        if($pic)$data['pic'] = implode(',',$pic);
+
+        // var_dump($pic);die();
+
+        $upd = AdminFunc::upd($model,$id,$data);
+   
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_used_car_del(UsedCarModel $model,$id){
+        $this->L->adminPermissionCheck(152);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
         AJAX::success($out);
