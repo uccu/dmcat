@@ -1461,7 +1461,7 @@ class HomeController extends Controller{
             
             [
                 'title' =>  '详情',
-                'name'  =>  'distance',
+                'name'  =>  'detail',
                 'size'  =>  '6',
                 'type'  =>  'textarea'
             ],
