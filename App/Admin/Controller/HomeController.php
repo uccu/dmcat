@@ -1444,6 +1444,11 @@ class HomeController extends Controller{
                 ]
             ],
             [
+                'title' =>  '详细地址',
+                'name'  =>  'address',
+                'size'  =>  '5'
+            ],
+            [
                 'title' =>  '电话',
                 'name'  =>  'phone',
                 'size'  =>  '2'
@@ -1458,6 +1463,7 @@ class HomeController extends Controller{
                 'name'  =>  'distance',
                 'size'  =>  '2'
             ],
+            
             
             [
                 'title' =>  '详情',
