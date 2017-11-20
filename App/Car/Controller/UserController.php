@@ -1119,7 +1119,8 @@ class UserController extends Controller{
         $data = Request::getSingleInstance()->request($model->field);
         unset($data['id']);
         $data['user_id'] = $this->L->id;
-
+        $data['create_time'] = TIME_NOW;
+        
         $upd = AdminFunc::upd($model,0,$data);
         $out['upd'] = $upd;
         AJAX::success($out);
@@ -1162,6 +1163,7 @@ class UserController extends Controller{
         $data = Request::getSingleInstance()->request($model->field);
         unset($data['id']);
         $data['user_id'] = $this->L->id;
+        $data['create_time'] = TIME_NOW;
 
         $upd = AdminFunc::upd($model,0,$data);
         $out['upd'] = $upd;
