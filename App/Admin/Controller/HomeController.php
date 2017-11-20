@@ -257,7 +257,7 @@ class HomeController extends Controller{
         View::hamlReader('home/list','Admin');
     }
 
-    function admin_bank(BankModel $model){
+    function admin_bank(BankModel $model,$page=1,$limit=20){
         
         $this->L->adminPermissionCheck(126);
 
@@ -308,9 +308,9 @@ class HomeController extends Controller{
 
 
         # 分页内容
-        $page   = 1;
-        $max    = count($list);
-        $limit  = count($list);
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
 
         # 输出内容
         $out = 
@@ -412,7 +412,7 @@ class HomeController extends Controller{
         View::hamlReader('home/list','Admin');
     }
 
-    function admin_tag(TagModel $model){
+    function admin_tag(TagModel $model,$page=1,$limit=20){
         
         $this->L->adminPermissionCheck(130);
 
@@ -459,9 +459,9 @@ class HomeController extends Controller{
 
 
         # 分页内容
-        $page   = 1;
-        $max    = count($list);
-        $limit  = count($list);
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
 
         # 输出内容
         $out = 
@@ -562,7 +562,7 @@ class HomeController extends Controller{
     }
 
 
-    function admin_user_feedback(FeedbackModel $model){
+    function admin_user_feedback(FeedbackModel $model,$limit=10,$page=1){
         
         $this->L->adminPermissionCheck(132);
 
@@ -609,9 +609,9 @@ class HomeController extends Controller{
 
 
         # 分页内容
-        $page   = 1;
-        $max    = count($list);
-        $limit  = count($list);
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
 
         # 输出内容
         $out = 
@@ -701,7 +701,7 @@ class HomeController extends Controller{
     }
 
 
-    function admin_driver_feedback(DriverFeedbackModel $model){
+    function admin_driver_feedback(DriverFeedbackModel $model,$page=1,$limit=10){
         
         $this->L->adminPermissionCheck(133);
 
@@ -748,9 +748,9 @@ class HomeController extends Controller{
 
 
         # 分页内容
-        $page   = 1;
-        $max    = count($list);
-        $limit  = count($list);
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
 
         # 输出内容
         $out = 
@@ -846,7 +846,7 @@ class HomeController extends Controller{
         View::hamlReader('home/list','Admin');
     }
 
-    function admin_brand(BrandModel $model){
+    function admin_brand(BrandModel $model,$page=1,$limit=10){
         
         $this->L->adminPermissionCheck(136);
 
@@ -900,9 +900,9 @@ class HomeController extends Controller{
 
 
         # 分页内容
-        $page   = 1;
-        $max    = count($list);
-        $limit  = count($list);
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
 
         # 输出内容
         $out = 
@@ -1029,7 +1029,7 @@ class HomeController extends Controller{
         View::addData(['getList'=>'admin_color']);
         View::hamlReader('home/list','Admin');
     }
-    function admin_color(ColorModel $model){
+    function admin_color(ColorModel $model,$page=1,$limit =10){
         
         $this->L->adminPermissionCheck(137);
 
@@ -1072,9 +1072,9 @@ class HomeController extends Controller{
 
 
         # 分页内容
-        $page   = 1;
-        $max    = count($list);
-        $limit  = count($list);
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
 
         # 输出内容
         $out = 
@@ -1168,7 +1168,7 @@ class HomeController extends Controller{
         View::addData(['getList'=>'admin_question']);
         View::hamlReader('home/list','Admin');
     }
-    function admin_question(QuestionModel $model){
+    function admin_question(QuestionModel $model,$page = 1,$limit = 10){
         
         $this->L->adminPermissionCheck(139);
 
@@ -1211,9 +1211,9 @@ class HomeController extends Controller{
 
 
         # 分页内容
-        $page   = 1;
-        $max    = count($list);
-        $limit  = count($list);
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
 
         # 输出内容
         $out = 
@@ -1313,7 +1313,7 @@ class HomeController extends Controller{
         View::addData(['getList'=>'admin_used_car']);
         View::hamlReader('home/list','Admin');
     }
-    function admin_used_car(UsedCarModel $model,$status = 0){
+    function admin_used_car(UsedCarModel $model,$status = 0,$page = 1,$limit = 10){
         
         $this->L->adminPermissionCheck(152);
 
@@ -1381,9 +1381,9 @@ class HomeController extends Controller{
 
 
         # 分页内容
-        $page   = 1;
-        $max    = count($list);
-        $limit  = count($list);
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
 
         # 输出内容
         $out = 
