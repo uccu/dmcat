@@ -190,7 +190,7 @@ class UserController extends Controller{
 
         $info = new stdClass;
 
-        if($id){
+        if($parent_id){
             $parent = $model->find($parent_id);
             !$parent && AJAX::error('推荐人不存在！');
             $info->parent_id = $parent_id;
