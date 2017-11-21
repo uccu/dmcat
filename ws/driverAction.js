@@ -83,7 +83,7 @@ z = function(obj,con){
                         let di = dis(d.last_latitude,d.last_longitude,latitude,longitude)
                         if(!di || !latitude || !latitude)di = 0;
                         di += d.real_distance;
-                        if(!di)di = 0;
+                        // if(!di)di = 0;
                         db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type<3 AND status=3',[latitude,longitude,di,con.driver_id])
                         // console.log('Move distance: '+ di)
                     }
