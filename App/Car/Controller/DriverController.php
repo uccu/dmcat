@@ -643,7 +643,7 @@ class DriverController extends Controller{
     function push($id,$message,$type){
 
         Func::push_driver($id,$message,['type'=>$type]);
-
+        AJAX::success();
     }
     
 }

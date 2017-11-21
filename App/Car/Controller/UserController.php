@@ -1178,6 +1178,6 @@ class UserController extends Controller{
     function push($id,$message,$type){
 
         Func::push($id,$message,['type'=>$type]);
-
+        AJAX::success();
     }
 }
