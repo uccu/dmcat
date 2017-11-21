@@ -57,8 +57,8 @@ z = function(obj,con){
             break;
         case 'updPostion':
             if(con.user_id){
-                let latitude = obj.latitude
-                let longitude = obj.longitude
+                let latitude = parseFloat(obj.latitude || 0)
+                let longitude = parseFloat(obj.longitude || 0)
                 db.replace('update c_user_online set latitude=?,longitude=? where user_id=?',[latitude,longitude,con.user_id])
                 console.log(`user ${con.user_id} updated position`)
 
@@ -70,7 +70,7 @@ z = function(obj,con){
 
                     }else{
                         let di = dis(d.last_latitude,d.last_longitude,latitude,longitude)
-                        if(!di)di = 0;
+                        if(!di || !latitude || !latitude)di = 0;
                         di += d.real_distance
                         db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type=3 AND status=3',[latitude,longitude,di,con.user_id])
                         // console.log('Move distance: '+ di)
