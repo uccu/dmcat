@@ -122,7 +122,10 @@ z = function(obj,con){
                                         (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
                                     }
                                     let user = data.UserMap.get(result.user_id+'')
-                                    if(user)user.con.sendText(content({status:200,type:'orderDriving',id:id}))
+                                    if(user){
+                                        user.con.sendText(content({status:200,type:'orderDriving',id:id}))
+                                        post('user/push',{id:result.user_id,message:'有司机接了您的订单！',type:'order_order'});
+                                    }
                                     if(driver_ids){
                                         driver_ids = driver_ids.split(',')
                                         for(let k in driver_ids){
@@ -179,7 +182,10 @@ z = function(obj,con){
                                         (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
                                     }
                                     let user = data.UserMap.get(result.user_id+'')
-                                    if(user)user.con.sendText(content({status:200,type:'orderTaxi',id:id}))
+                                    if(user){
+                                        user.con.sendText(content({status:200,type:'orderTaxi',id:id}))
+                                        post('user/push',{id:result.user_id,message:'有司机接了您的订单！',type:'order_order'});
+                                    }
                                     if(driver_ids){
                                         driver_ids = driver_ids.split(',')
                                         for(let k in driver_ids){

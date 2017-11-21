@@ -639,5 +639,11 @@ class DriverController extends Controller{
 
         AJAX::success($data);
     }
+
+    function push($id,$message,$type){
+
+        Func::push_driver($id,$message,['type'=>$type]);
+
+    }
     
 }

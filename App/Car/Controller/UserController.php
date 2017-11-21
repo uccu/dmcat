@@ -765,6 +765,8 @@ class UserController extends Controller{
         $tripModel->set($data)->where(['type'=>3,'id'=>$id])->save();
         $data['order_time'] = TIME_NOW;
         $orderWayModel->set($data)->save($id);
+
+        Func::push($order->user_id,'有司机接了您的订单！',['type'=>'order_order']);
         
         DB::commit();
         AJAX::success();
@@ -1173,5 +1175,9 @@ class UserController extends Controller{
 
     }
 
+    function push($id,$message,$type){
 
+        Func::push($id,$message,['type'=>$type]);
+
+    }
 }

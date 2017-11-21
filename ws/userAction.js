@@ -163,6 +163,8 @@ z = function(obj,con){
                                     if(result.status == 2){
                                         let driver = data.DriverMap.get(result.driver_id+'')
                                         if(driver){
+
+                                            post('driver/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
                                             let g = function(r){
                                                 driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
                                                 driver.serving = 0;
@@ -300,6 +302,8 @@ z = function(obj,con){
                                 let driver = data.DriverMap.get(result.driver_id+'')
                                 if(!driver)return;
 
+                                post('driver/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
+
                                 let g = function(r){
                                     driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
                                     driver.serving = 0;
@@ -404,6 +408,9 @@ z = function(obj,con){
                         let driver_id = result.driver_id
                         let driver = data.UserMap.get(driver_id+'')
                         if(driver){
+
+                            post('user/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
+
                             console.log('one driver get cancelCallWayDriver request');
                             driver.con.sendText(content({status:200,type:'cancelCallWayDriver',id:id}))
                         }
