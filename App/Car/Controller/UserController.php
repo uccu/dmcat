@@ -251,7 +251,7 @@ class UserController extends Controller{
 
 
     # 我的信息
-    function getMyInfo(){
+    function getMyInfo(UserModel $userModel){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -260,6 +260,7 @@ class UserController extends Controller{
         $info['sex'] = $this->L->userInfo->sex;
         $info['phone'] = $this->L->userInfo->phone;
         $info['id'] = $this->L->userInfo->id;
+        $info['count'] = $userModel->select('COUNT(*) AS c','RAW')->where(['parent_id'=>$this->L->id])->find()->c;
 
         $out['info'] = $info;
 
