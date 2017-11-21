@@ -282,7 +282,7 @@ user/usedCarList
 
 
 1.35 二手车详情
-user/usedCarList
+user/usedCarInfo
 {"data":{"info":{"id":"1","user_id":"41","brade":"\u6caaC88888","add_time":"2017\u5e742\u6708","distance":"20","price":"20.00","phone":"13858383318","address":"123","detail":"123","create_time":"1508467526","pic":"nopic.jpg","status":"1","city_id":"4521986","cityName":"\u4e1c\u57ce\u533a"}},"code":200,"url":"","message":""}
 {}
 
@@ -310,7 +310,7 @@ user/roadList
 
 
 1.38 道路抢修详情
-user/roadList
+user/roadInfo
 {"data":{"list":[{"id":"1","user_id":"41","brade":"\u5965\u8fea  A4L  \u767d\u8272","phone":"13858383318","address":"\u534e\u5f90\u516c\u8def888\u53f7\u4e2d\u56fd\u68a6\u8c37","detail":"\u5165\u624b\u65b0\u8f66,\u65e0\u4e8b\u6545\u8f66\u8f86\uff01","create_time":"1508467526","pic":"nopic.jpg","name":"xx","remark":"xx"}]},"code":200,"url":"","message":""}
 {}
 
