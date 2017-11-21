@@ -294,7 +294,7 @@ class DriverController extends Controller{
 
 
     # 我的信息
-    function getMyInfo(){
+    function getMyInfo(DriverModel $driverModel){
         // $this->L->id = 3;
         !$this->L->id && AJAX::error('未登录');
 
@@ -310,6 +310,7 @@ class DriverController extends Controller{
         $info['judge_score'] = $this->L->userInfo->judge_score;
         $info['tpye_driving'] = $this->L->userInfo->type_driving;
         $info['tpye_taxi'] = $this->L->userInfo->type_taxi;
+        $info['count'] = $driverModel->select('COUNT(*) AS c','RAW')->where(['parent_id'=>$this->L->id])->find()->c;
 
         $info['apply_status'] = DriverApplyModel::copyMutiInstance()->where(['id'=>$this->L->id])->order('create_time desc')->find()->status;
         NULL === $info['apply_status'] && $info['apply_status'] = '-2';
