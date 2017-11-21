@@ -64,6 +64,7 @@ z = function(obj,con){
 
                 db.find('select * from c_trip where driver_id=? AND type=3 AND status=3',[con.user_id],
                 function(d){
+                    if(!d)return;
                     if(d.last_longitude == '0'){
 
                         db.update('update c_trip set last_latitude=?,last_longitude=? where driver_id=? AND type=3 AND status=3',[latitude,longitude,con.user_id])

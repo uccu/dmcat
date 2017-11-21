@@ -74,6 +74,7 @@ z = function(obj,con){
 
                 if(driver.serving)db.find('select * from c_trip where driver_id=? AND type<3 AND status=3',[con.driver_id],
                 function(d){
+                    if(!d)return;
                     if(d.last_longitude == '0'){
 
                         db.update('update c_trip set last_latitude=?,last_longitude=? where driver_id=? AND type<3 AND status=3',[latitude,longitude,con.driver_id])
@@ -81,7 +82,8 @@ z = function(obj,con){
                     }else{
                         let di = dis(d.last_latitude,d.last_longitude,latitude,longitude)
                         if(!di || !latitude || !latitude)di = 0;
-                        di += d.real_distance
+                        di += d.real_distance;
+                        if(!di)di = 0;
                         db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type<3 AND status=3',[latitude,longitude,di,con.driver_id])
                         // console.log('Move distance: '+ di)
                     }
