@@ -125,7 +125,8 @@ exports.update = function(sql,param,cb){
         connection.query(sql,param,function (err, result) {
 
             if(err){
-                console.log('[UPDATE ERROR] - ',err.message);
+                console.log('[UPDATE ERROR]');
+                console.log(err);
                 cb instanceof Function && cb(0)
                 return;
             }        
