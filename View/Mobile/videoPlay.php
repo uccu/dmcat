@@ -66,7 +66,7 @@
 <div class="video-list row">
      <?php foreach($newsVideo as $k=>$v){?>
 
-    <div class="video-list-one col-md-4 col-xs-4 column">
+    <div class="video-list-one col-md-4 col-xs-4 column" style="height: 133px;">
         <img src="/pic/<?php echo langV($v,'pic');?>">
         <a href="videoPlay?id=<?php echo $v->id;?>" ></a>
         <h1><?php echo langV($v,'title',18);?></h1>

@@ -50,7 +50,7 @@
                 <a href="javascript:void(0);"><?php echo lang('联系我们');?></a>
                 <div class="more-nav">
                     <a href="/Home/CountUs/recruit"><?php echo lang('德汇招聘');?></a>
-                    <a href="/Home/CountUs/moves"><?php echo lang('招标公告');?></a>
+                    <a href="/Home/CountUs/moves"><?php echo lang('招标及公告');?></a>
                     <a href="/Home/CountUs/complaints"><?php echo lang('投诉及建议');?></a>
                     <a href="/Home/CountUs/legalNotices"><?php echo lang('法律声明');?></a>
                 </div>

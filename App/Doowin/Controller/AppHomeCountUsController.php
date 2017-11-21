@@ -58,7 +58,7 @@ class AppHomeCountUsController extends Controller{
     function moves(MovesModel $model,$page = 1){
         
         $type = __FUNCTION__;
-        $name = '招标公告';
+        $name = '招标及公告';
         $limit = 16;
         $list = $model->page($page,$limit)->order('top desc','id desc')->get()->toArray();
         $max = $model->select('COUNT(*) as c','RAW')->find()->c;
@@ -68,7 +68,7 @@ class AppHomeCountUsController extends Controller{
     function movesInfo(MovesModel $model,$id = 0){
         
         $type = 'moves';
-        $name = '招标公告';
+        $name = '招标及公告';
         $info = $model->find($id);
         !$info && Response::getInstance()->r302('/404.html');
 

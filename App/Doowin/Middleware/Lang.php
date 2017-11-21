@@ -68,7 +68,7 @@
             '媒体聚焦'=>'Media Focus',
             '视频中心'=>'Video Center',
             '德汇招聘'=>'Dorsey Recruitment',
-            '招标公告'=>'Bid announcement',
+            '招标及公告'=>'Bid announcement',
             '投诉及建议'=>'Complaint&Suggestion',
             '法律声明'=>'Legal Statement',
 

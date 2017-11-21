@@ -182,7 +182,7 @@ class ContactController extends Controller{
             AJAX::success();
         }
 
-    # 招标公告
+    # 招标及公告
         function moves_lists(MovesModel $model,$page = 1,$limit = 30){
 
             $out = [

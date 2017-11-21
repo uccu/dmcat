@@ -27,7 +27,7 @@ class ContactController extends Controller{
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }
     
-    # 招标公告
+    # 招标及公告
         function moves(){
             View::hamlReader(Request::getInstance()->folder[1].'/'.__FUNCTION__,'Admin');
         }

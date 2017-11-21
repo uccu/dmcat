@@ -157,7 +157,7 @@ class MobileController extends Controller{
         
         $info = $newsVideoModel->find($id);
 
-        $newsVideo = $newsVideoModel->order('rand()','RAW')->limit(4)->get()->toArray();
+        $newsVideo = $newsVideoModel->order('create_time desc')->limit(4)->get()->toArray();
         
 
         include_once(VIEW_ROOT.'Mobile/'. __FUNCTION__ .'.php');
@@ -347,7 +347,7 @@ class MobileController extends Controller{
     function moves(MovesModel $model,$page = 1){
         
         $type = __FUNCTION__;
-        $name = '招标公告';
+        $name = '招标及公告';
         $limit = 16;
         $list = $model->page($page,$limit)->order('top desc','id desc')->get()->toArray();
         $max = $model->select('COUNT(*) as c','RAW')->find()->c;
@@ -357,7 +357,7 @@ class MobileController extends Controller{
     function movesInfo(MovesModel $model,$id = 0){
         
         $type = 'moves';
-        $name = '招标公告';
+        $name = '招标及公告';
         $info = $model->find($id);
         !$info && Response::getInstance()->r302('/404.html');
 

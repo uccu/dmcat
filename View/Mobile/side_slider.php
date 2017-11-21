@@ -24,6 +24,15 @@
         </p>
     </footer>
 <!--侧边栏-->
+<div class="bbbx" style="display:none;
+    position: fixed;
+    z-index: 101;
+    background: rgba(0,0,0,0.3);
+    width: 100%;
+    height: 100%;
+    top: 0;
+">
+</div>
 <div class="sidebar-box">
     <div class="sidebar-header">
         <img src="img/logo.png" width="80" onclick="redirect('index')">
@@ -75,7 +84,7 @@
         </h1>
         <ul>
             <li><a href="recruit">德汇招聘</a></li>
-            <li><a href="moves">招标公告</a></li>
+            <li><a href="moves">招标及公告</a></li>
             <li><a href="complaints">投诉与建议</a></li>
             <li><a href="legalNotices">法律声明</a></li>
         </ul>

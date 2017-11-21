@@ -251,7 +251,7 @@ footer p:nth-child(1) span:nth-child(1){line-height:0.5rem}
 #recruit-info-table tbody tr td .recruit-one-info > h1 em{display: inline-block; width:0.3rem;}
 #recruit-info-table tbody tr td .recruit-one-info h1 div{}
 #recruit-info-table tbody tr td .recruit-one-info h1 a{display:block; line-height:0.6rem;height:0.6rem; width: 1.2rem; background: #DB0B2D; text-align: center; color: #FFF !important; border-radius: 4px; position: absolute;right: 0;top: 50%;margin-top:-0.3rem}
-/*招标公告*/
+/*招标及公告*/
 .tendersContent h3{width:4.2rem}
 
 

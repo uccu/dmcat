@@ -56,7 +56,7 @@
                         echo '<li>
                 <div class="chairman-pictureimg">
                     <img src="/pic/'.$v->first.'">
-                    <span data-image="'.$v->picArray.'">'.$v->count.' 张</span>
+                    <span data-image="'.$v->picArray.'" style="background:none"></span>
                 </div>
                 <h2>'.langV($v,'description',40).'</h2>
             </li>';
@@ -78,18 +78,14 @@
     .chairman_box span{display: block; width: 50px; height: 20px; font-size: 12px; line-height: 20px; background: rgb(233, 103, 125); color: #FFF; text-align: center; position: absolute; border-radius: 14px; right: 15px; bottom: 15px; cursor: pointer;}
     .chairman-images-scan{width: 100%; height: 526px; overflow: hidden; position: relative; top: 50%; margin: -263px auto 0;}
     .chairman-scan-box.chairman_box{padding: 0; height: 526px; width: 800px; margin: 0 auto; border: none;}
-    .chairman-scan-box.chairman_box img{border: 3px solid #F4F4F4;}
-    .dialog{z-index:10000;position: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.4); left: 0; top: 0;}
+    .dialog{z-index:10000;position: fixed; width: 100%; height: 100%; background: rgba(0,0,0,.8); left: 0; top: 0;}
     .dialog .dialog-close{display: block; background: #F4F4F4; padding: 4px 10px; position: absolute; right: 0; top: 0; color: #666; cursor: pointer;}
 </style>
-<div class="dialog" style="display: none;">
-    <div style="z-index:2;width:100%;height:100%;position:absolute" onclick="$('.dialog').hide();"></div>
-    <div class="dialog-close" onclick="$('.dialog').hide();" style="z-index:100">✕ 关闭</div>
+<div class="dialog" style="display: none;" onclick="$('.dialog').hide();">
+    <div style="z-index:2;width:100%;height:100%;position:absolute"></div>
     <div class="chairman-images-scan" style="z-index:100">
         <div class="swiper-wrapper">
         </div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
     </div>
 </div>
 <div class="mengceng"></div>
@@ -114,11 +110,10 @@
             $(".swiper-wrapper").html(html);
             $(".dialog").show();
             new Swiper('.chairman-images-scan', {
-                effect: 'flip',
                 loop : true,
-                grabCursor: true,
-                nextButton: '.swiper-button-next',
-                prevButton: '.swiper-button-prev'
+                paginationClickable: true,
+                spaceBetween: 30,
+                
             });
 
         });

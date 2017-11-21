@@ -28,7 +28,7 @@
     <!--input type="search" placeholder="输入关键字"-->
 </div>
 <div class="main-box" style="margin-bottom: 0">
-    <h1>招标公告</h1>
+    <h1>招标及公告</h1>
     <h3>TENDERS</h3>
 </div>
 <div class="group-newsbox">
