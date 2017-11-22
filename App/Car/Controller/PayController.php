@@ -114,7 +114,7 @@ class PayController extends Controller{
 
 
 
-    function wcpay($type){
+    function wcpay($trip_id,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
 
         //登陆验证
         !$this->L->id && AJAX::error('请登录');
