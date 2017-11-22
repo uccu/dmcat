@@ -6,11 +6,13 @@ use Uccu\DmcatTool\Tool\AJAX;
 use App\Car\Middleware\L;
 use App\Car\Model\ConfigModel;
 use App\Car\Model\MessageModel;
+use App\Car\Model\DriverMessageModel;
 use App\Car\Model\CaptchaModel;
 use App\Car\Model\UploadModel;
 use App\Car\Model\UserModel;
 use App\Car\Model\PaymentModel;
 use App\Car\Model\AreaModel;
+use App\Car\Model\IncomeModel;
 use Model;
 use stdClass;
 
@@ -301,16 +303,18 @@ class Func {
     }
 
     
-    static function add_message($user_id,$message,$url = ''){
-        $model = MessageModel::copyMutiInstance();
+    static function add_message($user_id,$message,$type=0){
+        if($type)$model = DriverMessageModel::copyMutiInstance();
+        else $model = MessageModel::copyMutiInstance();
         if(!$user_id || !$message)return;
         if(!is_array($user_id))$user_id = [$user_id];
         $data['content'] = $message;
         $data['create_time'] = TIME_NOW;
-        $data['url'] = $url;
+
         foreach($user_id as $id){
             
-            $data['user_id'] = $id;
+            if($type)$data['driver_id'] = $id;
+            else $data['user_id'] = $id;
             $model->set($data)->add();
         }
     }
@@ -798,4 +802,25 @@ class Func {
 
 
     }
+
+    
+
+
+    public static function addIncome($driver_id,$user_id,$money,$type,$trip_id){
+        
+        $incomeModel = IncomeModel::copyMutiInstance();
+
+        $data['driver_id'] = $driver_id;
+        $data['user_id'] = $user_id;
+        $data['money'] = $money;
+        $data['type'] = $type;
+        $data['trip_id'] = $trip_id;
+        $data['month'] = date('Ym');
+
+        $incomeModel->set($data)->add();
+
+        return true;
+
+    }
+
 }

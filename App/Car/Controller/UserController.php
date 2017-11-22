@@ -796,7 +796,7 @@ class UserController extends Controller{
      * @param mixed $paymentModel 
      * @return mixed 
      */
-    function fakePay($id,TripModel $tripModel,PaymentModel $paymentModel){
+    private function fakePay($id,TripModel $tripModel,PaymentModel $paymentModel){
     
         !$this->L->id && AJAX::error('未登录');
 
@@ -811,7 +811,7 @@ class UserController extends Controller{
         $data['ctime'] = TIME_NOW;
         $data['success_time'] = TIME_NOW;
         $data['total_fee'] = 0;
-        $data['out_trade_no'] = DATE_TODAY.Func::randWord(10,3);
+        $data['out_trade_no'] = 'C'.date('YmdHis',$trip->create_time).Func::add_zero($trip->id,6);
         $data['pay_type'] = 'fake';
         $data['update_time'] = TIME_NOW;
         $data['success_date'] = date('Y-m-d',TIME_NOW);
@@ -877,7 +877,7 @@ class UserController extends Controller{
         !$order && AJAX::error('error');
         
         $data['total_fee'] = $order->total_fee;
-        $data['out_trade_no'] = DATE_TODAY.Func::randWord(10,3);
+        $data['out_trade_no'] = 'C'.date('YmdHis',$trip->create_time).Func::add_zero($trip->id,6);
         $data['pay_type'] = 'offline';
         $data['update_time'] = TIME_NOW;
         $data['success_date'] = date('Y-m-d',TIME_NOW);
