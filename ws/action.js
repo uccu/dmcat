@@ -42,9 +42,9 @@ let
     },loopD = function(a,o,w,i,f){
 
         i = i || 0;
-
-        getDis(a,o,w[i].start_latitude,w[i].start_longitude,3,function(obj){
-            if(i<w.length){
+        if(i<w.length){
+            getDis(a,o,w[i].start_latitude,w[i].start_longitude,3,function(obj){
+            
 
                 if(!obj)w[i].toDistance = 0
                 else w[i].toDistance = obj.distance
@@ -55,10 +55,11 @@ let
             
                 i++;
                 loopD(a,o,w,i)
-            }else{
-                f && f(w)
-            }
-        })
+            
+            })
+        }else{
+            f && f(w)
+        }
     }
 
 
