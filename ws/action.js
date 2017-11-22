@@ -33,7 +33,7 @@ let
                 if(!obj.status)fun(false)
                 else fun(obj.results[0])
             }catch(e){
-                console.warn(e,str)
+                console.warn(e,obj)
                 fun(false)
             }
         },{hostname:'restapi.amap.com',path:'/'})
