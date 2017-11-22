@@ -36,7 +36,7 @@ class PayController extends Controller{
 
         $trip = $tripModel->find($trip_id);
         !$trip && AJAX::error('行程不存在');
-        $trip->status->status != 4 && AJAX::error('无法支付该订单');
+        $trip->status != 4 && AJAX::error('无法支付该订单');
 
         if($trip->type == 1){
             $order = $orderDrivingModel->find($trip->id);
@@ -106,6 +106,148 @@ class PayController extends Controller{
 
         AJAX::success($data);
     }
+
+
+
+
+
+    function wcpay($type){
+
+        //登陆验证
+        !$this->L->id && AJAX::error('请登录');
+
+        $trip = $tripModel->find($trip_id);
+        !$trip && AJAX::error('行程不存在');
+        $trip->status != 4 && AJAX::error('无法支付该订单');
+
+        if($trip->type == 1){
+            $order = $orderDrivingModel->find($trip->id);
+            $type = 'A';
+        }elseif($trip->type == 2){
+            $order = $orderTaxiModel->find($trip->id);
+            $type = 'B';
+        }elseif($trip->type == 3){
+            $order = $orderWayModel->find($trip->id);
+            $type = 'C';
+        }else{
+            AJAX::error('未知的订单类型');
+        }
+
+        !$order && AJAX::error('订单不存在');
+
+        /*总价格&订单号*/
+        // $total_fee = $order->total_price;
+        $total_fee = '0.01';
+        $out_trade_no = $type.date('YmdHis',$order->create_time).Func::add_zero($order->id,6);
+
+        /*生成随机码*/
+        $nonce_str = Func::randWord(32,2);
+        $nonce_str2 = Func::randWord(32,2);
+        
+        $p['appid']             = $this->L->config->wcpay_appid;
+        $p['body']              = '续费会员';
+        $p['mch_id']            = $this->L->config->wcpay_mch_id;
+        $p['nonce_str']         = $nonce_str;
+        $p['notify_url']        = Func::fullAddr('pay/wcpay_c');
+        $p['out_trade_no']      = $out_trade_no;
+        $p['spbill_create_ip']  = $_SERVER ["REMOTE_ADDR"];
+        $p['total_fee']         = $total_fee100;
+        // $p['total_fee']         = '1';
+        $p['trade_type']        = 'APP';
+
+
+        $xml = '<xml>';
+        $sign = '';
+        foreach ( $p as $key => $val ) {
+            $sign .= trim ( $key ) . "=" . trim ( $val ) . "&";
+            $xml .= "<" . trim ( $key ) . ">" . trim ( $val ) . "</" . trim ( $key ) . ">";
+        }
+        $sign .= 'key='.$this->L->config->wcpay_key;
+
+        $sign = strtoupper ( md5 ( $sign ) );
+        $xml .= "<sign>$sign</sign>";
+        $xml .= '</xml>';
+
+
+        $ch = curl_init ();
+        curl_setopt ( $ch, CURLOPT_SSL_VERIFYPEER, FALSE );
+        curl_setopt ( $ch, CURLOPT_SSL_VERIFYHOST, FALSE );
+        curl_setopt ( $ch, CURLOPT_URL, "https://api.mch.weixin.qq.com/pay/unifiedorder" );
+        curl_setopt ( $ch, CURLOPT_POST, true );
+        curl_setopt ( $ch, CURLOPT_POSTFIELDS, $xml );
+        curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
+        $da = curl_exec ( $ch );
+
+
+        
+        $data['user_id'] = $this->L->id;
+        $data['ctime'] = TIME_NOW;
+        $data['nonce_str'] = $nonce_str;
+        $data['pay_type'] = 'wcpay';
+        $data['total_fee'] = $total_fee;
+        $data['out_trade_no'] = $out_trade_no;
+        $data['rule_id'] = $rule->id;
+
+        if(!$da){
+
+            $data['error'] = '微信服务器访问超时/无法访问';
+
+            $id = PaymentModel::getSingleInstance()->set($data)->add()->getStatus();
+            if(!$id)AJAX::success('支付单生成失败');
+
+            AJAX::error($data['error']);
+        }
+
+        $result = simplexml_load_string ( $da );
+
+
+        if($result->return_code.'' == 'FAIL'){
+
+            $data['error'] = '微信通信失败.'.$result->return_msg;
+
+            $id = PaymentModel::getSingleInstance()->set($data)->add()->getStatus();
+            if(!$id)AJAX::success('支付单生成失败');
+
+            AJAX::error($data['error']);
+        }
+        if($result->result_code.'' == 'FAIL'){
+
+            $data['error'] = '微信预支付交易失败.'.$result->err_code.'.'.$result->err_code_des;
+
+            $id = PaymentModel::getSingleInstance()->set($data)->add()->getStatus();
+            if(!$id)AJAX::success('支付单生成失败');
+
+            AJAX::error($data['error']);
+        }
+
+
+        $data['prepay_id'] = $result->prepay_id.'';
+        $data['prepay_time'] = TIME_NOW;
+        $data['pay_nonce_str'] = $nonce_str2;
+
+        $data2['appid'] = $this->L->config->wcpay_appid;
+        $data2['partnerid'] = $this->L->config->wcpay_mch_id;
+        $data2['package'] = 'Sign=WXPay';
+        $data2['noncestr'] = $nonce_str2;
+        $data2['timestamp'] = TIME_NOW.'';
+        $data2['prepayid'] = $data['prepay_id'];
+        ksort($data2,SORT_STRING);
+        foreach ( $data2 as $key => $val ) {
+            $signStr .= trim ( $key ) . "=" . trim ( $val ) . "&";
+        }
+        $signStr .= 'key='.$this->L->config->wcpay_key;
+
+        $data2['sign'] = strtoupper ( md5 ( $signStr ) );
+        $data2['prepay_id'] = $data2['prepayid'];
+        $id = PaymentModel::getSingleInstance()->set($data)->add()->getStatus();
+        if(!$id)AJAX::success('支付单生成失败');
+
+        AJAX::success($data2);
+
+    }
+
+
+
 
 
     /** 支付宝回调
