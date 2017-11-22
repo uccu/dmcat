@@ -3,17 +3,27 @@ const querystring = require('querystring')
 const http = require('http')
 const config = require('./config')
 
-let z = function(url,data,cb){
+let z = function(url,data,cb,host){
     if(data instanceof Function){
         cb = data;data = {}
     }
+    let hostname = config.host,
+        port = config.port || 80,
+        path = config.path+url;
+
+    if(host){
+        hostname = host.hostname;
+        path = host.path;
+        port = host.port || 80;
+    }
+
     data = data || {}
     let postData = querystring.stringify(data),
     gData = '',
     options = {
-        hostname: config.host,
-        port: config.port||80,
-        path: config.path+url,
+        hostname: hostname,
+        port: port,
+        path: path,
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
