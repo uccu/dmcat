@@ -295,7 +295,7 @@ class DriverController extends Controller{
 
     # 我的信息
     function getMyInfo(DriverModel $driverModel){
-        $this->L->id = 3;
+        // $this->L->id = 3;
         !$this->L->id && AJAX::error('未登录');
 
         $info['avatar'] = $this->L->userInfo->avatar;
