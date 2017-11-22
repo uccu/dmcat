@@ -45,10 +45,11 @@ z = function(obj,con){
                 let latitude = obj.latitude
                 let longitude = obj.longitude
                 if(latitude && longitude)db.replace('replace into c_user_online (user_id,latitude,longitude) VALUES(?,?,?)',[d.data.info.id,latitude,longitude])
-
+                
                 else db.replace('replace into c_user_online (user_id) VALUES(?)',[d.data.info.id])
                 
                 console.log(`user ${d.data.info.id} linked`)
+                console.log(`user ${con.user_id} updated position ${latitude},${longitude}`)
                 con.sendText(content({status:200,type:'login'}))
                 
 
@@ -60,7 +61,7 @@ z = function(obj,con){
                 let latitude = parseFloat(obj.latitude || 0)
                 let longitude = parseFloat(obj.longitude || 0)
                 db.replace('update c_user_online set latitude=?,longitude=? where user_id=?',[latitude,longitude,con.user_id])
-                console.log(`user ${con.user_id} updated position`)
+                console.log(`user ${con.user_id} updated position ${latitude},${longitude}`)
 
                 db.find('select * from c_trip where driver_id=? AND type=3 AND status=3',[con.user_id],
                 function(d){
