@@ -33,7 +33,7 @@ let
                 if(!obj.status)fun(false)
                 else fun(obj.results[0])
             }catch(e){
-                console.warn(e,obj)
+                console.warn(e,obj,data)
                 fun(false)
             }
         },{hostname:'restapi.amap.com',path:'/'})
@@ -42,7 +42,7 @@ let
 
         i = i || 0;
         if(i<w.length){
-            getDis(a,o,w[i].start_latitude,w[i].start_longitude,3,function(obj){
+            getDis(a,o,w[i].start_latitude,w[i].start_longitude,1,function(obj){
             
 
                 if(!obj)w[i].toDistance = 0
