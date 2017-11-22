@@ -112,7 +112,7 @@ class HomeController extends Controller{
 
         !$area->cityId && AJAX::error('区域ID获取失败！');
 
-        $distance = Func::getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude,$type=1);
+        $distance = Func::getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude,1);
         if(!$distance)AJAX::error('距离获取失败');
 
         if($type == 1){
@@ -158,7 +158,7 @@ class HomeController extends Controller{
             
         }
 
-        $out['totalPrice']  = $price - $out['coupon'];
+        $out['totalPrice']  = \number_format($price - $out['coupon'],2,'.','');
         if($out['totalPrice'] < 0)$out['totalPrice'] = '0.00';
         
 
