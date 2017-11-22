@@ -832,7 +832,7 @@ class Func {
 
             if($type == 3)$data['money'] = $data['money']* .9;
 
-            UserModel::copyMutiInsatnce()->set('money = money + %n',$data['money'])->save($data['driver_id']);
+            UserModel::copyMutiInstance()->set('money = money + %n',$data['money'])->save($data['driver_id']);
         }
 
         $incomeModel->set($data)->add();
