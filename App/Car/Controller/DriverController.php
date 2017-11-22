@@ -295,7 +295,7 @@ class DriverController extends Controller{
 
     # 我的信息
     function getMyInfo(DriverModel $driverModel){
-        // $this->L->id = 3;
+        $this->L->id = 3;
         !$this->L->id && AJAX::error('未登录');
 
         $info['avatar'] = $this->L->userInfo->avatar;
@@ -314,8 +314,9 @@ class DriverController extends Controller{
 
         $info['apply_status'] = DriverApplyModel::copyMutiInstance()->where(['id'=>$this->L->id])->order('create_time desc')->find()->status;
         NULL === $info['apply_status'] && $info['apply_status'] = '-2';
+        $m = IncomeModel::copyMutiInstance();
+        $info['money_today'] = $m->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('type < 3 AND create_time>%n',TIME_TODAY)->find()->c;
         
-        $info['money_today'] = DriverFundModel::copyMutiInstance()->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         if(!$info['money_today'])$info['money_today'] = '0.00';
         $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type<3')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         $out['info'] = $info;
