@@ -39,7 +39,7 @@ let
             }
         })
 
-    },loopD = function(a,o,w,i,f){
+    },loopD = function(a,o,w,f,i){
 
         i = i || 0;
         if(i<w.length){
@@ -54,7 +54,7 @@ let
 
             
                 i++;
-                loopD(a,o,w,i)
+                loopD(a,o,w,f,i)
             
             })
         }else{

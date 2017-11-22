@@ -47,7 +47,7 @@ z = function(obj,con){
                 console.log(`driver ${d.data.info.id} linked`)
                 console.log(`driver ${con.driver_id} updated position ${latitude},${longitude}`);
 
-                db.find('select * from c_trip where driver_id=? and status in(2,3)',[driver.id],function(re){
+                db.find('select * from c_trip where driver_id=? AND type<3 and status in(2,3)',[driver.id],function(re){
                     if(re)driver.serving = 1;
                     if(driver.serving)return
                     let g = function(r){
