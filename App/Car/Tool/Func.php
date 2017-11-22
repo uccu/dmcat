@@ -10,6 +10,7 @@ use App\Car\Model\DriverMessageModel;
 use App\Car\Model\CaptchaModel;
 use App\Car\Model\UploadModel;
 use App\Car\Model\UserModel;
+use App\Car\Model\DriverModel;
 use App\Car\Model\PaymentModel;
 use App\Car\Model\AreaModel;
 use App\Car\Model\IncomeModel;
@@ -816,6 +817,22 @@ class Func {
         $data['type'] = $type;
         $data['trip_id'] = $trip_id;
         $data['month'] = date('Ym');
+
+        
+
+        if($type == 1 || $type == 2){
+            
+            if($type == 1)$data['money'] = $data['money']* .8;
+            if($type == 2)$data['money'] = $data['money']* .9;
+
+            DriverModel::copyMutiInsatnce()->set('money = money + %n',$data['money'])->save($data['driver_id']);
+
+        }elseif($type == 3){
+
+            if($type == 3)$data['money'] = $data['money']* .9;
+
+            UserModel::copyMutiInsatnce()->set('money = money + %n',$data['money'])->save($data['driver_id']);
+        }
 
         $incomeModel->set($data)->add();
 
