@@ -41,12 +41,15 @@ class PayController extends Controller{
         if($trip->type == 1){
             $order = $orderDrivingModel->find($trip->id);
             $type = 'A';
+            $name = '代驾';
         }elseif($trip->type == 2){
             $order = $orderTaxiModel->find($trip->id);
             $type = 'B';
+            $name = '出租车';
         }elseif($trip->type == 3){
             $order = $orderWayModel->find($trip->id);
             $type = 'C';
+            $name = '顺风车';
         }else{
             AJAX::error('未知的订单类型');
         }
@@ -66,8 +69,8 @@ class PayController extends Controller{
         $p['partner']           = $this->L->config->aliay_partner;          // 签约的支付宝账号对应的支付宝唯一用户号
         $p['seller_id']         = $this->L->config->aliay_seller_id;        // 签约卖家支付宝账号
         $p['out_trade_no']      = $out_trade_no;                            // 商户网站唯一订单号
-        $p['subject']           = '代驾费用';                                // 商品名称
-        $p['body']              = '代驾费用';                                // 商品详情
+        $p['subject']           = $name.'费用';                                // 商品名称
+        $p['body']              = $name.'费用';                                // 商品详情
         $p['total_fee']         = $total_fee;                               // 商品金额
         $p['notify_url']        = Func::fullAddr('pay/alipay_c');           // 服务器异步通知页面路径
         $p['service']           = 'mobile.securitypay.pay';                 // 服务接口名称， 固定值
@@ -95,7 +98,7 @@ class PayController extends Controller{
         $data['pay_type'] = 'alipay';
         $data['total_fee'] = $total_fee;
         $data['out_trade_no'] = $out_trade_no;
-        $data['trip'] = $trip_id;
+        $data['trip_id'] = $trip_id;
 
 
         
@@ -123,12 +126,15 @@ class PayController extends Controller{
         if($trip->type == 1){
             $order = $orderDrivingModel->find($trip->id);
             $type = 'A';
+            $name = '代驾';
         }elseif($trip->type == 2){
             $order = $orderTaxiModel->find($trip->id);
             $type = 'B';
+            $name = '出租车';
         }elseif($trip->type == 3){
             $order = $orderWayModel->find($trip->id);
             $type = 'C';
+            $name = '顺风车';
         }else{
             AJAX::error('未知的订单类型');
         }
@@ -136,23 +142,25 @@ class PayController extends Controller{
         !$order && AJAX::error('订单不存在');
 
         /*总价格&订单号*/
-        // $total_fee = $order->total_price;
-        $total_fee = '0.01';
+        $total_fee = $order->total_price;
+
         $out_trade_no = $type.date('YmdHis',$order->create_time).Func::add_zero($order->id,6);
 
         /*生成随机码*/
         $nonce_str = Func::randWord(32,2);
         $nonce_str2 = Func::randWord(32,2);
+
+        $total_fee100 = floor($total_fee*100);
         
         $p['appid']             = $this->L->config->wcpay_appid;
-        $p['body']              = '续费会员';
+        $p['body']              = $name.'费用';
         $p['mch_id']            = $this->L->config->wcpay_mch_id;
         $p['nonce_str']         = $nonce_str;
         $p['notify_url']        = Func::fullAddr('pay/wcpay_c');
         $p['out_trade_no']      = $out_trade_no;
         $p['spbill_create_ip']  = $_SERVER ["REMOTE_ADDR"];
-        $p['total_fee']         = $total_fee100;
-        // $p['total_fee']         = '1';
+        // $p['total_fee']         = $total_fee100;
+        $p['total_fee']         = '1';
         $p['trade_type']        = 'APP';
 
 
@@ -186,7 +194,7 @@ class PayController extends Controller{
         $data['pay_type'] = 'wcpay';
         $data['total_fee'] = $total_fee;
         $data['out_trade_no'] = $out_trade_no;
-        $data['rule_id'] = $rule->id;
+        $data['trip_id'] = $trip_id;
 
         if(!$da){
 
@@ -258,7 +266,6 @@ class PayController extends Controller{
      */
     function alipay_c($out_trade_no,$trade_status,PaymentModel $paymentModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
 
-        $out_trade_no = 'C201710101212000004';
         $type = substr($out_trade_no,0,1);
         $order_id = substr($out_trade_no,-6);
         // echo $type.$order_id;die("\n");
@@ -351,6 +358,91 @@ class PayController extends Controller{
         $payLog->save();
 
         echo 'success';
+    }
+
+
+    /** 微信回调
+     * wcpay_c
+     * @return mixed 
+     */
+    function wcpay_c(PaymentModel $paymentModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
+
+        $postStr = file_get_contents ( 'php://input' );
+        $xmlObject =  simplexml_load_string ( $postStr );
+        $xmlArray = [];
+        $xmlArray2 = [];
+        foreach($xmlObject as $k=>$v){
+            $xmlArray[$k] = $xmlArray2[$k] = $v.'';
+        }
+        $sign = $xmlArray['sign'];
+        unset($xmlArray['sign']);
+        ksort($xmlArray,SORT_STRING);
+        if(!$xmlArray || !$xmlArray['result_code'])AJAX::error('微信支付回调失败');
+        if($xmlArray['result_code'] != 'SUCCESS')AJAX::error('微信支付回调.'.$xmlArray['return_msg']);
+
+        $signStr = '';
+
+        foreach($xmlArray as $k=>$v){
+            $signStr .= $k.'='.$v.'&';
+        }
+        $signStr .= 'key='.$this->L->config->wcpay_key;
+
+        $model = $paymentModel;
+        $out_trade_no = $where['out_trade_no'] = $xmlArray['out_trade_no'];
+        $where['nonce_str'] = $xmlArray['nonce_str'];
+        $log = $model->where($where)->find();
+        if(!$log)AJAX::error('未找到支付单！');
+        
+        if($sign != strtoupper ( md5 ( $signStr ) )){
+
+            $log->update_time = TIME_NOW;
+            $log->error = '支付回调签名错误.'.json_encode($xmlArray2);
+            $log->save();
+            AJAX::error('支付回调签名错误');
+        }
+
+                
+
+        //支付单的状态不是代付款
+        if($log->success_time != 0)AJAX::error('该订单已付款！');
+
+
+        $type = substr($out_trade_no,0,1);
+        $order_id = substr($out_trade_no,-6);
+        // echo $type.$order_id;die("\n");
+        if($type == 'A'){
+            $order = $orderDrivingModel->find($order_id);
+            $trip = $tripModel->where(['type'=>1,'id'=>$order_id])->find();
+        }elseif($type == 'B'){
+            $order = $orderTaxiModel->find($trip->id);
+            $trip = $tripModel->where(['type'=>1,'id'=>$order_id])->find();
+        }elseif($type == 'C'){
+            $order = $orderWayModel->find($trip->id);
+            $trip = $tripModel->where(['type'=>1,'id'=>$order_id])->find();
+        }else{
+            echo 'fail';die();
+        }
+
+        !$trip && AJAX::error('行程不存在');
+        $trip->status->status != 4 && AJAX::error('无法支付该订单');
+        !$order && AJAX::error('订单不存在');
+
+        $this->pay_finish($trip,$order);
+        
+
+        $log->update_time = TIME_NOW;
+        $log->success_time = TIME_NOW;
+        $log->open_id = $xmlArray['openid']?$xmlArray['openid']:'';
+        $log->bank = $xmlArray['bank_type']?$xmlArray['bank_type']:'';
+        $log->open_order_id = $xmlArray['transaction_id']?$xmlArray['transaction_id']:'';
+        $log->name = $xmlArray['device_info']?$xmlArray['device_info']:'';
+        $log->success_date = date('Y-m-d',TIME_NOW);
+        $status = $log->save()->getStatus();
+
+                
+        echo 'success';
+
+        
     }
 
 
