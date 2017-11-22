@@ -817,6 +817,7 @@ class Func {
         $data['type'] = $type;
         $data['trip_id'] = $trip_id;
         $data['month'] = date('Ym');
+        $data['create_time'] = TIME_NOW;
 
         
 
