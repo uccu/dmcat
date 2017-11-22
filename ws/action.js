@@ -16,23 +16,64 @@ let
         s = s * 6378.137;
         s = Math.round(s * 10000) / 10;
         return s
-    };
+    },
+
+    getDis = function (lat1, lng1, lat2, lng2,$type = 1,fun){
+
+        let data = {};
+
+        data.key = '99e83d3bf5c6f8825f237440cc283b5e';
+        data.origins = lng1 + ',' + lat1;
+        data.destination = lng2 + ',' + lat2;
+        data.type = type;
+
+        post('http://restapi.amap.com/v3/distance',data,function(str){
+
+            try{
+                obj = JSON.parse(str)
+                if(!$data.status)fun(false)
+                else fun(obj.results[0])
+            }catch(e){
+                console.warn('message not obj(getDis)',str)
+                fun(false)
+            }
+        })
+
+    },loopD = function(a,o,w,i,f){
+
+        i = i || 0;
+
+        getDis(a,o,w[i].start_latitude,w[i].start_longitude,3,function(obj){
+            if(i<w.length){
+
+                if(!obj)w[i].toDistance = 0
+                else w[i].toDistance = obj.distance
+
+                if(w[i].toDistance < 1000)w[i].toDistance = parseInt(w[i].toDistance) + '米';
+                else w[i].toDistance = parseInt(w[i].toDistance/100)/10 + '公里';
+
+            
+                i++;
+                loopD(a,o,w,i)
+            }else{
+                f && f(w)
+            }
+        })
+    }
+
 
 
 
 module.exports = {
-
+    
     driverGetOrders(a,o,f){
         // console.log(a,o)
         db.get('select * from c_trip where status=1 and type<3 and start_latitude between ? and ? and start_longitude between ? and ? and driver_id=0 order by create_time desc',[a-0.1,a+0.1,o-0.1,o+0.1],function(w){
             if(w.length){
-                for(let i in w){
-                    w[i].toDistance = dis(a,o,w[i].start_latitude,w[i].start_longitude)
-                    if(w[i].toDistance < 1000)w[i].toDistance = parseInt(w[i].toDistance) + '米';
-                    else w[i].toDistance = parseInt(w[i].toDistance/100)/10 + '公里';
-                }
+
+                loopD(a,o,w,f)
             }
-            f && f(w)
+            
         })
 
     },

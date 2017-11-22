@@ -104,8 +104,8 @@ z = function(obj,con){
                     let name = obj.name || ''
                     let city_id = parseInt(obj.city_id || 0)
 
-                    let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
-                    let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
+                    let latitudeRange = [start_latitude - 0.05,start_latitude + 0.05]
+                    let longitudeRange = [start_longitude - 0.05,start_longitude + 0.05]
 
                     let id = 0;
 
@@ -231,8 +231,8 @@ z = function(obj,con){
                 let city_id         = parseInt(obj.city_id || 0)
                 let meter           = obj.meter == 1 ? 1:0
 
-                let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
-                let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
+                let latitudeRange = [start_latitude - 0.05,start_latitude + 0.05]
+                let longitudeRange = [start_longitude - 0.05,start_longitude + 0.05]
 
                 let id = 0;
 
@@ -368,8 +368,8 @@ z = function(obj,con){
                 let city_id         = parseInt(obj.city_id || 0)
                 let num         = parseInt(obj.num || 1)
 
-                let latitudeRange = [start_latitude - 0.1,start_latitude + 0.1]
-                let longitudeRange = [start_longitude - 0.1,start_longitude + 0.1]
+                let latitudeRange = [start_latitude - 0.05,start_latitude + 0.05]
+                let longitudeRange = [start_longitude - 0.05,start_longitude + 0.05]
 
 
 

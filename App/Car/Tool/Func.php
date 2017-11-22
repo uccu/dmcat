@@ -566,7 +566,7 @@ class Func {
         $data['key'] = $key = L::getSingleInstance()->config->GAODE_KEY;
         $data['origins'] = number_format($start_longitude,6,'.','').','.number_format($start_latitude,6,'.','');
         $data['destination'] = number_format($end_longitude,6,'.','').','.number_format($end_latitude,6,'.','');
-        $data['type'] = 1;
+        $data['type'] = 3;
         $data = json_decode(self::curl('http://restapi.amap.com/v3/distance',$data));
 
         if(!$data->status)return false;
