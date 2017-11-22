@@ -22,21 +22,20 @@ let
 
         let data = {};
 
-        data.key = '99e83d3bf5c6f8825f237440cc283b5e';
-        data.origins = lng1 + ',' + lat1;
-        data.destination = lng2 + ',' + lat2;
-        data.type = type;
+        data.start_latitude = lat1;
+        data.start_longitude = lng1;
+        data.end_latitude = lat2;
+        data.end_longitude = lng2;
 
-        post('v3/distance',data,function(obj){
+        post('home/getDistance',data,function(obj){
 
             try{
-                if(!obj.status)fun(false)
-                else fun(obj.results[0])
+                fun(obj.data)
             }catch(e){
                 console.warn(e,obj,data)
                 fun(false)
             }
-        },{hostname:'restapi.amap.com',path:'/'})
+        })
 
     },loopD = function(a,o,w,f,i){
 
