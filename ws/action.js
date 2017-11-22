@@ -27,10 +27,9 @@ let
         data.destination = lng2 + ',' + lat2;
         data.type = type;
 
-        post('v3/distance',data,function(str){
+        post('v3/distance',data,function(obj){
 
             try{
-                obj = JSON.parse(str)
                 if(!obj.status)fun(false)
                 else fun(obj.results[0])
             }catch(e){
