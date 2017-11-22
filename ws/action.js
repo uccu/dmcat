@@ -31,7 +31,7 @@ let
 
             try{
                 obj = JSON.parse(str)
-                if(!data.status)fun(false)
+                if(!obj.status)fun(false)
                 else fun(obj.results[0])
             }catch(e){
                 console.warn(e,str)
