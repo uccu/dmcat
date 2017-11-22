@@ -218,7 +218,7 @@ class PayController extends Controller{
 
             AJAX::error($data['error']);
         }
-        if($result->result_code.'' == 'FAIL'){
+        if($result->result_code.'' == 'FAIL' || $result->err_code != 'ORDERPAID'){
 
             $data['error'] = '微信预支付交易失败.'.$result->err_code.'.'.$result->err_code_des;
 
