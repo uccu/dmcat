@@ -375,7 +375,7 @@ class UserController extends Controller{
                     else $v->driverInfo = DriverModel::copyMutiInstance()->select('avatar','name','sex','phone','judge_score','car_number','brand')->find($v->driver_id);
                     if(!$v->driverInfo)$v->driver_id = '0';
                     else{
-                        $v->driverInfo->order_count = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('type<2')->where(['driver_id'=>$v->driver_id])->find()->c;
+                        $v->driverInfo->order_count = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type<2')->where(['driver_id'=>$v->driver_id])->find()->c;
                     }
                 }
             }
