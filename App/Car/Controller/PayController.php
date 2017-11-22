@@ -282,10 +282,10 @@ class PayController extends Controller{
             $trip = $tripModel->where(['type'=>1,'id'=>$order_id])->find();
         }elseif($type == 'B'){
             $order = $orderTaxiModel->find($trip->id);
-            $trip = $tripModel->where(['type'=>1,'id'=>$order_id])->find();
+            $trip = $tripModel->where(['type'=>2,'id'=>$order_id])->find();
         }elseif($type == 'C'){
             $order = $orderWayModel->find($trip->id);
-            $trip = $tripModel->where(['type'=>1,'id'=>$order_id])->find();
+            $trip = $tripModel->where(['type'=>3,'id'=>$order_id])->find();
         }else{
             echo 'fail';die();
         }
@@ -423,10 +423,10 @@ class PayController extends Controller{
             $trip = $tripModel->where(['type'=>1,'id'=>$order_id])->find();
         }elseif($type == 'B'){
             $order = $orderTaxiModel->find($trip->id);
-            $trip = $tripModel->where(['type'=>1,'id'=>$order_id])->find();
+            $trip = $tripModel->where(['type'=>2,'id'=>$order_id])->find();
         }elseif($type == 'C'){
             $order = $orderWayModel->find($trip->id);
-            $trip = $tripModel->where(['type'=>1,'id'=>$order_id])->find();
+            $trip = $tripModel->where(['type'=>3,'id'=>$order_id])->find();
         }else{
             echo 'fail';die();
         }
