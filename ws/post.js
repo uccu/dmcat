@@ -32,7 +32,7 @@ let z = function(url,data,cb){
 
             }catch(e){
                 obj = false
-                console.warn(e)
+                console.warn(e,gData)
                 return
             }
 
