@@ -429,6 +429,16 @@ z = function(obj,con){
                 })
             }
             break;
+        case 'logout':
+            if(con.driver_id){
+
+                db.delete('delete from c_driver_online where driver_id=?',[con.driver_id],function(){
+                    data.DriverMap.delete(con.driver_id)
+                    console.log(`driver ${con.driver_id} logout`)
+                    con.sendText(content({status:200,type:'logout'}))
+                })
+            }
+            break;
         default:
             break;
     }
