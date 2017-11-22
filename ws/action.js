@@ -27,7 +27,7 @@ let
         data.destination = lng2 + ',' + lat2;
         data.type = type;
 
-        post('http://restapi.amap.com/v3/distance',data,function(str){
+        post('v3/distance',data,function(str){
 
             try{
                 obj = JSON.parse(str)
@@ -37,7 +37,7 @@ let
                 console.warn('message not obj(getDis)',str)
                 fun(false)
             }
-        })
+        },{hostname:'restapi.amap.com',path:'/'})
 
     },loopD = function(a,o,w,f,i){
 
