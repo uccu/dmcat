@@ -7,7 +7,7 @@
 
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^$ download/share_pc.html
+    RewriteRule ^$ download/share_pc.html[L]
     RewriteRule ^ index.php [L]
 
 </IfModule>
