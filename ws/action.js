@@ -73,6 +73,8 @@ module.exports = {
             if(w.length){
 
                 loopD(a,o,w,f)
+            }else{
+                f && f(w)
             }
             
         })
@@ -83,13 +85,11 @@ module.exports = {
         // console.log(a,o)
         db.get('select * from c_trip where status=1 and type=1 and start_latitude between ? and ? and start_longitude between ? and ? and driver_id=0 order by create_time desc',[a-0.1,a+0.1,o-0.1,o+0.1],function(w){
             if(w.length){
-                for(let i in w){
-                    w[i].toDistance = dis(a,o,w[i].start_latitude,w[i].start_longitude)
-                    if(w[i].toDistance < 1000)w[i].toDistance = parseInt(w[i].toDistance) + '米';
-                    else w[i].toDistance = parseInt(w[i].toDistance/100)/10 + '公里';
-                }
+                loopD(a,o,w,f)
             }
-            f && f(w)
+            else{
+                f && f(w)
+            }
         })
 
     },
@@ -98,13 +98,11 @@ module.exports = {
         // console.log(a,o)
         db.get('select * from c_trip where status=1 and type=2 and start_latitude between ? and ? and start_longitude between ? and ? and driver_id=0 order by create_time desc',[a-0.1,a+0.1,o-0.1,o+0.1],function(w){
             if(w.length){
-                for(let i in w){
-                    w[i].toDistance = dis(a,o,w[i].start_latitude,w[i].start_longitude)
-                    if(w[i].toDistance < 1000)w[i].toDistance = parseInt(w[i].toDistance) + '米';
-                    else w[i].toDistance = parseInt(w[i].toDistance/100)/10 + '公里';
-                }
+
+                loopD(a,o,w,f)
+            }else{
+                f && f(w)
             }
-            f && f(w)
         })
 
     },
