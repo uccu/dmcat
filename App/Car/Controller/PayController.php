@@ -283,7 +283,7 @@ class PayController extends Controller{
         }
 
         !$trip && AJAX::error('行程不存在');
-        $trip->status->status != 4 && AJAX::error('无法支付该订单');
+        $trip->status != 4 && AJAX::error('无法支付该订单');
         !$order && AJAX::error('订单不存在');
 
 
@@ -424,7 +424,7 @@ class PayController extends Controller{
         }
 
         !$trip && AJAX::error('行程不存在');
-        $trip->status->status != 4 && AJAX::error('无法支付该订单');
+        $trip->status != 4 && AJAX::error('无法支付该订单');
         !$order && AJAX::error('订单不存在');
 
         $this->pay_finish($trip,$order);
