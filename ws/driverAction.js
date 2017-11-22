@@ -44,6 +44,8 @@ z = function(obj,con){
                 let latitude = driver.latitude = parseFloat(obj.latitude || 0)
                 let longitude = driver.longitude = parseFloat(obj.longitude || 0)
                 db.replace('replace into c_driver_online (driver_id,latitude,longitude) VALUES(?,?,?)',[d.data.info.id,latitude,longitude])
+                console.log(`driver ${d.data.info.id} linked`)
+                console.log(`driver ${con.driver_id} updated position ${latitude},${longitude}`);
 
                 db.find('select * from c_trip where driver_id=? and status in(2,3)',[driver.id],function(re){
                     if(re)driver.serving = 1;
@@ -56,7 +58,7 @@ z = function(obj,con){
                     (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
                 })
 
-                console.log(`driver ${d.data.info.id} linked`)
+                
                 con.sendText(content({status:200,type:'login'}))
                 
 
@@ -70,7 +72,7 @@ z = function(obj,con){
                 let latitude = driver.latitude = parseFloat(obj.latitude || 0)
                 let longitude = driver.longitude = parseFloat(obj.longitude || 0)
                 db.replace('update c_driver_online set latitude=?,longitude=? where driver_id=?',[latitude,longitude,con.driver_id])
-                console.log(`driver ${con.driver_id} updated position`)
+                console.log(`driver ${con.driver_id} updated position ${latitude},${longitude}`)
 
                 if(driver.serving)db.find('select * from c_trip where driver_id=? AND type<3 AND status=3',[con.driver_id],
                 function(d){

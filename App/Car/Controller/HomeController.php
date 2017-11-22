@@ -112,7 +112,7 @@ class HomeController extends Controller{
 
         !$area->cityId && AJAX::error('区域ID获取失败！');
 
-        $distance = Func::getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude);
+        $distance = Func::getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude,$type=1);
         if(!$distance)AJAX::error('距离获取失败');
 
         if($type == 1){
