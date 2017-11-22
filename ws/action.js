@@ -18,7 +18,7 @@ let
         return s
     },
 
-    getDis = function (lat1, lng1, lat2, lng2,$type = 1,fun){
+    getDis = function (lat1, lng1, lat2, lng2,type = 1,fun){
 
         let data = {};
 
