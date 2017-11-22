@@ -489,7 +489,7 @@ class StaffController extends Controller{
         $info = AdminFunc::get($model,$id);
         $info->province_id = AreaModel::copyMutiInstance()->find($info->city_id)->parent_id;
 
-        $info->typee = $info->type_driving ? 1:2;
+        $info->typee = $info->type_driving ? 1:($info->type_taxi?2:0);
 
         if(!$info->province_id){
             $info->province_id = '';

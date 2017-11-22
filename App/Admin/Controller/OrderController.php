@@ -1127,6 +1127,17 @@ class OrderController extends Controller{
                 'name'  =>  'id',
             ],
             [
+
+                'name'  =>  'type',
+                'title' =>  '类型',
+                'type'  =>  'select',
+                'option'=>[
+                    '1'=>'代驾',
+                    '2'=>'出租车'
+                ],
+                'disabled'=>true,
+            ],
+            [
                 'title' =>  '状态',
                 'name'  =>  'status',
                 'type'  =>  'select',
@@ -1146,8 +1157,7 @@ class OrderController extends Controller{
             
             
             $info = AdminFunc::get($model,$id);
-            
-            if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
+
             
             $out = 
             [
@@ -1172,6 +1182,7 @@ class OrderController extends Controller{
         
         $app = $model->find($id);
         !$app && AJAX::error('error');
+        $type = $app->type;
 
         if($status == 1){
             if($type==1){
@@ -1189,7 +1200,7 @@ class OrderController extends Controller{
             
             DriverModel::copyMutiInstance()->set($data2)->save($id);
         }else{
-            DriverModel::copyMutiInstance()->set(['type'=>0,'city_id'=>$app->city_id])->save($id);
+            DriverModel::copyMutiInstance()->set(['type_taxi'=>0,'type_driving'=>0,'city_id'=>$app->city_id])->save($id);
         }
 
         $upd = AdminFunc::upd($model,$id,$data);
