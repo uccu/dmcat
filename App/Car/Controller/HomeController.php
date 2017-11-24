@@ -143,7 +143,7 @@ class HomeController extends Controller{
         if(!$price)AJAX::error('预估价获取失败');
 
         $out['area']        = $area;
-        $out['distance']    = $distance;
+        $out['distance']    = number_format( $distance / 1000,2,'.','');
 
             
         $out['price']       = $price;

@@ -36,6 +36,7 @@ use App\Car\Model\IncomeModel;
 use App\Car\Model\FeedbackModel; 
 use App\Car\Model\UsedCarModel; 
 use App\Car\Model\RoadModel; 
+use App\Car\Model\UserOnlineModel; 
 use Model; 
 
 
@@ -750,7 +751,7 @@ class UserController extends Controller{
      * orderRoute
      * @return mixed 
      */
-    function orderRoute(OrderWayModel $orderWayModel,$id,TripModel $tripModel){
+    function orderRoute(OrderWayModel $orderWayModel,$id,TripModel $tripModel,UserOnlineModel $userOnlineModel){
 
         !$this->L->id && AJAX::error('未登录');
         $this->L->userInfo->type != 1 && AJAX::error('请申请成为顺风车司机');
@@ -758,9 +759,21 @@ class UserController extends Controller{
         $order = $orderWayModel->find($id);
         if($order->status != 1)AJAX::error('抢单失败');
 
+        $trip = $tripModel->set($data)->where(['type'=>3,'id'=>$id])->save();
+        !$trip && AJAX::error('行程不存在');
+        $user = $userOnlineModel->find($this->L->id);
+        if(!$user || !$trip->start_latitude){
+            $duration = 0;
+        }else{
+
+            $result = Func::getDistance($user->latitude,$user->longitude,$user->start_latitude,$user->start_longitude,1);
+            $duration = $result ? $result->duration : 0;
+
+        }
+
         $data['status'] = 2;
         $data['driver_id'] = $this->L->id;
-        
+        $data['duration'] = $duration;
         DB::start();
         $tripModel->set($data)->where(['type'=>3,'id'=>$id])->save();
         $data['order_time'] = TIME_NOW;

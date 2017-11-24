@@ -97,6 +97,7 @@ z = function(obj,con){
         case 'orderDriving':
             if(con.driver_id){
                 let id = obj.id
+                let driver = data.DriverMap.get(con.driver_id)
 
                 db.find('select * from c_order_driving where driver_id=? and status in(2,3)',[con.driver_id],function(r){
 
@@ -110,43 +111,49 @@ z = function(obj,con){
                             /** 更新订单 */
                             db.update('update c_order_driving set driver_id=?,status=2,order_time=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
                                 /** 更新行程 */
-                                db.update('update c_trip set driver_id=?,status=2 where id=? and type=1',[con.driver_id,id],function(){
-                                    let driver_ids = result.driver_ids
-                                    let driver = data.DriverMap.get(con.driver_id)
-                                    /** 设置司机状态为服务中 */
-                                    driver.serving = 1;
-                                    con.sendText(content({status:200,type:'orderDriving',id:id}))
-                                    if(driver){
 
-                                        let g = function(r){
-                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
-                                        };
-                                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
-                                    }
-                                    let user = data.UserMap.get(result.user_id+'')
-                                    if(user){
-                                        user.con.sendText(content({status:200,type:'orderDriving',id:id}))
-                                        post('user/push',{id:result.user_id,message:'有司机接了您的订单！',type:'order_order'});
-                                    }
-                                    if(driver_ids){
-                                        driver_ids = driver_ids.split(',')
-                                        for(let k in driver_ids){
-                                            let driver = data.DriverMap.get(driver_ids[k]+'')
-                                            
-                                            if(driver){
-                                                if(driver.serving)continue
-                                                let g = function(r){
-                                                    driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
-                                                };
-                                                (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                                (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                                                (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                action.getDis(driver.latitude,driver.longitude,result,start_latitude,result,start_longitude,3,function(st){
+                                    if(!st)st  = {}
+                                    db.update('update c_trip set driver_id=?,status=2,duration=? where id=? and type=1',[con.driver_id,id,st.duration||0],function(){
+                                        let driver_ids = result.driver_ids
+                                        
+                                        /** 设置司机状态为服务中 */
+                                        driver.serving = 1;
+                                        con.sendText(content({status:200,type:'orderDriving',id:id}))
+                                        if(driver){
+
+                                            let g = function(r){
+                                                driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
+                                            };
+                                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                        }
+                                        let user = data.UserMap.get(result.user_id+'')
+                                        if(user){
+                                            user.con.sendText(content({status:200,type:'orderDriving',id:id}))
+                                            post('user/push',{id:result.user_id,message:'有司机接了您的订单！',type:'order_order'});
+                                        }
+                                        if(driver_ids){
+                                            driver_ids = driver_ids.split(',')
+                                            for(let k in driver_ids){
+                                                let driver = data.DriverMap.get(driver_ids[k]+'')
+                                                
+                                                if(driver){
+                                                    if(driver.serving)continue
+                                                    let g = function(r){
+                                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
+                                                    };
+                                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                                }
                                             }
                                         }
-                                    }
+                                    })
                                 })
+
+                                
                             })
                         }
                     })
@@ -170,42 +177,45 @@ z = function(obj,con){
                             /** 更新订单 */
                             db.update('update c_order_taxi set driver_id=?,status=2,order_time=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
                                 /** 更新行程 */
-                                db.update('update c_trip set driver_id=?,status=2 where id=? and type=2',[con.driver_id,id],function(){
-                                    let driver_ids = result.driver_ids
-                                    let driver = data.DriverMap.get(con.driver_id)
-                                    /** 设置司机状态为服务中 */
-                                    driver.serving = 1;
-                                    con.sendText(content({status:200,type:'orderTaxi',id:id}))
-                                    if(driver){
+                                action.getDis(driver.latitude,driver.longitude,result,start_latitude,result,start_longitude,1,function(st){
+                                    if(!st)st  = {}
+                                    db.update('update c_trip set driver_id=?,status=2,duration=? where id=? and type=2',[con.driver_id,id,st.duration||0],function(){
+                                        let driver_ids = result.driver_ids
+                                        let driver = data.DriverMap.get(con.driver_id)
+                                        /** 设置司机状态为服务中 */
+                                        driver.serving = 1;
+                                        con.sendText(content({status:200,type:'orderTaxi',id:id}))
+                                        if(driver){
 
-                                        let g = function(r){
-                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
-                                        };
-                                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
-                                    }
-                                    let user = data.UserMap.get(result.user_id+'')
-                                    if(user){
-                                        user.con.sendText(content({status:200,type:'orderTaxi',id:id}))
-                                        post('user/push',{id:result.user_id,message:'有司机接了您的订单！',type:'order_order'});
-                                    }
-                                    if(driver_ids){
-                                        driver_ids = driver_ids.split(',')
-                                        for(let k in driver_ids){
-                                            let driver = data.DriverMap.get(driver_ids[k]+'')
-                                            
-                                            if(driver){
-                                                if(driver.serving)continue
-                                                let g = function(r){
-                                                    driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
-                                                };
-                                                (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                                (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                                                (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                            let g = function(r){
+                                                driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
+                                            };
+                                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                        }
+                                        let user = data.UserMap.get(result.user_id+'')
+                                        if(user){
+                                            user.con.sendText(content({status:200,type:'orderTaxi',id:id}))
+                                            post('user/push',{id:result.user_id,message:'有司机接了您的订单！',type:'order_order'});
+                                        }
+                                        if(driver_ids){
+                                            driver_ids = driver_ids.split(',')
+                                            for(let k in driver_ids){
+                                                let driver = data.DriverMap.get(driver_ids[k]+'')
+                                                
+                                                if(driver){
+                                                    if(driver.serving)continue
+                                                    let g = function(r){
+                                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
+                                                    };
+                                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                                }
                                             }
                                         }
-                                    }
+                                    })
                                 })
                             })
                         }

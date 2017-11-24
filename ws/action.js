@@ -44,9 +44,14 @@ let
             getDis(a,o,w[i].start_latitude,w[i].start_longitude,1,function(obj){
             
 
-                if(!obj)w[i].toDistance = 0
-                else w[i].toDistance = obj.distance
-
+                if(!obj){
+                    w[i].toDistance = 0
+                    w[i].duration = 0
+                }
+                else{
+                    w[i].toDistance = obj.distance
+                    w[i].duration = obj.duration
+                }
                 if(w[i].toDistance < 1000)w[i].toDistance = parseInt(w[i].toDistance) + '米';
                 else w[i].toDistance = parseInt(w[i].toDistance/100)/10 + '公里';
 
@@ -229,8 +234,8 @@ module.exports = {
 
 
         });
-    }
+    },
 
-
+    getDis:getDis
 
 }

@@ -42,8 +42,8 @@ z = function(obj,con){
                 user.id = d.data.info.id
                 data.UserMap.set(d.data.info.id,user)
 
-                let latitude = obj.latitude
-                let longitude = obj.longitude
+                let latitude = user.latitude = obj.latitude
+                let longitude = user.longitude = obj.longitude
                 if(latitude && longitude)db.replace('replace into c_user_online (user_id,latitude,longitude) VALUES(?,?,?)',[d.data.info.id,latitude,longitude])
                 
                 else db.replace('replace into c_user_online (user_id) VALUES(?)',[d.data.info.id])
@@ -58,8 +58,9 @@ z = function(obj,con){
             break;
         case 'updPostion':
             if(con.user_id){
-                let latitude = parseFloat(obj.latitude || 0)
-                let longitude = parseFloat(obj.longitude || 0)
+                let user = data.UserMap.get(con.user_id + '')
+                let latitude = user.latitude = parseFloat(obj.latitude || 0)
+                let longitude = user.longitude = parseFloat(obj.longitude || 0)
                 db.replace('update c_user_online set latitude=?,longitude=? where user_id=?',[latitude,longitude,con.user_id])
                 console.log(`user ${con.user_id} updated position ${latitude},${longitude}`)
 
@@ -72,7 +73,7 @@ z = function(obj,con){
 
                     }else{
                         let di = dis(d.last_latitude,d.last_longitude,latitude,longitude);
-                        if(!di || !latitude || !latitude)di = 0;
+                        if(!di || !d.last_latitude || !latitude)di = 0;
                         di += d.real_distance;
                         // if(!di)di = 0;
                         db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type=3 AND status=3',[latitude,longitude,di,con.user_id])
@@ -156,50 +157,68 @@ z = function(obj,con){
             if(con.user_id){
 
                 let id = obj.id || 0
-                db.find('select * from c_order_driving where id=? and user_id=?',[id,con.user_id],function(result){
-                    if(result){
-                        if([1,2].indexOf(parseInt(result.status))!==-1){
-                            db.update('update c_order_driving set status=0 where id=?',[id],function(){
-                                con.sendText(content({status:200,type:'cancelAskForDriving',id:id}))
+                db.find('select * from c_trip where id=? and type = 1 and user_id=?',[id,con.user_id],function(trip){
 
-                                db.update('update c_trip set status=0 where id=? and type=1',[id],function(){
-                                    if(result.status == 2){
-                                        let driver = data.DriverMap.get(result.driver_id+'')
-                                        if(driver){
+                    if(!trip){
+                        con.sendText(content({status:400,type:'cancelAskForDriving',id:id,message:'行程不存在'}))
+                        return;
+                    }
 
-                                            post('driver/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
-                                            let g = function(r){
-                                                driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
-                                                driver.serving = 0;
-                                            };
-                                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
-                                        }
-                                    }else{
-                                        let driver_ids = result.driver_ids
-                                        if(driver_ids){
-                                            driver_ids = driver_ids.split(',')
-                                            for(let k in driver_ids){
-                                                let driver = data.DriverMap.get(driver_ids[k]+'')
-                                                if(driver){
-                                                    if(driver.serving)continue
-                                                    let g = function(r){
-                                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
-                                                    };
-                                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                    
+
+                    db.find('select * from c_order_driving where id=? and user_id=?',[id,con.user_id],function(result){
+                        if(result){
+
+                            if(result.order_time + 120 < parseInt(Date.now() / 1000) && result.order_time + trip.duration + 120 > parseInt(Date.now() / 1000)){
+                                con.sendText(content({status:400,type:'cancelAskForDriving',id:id,message:'行程无法取消'}))
+                                return;
+                            }
+
+
+                            if([1,2].indexOf(parseInt(result.status))!==-1){
+                                db.update('update c_order_driving set status=0 where id=?',[id],function(){
+                                    con.sendText(content({status:200,type:'cancelAskForDriving',id:id}))
+
+                                    db.update('update c_trip set status=0 where id=? and type=1',[id],function(){
+                                        if(result.status == 2){
+                                            let driver = data.DriverMap.get(result.driver_id+'')
+                                            if(driver){
+
+                                                post('driver/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
+                                                let g = function(r){
+                                                    driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
+                                                    driver.serving = 0;
+                                                };
+                                                (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                                (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                                (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                            }
+                                        }else{
+                                            let driver_ids = result.driver_ids
+                                            if(driver_ids){
+                                                driver_ids = driver_ids.split(',')
+                                                for(let k in driver_ids){
+                                                    let driver = data.DriverMap.get(driver_ids[k]+'')
+                                                    if(driver){
+                                                        if(driver.serving)continue
+                                                        let g = function(r){
+                                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
+                                                        };
+                                                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                                                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
+                                    })
                                 })
-                            })
-                            
+                                
+                            }
                         }
-                    }
+                    })
                 })
+                
             }
             break;
         case 'callTaxi':
@@ -282,61 +301,75 @@ z = function(obj,con){
 
                 let id = obj.id || 0
                 /** 查询订单 */
-                db.find('select * from c_order_taxi where id=? and user_id=?',[id,con.user_id],function(result){
 
-                    /** 订单不存在返回 */
-                    if(!result)return;
-                    
-                    /** 订单状态只有在12时候可以取消 */
-                    if([1,2].indexOf(parseInt(result.status))==-1)return;
-                    
-                    /** 更新订单状态为取消 */
-                    db.update('update c_order_taxi set status=0 where id=?',[id],function(){
+                db.find('select * from c_trip where id=? and type = 2 and user_id=?',[id,con.user_id],function(trip){
+
+                    if(!trip){
+                        con.sendText(content({status:400,type:'cancelCallTaxi',id:id,message:'行程不存在'}))
+                        return;
+                    }
+                    db.find('select * from c_order_taxi where id=? and user_id=?',[id,con.user_id],function(result){
+
+                        /** 订单不存在返回 */
+                        if(!result)return;
+
+                        if(result.order_time + 120 < parseInt(Date.now() / 1000) && result.order_time + trip.duration + 120 > parseInt(Date.now() / 1000)){
+                            con.sendText(content({status:400,type:'cancelCallTaxi',id:id,message:'行程无法取消'}))
+                            return;
+                        }
                         
-                        /** 发送成功信息 */
-                        con.sendText(content({status:200,type:'cancelCallTaxi',id:id}))
+                        /** 订单状态只有在12时候可以取消 */
+                        if([1,2].indexOf(parseInt(result.status))==-1)return;
+                        
+                        /** 更新订单状态为取消 */
+                        db.update('update c_order_taxi set status=0 where id=?',[id],function(){
+                            
+                            /** 发送成功信息 */
+                            con.sendText(content({status:200,type:'cancelCallTaxi',id:id}))
 
-                        /** 更新行程表 */
-                        db.update('update c_trip set status=0 where id=? and type=2',[id],function(){
+                            /** 更新行程表 */
+                            db.update('update c_trip set status=0 where id=? and type=2',[id],function(){
 
-                            /** 状态为待接客时候动作 */
-                            if(result.status == 2)
-                            {
-                                let driver = data.DriverMap.get(result.driver_id+'')
-                                if(!driver)return;
+                                /** 状态为待接客时候动作 */
+                                if(result.status == 2)
+                                {
+                                    let driver = data.DriverMap.get(result.driver_id+'')
+                                    if(!driver)return;
 
-                                post('driver/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
+                                    post('driver/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
 
-                                let g = function(r){
-                                    driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
-                                    driver.serving = 0;
-                                };
-                                (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
-
-                            }else /** 状态为抢单时候动作 */
-                            {
-                                
-                                let driver_ids = result.driver_ids
-                                if(!driver_ids)return;
-
-                                driver_ids = driver_ids.split(',')
-                                for(let k in driver_ids){
-                                    let driver = data.DriverMap.get(driver_ids[k]+'')
-                                    if(!driver)continue;
-                                    if(driver.serving)continue
                                     let g = function(r){
-                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
+                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
+                                        driver.serving = 0;
                                     };
                                     (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
                                     (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
 
+                                }else /** 状态为抢单时候动作 */
+                                {
+                                    
+                                    let driver_ids = result.driver_ids
+                                    if(!driver_ids)return;
+
+                                    driver_ids = driver_ids.split(',')
+                                    for(let k in driver_ids){
+                                        let driver = data.DriverMap.get(driver_ids[k]+'')
+                                        if(!driver)continue;
+                                        if(driver.serving)continue
+                                        let g = function(r){
+                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
+                                        };
+                                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+
+                                    }
                                 }
-                            }
-                            
+                                
+                            })
                         })
                     })
-                })
+                });
+                
             }
             break;
         case 'callWay':
@@ -394,33 +427,47 @@ z = function(obj,con){
 
                 let id = obj.id || 0
                 /** 查询订单 */
-                db.find('select * from c_order_way where id=? and user_id=?',[id,con.user_id],function(result){
 
-                    /** 订单不存在返回 */
-                    if(!result)return;
-                    
-                    /** 订单状态只有在12时候可以取消 */
-                    if([1,2].indexOf(parseInt(result.status))==-1)return;
-                    
-                    /** 更新订单状态为取消 */
-                    db.update('update c_order_way set status=0 where id=?',[id],function(){
-                        
-                        /** 发送成功信息 */
-                        con.sendText(content({status:200,type:'cancelCallWay',id:id}))
+                db.find('select * from c_trip where id=? and type = 3 and user_id=?',[id,con.user_id],function(trip){
 
-                        let driver_id = result.driver_id
-                        let driver = data.UserMap.get(driver_id+'')
-                        if(driver){
+                    if(!trip){
+                        con.sendText(content({status:400,type:'cancelCallWay',id:id,message:'行程不存在'}))
+                        return;
+                    }
+                    db.find('select * from c_order_way where id=? and user_id=?',[id,con.user_id],function(result){
 
-                            post('user/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
+                        /** 订单不存在返回 */
+                        if(!result)return;
 
-                            console.log('one driver get cancelCallWayDriver request');
-                            driver.con.sendText(content({status:200,type:'cancelCallWayDriver',id:id}))
+                        if(result.order_time + 120 < parseInt(Date.now() / 1000) && result.order_time + trip.duration + 120 > parseInt(Date.now() / 1000)){
+                            con.sendText(content({status:400,type:'cancelCallWay',id:id,message:'行程无法取消'}))
+                            return;
                         }
-                        /** 更新行程表 */
-                        db.update('update c_trip set status=0 where id=? and type=3',[id])
+                        
+                        /** 订单状态只有在12时候可以取消 */
+                        if([1,2].indexOf(parseInt(result.status))==-1)return;
+                        
+                        /** 更新订单状态为取消 */
+                        db.update('update c_order_way set status=0 where id=?',[id],function(){
+                            
+                            /** 发送成功信息 */
+                            con.sendText(content({status:200,type:'cancelCallWay',id:id}))
+
+                            let driver_id = result.driver_id
+                            let driver = data.UserMap.get(driver_id+'')
+                            if(driver){
+
+                                post('user/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
+
+                                console.log('one driver get cancelCallWayDriver request');
+                                driver.con.sendText(content({status:200,type:'cancelCallWayDriver',id:id}))
+                            }
+                            /** 更新行程表 */
+                            db.update('update c_trip set status=0 where id=? and type=3',[id])
+                        })
                     })
                 })
+                
             }
             break;
         case 'startWay':
@@ -444,14 +491,14 @@ z = function(obj,con){
 
                         /** 更新订单 */
                         db.update('update c_order_way set status=3 where id=?',[id],function(){
-
+                            /** 获取司机 */
+                            let driver = data.UserMap.get(con.user_id+'')
                             /** 更新行程 */
-                            db.update('update c_trip set driver_id=?,status=3,in_time=? where id=? and type=3',[con.user_id,parseInt(Date.now() / 1000),id],function(){
+                            db.update('update c_trip set driver_id=?,status=3,in_time=?,last_latitude=?,last_longitude=? where id=? and type=3',[con.user_id,parseInt(Date.now() / 1000),driver.latitude,driver.longitude,id],function(){
 
                                 db.update('update c_driver_way set status=0 where user_id=? and status=1',[con.user_id,con.user_id],function(){
 
-                                    /** 获取司机 */
-                                    let driver = data.UserMap.get(con.user_id+'')
+                                    
                                     /** 设置司机状态为服务中 */
                                     driver.serving = 1;
                                     con.sendText(content({status:200,type:'startWay',id:id}))
