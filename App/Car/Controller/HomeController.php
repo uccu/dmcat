@@ -137,13 +137,13 @@ class HomeController extends Controller{
             $out['start_price'] = $data['start'];
 
         }else{
-            $price = Func::getEstimatedPrice($distance->distance);
+            $price = Func::getEstimatedPrice($distance->distance / 1000);
             $out['start_price'] = '20.00';
         }
         if(!$price)AJAX::error('预估价获取失败');
 
         $out['area']        = $area;
-        $out['distance']    = number_format( $distance / 1000,2,'.','');
+        $out['distance']    = number_format( $distance->distance / 1000,2,'.','');
 
             
         $out['price']       = $price;
