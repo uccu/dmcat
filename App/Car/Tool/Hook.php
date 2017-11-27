@@ -2,6 +2,7 @@
 namespace App\Car\Tool;
 use App\Car\Model\ErrorApiModel;
 use App\Car\Model\SuccessApiModel;
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
 
 class Hook implements \Lib\Tool\Hook{
 
