@@ -112,7 +112,7 @@ z = function(obj,con){
                             db.update('update c_order_driving set driver_id=?,status=2,order_time=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
                                 /** 更新行程 */
 
-                                action.getDis(driver.latitude,driver.longitude,result,start_latitude,result,start_longitude,3,function(st){
+                                action.getDis(driver.latitude,driver.longitude,result.start_latitude,result.start_longitude,3,function(st){
                                     if(!st)st  = {}
                                     db.update('update c_trip set driver_id=?,status=2,duration=? where id=? and type=1',[con.driver_id,id,st.duration||0],function(){
                                         let driver_ids = result.driver_ids
@@ -177,7 +177,7 @@ z = function(obj,con){
                             /** 更新订单 */
                             db.update('update c_order_taxi set driver_id=?,status=2,order_time=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
                                 /** 更新行程 */
-                                action.getDis(driver.latitude,driver.longitude,result,start_latitude,result,start_longitude,1,function(st){
+                                action.getDis(driver.latitude,driver.longitude,result.start_latitude,result.start_longitude,1,function(st){
                                     if(!st)st  = {}
                                     db.update('update c_trip set driver_id=?,status=2,duration=? where id=? and type=2',[con.driver_id,id,st.duration||0],function(){
                                         let driver_ids = result.driver_ids
