@@ -14,6 +14,8 @@ use Model;
 use Uccu\DmcatTool\Tool\E;
 use Uccu\DmcatTool\Tool\LocalConfig;
 use App\Car\Tool\Func;
+use App\Car\Model\ErrorApiModel;
+use App\Car\Model\SuccessApiModel;
 
 
 use View;
@@ -105,6 +107,19 @@ class TestController extends Controller{
 
         $out = Func::getDistance('37.22','118.02',31.15,121.10);
         AJAX::success($out);
+
+    }
+
+
+    function getSuccessReq($id,SuccessApiModel $model,Request $request){
+
+        $log = $model->find($id);
+        if(!$log)AJAX::error('没有数据');
+
+        // $req = json_decode($log->request);
+        // $request->request = $req;
+
+        
 
     }
 }
