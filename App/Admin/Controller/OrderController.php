@@ -1018,8 +1018,9 @@ class OrderController extends Controller{
                 '品牌',
                 '车牌',
                 '驾照',
-                '行驶证',
+                '行驶证/身份证',
                 '城市',
+                '类型',
                 '状态',
                 '申请时间'
                 
@@ -1046,6 +1047,7 @@ class OrderController extends Controller{
                     'href'=>true
                 ],
                 'city',
+                'type_name',
                 'status_name',
                 'date',
 
@@ -1079,6 +1081,11 @@ class OrderController extends Controller{
             $v->driving_license = Func::fullPicAddr($v->driving_license);
             $v->driving_permit = Func::fullPicAddr($v->driving_permit);
             $v->date = date('Y-m-d H:i');
+            $v->type_name =[
+                            '0'=>'无',
+                            '1'=>'代驾',
+                            '2'=>'出租车'
+                        ][$v->type];
         }
 
 
