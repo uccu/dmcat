@@ -143,7 +143,7 @@ z = function(obj,con){
                                 
                             }
                             
-                            db.update('update c_order_driving set driver_ids=? where id=?',[drivers.join(','),id])
+                            if(drivers.length)db.update('update c_order_driving set driver_ids=? where id=?',[drivers.join(','),id])
                         })
                     })
                     console.log(`user ${con.user_id} create an order`)
@@ -291,7 +291,7 @@ z = function(obj,con){
                             }
                         }
                         /** 存储附近的司机的ID */
-                        db.update('update c_order_taxi set driver_ids=? where id=?',[drivers.join(','),id])
+                        if(drivers.length)db.update('update c_order_taxi set driver_ids=? where id=?',[drivers.join(','),id])
                     })
                 })
             })
