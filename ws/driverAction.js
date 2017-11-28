@@ -114,7 +114,7 @@ z = function(obj,con){
 
                                 action.getDis(driver.latitude,driver.longitude,result.start_latitude,result.start_longitude,3,function(st){
                                     if(!st)st  = {}
-                                    db.update('update c_trip set driver_id=?,status=2,duration=? where id=? and type=1',[con.driver_id,id,st.duration||0],function(){
+                                    db.update('update c_trip set driver_id=?,status=2,duration=? where id=? and type=1',[con.driver_id,st.duration||0,id],function(){
                                         let driver_ids = result.driver_ids
                                         
                                         /** 设置司机状态为服务中 */
@@ -179,7 +179,7 @@ z = function(obj,con){
                                 /** 更新行程 */
                                 action.getDis(driver.latitude,driver.longitude,result.start_latitude,result.start_longitude,1,function(st){
                                     if(!st)st  = {}
-                                    db.update('update c_trip set driver_id=?,status=2,duration=? where id=? and type=2',[con.driver_id,id,st.duration||0],function(){
+                                    db.update('update c_trip set driver_id=?,status=2,duration=? where id=? and type=2',[con.driver_id,st.duration||0,id],function(){
                                         let driver_ids = result.driver_ids
                                         let driver = data.DriverMap.get(con.driver_id)
                                         /** 设置司机状态为服务中 */
