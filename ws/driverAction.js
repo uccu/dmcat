@@ -109,6 +109,12 @@ z = function(obj,con){
                     db.find('select * from c_order_driving where id=?',[id],function(result){
                         if(result){
                             /** 更新订单 */
+
+                            if(result.driver_id != '0'){
+                                con.sendText(content({status:400,type:'orderDriving',id:id,'message':'该订单已接单'}))
+                                return;
+                            }
+
                             db.update('update c_order_driving set driver_id=?,status=2,order_time=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
                                 /** 更新行程 */
 
@@ -174,6 +180,11 @@ z = function(obj,con){
                     }
                     db.find('select * from c_order_taxi where id=?',[id],function(result){
                         if(result){
+
+                            if(result.driver_id != '0'){
+                                con.sendText(content({status:400,type:'orderTaxi',id:id,'message':'该订单已接单'}))
+                                return;
+                            }
                             /** 更新订单 */
                             db.update('update c_order_taxi set driver_id=?,status=2,order_time=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
                                 /** 更新行程 */

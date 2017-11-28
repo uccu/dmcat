@@ -761,6 +761,7 @@ class UserController extends Controller{
 
         $trip = $tripModel->set($data)->where(['type'=>3,'id'=>$id])->save();
         !$trip && AJAX::error('行程不存在');
+        $trip->driver_id && AJAX::errror('该订单已接单');
         $user = $userOnlineModel->find($this->L->id);
         if(!$user || !$trip->start_latitude){
             $duration = 0;
