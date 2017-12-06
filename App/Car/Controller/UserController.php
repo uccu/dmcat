@@ -151,6 +151,7 @@ class UserController extends Controller{
         $this->cookie && Response::getSingleInstance()->cookie('user_token',$user_token,0);
 
         $info->last_login = TIME_NOW;
+        $info->save();
 
         $where['user_id'] = $this->L->id;
         $where['isread'] = 0;

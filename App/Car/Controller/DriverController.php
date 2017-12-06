@@ -142,6 +142,7 @@ class DriverController extends Controller{
         $this->cookie && Response::getSingleInstance()->cookie('driver_token',$driver_token,0);
 
         $info->last_login = TIME_NOW;
+        $info->save();
         
         $where['driver_id'] = $this->L->id;
         $where['isread'] = 0;
