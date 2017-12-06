@@ -171,7 +171,7 @@ z = function(obj,con){
         case 'orderTaxi':
             if(con.driver_id){
                 let id = obj.id
-
+                let driver = data.DriverMap.get(con.driver_id)
                 db.find('select * from c_order_taxi where driver_id=? and status in(2,3)',[con.driver_id],function(r){
 
                     if(r){
@@ -192,7 +192,7 @@ z = function(obj,con){
                                     if(!st)st  = {}
                                     db.update('update c_trip set driver_id=?,status=2,duration=? where id=? and type=2',[con.driver_id,st.duration||0,id],function(){
                                         let driver_ids = result.driver_ids
-                                        let driver = data.DriverMap.get(con.driver_id)
+                                        
                                         /** 设置司机状态为服务中 */
                                         driver.serving = 1;
                                         con.sendText(content({status:200,type:'orderTaxi',id:id}))
