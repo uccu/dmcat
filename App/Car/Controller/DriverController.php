@@ -141,6 +141,8 @@ class DriverController extends Controller{
         $driver_token = $this->encrypt_token($info);
         $this->cookie && Response::getSingleInstance()->cookie('driver_token',$driver_token,0);
 
+        $info->last_login = TIME_NOW;
+        
         $where['driver_id'] = $this->L->id;
         $where['isread'] = 0;
         $e = DriverMessageModel::copyMutiInstance()->where($where)->find();

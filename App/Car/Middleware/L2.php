@@ -62,6 +62,12 @@ class L2 extends Middleware{
             Response::getSingleInstance()->cookie('driver_token','',-3600);
             AJAX::error('账号已被禁用，请联系管理员！');
         }
+
+        if($info->last_login != $time){
+            Response::getSingleInstance()->cookie('driver_token','',-3600);
+            return;
+        }
+
         /*验证登陆合法性*/
         if($hash === sha1($info->password.$salt.$time)){
             $this->userInfo = $info;

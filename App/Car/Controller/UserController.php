@@ -150,6 +150,8 @@ class UserController extends Controller{
         $user_token = $this->encrypt_token($info);
         $this->cookie && Response::getSingleInstance()->cookie('user_token',$user_token,0);
 
+        $info->last_login = TIME_NOW;
+
         $where['user_id'] = $this->L->id;
         $where['isread'] = 0;
         $e = MessageModel::copyMutiInstance()->where($where)->find();
