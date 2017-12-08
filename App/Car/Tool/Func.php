@@ -859,18 +859,18 @@ class Func {
                             if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
 
                             # 4级
-                            if($driver && $driver->parent_id){
+                            // if($driver && $driver->parent_id){
 
-                                $driver = $driverModel->find($driver->parent_id);
-                                if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
+                            //     $driver = $driverModel->find($driver->parent_id);
+                            //     if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
 
-                                # 5级
-                                if($driver && $driver->parent_id){
+                            //     # 5级
+                            //     if($driver && $driver->parent_id){
 
-                                    $driver = $driverModel->find($driver->parent_id);
-                                    if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
-                                }
-                            }
+                            //         $driver = $driverModel->find($driver->parent_id);
+                            //         if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
+                            //     }
+                            // }
                         }
                     }
                 }
@@ -911,18 +911,18 @@ class Func {
                             if($driver)$userModel->set('money = money + %n',$money2 * .01)->save($driver->id);
 
                             # 4级
-                            if($driver && $driver->parent_id){
+                            // if($driver && $driver->parent_id){
 
-                                $driver = $userModel->find($driver->parent_id);
-                                if($driver)$userModel->set('money = money + %n',$money2 * .01)->save($driver->id);
+                            //     $driver = $userModel->find($driver->parent_id);
+                            //     if($driver)$userModel->set('money = money + %n',$money2 * .01)->save($driver->id);
 
-                                # 5级
-                                if($driver && $driver->parent_id){
+                            //     # 5级
+                            //     if($driver && $driver->parent_id){
 
-                                    $driver = $driverModel->find($driver->parent_id);
-                                    if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
-                                }
-                            }
+                            //         $driver = $driverModel->find($driver->parent_id);
+                            //         if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
+                            //     }
+                            // }
                         }
                     }
                 }
@@ -930,7 +930,7 @@ class Func {
         }
 
 
-        $user = $driverModel->find($user_id);
+        $user = $userModel->find($user_id);
         if($user){
             # 1级
             if($user->parent_id){

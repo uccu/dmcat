@@ -82,6 +82,25 @@ class DriverController extends Controller{
         $info->avatar = 'noavatar.png';
         $info->save();
 
+        $parent_id = $info->parent_id;
+
+        for($i=0;$i<3;$i++){
+
+            if($parent_id){
+
+                $parent = $model->find($parent_id);
+                if($parent){
+
+                    $parent->fans += 1;
+                    $parent->save();
+                    $parent_id = $parent->parent_id;
+                }else break;
+
+            }else break;
+
+        }
+        
+
         DB::commit();
         
         $this->_out_info($info);
