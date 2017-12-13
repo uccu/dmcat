@@ -346,6 +346,24 @@ trip_id 行程ID
 {}
 
 
+1.42 查看是否有正在进行中的订单
+user/hasDuringOrder
+{"data":{"has":"1","id":"1","trip_id":"1","type":"1"},"code":200,"url":"","message":""}
+{}
+
+
+1.43 订单详情(代驾)
+user/orderInfo_daijia
+id 代驾的订单id
+{"data":{"driverInfo":{"name":"\u732a\u7238\u7238","avatar":"20171207\/16.47.23.432898.jpg","phone":"18217237221","judge_score":"4.8","orderCount":"0"},"info":{"id":"2","user_id":"46","driver_id":"2","start_latitude":"31.19970000","start_longitude":"121.26741200","end_latitude":"31.19940400","end_longitude":"121.26608300","start_name":"\u4e2d\u56fd\u00b7\u68a6\u8c37","end_name":"\u4e30\u5de2\u81ea\u63d0\u67dc","create_time":"1513132410","order_time":"1513135595","status":"1","distance":"0.000","estimated_price":"35.00","start_time":"0","phone":"","name":"","driver_ids":"","city_id":"4522864","coupon":"0.00","total_fee":"0.00","fee":"0.00","lay_fee":"0.00","statuss":"20","start_formatted_address":"\u4e0a\u6d77\u5e02\u9752\u6d66\u533a\u5f90\u6cfe\u9547\u4e2d\u56fd\u00b7\u68a6\u8c37","end_formatted_address":"\u4e0a\u6d77\u5e02\u9752\u6d66\u533a\u5f90\u6cfe\u9547\u4e2d\u56fd\u00b7\u68a6\u8c37-\u4e0a\u6d77\u897f\u8679\u6865\u521b\u610f\u4ea7\u4e1a\u56ed\u4e2d\u56fd\u00b7\u68a6\u8c37","start_distance":"0m\/\u5df2\u5230\u8fbe","real_distance":"0"}},"code":200,"url":"","message":""}
+{start_name:开始地点,end_name:结束地点,start_formatted_address:开始详细地址,end_formatted_address:结束详细地址,start_distance:司机到起点距离,estimated_price:预估价(已接单情况下),fee(实际费用)}
+
+
+1.44 获取失败原因
+user/getCancelReason
+{"data":{"list":["忘带钱了","其他"]},"code":200,"url":"","message":""}
+{}
+
 
 ws.1.1 用户登录
 @
@@ -368,7 +386,7 @@ longitude 经度
 
 ws.1.3 发起代驾
 @
-type 固定askForDriving
+type 固定askForDrivingV2
 start_latitude 开始纬度
 start_longitude 开始经度
 end_latitude 结束纬度
@@ -634,6 +652,24 @@ driver/hasMessage
 
 
 
+2.20 订单详情(代驾)
+driver/orderInfo_daijia
+id 代驾的订单id
+{"data":{"info":{"id":"1","user_id":"41","driver_id":"1","start_latitude":"31.20139500","start_longitude":"121.26734700","end_latitude":"31.20115900","end_longitude":"121.26587200","start_name":"\u6c47\u9f99\u8def338\u53f7","end_name":"\u6cd5\u59ec\u5a1c\u5927\u53a6","create_time":"1511849725","order_time":"1511849737","status":"6","distance":"0.000","estimated_price":"35.00","start_time":"0","phone":"","name":"","driver_ids":"1","city_id":"4522864","coupon":"0.00","total_fee":"35.00","fee":"35.00","lay_fee":"0.00","statuss":"0","start_formatted_address":"\u4e0a\u6d77\u5e02\u9752\u6d66\u533a\u5f90\u6cfe\u9547\u6c47\u9f99\u8def338\u53f7","end_formatted_address":"\u4e0a\u6d77\u5e02\u9752\u6d66\u533a\u5f90\u6cfe\u9547\u534e\u5f90\u516c\u8def966\u53f7\u6cd5\u59ec\u5a1c\u5927\u53a6","start_distance":"0\u7c73","real_distance":"0"}},"code":200,"url":"","message":""}
+{start_name:开始地点,end_name:结束地点,start_formatted_address:开始详细地址,end_formatted_address:结束详细地址,start_distance:司机到起点距离,estimated_price:预估价(已接单情况下),fee(实际费用)}
+
+
+2.21 查看是否有正在进行中的订单
+driver/hasDuringOrder
+{"data":{"has":"1","id":"1","trip_id":"1","type":"1"},"code":200,"url":"","message":""}
+{}
+
+
+2.22 获取失败原因
+driver/getCancelReason
+{"data":{"list":["忘带钱了","其他"]},"code":200,"url":"","message":""}
+{}
+
 ws.2.1 司机登录
 @
 type 固定login
@@ -672,7 +708,7 @@ id
 
 ws.2.5 司机接到乘客（开始计费）代驾
 @
-type 固定startDriving
+type 固定startDrivingV2
 id
 {}
 {}
@@ -688,7 +724,7 @@ id
 
 ws.2.7 司机到达终点代驾
 @
-type 固定endDriving
+type 固定endDrivingV2
 id
 {}
 {}
@@ -698,6 +734,31 @@ ws.2.8 司机到达终点出租车
 @
 type 固定endTaxi
 id
+{}
+{}
+
+
+
+ws.2.9 代驾司机到达起点
+@
+type 固定arriveStartPosition
+id 代驾的订单id
+{}
+{}
+
+
+ws.2.10 司机服务中等待乘客
+@
+type 固定waiting
+trip_id 行程id
+{}
+{}
+
+
+ws.2.11 司机服务中结束等待乘客
+@
+type 固定endWaiting
+trip_id 行程id
 {}
 {}
 

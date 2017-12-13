@@ -39,9 +39,13 @@ use App\Car\Model\RoadModel;
 use App\Car\Model\UserOnlineModel; 
 use Model; 
 
+# Traits
+use App\Car\Traits\User\OrderTraits;
+
 
 class UserController extends Controller{
 
+    use OrderTraits;
 
     function __construct(){
 
@@ -355,14 +359,12 @@ class UserController extends Controller{
 
     /** 获取行程 */
     function getTripList(UserCouponModel $userCouponModel,$page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
-        // $this->L->id = 47;
+        // $this->L->id = 43;
         !$this->L->id && AJAX::error('未登录');
         $where['user_id'] = $this->L->id;
-        $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
+        $list = $tripModel->select('*','stat.user_name','stat.driver_name')->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
 
-        $select = 'start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,status,driver_id,coupon,total_fee,fee';
-
-
+        $select = ['start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,statuss,driver_id,coupon,total_fee,fee,stat.user_name,stat.driver_name'];
 
         $coupon = $userCouponModel->where(['user_id'=>$this->L->id])->where('end_time>%n',TIME_NOW)->where(['type'=>$type])->order('money desc')->find();
         
@@ -1214,5 +1216,34 @@ class UserController extends Controller{
 
         Func::push($id,$message,['type'=>$type]);
         AJAX::success();
+    }
+
+
+
+    function hasDuringOrder(TripModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+        
+        $where['user_id'] = $this->L->id;
+        $where['statuss'] = ['statuss IN (%c)',[5,10,20,25,30,35,40,45]];
+
+        $trip = $model->where($where)->find();
+
+        if($trip){
+
+            $out['has'] = '1';
+            $out['id'] = $trip->id;
+            $out['trip_id'] = $trip->trip_id;
+            $out['type'] = $trip->type;
+            $out['statuss'] = $trip->statuss;
+
+        }else{
+            $out['has'] = '0';
+
+        }
+        AJAX::success($out);
+
+
+
     }
 }

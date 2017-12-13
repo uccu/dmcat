@@ -84,6 +84,7 @@ exports.insert = function(sql,param,cb){
 
             if(err){
                 console.log('[INSERT ERROR] - ',err.message);
+                console.log(err);
                 cb instanceof Function && cb(0)
                 return;
             }        

@@ -19,4 +19,9 @@ class OrderDrivingModel extends Model{
         
         return $this->join(AreaModel::class,'id','city_id');
     }
+
+    public function stat(){
+        
+        return $this->join(StatusModel::class,'id','statuss','LEFT');
+    }
 }

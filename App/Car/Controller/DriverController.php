@@ -27,11 +27,17 @@ use App\Car\Model\DriverBankModel;
 use App\Car\Model\DriverMoneyLogModel;
 use App\Car\Model\AreaModel;
 use App\Car\Model\DriverApplyModel;
+use App\Car\Model\DriverOnlineModel;
 
 use Model; 
 
+# Traits
+use App\Car\Traits\Driver\OrderTraits;
+
+
 class DriverController extends Controller{
 
+    use OrderTraits;
 
     function __construct(){
 
@@ -421,7 +427,7 @@ class DriverController extends Controller{
         $where['type'] = ['type<3'];
         $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
 
-        $select = 'start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,status,driver_id';
+        $select = ['start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,statuss,driver_id,coupon,total_fee,fee,stat.user_name,stat.driver_name'];
 
         foreach($list as $k=>&$v){
 
@@ -665,8 +671,37 @@ class DriverController extends Controller{
 
     function push($id,$message,$type){
 
-        Func::push_driver($id,$message,['type'=>$type]);
+        // Func::push_driver($id,$message,['type'=>$type]);
         AJAX::success();
     }
+
+    function hasDuringOrder(TripModel $model){
+
+        !$this->L->id && AJAX::error('未登录');
+        
+        $where['driver_id'] = $this->L->id;
+        $where['statuss'] = ['statuss IN (%c)',[5,10,20,25,30,35,40,45]];
+        $where['type'] = ['type IN (%c)',[1,2]];
+
+        $trip = $model->where($where)->find();
+
+        if($trip){
+
+            $out['has'] = '1';
+            $out['id'] = $trip->id;
+            $out['trip_id'] = $trip->trip_id;
+            $out['type'] = $trip->type;
+            $out['statuss'] = $trip->statuss;
+
+        }else{
+            $out['has'] = '0';
+
+        }
+        AJAX::success($out);
+
+
+
+    }
+    
     
 }

@@ -9,6 +9,7 @@ const driverAction = require('./driverAction')
 const db = require('./db')
 let data = require('./data')
 
+
 db.$(function(){
     db.delete('delete from c_user_online')
     db.delete('delete from c_driver_online')
@@ -35,6 +36,9 @@ let serverCallback = function(con){
     con.on("close", function (code, reason) {
         
         if(con.user_id){
+
+            let user = data.UserMap.get(con.user_id + '')
+            if(user && user.clock)clearTimeout(user.clock);
             data.UserMap.delete(con.user_id)
             db.delete('delete from c_user_online where user_id=?',[con.user_id])
         }else if(con.driver_id){
@@ -47,7 +51,9 @@ let serverCallback = function(con){
 	con.on("error", function (code, reason) {
 
         if(con.user_id){
+            let user = data.UserMap.get(con.user_id + '')
             data.UserMap.delete(con.user_id)
+            if(user && user.clock)clearTimeout(user.clock);
             db.delete('delete from c_user_online where user_id=?',[con.user_id])
         }else if(con.driver_id){
             data.DriverMap.delete(con.driver_id)

@@ -296,7 +296,7 @@ class OrderController extends Controller{
 
         DB::commit();
 
-        Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'driving']);
+        // Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'driving']);
 
         $out['upd'] = 1;
         AJAX::success($out);
@@ -540,7 +540,7 @@ class OrderController extends Controller{
 
         DB::commit();
 
-        Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'taxi']);
+        // Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'taxi']);
 
         $out['upd'] = 1;
         AJAX::success($out);
@@ -777,7 +777,7 @@ class OrderController extends Controller{
 
         DB::commit();
 
-        Func::push($toDriver,'平台已指定派单，请接乘客。',['type'=>'way']);
+        // Func::push($toDriver,'平台已指定派单，请接乘客。',['type'=>'way']);
 
         $out['upd'] = 1;
         AJAX::success($out);

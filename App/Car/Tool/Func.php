@@ -14,6 +14,7 @@ use App\Car\Model\DriverModel;
 use App\Car\Model\PaymentModel;
 use App\Car\Model\AreaModel;
 use App\Car\Model\IncomeModel;
+use App\Car\Model\DriverOnlineModel;
 use Model;
 use stdClass;
 
@@ -131,10 +132,10 @@ class Func {
      * @return string 
      */
     static public function time_zcalculate( $time ){
-        if($time == 0 )return '秒回';
-        if($time < 60 )return $time.'秒';
-        if($time < 3600 )return (floor(($time-1)/60) + 1).'分钟';
-        if($time < 3600 * 24 )return (floor(($time-1)/3600) + 1).'小时';
+        if($time == 0 )return '已到达';
+        if($time < 60 )return '约'.$time.'秒';
+        if($time < 3600 )return '约'.(floor(($time-1)/60) + 1).'分钟';
+        if($time < 3600 * 24 )return '约'.(floor(($time-1)/3600) + 1).'小时';
         return (floor(($time-1)/3600/24) + 1).'天';
         
     }  
@@ -535,6 +536,7 @@ class Func {
      */
     public static function getArea($latitude,$longitude){
 
+
         $data['key'] = $key = L::getSingleInstance()->config->GAODE_KEY;
         $data['location'] = number_format($longitude,6,'.','').','.number_format($latitude,6,'.','');
         
@@ -553,6 +555,8 @@ class Func {
         if(!$obj->name)$obj->name = $data->regeocode->addressComponent->neighborhood->name;
         if(!$obj->name)$obj->name = $data->regeocode->addressComponent->streetNumber->name;
         if(!$obj->name)$obj->name = $data->regeocode->addressComponent->township;
+
+        $obj->formatted_address = $data->regeocode->formatted_address;
 
         return $obj;
 
@@ -671,9 +675,8 @@ class Func {
     }
 
 
-    /**   
+    /**   根据两点间的经纬度计算距离  
      *转载自：http://www.jb51.net/article/56967.htm 
-     * @desc 根据两点间的经纬度计算距离  
      * @param float $lat 纬度值  
      * @param float $lng 经度值  
      */   
@@ -963,6 +966,14 @@ class Func {
 
         return true;
 
+    }
+
+
+    static function getDriverPostion($id = 0){
+
+        if(!$id)return false;
+
+        return DriverOnlineModel::copyMutiInstance()->find($id);
     }
 
 }

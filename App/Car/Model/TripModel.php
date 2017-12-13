@@ -12,4 +12,9 @@ class TripModel extends Model{
         return $this->join(DriverModel::class,'id','driver_id');
     }
 
+    public function stat(){
+        
+        return $this->join(StatusModel::class,'id','statuss','LEFT');
+    }
+
 }
