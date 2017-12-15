@@ -80,6 +80,7 @@ let serverCallback = function(con){
             }
         }catch(e){
             console.warn('obj has problem',str)
+            console.warn(e)
             return
         }
         

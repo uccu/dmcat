@@ -14,32 +14,51 @@
 
 
     :javascript
-        a=new WebSocket('ws://121.199.8.244:7777/user')
-        b=new WebSocket('ws://121.199.8.244:7777/driver')
-        a.onopen = function(){
-            a.send('{"type":"login","latitude":"31.20077600","longitude":"121.26657000","user_token":"m4uIjyf52P6Soc6mdIv7nhCCwhP0XLqlWApm2xN2qBTie1W7O31AJ54HDxZW93DkhrGJHRUZWhn3BpQgDWu130NS76RPzxGAxCichnA3DUzs="}')
 
+        let a,b,c,d;
+
+        c = function(){
+            a=new WebSocket('ws://121.199.8.244:7777/user')
             
+            a.onopen = function(){
+                console.log('user 连接成功')
+                a.send('{"type":"login","latitude":"31.20139500","longitude":"121.26741200","user_token":"m4uIjyf52P6Soc6mdIv7nhCCwhP0XLqlWApm2xN2qBTie1W7O31AJ54HDxZW93DkhrGJHRUZWhn3BpQgDWu130NS76RPzxGAxCichnA3DUzs="}')
+            }
             
+            a.onclose = function(){
+                console.log('user 2秒后重连')
+                setTimeout(c,2000)
+            }
         }
-        b.onopen = function(){
-            b.send('{"type":"login","latitude":"31.20083600","longitude":"121.26657000","driver_token":"0LBMSWqfmMIOT8nA8OJYfYwCvQ2ZpKOcp9CZ2/TxfHslJ5Xvqr10gSgAqJsnpZLv0Iqdek8fFesBDbnKTdFaamxBFMcrTlGJ2B+mA8EY04w4="}')
+        d = function(){
+            b=new WebSocket('ws://121.199.8.244:7777/driver')
+            b.onopen = function(){
+                console.log('driver 连接成功')
+                b.send('{"type":"login","latitude":"31.20139500","longitude":"121.26741200","driver_token":"0LBMSWqfmMIOT8nA8OJYfYwCvQ2ZpKOcp9CZ2/TxfHslJ5Xvqr10gSgAqJsnpZLv0Iqdek8fFesBDbnKTdFaamxBFMcrTlGJ2B+mA8EY04w4="}')
+            }
+            b.onclose = function(){
+                console.log('driver 2秒后重连')
+                setTimeout(d,2000)
+            }
         }
+        
+        c();d();
+        
 
         if(0){
-            d = {
+            e = {
                 type:'askForDriving',
-                start_latitude:'31.23170600',
-                start_longitude:'121.26657000',
-                end_latitude:'31.23170600',
+                start_latitude:'31.20139500',
+                start_longitude:'121.26741200',
+                end_latitude:'31.22170600',
                 end_longitude:'121.47264400',
                 start_name:'开始位置',
                 end_name:'结束位置',
                 distance:'100.22',
                 estimated_price:'500.22',
-                city_id:'4522848'
+                city_id:'4522864'
             };
-            str = JSON.stringify(d)
+            str = JSON.stringify(e)
             a.send(str)
         }
 

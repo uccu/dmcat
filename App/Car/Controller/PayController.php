@@ -36,7 +36,7 @@ class PayController extends Controller{
 
         $trip = $tripModel->find($trip_id);
         !$trip && AJAX::error('行程不存在');
-        $trip->status != 4 && AJAX::error('无法支付该订单');
+        $trip->statuss != 45 && AJAX::error('无法支付该订单');
 
         if($trip->type == 1){
             $order = $orderDrivingModel->find($trip->id);
@@ -121,7 +121,7 @@ class PayController extends Controller{
 
         $trip = $tripModel->find($trip_id);
         !$trip && AJAX::error('行程不存在');
-        $trip->status != 4 && AJAX::error('无法支付该订单');
+        $trip->statuss != 45 && AJAX::error('无法支付该订单');
 
         if($trip->type == 1){
             $order = $orderDrivingModel->find($trip->id);
@@ -291,7 +291,7 @@ class PayController extends Controller{
         }
 
         !$trip && AJAX::error('行程不存在');
-        $trip->status != 4 && AJAX::error('无法支付该订单');
+        $trip->statuss != 45 && AJAX::error('无法支付该订单');
         !$order && AJAX::error('订单不存在');
 
 
@@ -432,7 +432,7 @@ class PayController extends Controller{
         }
 
         !$trip && AJAX::error('行程不存在');
-        $trip->status != 4 && AJAX::error('无法支付该订单');
+        $trip->statuss != 45 && AJAX::error('无法支付该订单');
         !$order && AJAX::error('订单不存在');
 
         $this->pay_finish($trip,$order);
@@ -456,10 +456,10 @@ class PayController extends Controller{
 
     private function pay_finish($trip,$order){
 
-        $trip->status = 5;
+        $trip->statuss = 50;
         $trip->save();
 
-        $order->status = 5;
+        $order->statuss = 50;
         $order->save();
 
         # 增加收入

@@ -479,7 +479,7 @@ class DriverController extends Controller{
         $trip = $tripModel->find($id);
 
         $trip->driver_id != $this->L->id && AJAX::error('无权限');
-        $trip->status != 4 && AJAX::error('该订单已过期');
+        $trip->statuss != 45 && AJAX::error('该订单已过期');
         $trip->type == 3 && AJAX::error('error');
 
         $data['user_id'] = $trip->user_id;
@@ -508,15 +508,15 @@ class DriverController extends Controller{
 
         $paymentModel->set($data)->add();
 
-        $trip->status = 5;
+        $trip->statuss = 50;
         $trip->save();
 
         if($trip->type == 1){
-            Model::copyMutiInstance('order_driving')->set(['status'=>5])->save($trip->id);
+            Model::copyMutiInstance('order_driving')->set(['statuss'=>50])->save($trip->id);
         }elseif($trip->type == 2){
-            Model::copyMutiInstance('order_taxi')->set(['status'=>5])->save($trip->id);
+            Model::copyMutiInstance('order_taxi')->set(['statuss'=>50])->save($trip->id);
         }elseif($trip->type == 3){
-            Model::copyMutiInstance('order_way')->set(['status'=>5])->save($trip->id);
+            Model::copyMutiInstance('order_way')->set(['statuss'=>50])->save($trip->id);
         }
         
 

@@ -37,6 +37,7 @@ use App\Car\Model\FeedbackModel;
 use App\Car\Model\UsedCarModel; 
 use App\Car\Model\RoadModel; 
 use App\Car\Model\UserOnlineModel; 
+use App\Car\Model\JudgeDriverModel; 
 use Model; 
 
 # Traits
@@ -592,7 +593,7 @@ class UserController extends Controller{
 
         !$trip && AJAX::error('行程不存在');
         $trip->user_id != $this->L->id && AJAX::error('用户不符'.$trip->user_id.','.$this->L->id);
-        $trip->status != 5 && AJAX::error('已评价');
+        in_array($trip->statuss,[55,66]) && AJAX::error('已评价');
 
         $obj = new stdClass;
 
@@ -612,20 +613,21 @@ class UserController extends Controller{
 
         $judgeModel->set($obj)->add();
 
-        $trip->status = 6;
+        if($trip->statuss == 50)$trip->statuss = 55;
+        if($trip->statuss == 60)$trip->statuss = 66;
         $trip->save();
 
         if($trip->type == 1){
 
-            $orderDrivingModel->set(['status'=>6])->save($trip->id);
+            $orderDrivingModel->set(['statuss'=>$trip->statuss])->save($trip->id);
             
         }elseif($trip->type == 2){
 
-            $orderTaxiModel->set(['status'=>6])->save($trip->id);
+            $orderTaxiModel->set(['status'=>$trip->statuss])->save($trip->id);
             
         }elseif($trip->type == 3){
 
-            $orderWayModel->set(['status'=>6])->save($trip->id);
+            $orderWayModel->set(['status'=>$trip->statuss])->save($trip->id);
             
         }
 
@@ -639,6 +641,81 @@ class UserController extends Controller{
             $userModel->set(['judge_score'=>$score])->save($trip->driver_id);
 
         }
+
+
+        DB::commit();
+
+        AJAX::success(['score'=>$score]);
+
+
+
+    }
+
+    /** 司机评价
+     * judge
+     * @param mixed $judgeModel 
+     * @param mixed $tripModel 
+     * @param mixed $id 
+     * @param mixed $comment 
+     * @param mixed $tag 
+     * @param mixed $orderDrivingModel 
+     * @param mixed $orderTaxiModel 
+     * @param mixed $orderWayModel 
+     * @return mixed 
+     */
+    function judge_driver(UserModel $userModel,DriverModel $driverModel,JudgeDriverModel $judgeModel,TripModel $tripModel,$score,$id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $trip = $tripModel->find($id);
+
+        !$trip && AJAX::error('行程不存在');
+        $trip->type != 3 && AJAX::error('不是顺风车');
+        $trip->driver_id != $this->L->id && AJAX::error('司机不符'.$trip->driver_id.','.$this->L->id);
+        in_array($trip->statuss,[60,66]) && AJAX::error('已评价');
+
+        $obj = new stdClass;
+
+        $score = floor($score);
+        if($score>5)$score = 5;
+
+        $obj->driver_id = $trip->driver_id;
+        $obj->trip_id = $id;
+        $obj->comment = $comment;
+        $obj->score = $score;
+        $obj->tag = $tag;
+        $obj->user_id = $trip->user_id;
+        $obj->type = $trip->type;
+        $obj->create_time = TIME_NOW;
+
+        DB::start();
+
+        $judgeModel->set($obj)->add();
+
+        if($trip->statuss == 50)$trip->statuss = 60;
+        if($trip->statuss == 60)$trip->statuss = 66;
+        $trip->save();
+
+        if($trip->type == 1){
+
+            $orderDrivingModel->set(['statuss'=>$trip->statuss])->save($trip->id);
+            
+        }elseif($trip->type == 2){
+
+            $orderTaxiModel->set(['status'=>$trip->statuss])->save($trip->id);
+            
+        }elseif($trip->type == 3){
+
+            $orderWayModel->set(['status'=>$trip->statuss])->save($trip->id);
+            
+        }
+
+        
+        $score = $judgeModel->select('AVG(score) AS c','RAW')->where(['user_id'=>$trip->user_id])->find()->c;
+        !$score && $score = 0;
+        $userModel->set(['user_judge_score'=>$score])->save($trip->user_id);
+
+        
 
 
         DB::commit();

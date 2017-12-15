@@ -17,6 +17,7 @@ use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\TripModel;
 use App\Car\Model\DriverModel;
 use App\Car\Model\UserCancelReasonModel;
+use App\Car\Model\DriverServingPositionModel;
 
 /**
  *  司机订单相关
@@ -32,7 +33,7 @@ trait OrderTraits{
      * @return mixed 
      */
     function orderInfo_daijia($id = 0,
-        OrderDrivingModel $orderDrivingModel,TripModel $tripModel,DriverModel $driverModel){
+        OrderDrivingModel $orderDrivingModel,TripModel $tripModel,DriverModel $driverModel,DriverServingPositionModel $driverServingPosition){
         
         // $this->L->id = 46;
         !$this->L->id && AJAX::error('未登录');
@@ -42,8 +43,19 @@ trait OrderTraits{
         $order = $orderDrivingModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
         !$order && AJAX::error('订单不存在');
 
-        $trip = $tripModel->where(['id'=>$id,'type'=>1,'user_id'=>$this->L->id])->find();
+        $trip = $tripModel->select('*','cancelType.name>cancel_type_name')->where(['id'=>$id,'type'=>1,'user_id'=>$this->L->id])->find();
         !$trip && AJAX::error('订单不存在');
+        
+
+        if($trip->statuss == 20){
+
+            $out['route'] = $driverServingPosition->where(['trip_id'=>$trip->trip_id,'status'=>20])->order('id')->get()->toArray();
+        }
+
+        if($trip->statuss > 30){
+
+            $out['route'] = $driverServingPosition->where(['trip_id'=>$trip->trip_id,'status'=>30])->order('id')->where()->get()->toArray();
+        }
 
         if($order->driver_id){
 
@@ -91,8 +103,9 @@ trait OrderTraits{
         $order->start_distance = $start_distance;
         # 实时行程距离
         $order->real_distance = $trip->real_distance;
-        if($order->real_distance < 1000)$start_distance = $order->real_distance.'米';
-        else $start_distance = number_format( $order->real_distance/1000,1,'.','').'公里';
+        // if($order->real_distance < 1000)$start_distance = $order->real_distance.'米';
+        // else 
+        $order->real_distance = number_format( $order->real_distance/1000,1,'.','').'公里';
 
         # 预估价
         $order->estimated_price;
@@ -103,13 +116,21 @@ trait OrderTraits{
         # 开始服务时间
         $trip->in_time;
 
+        # 起步费
+        $order->start_fee = $trip->start_fee;
+
         # 当正在服务中，实时计算价格
         if(in_array($order->statuss,[30])){
             $time = date('H:i',$trip->in_time);
             $data = Func::getDrivingPrice($order->city_id,$time,$trip->real_distance / 1000);
             $order->fee = $data['total'];
+            $order->start_fee = $data['start'];
+            $order->total_fee = $order->fee - $order->coupon;
         }
-        
+        $order->trip_id = $trip->trip_id;
+        $order->other_fee = $trip->other_fee ? json_decode($trip->other_fee):[];
+        $order->cancel_type_name = $trip->cancel_type_name;
+        $order->cancel_reason = $trip->cancel_reason;
 
         $out['info'] = $order;
 

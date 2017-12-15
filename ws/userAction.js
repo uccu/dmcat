@@ -140,6 +140,7 @@ let act = {
             end_longitude = parseFloat(obj.end_longitude || 0),
             start_name = obj.start_name || '',
             end_name = obj.end_name || '',
+            start_fee = obj.start_fee || '0.00',
             create_time = parseInt(Date.now() / 1000),
             distance = parseFloat(obj.distance || 0),
             start_time = parseInt(obj.start_time || 0),
@@ -156,7 +157,7 @@ let act = {
             db.find('select * from c_trip where user_id=? and statuss in (5,10,15,20,25,30,35,40,45)',[con.user_id],function(result){
                 /** 判断是否有订单正在执行中 */
                 if(result){
-                    con.sendText(content({status:400,type:'askForDriving',message:'不能重复下单'}))
+                    con.sendText(content({status:400,type:'askForDriving',message:'不能重复下单.'+result.trip_id}))
                     return
                 }
                 sync.run();
@@ -169,13 +170,14 @@ let act = {
                 if(!id)return;
                 obj.id = id;
                 /** 创建行程 */
-                db.insert('insert into c_trip set statuss=5,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=1,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price],function(){
-                    sync.run(id);
+                db.insert('insert into c_trip set start_fee=?,statuss=5,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=1,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[start_fee,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price],function(trip_id){
+                    obj.trip_id = trip_id
+                    sync.run(id,trip_id)
                 })
             })
         }
         /** 查找3公里内的司机 */
-        sync.add = function(id){
+        sync.add = function(id,trip_id){
             db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
                 for(let i in ids){
                     ids[i] = ids[i].driver_id
@@ -190,8 +192,12 @@ let act = {
                         return;
                     }
                     let driver = data.DriverMap.get(ids[n]+'')
-                    if(driver)driver.con.sendText(content({status:200,type:'distribute',order_id:id}))
-                    user.clock = setTimeout(q=>run(n+1),30000)
+                    if(driver && !driver.serving){
+                        driver.con.sendText(content({status:200,type:'distribute',order_id:id}))
+                        user.clock = setTimeout(q=>run(n+1),30000)
+                    }else{
+                        run(n+1)
+                    }
                 }
                 run(0)
             })
@@ -229,50 +235,83 @@ let act = {
             return
         }
 
+
         /** 获取代驾订单id */
         let id = obj.id || 0
+        let trip_id = obj.trip_id || 0
+        let types = obj.types || 1
         let reason = obj.reason || ''
 
-        if(!id){
+        let className;
 
-            con.sendText(content({status:400,type:'cancelAskForDriving',id:id,message:'订单不存在'}))
+        if(!id && !trip_id){
+
+            con.sendText(content({status:400,type:'cancelAskForDriving',id:id,trip_id:trip_id,message:'订单不存在'}))
             return;
         }
 
         let sync = new SYNC
-        sync.add = function(){
+        if(id){
+            sync.add = function(){
+                if(types == 1)db.find('select * from c_trip where id=? and type=? and user_id=?',[id,types,con.user_id],function(w){sync.run(w)})
+            }
+        }
+        else if(trip_id){
+            sync.add = function(){
+                db.find('select * from c_trip where trip_id=? and user_id=?',[trip_id,con.user_id],function(w){sync.run(w)})
+            }
+        }
+        else{
 
-            db.find('select * from c_trip where id=? and type = 1 and user_id=?',[id,con.user_id],function(trip){
-
-                if(!trip){
-                    con.sendText(content({status:400,type:'cancelAskForDriving',id:id,message:'行程不存在'}))
-                    return;
-                }
-                sync.run(trip)
-            })
+            con.sendText(content({status:400,type:'cancelAskForDriving',id:id,trip_id:trip_id,message:'不知道什么原因'}))
+            return;
         }
 
         sync.add = function(trip){
+            
 
-            db.find('select * from c_order_driving where id=? and user_id=?',[id,con.user_id],function(result){
+            if(!trip){
+                con.sendText(content({status:400,type:'cancelAskForDriving',id:id,trip_id:trip_id,message:'行程不存在'}))
+                return;
+            }
+
+            trip_id = trip.trip_id;
+            id = trip.id;
+
+            className = trip.type == 1?'driving':trip.type == 2?'taxi':'way'
+
+            db.find('select * from c_order_'+className+' where id=? and user_id=?',[id,con.user_id],function(result){
 
                 if(!result){
-                    con.sendText(content({status:400,type:'cancelAskForDriving',id:id,message:'订单不存在'}))
+                    con.sendText(content({status:400,type:'cancelAskForDriving',id:id,trip_id:trip_id,message:'订单不存在'}))
                     return;
                 }
 
                 /** 接单后多少时间内不能取消 */
                 if(result.order_time + 120 < parseInt(Date.now() / 1000) && result.order_time + trip.duration + 120 > parseInt(Date.now() / 1000)){
-                    // con.sendText(content({status:400,type:'cancelAskForDriving',id:id,message:'行程无法取消'}))
-                    return;
+                    // con.sendText(content({status:400,type:'cancelAskForDriving',id:id,trip_id:trip_id,message:'行程无法取消'}))
+
                 }
                 /** 订单状态 */
                 if([5,10,20,25].indexOf(parseInt(result.statuss))==-1){
-                    con.sendText(content({status:400,type:'cancelAskForDriving',id:id,message:'行程无法取消'}))
+                    con.sendText(content({status:400,type:'cancelAskForDriving',id:id,trip_id:trip_id,message:'行程无法取消'}))
                     return;
                 }
-                db.update('update c_order_driving set statuss=0 where id=?',[id],function(){
-                    db.update('update c_trip set cancel_type=statuss,statuss=0,cancel_reason=? where id=? and type=1',[reason,id],function(){
+
+                let cancel_type;
+
+                if(result.statuss == 5){
+                    cancel_type = 1;
+                }else if(result.statuss == 10){
+                    cancel_type = 1;
+                }else if(result.statuss == 20){
+                    cancel_type = 2;
+                }else if(result.statuss == 25){
+                    cancel_type = 3;
+                }
+                
+                db.update('update c_order_'+className+' set statuss=0 where id=?',[id],function(){
+                    db.update('update c_trip set cancel_type=?,statuss=0,cancel_reason=? where id=? and type=1',[cancel_type,reason,id],function(){
                         sync.run(result)
                     })
                 })
@@ -281,8 +320,8 @@ let act = {
         }
 
         sync.add = function(result){
-            con.sendText(content({status:200,type:'cancelAskForDriving',id:id}))
-
+            con.sendText(content({status:200,type:'cancelAskForDriving',id:id,trip_id:trip_id}))
+            con.sendText(content({status:200,type:'statusChange'}))
             if(result.statuss >=20){
                 let driver = data.DriverMap.get(result.driver_id+'')
                 if(driver){

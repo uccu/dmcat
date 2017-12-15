@@ -365,6 +365,14 @@ user/getCancelReason
 {}
 
 
+1.45 顺风车司机评价用户
+user/judge_driver
+score 分数
+id 行程ID
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
 ws.1.1 用户登录
 @
 type 固定login
@@ -403,10 +411,10 @@ city_id 城市ID
 {}
 
 
-ws.1.4 取消代驾
+ws.1.4 取消订单
 @
 type 固定cancelAskForDriving
-id 发起代驾的编号ID
+trip_id 行程ID
 {}
 {}
 
@@ -570,6 +578,7 @@ limit 每页数量
 
 2.10 线下付款
 driver/offlinePay
+id 行程id
 {"data":{},"code":200,"url":"","message":""}
 {}
 
@@ -670,6 +679,26 @@ driver/getCancelReason
 {"data":{"list":["忘带钱了","其他"]},"code":200,"url":"","message":""}
 {}
 
+
+2.23 顺风车司机评价用户
+driver/judge_driver
+score 分数
+id 行程ID
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+2.24 提交服务记录
+driver/drivingLog
+trip_id 行程id
+brade 品牌
+car_number 车牌
+sex 性别
+type 类型
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
 ws.2.1 司机登录
 @
 type 固定login
@@ -759,6 +788,22 @@ ws.2.11 司机服务中结束等待乘客
 @
 type 固定endWaiting
 trip_id 行程id
+{}
+{}
+
+
+ws.2.12 确认费用
+@
+type 固定confirmPrice
+trip_id 行程id
+{}
+{}
+
+
+ws.2.13 取消订单
+@
+type 固定cancelAskForDriving
+trip_id 行程ID
 {}
 {}
 

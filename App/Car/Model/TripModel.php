@@ -17,4 +17,9 @@ class TripModel extends Model{
         return $this->join(StatusModel::class,'id','statuss','LEFT');
     }
 
+    public function cancelType(){
+        
+        return $this->join(CancelTypesModel::class,'id','cancel_type','LEFT');
+    }
+
 }
