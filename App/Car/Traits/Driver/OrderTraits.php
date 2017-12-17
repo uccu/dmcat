@@ -50,6 +50,18 @@ trait OrderTraits{
         $trip = $tripModel->select('*','cancelType.name>cancel_type_name')->where(['id'=>$id,'type'=>1,'driver_id'=>$this->L->id])->find();
         !$trip && AJAX::error('订单不存在');
 
+        $user = UserModel::copyMutiInstance()->select('id')->find($trip->user_id);
+        if(!$user)AJAX::error('用户不存在');
+
+        $user->online = '0';
+        
+        $userOnline = UserOnline::copyMutiInstance()->find($trip->user_id);
+        if($userOnline && $driverPosition->latitude != 0){
+            $user->position = $userOnline;
+            $user->online = '1';
+        }
+
+        $order->userInfo = $user;
 
         $startMsg = Func::getArea($order->start_latitude,$order->start_longitude);
         $order->start_formatted_address = $startMsg->formatted_address;
@@ -105,6 +117,11 @@ trait OrderTraits{
         $order->other_fee = $trip->other_fee ? json_decode($trip->other_fee):[];
         $order->cancel_type_name = $trip->cancel_type_name;
         $order->cancel_reason = $trip->cancel_reason;
+        $order->start_lay_time = $trip->start_lay_time;
+
+        $order->hasLog = TripDrivingLogModel::copyMutiInstance()->find($trip->trip_id) ?'1':'0';
+
+
         $out['info'] = $order;
 
         AJAX::success($out);

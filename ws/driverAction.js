@@ -627,7 +627,7 @@ let act = {
         /** 判断登录 */
         if(!con.driver_id){
             con.sendText(content({status:400,type:'login',message:'未登录'}))
-            console.error('one user login error 6')
+            console.error('one driver login error 6')
             return
         }
 
@@ -713,7 +713,7 @@ let act = {
         sync.add = function(result){
             con.sendText(content({status:200,type:'cancelAskForDriving',id:id,trip_id:trip_id}))
             let user = data.UserMap.get(result.user_id+'')
-            user.con.sendText(content({status:200,type:'statusChange'}))
+            if(user)user.con.sendText(content({status:200,type:'statusChange'}))
             if(result.statuss >=20){
                 let driver = data.DriverMap.get(result.driver_id+'')
                 if(driver){

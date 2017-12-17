@@ -188,19 +188,27 @@ let act = {
                     if(ids.length <= n){
                         latitudeRange = [start_latitude - 0.05,start_latitude + 0.05]
                         longitudeRange = [start_longitude - 0.05,start_longitude + 0.05]
-                        sync.run(id);
+                        sync.run(id,trip_id);
                         return;
                     }
                     let driver = data.DriverMap.get(ids[n]+'')
                     if(driver && !driver.serving){
                         driver.con.sendText(content({status:200,type:'distribute',order_id:id}))
-                        user.clock = setTimeout(q=>run(n+1),30000)
+                        if(user)user.clock = setTimeout(q=>run(n+1),30000)
                     }else{
                         run(n+1)
                     }
                 }
                 run(0)
             })
+        }
+        sync.add = function(id){
+
+            db.update('update c_order_driving set statuss=10 where id=?',[id],function(){
+                db.update('update c_trip set statuss=10 where trip_id=?',[trip_id],function(){
+                    sync.run(id);
+                });
+            });
         }
         sync.add = function(id){
             db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){

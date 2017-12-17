@@ -20,7 +20,8 @@ use App\Car\Model\UserApplyModel;
 use App\Car\Model\DriverApplyModel;
 use App\Car\Model\DriverModel;
 use App\Car\Model\UserModel;
-use App\Car\Model\TripModel;
+use App\Car\Model\TripModel; 
+use App\Car\Model\StatusModel; 
 
 
 class OrderController extends Controller{
@@ -88,17 +89,18 @@ class OrderController extends Controller{
                         'type'=>'select',
                         'option'=>[
                             '-1'=>'请选择',
-                            '0'=>'取消',
-                            '1'=>'创建订单',
-                            '2'=>'正在接客',
-                            '3'=>'行程中',
-                            '4'=>'待付款',
-                            '5'=>'待评价',
-                            '6'=>'完成',
+                            
                         ],'default'=>'-1'
                     ],
                 ]
             ];
+        
+        $opt['req'][1]['option'];
+
+        $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
+
+        $opt['req'][1]['option'] = $statusArr;
+        $opt['req'][1]['option']['-1'] = '请选择';
 
         # 头部标题设置
         $thead = 
@@ -135,7 +137,7 @@ class OrderController extends Controller{
 
         # 列表内容
         $where = [];
-        if($status != -1)$where['status'] = $status;
+        if($status != -1)$where['statuss'] = $status;
 
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
@@ -149,7 +151,7 @@ class OrderController extends Controller{
 
         $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
-            $v->status_name = ['取消','待接单','接客','服务中','待付款','待评价','已完成'][$v->status];
+            $v->status_name = $statusArr[$v->statuss];
         }
 
 
@@ -258,7 +260,7 @@ class OrderController extends Controller{
 
         if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
-        if($info->status != 1){
+        if($info->statuss != 5){
             $tbody[7]['disabled'] = true;
             $tbody[7]['suggest'] = '';
         }else{
@@ -288,10 +290,10 @@ class OrderController extends Controller{
         DB::start();
 
         $app->driver_id = $driver->id;
-        $app->status = 2;
+        $app->statuss = 20;
         $app->save();
         $trip->driver_id = $driver->id;
-        $trip->status = 2;
+        $trip->statuss = 20;
         $trip->save();
 
         DB::commit();
