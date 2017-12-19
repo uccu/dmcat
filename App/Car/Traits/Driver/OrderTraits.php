@@ -22,6 +22,7 @@ use App\Car\Model\JudgeDriverModel;
 use App\Car\Model\OrderTaxiModel;
 use App\Car\Model\OrderWayModel;
 use App\Car\Model\TripDrivingLogModel;
+use App\Car\Model\UserOnlineModel;
 
 /**
  *  司机订单相关
@@ -55,7 +56,7 @@ trait OrderTraits{
 
         $user->online = '0';
         
-        $userOnline = UserOnline::copyMutiInstance()->find($trip->user_id);
+        $userOnline = UserOnlineModel::copyMutiInstance()->find($trip->user_id);
         if($userOnline && $driverPosition->latitude != 0){
             $user->position = $userOnline;
             $user->online = '1';
@@ -117,7 +118,13 @@ trait OrderTraits{
         $order->other_fee = $trip->other_fee ? json_decode($trip->other_fee):[];
         $order->cancel_type_name = $trip->cancel_type_name;
         $order->cancel_reason = $trip->cancel_reason;
+        $order->during = $trip->during;
+        $order->pay_type = $trip->pay_type;
         $order->start_lay_time = $trip->start_lay_time;
+        if($trip->laying){
+            $order->during = $trip->during + TIME_NOW - $order->start_lay_time;
+            if($order->during > 600)$order->lay_fee = ceil(($order->during-600)/60);
+        }
 
         $order->hasLog = TripDrivingLogModel::copyMutiInstance()->find($trip->trip_id) ?'1':'0';
 
@@ -248,6 +255,36 @@ trait OrderTraits{
 
         AJAX::success();
 
+
+    }
+
+
+
+    function changeEnd($id,OrderDrivingModel $orderDrivingModel,TripModel $tripModel,$end_latitude,$end_longitude,$end_name){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        !$id && AJAX::error('订单参数缺失');
+
+        $order = $orderDrivingModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
+        !$order && AJAX::error('订单不存在');
+
+        $trip = $tripModel->select('*','cancelType.name>cancel_type_name')->where(['id'=>$id,'type'=>1,'driver_id'=>$this->L->id])->find();
+        !$trip && AJAX::error('订单不存在');
+
+        DB::start();
+        $trip->end_latitude = $end_latitude;
+        $trip->end_longitude = $end_longitude;
+        $trip->end_name = $end_name;
+        $reip->save();
+
+        $order->end_latitude = $end_latitude;
+        $order->end_longitude = $end_longitude;
+        $order->end_name = $end_name;
+        $order->save();
+        DB::commit();
+
+        AJAX::success();
 
     }
 }

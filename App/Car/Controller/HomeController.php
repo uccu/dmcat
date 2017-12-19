@@ -12,6 +12,8 @@ use App\Car\Tool\Func;
 use App\Car\Model\AreaModel;
 use App\Car\Model\UserCouponModel;
 use App\Car\Model\H5Model;
+use App\Car\Model\TripModel;
+use App\Car\Model\DriverOnlineModel;
 use App\Car\Middleware\L;
 use Model;
 
@@ -363,6 +365,35 @@ class HomeController extends Controller{
         $c = '01:11'<'01:11';
 
         var_dump($a,$b,$c);
+    }
+
+    /** 获取附近的司机
+     * getDrivers
+     * @param mixed $latitude 
+     * @param mixed $longitude 
+     * @return mixed 
+     */
+    function getDrivers($latitude = 0,$longitude = 0,DriverOnlineModel $model,$type = 0){
+
+        $latitudeRange = [$latitude - 0.05,$latitude + 0.05];
+        $longitudeRange = [$longitude - 0.05,$longitude + 0.05];
+
+        if($type == 1)$model->where(['driver.type_driving'=>1]);
+        elseif($type == 2)$model->where(['driver.type_taxi'=>1]);
+
+        $model->where('latitude BETWEEN %a AND longitude BETWEEN %a AND driver_id != %n',$latitudeRange,$longitudeRange,$this->L->id);
+        
+        $list = $model->get()->toArray();
+        
+        foreach($list as &$v){
+
+            $v->busy =  TripModel::copyMutiInstance()->where(['driver_id'=>$v->driver_id])->where('type < 3 AND status IN (%c)',[20,25,30,35],$this->L->id)->find() ? '1' : '0';
+        }
+
+
+        $out['list'] = $list;
+        AJAX::success($out);
+
     }
     
 }

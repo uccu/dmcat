@@ -357,7 +357,7 @@ let act = {
                 }
                 sync.trip = trip
                 /** 订单状态 */
-                if([30].indexOf(parseInt(result.statuss))==-1 || trip.laying == 1){
+                if([30].indexOf(parseInt(trip.statuss))==-1 || trip.laying == 1){
                     con.sendText(content({status:400,type:'waiting',trip_id:trip_id,message:'行程当前无法等候'}))
                     return;
                 }
@@ -408,7 +408,7 @@ let act = {
                 }
                 sync.trip = trip
                 /** 订单状态 */
-                if([30].indexOf(parseInt(result.statuss))==-1 || trip.laying == 0){
+                if([30].indexOf(parseInt(trip.statuss))==-1 || trip.laying == 0){
                     con.sendText(content({status:400,type:'endWaiting',trip_id:trip_id,message:'无法结束等候'}))
                     return;
                 }
@@ -711,9 +711,13 @@ let act = {
         }
 
         sync.add = function(result){
-            con.sendText(content({status:200,type:'cancelAskForDriving',id:id,trip_id:trip_id}))
+            con.sendText(content({status:200,type:'cancelAskForDrivingDriver',id:id,trip_id:trip_id}))
             let user = data.UserMap.get(result.user_id+'')
-            if(user)user.con.sendText(content({status:200,type:'statusChange'}))
+            if(user){
+                if(user && user.clock)clearTimeout(user.clock);
+                user.con.sendText(content({status:200,type:'statusChange'}))
+                user.con.sendText(content({status:200,type:'cancelAskForDrivingDriver',id:id,trip_id:trip_id}))
+            }
             if(result.statuss >=20){
                 let driver = data.DriverMap.get(result.driver_id+'')
                 if(driver){
@@ -816,6 +820,7 @@ let z = function(obj,con){
                                         }
                                         let user = data.UserMap.get(result.user_id+'')
                                         if(user){
+                                            if(user && user.clock)clearTimeout(user.clock);
                                             user.con.sendText(content({status:200,type:'orderDriving',id:id}))
                                             // post('user/push',{id:result.user_id,message:'有司机接了您的订单！',type:'order_order'});
                                         }

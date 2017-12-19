@@ -34,7 +34,7 @@ class L extends Middleware{
         $this->request = Request::getSingleInstance();
 
         /*获取user_token*/
-        $this->user_token = $this->request->request('user_token');
+        $this->user_token = str_replace(' ','+',$this->request->request('user_token'));
         if(!$this->user_token)$this->user_token = $this->request->cookie('user_token');
         if(!$this->user_token)return;
 

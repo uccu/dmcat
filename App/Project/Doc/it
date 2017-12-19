@@ -699,6 +699,17 @@ type 类型
 
 
 
+2.25 修改代驾终点位置
+driver/changeEnd
+id 订单id
+end_latitude 纬度
+end_longitude 经度
+end_name 终点位置
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
 ws.2.1 司机登录
 @
 type 固定login
@@ -883,4 +894,10 @@ home/getVersion
 
 
 
-
+3.11 查看周围的司机
+home/getDrivers
+latitude 纬度
+longitude 经度
+type 1代驾2出租车
+{"data":{"list":[{"driver_id":"1","latitude":"31.23170600","longitude":"121.47264400","busy":"1"}]},"code":200,"url":"","message":""}
+{}

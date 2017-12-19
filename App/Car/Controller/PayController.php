@@ -382,6 +382,7 @@ class PayController extends Controller{
         foreach($xmlObject as $k=>$v){
             $xmlArray[$k] = $xmlArray2[$k] = $v.'';
         }
+        $_REQUEST = $xmlArray;
         $sign = $xmlArray['sign'];
         unset($xmlArray['sign']);
         ksort($xmlArray,SORT_STRING);
@@ -457,6 +458,7 @@ class PayController extends Controller{
     private function pay_finish($trip,$order){
 
         $trip->statuss = 50;
+        $trip->pay_type = 1;
         $trip->save();
 
         $order->statuss = 50;

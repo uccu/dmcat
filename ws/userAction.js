@@ -202,7 +202,7 @@ let act = {
                 run(0)
             })
         }
-        sync.add = function(id){
+        sync.add = function(id,trip_id){
 
             db.update('update c_order_driving set statuss=10 where id=?',[id],function(){
                 db.update('update c_trip set statuss=10 where trip_id=?',[trip_id],function(){
@@ -249,6 +249,7 @@ let act = {
         let trip_id = obj.trip_id || 0
         let types = obj.types || 1
         let reason = obj.reason || ''
+        let user = data.UserMap.get(con.user_id)
 
         let className;
 
@@ -318,6 +319,8 @@ let act = {
                     cancel_type = 3;
                 }
                 
+                if(user && user.clock)clearTimeout(user.clock);
+                
                 db.update('update c_order_'+className+' set statuss=0 where id=?',[id],function(){
                     db.update('update c_trip set cancel_type=?,statuss=0,cancel_reason=? where id=? and type=1',[cancel_type,reason,id],function(){
                         sync.run(result)
@@ -333,6 +336,7 @@ let act = {
             if(result.statuss >=20){
                 let driver = data.DriverMap.get(result.driver_id+'')
                 if(driver){
+                    driver.con.sendText(content({status:200,type:'cancelAskForDriving',id:id,trip_id:trip_id}))
                     let g = function(r){
                         driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
                         driver.serving = 0;

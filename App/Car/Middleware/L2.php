@@ -34,7 +34,7 @@ class L2 extends Middleware{
         $this->request = Request::getSingleInstance();
 
         /*获取driver_token*/
-        $this->driver_token = $this->request->request('driver_token');
+        $this->driver_token = str_replace(' ','+',$this->request->request('driver_token'));
         if(!$this->driver_token)$this->driver_token = $this->request->cookie('driver_token');
         if(!$this->driver_token)return;
 

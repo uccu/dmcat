@@ -11,5 +11,9 @@ class UserMoneyLogModel extends Model{
         
         return $this->join(UserModel::class,'id','user_id');
     }
+    public function userBank(){
+        
+        return $this->join(UserBankModel::class,'id','bank_id');
+    }
 
 }

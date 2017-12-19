@@ -509,6 +509,7 @@ class DriverController extends Controller{
         $paymentModel->set($data)->add();
 
         $trip->statuss = 50;
+        $trip->pay_type = 2;
         $trip->save();
 
         if($trip->type == 1){

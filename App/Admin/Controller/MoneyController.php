@@ -252,8 +252,12 @@ class MoneyController extends Controller{
             [
 
                 '用户ID',
-                '名字',
+                '用户名',
                 '提现金额',
+                '姓名',
+                '卡号',
+                '银行',
+                '分行',
                 '状态',
                 '申请时间'
                 
@@ -268,6 +272,10 @@ class MoneyController extends Controller{
                 'id',
                 'name',
                 'money',
+                'bname',
+                'code',
+                'bbname',
+                'bank_name',
                 'status_name',
                 'date',
 
@@ -285,7 +293,7 @@ class MoneyController extends Controller{
             $where['search'] = ['user.name LIKE %n OR user.phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
 
-        $list = $model->select('*','user.name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        $list = $model->select('*','user.name','userBank.code','userBank.name>bname','userBank.bank_name','userBank.bank_name','userBank.bank.name>bbname')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
             $v->status_name = [
                 '0'=>'申请中',
