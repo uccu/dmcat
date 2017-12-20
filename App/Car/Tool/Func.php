@@ -15,6 +15,7 @@ use App\Car\Model\PaymentModel;
 use App\Car\Model\AreaModel;
 use App\Car\Model\IncomeModel;
 use App\Car\Model\DriverOnlineModel;
+use App\Car\Model\UserOnlineModel;
 use Model;
 use stdClass;
 
@@ -810,9 +811,11 @@ class Func {
     
 
 
-    public static function addIncome($driver_id,$user_id,$money,$type,$trip_id){
+    public static function addIncome($driver_id,$user_id,$order,$type,$trip_id){
         
         $incomeModel = IncomeModel::copyMutiInstance();
+
+        $money = $order->total_fee;
 
         $data['driver_id'] = $driver_id;
         $data['user_id'] = $user_id;
@@ -829,13 +832,13 @@ class Func {
             
             if($type == 1){
 
-                $money2 = $data['money']* .2;
-                $data['money'] = $data['money']* .8;
+                $money2 = ($order->fee + $order->lay_fee)* .2;
+                $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* .2;
             }
             if($type == 2){
 
-                $money2 = $data['money']* .1;
-                $data['money'] = $data['money']* .9;
+                $money2 = ($order->fee + $order->lay_fee)* .1;
+                $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* .1;
             }
             $driver = $driverModel->find($driver_id);
             
@@ -889,8 +892,8 @@ class Func {
 
 
         }elseif($type == 3){
-
-            if($type == 3)$data['money'] = $data['money']* .9;
+            $money2 = ($order->fee + $order->lay_fee)* .1;
+            $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* .1;
             $driver = $userModel->find($driver_id);
             if($driver){
                 $userModel->set('money = money + %n',$data['money'])->save($driver->id);
@@ -948,15 +951,15 @@ class Func {
                         $user = $userModel->find($user->parent_id);
                         if($user)$userModel->set('money = money + %n',$money2 * .01)->save($user->id);
                         # 4级
-                        if($user && $user->parent_id){
-                            $user = $userModel->find($user->parent_id);
-                            if($user)$userModel->set('money = money + %n',$money2 * .01)->save($user->id);
-                            # 5级
-                            if($user && $user->parent_id){
-                                $user = $userModel->find($user->parent_id);
-                                if($user)$userModel->set('money = money + %n',$money2 * .01)->save($user->id);
-                            }
-                        }
+                        // if($user && $user->parent_id){
+                        //     $user = $userModel->find($user->parent_id);
+                        //     if($user)$userModel->set('money = money + %n',$money2 * .01)->save($user->id);
+                        //     # 5级
+                        //     if($user && $user->parent_id){
+                        //         $user = $userModel->find($user->parent_id);
+                        //         if($user)$userModel->set('money = money + %n',$money2 * .01)->save($user->id);
+                        //     }
+                        // }
                     }
                 }
             }
@@ -969,9 +972,13 @@ class Func {
     }
 
 
-    static function getDriverPostion($id = 0){
+    static function getDriverPostion($id = 0,$u = 0){
 
         if(!$id)return false;
+
+        if($u == 3){
+            return UserOnlineModel::copyMutiInstance()->find($id);
+        }
 
         return DriverOnlineModel::copyMutiInstance()->find($id);
     }

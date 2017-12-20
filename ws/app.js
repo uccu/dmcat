@@ -46,7 +46,7 @@ let serverCallback = function(con){
             data.DriverMap.delete(con.driver_id)
             db.delete('delete from c_driver_online where driver_id=?',[con.driver_id])
         }else if(con.admin_id){
-            data.DriverMap.delete(con.admin_id)
+            data.AdminMap.delete(con.admin_id)
         }
 
 		console.log("one connection closed")
@@ -59,7 +59,7 @@ let serverCallback = function(con){
             if(user && user.clock)clearTimeout(user.clock);
             db.delete('delete from c_user_online where user_id=?',[con.user_id])
         }else if(con.driver_id){
-            data.AdminMap.delete(con.driver_id)
+            data.DriverMap.delete(con.driver_id)
             db.delete('delete from c_driver_online where driver_id=?',[con.driver_id])
         }else if(con.admin_id){
             data.AdminMap.delete(con.admin_id)

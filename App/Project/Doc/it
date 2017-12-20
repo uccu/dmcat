@@ -710,6 +710,14 @@ end_name 终点位置
 
 
 
+2.26 刷新计费
+driver/refleshPrice
+trip_id 行程id
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
 ws.2.1 司机登录
 @
 type 固定login

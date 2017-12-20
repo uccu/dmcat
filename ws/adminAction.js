@@ -53,7 +53,7 @@ let act = {
                 admin.con = con
                 admin.id = obj.id+''
                 data.AdminMap.set(con.admin_id,admin)
-                console.log(`admin ${obj.id} linked`)
+                console.log(`admin ${con.admin_id} linked`)
             }
         }
         

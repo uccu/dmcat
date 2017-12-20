@@ -14,8 +14,11 @@ use Uccu\DmcatTool\Tool\AJAX;
 
 # model
 use App\Car\Model\OrderDrivingModel;
+use App\Car\Model\OrderTaxiModel;
+use App\Car\Model\OrderWayModel;
 use App\Car\Model\TripModel;
 use App\Car\Model\DriverModel;
+use App\Car\Model\UserModel;
 use App\Car\Model\UserCancelReasonModel;
 use App\Car\Model\DriverServingPositionModel;
 
@@ -32,19 +35,52 @@ trait OrderTraits{
      * @param mixed $orderDrivingModel 
      * @return mixed 
      */
-    function orderInfo_daijia($id = 0,
-        OrderDrivingModel $orderDrivingModel,TripModel $tripModel,DriverModel $driverModel,DriverServingPositionModel $driverServingPosition){
+    function orderInfo_daijia($id = 0,$type = 1,$trip_id = 0,
+        OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel,DriverModel $driverModel,UserModel $userModel,DriverServingPositionModel $driverServingPosition){
         
         // $this->L->id = 46;
         !$this->L->id && AJAX::error('未登录');
 
-        !$id && AJAX::error('订单参数缺失');
+        !$id && !$trip_id && AJAX::error('订单参数缺失');
 
-        $order = $orderDrivingModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
-        !$order && AJAX::error('订单不存在');
+        if($trip_id){
+            $trip = $tripModel->select('*','cancelType.name>cancel_type_name')->where(['trip_id'=>$trip_id,'user_id'=>$this->L->id])->find();
+            !$trip && AJAX::error('行程不存在');
+            $id = $trip->id;
+            $type = $trip->type;
+            if($trip->type == 1){
+                $order = $orderDrivingModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
+            }elseif ($trip->type == 2){
+                $order = $orderTaxiModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
+            }elseif ($trip->type == 3){
+                $driverModel = $userModel;
+                $order = $orderWayModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
+            }
+            !$order && AJAX::error('订单不存在');
+        }
 
-        $trip = $tripModel->select('*','cancelType.name>cancel_type_name')->where(['id'=>$id,'type'=>1,'user_id'=>$this->L->id])->find();
-        !$trip && AJAX::error('订单不存在');
+        elseif($id){
+            if($type == 1){
+                $order = $orderDrivingModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
+            }elseif ($type == 2){
+                $order = $orderTaxiModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
+            }elseif ($trip->type == 3){
+                $driverModel = $userModel;
+                $order = $orderWayModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
+            }
+            !$order && AJAX::error('订单不存在');
+            
+
+            $trip = $tripModel->select('*','cancelType.name>cancel_type_name')->where(['id'=>$id,'type'=>$type,'user_id'=>$this->L->id])->find();
+            !$trip && AJAX::error('行程不存在');
+
+            $trip_id = $trip->trip_id;
+
+        }else{
+            AJAX::error('error');
+        }
+
+        
         
 
         if($trip->statuss == 20){
@@ -81,7 +117,7 @@ trait OrderTraits{
 
 
         # 当已抢单，没有接到乘客开始服务，计算司机与起点的距离
-        $driverPosition = Func::getDriverPostion($order->driver_id);
+        $driverPosition = Func::getDriverPostion($order->driver_id,$type);
         if(!$driverPosition || $driverPosition->latitude || $order->statuss == 20){
             $distance = 0;
         }else{
@@ -131,8 +167,10 @@ trait OrderTraits{
         $order->other_fee = $trip->other_fee ? json_decode($trip->other_fee):[];
         $order->cancel_type_name = $trip->cancel_type_name;
         $order->cancel_reason = $trip->cancel_reason;
+        
 
         $out['info'] = $order;
+        $out['type'] = $type;
 
         AJAX::success($out);
 

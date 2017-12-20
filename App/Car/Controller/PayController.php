@@ -465,7 +465,7 @@ class PayController extends Controller{
         $order->save();
 
         # 增加收入
-        Func::addIncome($trip->driver_id,$trip->user_id,$order->total_fee,$trip->type,$trip->id);
+        Func::addIncome($trip->driver_id,$trip->user_id,$order,$trip->type,$trip->id);
 
     }
     
