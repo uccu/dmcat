@@ -157,11 +157,23 @@ trait OrderTraits{
 
         # 当正在服务中，实时计算价格
         if(in_array($order->statuss,[30])){
-            $time = date('H:i',$trip->in_time);
-            $data = Func::getDrivingPrice($order->city_id,$time,$trip->real_distance / 1000);
-            $order->fee = $data['total'];
-            $order->start_fee = $data['start'];
-            $order->total_fee = $order->fee - $order->coupon;
+            if($trip->type == 1){
+                $time = date('H:i',$trip->in_time);
+                $data = Func::getDrivingPrice($order->city_id,$time,$trip->real_distance / 1000);
+                $order->fee = $data['total'];
+                $order->start_fee = $data['start'];
+                $order->total_fee = $order->fee - $order->coupon;
+            }elseif($trip->type == 2){
+                $time = date('H:i',$trip->in_time);
+                $data = Func::getTaxiPrice($order->city_id,$time,$trip->real_distance / 1000);
+                $order->fee = $data['total'];
+                $order->start_fee = $data['start'];
+                $order->total_fee = $order->fee - $order->coupon;
+            }elseif($trip->type == 3){
+                // $price = Func::getWayPrice($distance->distance / 1000,$num);
+                // $out['start_price'] = '20.00';
+            }
+            
         }
         $order->trip_id = $trip->trip_id;
         $order->other_fee = $trip->other_fee ? json_decode($trip->other_fee):[];

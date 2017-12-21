@@ -72,7 +72,7 @@ let act = {
                 }
                 id = result.id
                 type = result.type
-                className = w.type == 1?'driving':w.type == 2?'taxi':'way'
+                className = result.type == 1?'driving':result.type == 2?'taxi':'way'
                 if(className == 'way'){
                     con.sendText(content({status:400,type:'arriveStartPosition',message:'行程不存在N'}))
                     return;
@@ -115,6 +115,7 @@ let act = {
         /** 获取订单ID */
         let id
         let type
+        let className
         let trip_id = obj.trip_id
         if(!trip_id){
             con.sendText(content({status:400,type:'startDriving',message:'行程不存在'}))
@@ -124,23 +125,23 @@ let act = {
         
         sync.add = function(){
         
-            db.find('select * from c_trip where trip_id=?',[trip_id],function(w){
-                if(!w){
+            db.find('select * from c_trip where trip_id=?',[trip_id],function(trip){
+                if(!trip){
                     con.sendText(content({status:400,type:'startDriving',message:'行程不存在'}))
                     return;
                 }
                 id = trip.id
                 type = trip.type
-                className = w.type == 1?'driving':w.type == 2?'taxi':'way'
+                className = trip.type == 1?'driving':trip.type == 2?'taxi':'way'
                 if(className == 'way'){
                     con.sendText(content({status:400,type:'startDriving',message:'行程不存在N'}))
                     return;
                 }
-                sync.run(w)
+                sync.run(trip)
             })
         }
         sync.add = function(w){
-            db.find('select * from c_order_driving where id=?',[id],function(result){
+            db.find('select * from c_order_'+className+' where id=?',[id],function(result){
                 
                 /** 订单是否存在 */
                 if(!result){
@@ -171,7 +172,7 @@ let act = {
                 lay_fee = Math.ceil((during-600)/60)
             }
         
-            db.update('update c_order_driving set statuss=30,lay_fee=? where id=?',[lay_fee,id],function(){
+            db.update('update c_order_'+className+' set statuss=30,lay_fee=? where id=?',[lay_fee,id],function(){
                 sync.run(trip,during)
             })
         
@@ -180,7 +181,7 @@ let act = {
         
         sync.add = function(trip,during){
             /** 更新行程 */
-            db.update('update c_trip set driver_id=?,statuss=30,laying=0,in_time=?,last_latitude=?,last_longitude=?,during=? where id=? and type=1',[con.driver_id,parseInt(Date.now() / 1000),driver.latitude,driver.longitude,during,id],function(){
+            db.update('update c_trip set driver_id=?,statuss=30,laying=0,in_time=?,last_latitude=?,last_longitude=?,during=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),driver.latitude,driver.longitude,during,id],function(){
             
                 sync.run(trip)
             })
@@ -260,19 +261,22 @@ let act = {
         
         
         sync.add = function(trip,result){
-            action.getDrivingPrice(result.city_id,trip.in_time,trip.real_distance,function(prices){
+            if(type == 1)action.getDrivingPrice(result.city_id,trip.in_time,trip.real_distance,function(prices){
+                sync.run(trip,prices,result)
+            })
+            else if(type == 2)action.getTaxiPrice(result.city_id,trip.in_time,trip.real_distance,function(prices){
                 sync.run(trip,prices,result)
             })
         }
         sync.add = function(trip,prices,result){
-            db.update('update c_trip set driver_id=?,statuss=35,out_time=?,start_fee=? where id=? and type=1',[con.driver_id,parseInt(Date.now() / 1000),prices.start,id],function(){
+            db.update('update c_trip set driver_id=?,statuss=35,out_time=?,start_fee=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),prices.start,id],function(){
                 sync.run(trip,prices,result)
             })
         }
         sync.add = function(trip,prices,result){
             let fee = prices.total;
             let total_fee = fee - result.coupon + result.lay_fee;
-            db.update('update c_order_driving set statuss=35,distance=?,fee=?,total_fee=? where id=?',[trip.real_distance/1000,fee,total_fee,id],function(){
+            db.update('update c_order_'+className+' set statuss=35,distance=?,fee=?,total_fee=? where id=?',[trip.real_distance/1000,fee,total_fee,id],function(){
                 sync.run(result)
             })
         }
@@ -336,9 +340,11 @@ let act = {
             db.find('select * from c_trip where driver_id=? AND type<3 AND statuss IN (20,30)',[con.driver_id],function(re){
                 
                 if(re)db.insert('insert into c_driver_serving_position set driver_id=?,trip_id=?,latitude=?,longitude=?,status=?',[driver.id,re.trip_id,latitude,longitude,re.statuss])
+
+                if((driver.serving && re.statuss == 30) || (re.statuss == 20 && re.meter))sync.run(re)
                 
             })
-            if(driver.serving)db.find('select * from c_trip where driver_id=? AND type<3 AND statuss=30',[con.driver_id],function(w){sync.run(w)})
+            
         }
         
         sync.add = function(d){
@@ -683,7 +689,7 @@ let act = {
                     con.sendText(content({status:400,type:'cancelAskForDriving',id:id,trip_id:trip_id,message:'订单不存在'}))
                     return;
                 }
-                if(types == 1)db.find('select * from c_trip where id=? and type=? and driver_id=?',[id,types,con.driver_id],function(w){sync.run(w)})
+                if(types == 1)db.find('select * from c_trip where id=? and driver_id=?',[id,types,con.driver_id],function(w){sync.run(w)})
             }
         }
         else if(trip_id){
@@ -732,7 +738,7 @@ let act = {
                 }
                 
                 db.update('update c_order_'+className+' set statuss=0 where id=?',[id],function(){
-                    db.update('update c_trip set cancel_type=?,statuss=0,cancel_reason=? where id=? and type=1',[cancel_type,reason,id],function(){
+                    db.update('update c_trip set cancel_type=?,statuss=0,cancel_reason=? where trip_id=?',[cancel_type,reason,trip_id],function(){
                         sync.run(result)
                     })
                 })
@@ -783,6 +789,138 @@ let act = {
 
         
 
+    },
+    orderDriving(obj,con){/** 接单 */
+
+        /** 司机是否登录 */
+        if(!con.driver_id){
+            con.sendText(content({status:400,type:'login',message:'未登录'}))
+            console.error('one driver login error 9')
+            return
+        }
+
+        /** 获取代驾订单id */
+        let id
+        let type
+        let className
+        let result
+        let trip_id = obj.trip_id || 0
+        let driver = data.DriverMap.get(con.driver_id)
+
+        /** 参数是否传了 */
+        if(!trip_id){
+            con.sendText(content({status:400,type:'orderDriving',trip_id:trip_id,message:'行程不存在'}))
+            return;
+        }
+
+        let sync = new SYNC
+        sync.add = function(){
+// console.log(1)
+            db.find('select * from c_trip where trip_id=? and type<3',[trip_id,con.driver_id],function(trip){
+
+                if(!trip){
+                    con.sendText(content({status:400,type:'orderDriving',trip_id:trip_id,message:'行程不存在'}))
+                    return;
+                }
+                sync.trip = trip
+                id = trip.id
+                type = trip.type
+                /** 订单状态 */
+                if([5,10].indexOf(parseInt(trip.statuss))==-1){
+                    con.sendText(content({status:400,type:'orderDriving',trip_id:trip_id,message:'无法接单'}))
+                    return;
+                }
+                className = trip.type == 1?'driving':trip.type == 2?'taxi':'way'
+                if(className == 'way'){
+                    con.sendText(content({status:400,type:'orderDriving',message:'行程不存在N'}))
+                    return;
+                }
+                sync.run(trip)
+            })
+        }
+
+        sync.add = function(){
+            // console.log(2)
+            db.find('select * from c_order_'+className+' where id=?',[id],function(r){
+                
+                /** 订单是否存在 */
+                if(!r){
+                    con.sendText(content({status:400,type:'orderDriving',message:'订单不存在'}))
+                    return;
+                }
+                /** 订单是否属于登录司机 */
+                if(r.driver_id != 0){
+                    con.sendText(content({status:400,type:'orderDriving',message:'无权限'}))
+                    return;
+                }
+                result = r;
+                sync.run()
+            })
+            
+        }
+
+        sync.add = function(){
+            // console.log(3)
+
+            db.update('update c_order_'+className+' set driver_id=?,statuss=20,order_time=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
+
+                sync.run();
+            })
+        }
+
+        sync.add = function(){console.log(4)
+
+            action.getDis(driver.latitude,driver.longitude,result.start_latitude,result.start_longitude,3,function(st){
+                sync.run(st);
+            })
+        }
+
+        sync.add = function(st){
+            // console.log(5)
+            /** 更新行程 */
+            if(!st)st  = {}
+            db.update('update c_trip set driver_id=?,statuss=20,duration=? where id=?',[con.driver_id,st.duration||0,id],function(){
+                let driver_ids = result.driver_ids
+                                        
+                /** 设置司机状态为服务中 */
+                driver.serving = 1;
+                con.sendText(content({status:200,type:'orderDriving',id:id}))
+                if(driver){
+
+                    let g = function(r){
+                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
+                    };
+                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                }
+                let user = data.UserMap.get(result.user_id+'')
+                if(user){
+                    if(user && user.clock)clearTimeout(user.clock);
+                    user.con.sendText(content({status:200,type:'orderDriving',trip_id:trip_id,id:id}))
+                    // post('user/push',{id:result.user_id,message:'有司机接了您的订单！',type:'order_order'});
+                }
+                if(driver_ids){
+                    driver_ids = driver_ids.split(',')
+                    for(let k in driver_ids){
+                        let driver = data.DriverMap.get(driver_ids[k]+'')
+                        if(driver){
+                            if(driver.serving)continue
+                            let g = function(r){
+                                driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
+                            };
+                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                        }
+                    }
+                }
+            })
+        }
+
+        sync.run();
+
+        
     }
     
 

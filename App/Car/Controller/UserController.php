@@ -623,11 +623,11 @@ class UserController extends Controller{
             
         }elseif($trip->type == 2){
 
-            $orderTaxiModel->set(['status'=>$trip->statuss])->save($trip->id);
+            $orderTaxiModel->set(['statuss'=>$trip->statuss])->save($trip->id);
             
         }elseif($trip->type == 3){
 
-            $orderWayModel->set(['status'=>$trip->statuss])->save($trip->id);
+            $orderWayModel->set(['statuss'=>$trip->statuss])->save($trip->id);
             
         }
 

@@ -100,6 +100,11 @@ let act = {
         let user = data.UserMap.get(con.user_id)
         let latitude = user.latitude = parseFloat(obj.latitude || 0)
         let longitude = user.longitude = parseFloat(obj.longitude || 0)
+
+        if(!latitude || !longitude){
+            con.sendText(content({status:400,type:'updPostion',message:'更新位置失败'}))
+            return
+        }
         sync.add = function(){
             db.replace('update c_user_online set latitude=?,longitude=? where user_id=?',[latitude,longitude,user.id],function(){
                 console.log(`user ${con.user_id} updated position ${latitude},${longitude}`)
@@ -178,7 +183,7 @@ let act = {
         }
         /** 查找3公里内的司机 */
         sync.add = function(id,trip_id){
-            db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
+            db.get('select o.driver_id from c_driver_online o inner join c_driver d on o.driver_id=d.id where o.latitude between ? and ? and o.longitude between ? and ? and d.type_driving=1',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
                 for(let i in ids){
                     ids[i] = ids[i].driver_id
                 }
@@ -193,7 +198,7 @@ let act = {
                     }
                     let driver = data.DriverMap.get(ids[n]+'')
                     if(driver && !driver.serving){
-                        driver.con.sendText(content({status:200,type:'distribute',order_id:id}))
+                        driver.con.sendText(content({status:200,type:'distribute',order_id:id,trip_id:trip_id}))
                         if(user)user.clock = setTimeout(q=>run(n+1),30000)
                     }else{
                         run(n+1)
@@ -282,7 +287,7 @@ let act = {
                 if(!id)return;
                 obj.id = id;
                 /** 创建行程 */
-                db.insert('insert into c_trip set start_fee=?,statuss=5,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=1,id=?,user_id=?,create_time=?,distance=?,estimated_price=?,meter=?',[start_fee,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price,meter],function(trip_id){
+                db.insert('insert into c_trip set start_fee=?,statuss=5,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=2,id=?,user_id=?,create_time=?,distance=?,estimated_price=?,meter=?',[start_fee,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price,meter],function(trip_id){
                     obj.trip_id = trip_id
                     sync.run(id,trip_id)
                 })
@@ -290,7 +295,7 @@ let act = {
         }
         /** 查找3公里内的司机 */
         sync.add = function(id,trip_id){
-            db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
+            db.get('select o.driver_id from c_driver_online o inner join c_driver d on o.driver_id=d.id where o.latitude between ? and ? and o.longitude between ? and ? and d.type_taxi=1',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
                 for(let i in ids){
                     ids[i] = ids[i].driver_id
                 }
@@ -305,7 +310,7 @@ let act = {
                     }
                     let driver = data.DriverMap.get(ids[n]+'')
                     if(driver && !driver.serving){
-                        driver.con.sendText(content({status:200,type:'distribute',order_id:id}))
+                        driver.con.sendText(content({status:200,type:'distribute',order_id:id,trip_id:trip_id}))
                         if(user)user.clock = setTimeout(q=>run(n+1),30000)
                     }else{
                         run(n+1)
@@ -434,7 +439,7 @@ let act = {
                 if(user && user.clock)clearTimeout(user.clock);
                 
                 db.update('update c_order_'+className+' set statuss=0 where id=?',[id],function(){
-                    db.update('update c_trip set cancel_type=?,statuss=0,cancel_reason=? where id=? and type=1',[cancel_type,reason,id],function(){
+                    db.update('update c_trip set cancel_type=?,statuss=0,cancel_reason=? where trip_id=?',[cancel_type,reason,trip_id],function(){
                         sync.run(result)
                     })
                 })
@@ -493,229 +498,6 @@ let z = function(obj,con){
 
     else switch(obj.type){
 
-        case 'askForDriving':
-            if(con.user_id){
-                db.find('select * from c_trip where user_id=? and status in (1,2,3,4)',[con.user_id],function(result){
-                    /** 判断是否有订单正在执行中 */
-                    if(result){
-                        con.sendText(content({status:400,type:'askForDriving',message:'不能重复下单'}))
-                        return
-                    }
-
-                    let start_latitude = parseFloat(obj.start_latitude || 0)
-                    let start_longitude = parseFloat(obj.start_longitude || 0)
-                    let end_latitude = parseFloat(obj.end_latitude || 0)
-                    let end_longitude = parseFloat(obj.end_longitude || 0)
-                    
-                    let start_name = obj.start_name || ''
-                    let end_name = obj.end_name || ''
-                    let create_time = parseInt(Date.now() / 1000)
-                    let distance = parseInt(obj.distance || 0)
-                    let start_time = parseInt(obj.start_time || 0)
-                    let estimated_price = parseFloat(obj.estimated_price || 0)
-                    let phone = obj.phone || ''
-                    let name = obj.name || ''
-                    let city_id = parseInt(obj.city_id || 0)
-
-                    let latitudeRange = [start_latitude - 0.05,start_latitude + 0.05]
-                    let longitudeRange = [start_longitude - 0.05,start_longitude + 0.05]
-
-                    let id = 0;
-
-                    db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
-
-                        for(let i in ids){
-                            ids[i] = ids[i].driver_id
-                        }
-                        db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id],function(e){
-                            /** 创建订单 */
-                            id = e
-                            obj.id = id
-
-                            /** 创建行程 */
-                            db.insert('insert into c_trip set status=1,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=1,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price])
-
-                            /** 发送成功信息 */
-                            con.sendText(content({status:200,type:'askForDriving',info:obj}))
-                            let drivers = []
-                            for(let k in ids){
-                                drivers.push(ids[k])
-                                let driver = data.DriverMap.get(ids[k]+'')
-
-                                if(driver){
-                                    if(driver.serving)continue
-                                    let g = function(r){
-                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'create',list:r}))
-                                    };
-                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
-                                }
-                                
-                            }
-                            
-                            if(drivers.length)db.update('update c_order_driving set driver_ids=? where id=?',[drivers.join(','),id])
-                        })
-                    })
-                    console.log(`user ${con.user_id} create an order`)
-                })
-
-
-                
-            }
-            break;
-        
-        case 'callTaxi':
-            /** 用户是否登录 */
-            if(!con.user_id)break;
-
-            /** 查询进行中的订单 */
-            db.find('select * from c_trip where user_id=? and status in (1,2,3,4)',[con.user_id],function(result){
-
-                /** 判断是否有订单正在执行中 */
-                if(result){
-                    con.sendText(content({status:400,type:'callTaxi',message:'不能重复下单'}))
-                    return
-                }
-
-                /** 获取参数 */
-                let start_latitude  = parseFloat(obj.start_latitude || 0)
-                let start_longitude = parseFloat(obj.start_longitude || 0)
-                let end_latitude    = parseFloat(obj.end_latitude || 0)
-                let end_longitude   = parseFloat(obj.end_longitude || 0)
-                    
-                let start_name      = obj.start_name || ''
-                let end_name        = obj.end_name || ''
-                let create_time     = parseInt(Date.now() / 1000)
-                let distance        = parseInt(obj.distance || 0)
-                let start_time      = parseInt(obj.start_time || 0)
-                let estimated_price = parseFloat(obj.estimated_price || 0)
-                let phone           = obj.phone || ''
-                let name            = obj.name || ''
-                let city_id         = parseInt(obj.city_id || 0)
-                let meter           = obj.meter == 1 ? 1:0
-
-                let latitudeRange = [start_latitude - 0.05,start_latitude + 0.05]
-                let longitudeRange = [start_longitude - 0.05,start_longitude + 0.05]
-
-                let id = 0;
-
-                /** 获取订单起点附近的司机 */
-                db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
-
-                    /** ids赋值为司机ID的数组 */
-                    for(let i in ids){
-                        ids[i] = ids[i].driver_id
-                    }
-
-                    /** 创建订单 */
-                    db.insert('insert into c_order_taxi set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?,meter=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id,meter],function(id){
-
-                        obj.id = id
-
-                        /** 创建行程 */
-                        db.insert('insert into c_trip set status=1,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=2,id=?,user_id=?,create_time=?,distance=?,estimated_price=?,meter=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price,meter])
-
-                        /** 发送成功信息 */
-                        con.sendText(content({status:200,type:'callTaxi',info:obj}))
-                        console.log(`user ${con.user_id} create an order`)
-
-                        let drivers = []
-                        for(let k in ids){
-                            drivers.push(ids[k])
-                            let driver = data.DriverMap.get(ids[k]+'')
-
-                            if(driver){
-                                if(driver.serving)continue
-                                let g = function(r){
-                                    driver.con.sendText(content({status:200,type:'fleshTaxiList','mode':'create',list:r}))
-                                };
-                                (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
-                            }
-                        }
-                        /** 存储附近的司机的ID */
-                        if(drivers.length)db.update('update c_order_taxi set driver_ids=? where id=?',[drivers.join(','),id])
-                    })
-                })
-            })
-            break;
-        case 'cancelCallTaxi':
-            if(con.user_id){
-
-                let id = obj.id || 0
-                /** 查询订单 */
-
-                db.find('select * from c_trip where id=? and type = 2 and user_id=?',[id,con.user_id],function(trip){
-
-                    if(!trip){
-                        con.sendText(content({status:400,type:'cancelCallTaxi',id:id,message:'行程不存在'}))
-                        return;
-                    }
-                    db.find('select * from c_order_taxi where id=? and user_id=?',[id,con.user_id],function(result){
-
-                        /** 订单不存在返回 */
-                        if(!result)return;
-
-                        if(result.order_time + 120 < parseInt(Date.now() / 1000) && result.order_time + trip.duration + 120 > parseInt(Date.now() / 1000)){
-                            con.sendText(content({status:400,type:'cancelCallTaxi',id:id,message:'行程无法取消'}))
-                            return;
-                        }
-                        
-                        /** 订单状态只有在12时候可以取消 */
-                        if([1,2].indexOf(parseInt(result.status))==-1)return;
-                        
-                        /** 更新订单状态为取消 */
-                        db.update('update c_order_taxi set status=0 where id=?',[id],function(){
-                            
-                            /** 发送成功信息 */
-                            con.sendText(content({status:200,type:'cancelCallTaxi',id:id}))
-
-                            /** 更新行程表 */
-                            db.update('update c_trip set status=0 where id=? and type=2',[id],function(){
-
-                                /** 状态为待接客时候动作 */
-                                if(result.status == 2)
-                                {
-                                    let driver = data.DriverMap.get(result.driver_id+'')
-                                    if(!driver)return;
-
-                                    // post('driver/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
-
-                                    let g = function(r){
-                                        driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
-                                        driver.serving = 0;
-                                    };
-                                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
-
-                                }else /** 状态为抢单时候动作 */
-                                {
-                                    
-                                    let driver_ids = result.driver_ids
-                                    if(!driver_ids)return;
-
-                                    driver_ids = driver_ids.split(',')
-                                    for(let k in driver_ids){
-                                        let driver = data.DriverMap.get(driver_ids[k]+'')
-                                        if(!driver)continue;
-                                        if(driver.serving)continue
-                                        let g = function(r){
-                                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
-                                        };
-                                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
-
-                                    }
-                                }
-                                
-                            })
-                        })
-                    })
-                });
-                
-            }
-            break;
         case 'callWay':
             /** 用户是否登录 */
             if(!con.user_id)break;

@@ -132,11 +132,19 @@ trait OrderTraits{
 
         # 当正在服务中，实时计算价格
         if(in_array($order->statuss,[30])){
-            $time = date('H:i',$trip->in_time);
-            $data = Func::getDrivingPrice($order->city_id,$time,$trip->real_distance / 1000);
-            $order->fee = $data['total'];
-            $order->start_fee = $data['start'];
-            $order->total_fee = $order->fee - $order->coupon;
+            if($trip->type == 1){
+                $time = date('H:i',$trip->in_time);
+                $data = Func::getDrivingPrice($order->city_id,$time,$trip->real_distance / 1000);
+                $order->fee = $data['total'];
+                $order->start_fee = $data['start'];
+                $order->total_fee = $order->fee - $order->coupon;
+            }elseif($trip->type == 2){
+                $time = date('H:i',$trip->in_time);
+                $data = Func::getTaxiPrice($order->city_id,$time,$trip->real_distance / 1000);
+                $order->fee = $data['total'];
+                $order->start_fee = $data['start'];
+                $order->total_fee = $order->fee - $order->coupon;
+            }
         }
         $order->trip_id = $trip->trip_id;
         $order->other_fee = $trip->other_fee ? json_decode($trip->other_fee):[];
@@ -188,11 +196,11 @@ trait OrderTraits{
      * @param mixed $orderWayModel 
      * @return mixed 
      */
-    function judge_driver(UserModel $userModel,DriverModel $driverModel,JudgeDriverModel $judgeModel,TripModel $tripModel,$score,$id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
+    function judge_driver(UserModel $userModel,DriverModel $driverModel,JudgeDriverModel $judgeModel,TripModel $tripModel,$score,$trip_id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
 
         !$this->L->id && AJAX::error('未登录');
 
-        $trip = $tripModel->find($id);
+        $trip = $tripModel->find($trip_id);
 
         !$trip && AJAX::error('行程不存在');
         $trip->type == 3 && AJAX::error('行程不存在');
@@ -205,7 +213,7 @@ trait OrderTraits{
         if($score>5)$score = 5;
 
         $obj->driver_id = $trip->driver_id;
-        $obj->trip_id = $id;
+        $obj->trip_id = $trip_id;
         $obj->score = $score;
         $obj->user_id = $trip->user_id;
         $obj->type = $trip->type;
@@ -225,11 +233,11 @@ trait OrderTraits{
             
         }elseif($trip->type == 2){
 
-            $orderTaxiModel->set(['status'=>$trip->statuss])->save($trip->id);
+            $orderTaxiModel->set(['statuss'=>$trip->statuss])->save($trip->id);
             
         }elseif($trip->type == 3){
 
-            $orderWayModel->set(['status'=>$trip->statuss])->save($trip->id);
+            $orderWayModel->set(['statuss'=>$trip->statuss])->save($trip->id);
             
         }
 

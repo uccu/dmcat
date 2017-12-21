@@ -34,7 +34,7 @@
             b=new WebSocket('ws://121.199.8.244:7777/driver')
             b.onopen = function(){
                 console.log('driver 连接成功')
-                b.send('{"type":"login","latitude":"31.20139500","longitude":"121.26741200","driver_token":"PtvQMmGSAI4P0Tj1F47N8wFgCof4zuMrK0P4dcRZe8S8gjlJPo3QszmoCbptTqPgei+96qXOKT/QHAxe3Nnk/P/gsOkCm2bZQBT7Xdu6xBa4="}')
+                b.send('{"type":"login","latitude":"31.20139500","longitude":"121.26741200","driver_token":"BJrcezGr/UlWYndGsIjn9pQK6aA5w6mJzmSc8klUtGduIqQdEO0shz8h+Bc86Ot/jVDdZs1QQoXk6WGlHdoPCLUeaNQS0uukQbR2LKwYgImA="}')
             }
             b.onclose = function(){
                 console.log('driver 2秒后重连')

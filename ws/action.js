@@ -219,16 +219,19 @@ module.exports = {
 
 
             if(hours < 5 || hours > 23){
-                if($distance<3)$price = start_price;
-                else if($distance<10)$price = start_price + 3.1 * ($distance - 3);
-                else $price = $price = start_price + 3.1 * 7 + 4.7 * ($distance - 10);
+                if(distance<3)$price = start_price;
+                else if(distance<10)$price = start_price + 3.1 * (distance - 3);
+                else $price = $price = start_price + 3.1 * 7 + 4.7 * (distance - 10);
             }else{
-                if($distance<3)$price = start_price;
-                else if($distance<10)$price = start_price + 2.4 * ($distance - 3);
-                else $price = $price = start_price + 2.4 * 7 + 3.6 * ($distance - 10);
+                if(distance<3)$price = start_price;
+                else if(distance<10)$price = start_price + 2.4 * (distance - 3);
+                else $price = $price = start_price + 2.4 * 7 + 3.6 * (distance - 10);
             }
 
-            g($price)
+            g({
+                total:$price,
+                start:start_price
+            })
 
             
 
