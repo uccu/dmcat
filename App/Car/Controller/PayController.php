@@ -57,7 +57,7 @@ class PayController extends Controller{
         !$order && AJAX::error('订单不存在');
 
         /*总价格&订单号*/
-        // $total_fee = $order->total_price;
+        // $total_fee = $order->total_fee;
         $total_fee = '0.01';
         $out_trade_no = $type.date('YmdHis',$order->create_time).Func::add_zero($order->id,6);
 
@@ -142,8 +142,8 @@ class PayController extends Controller{
         !$order && AJAX::error('订单不存在');
 
         /*总价格&订单号*/
-        $total_fee = $order->total_price;
-
+        // $total_fee = $order->total_fee;
+        $total_fee = '0.01';
         $out_trade_no = $type.date('YmdHis',$order->create_time).Func::add_zero($order->id,6);
 
         /*生成随机码*/
@@ -159,8 +159,7 @@ class PayController extends Controller{
         $p['notify_url']        = Func::fullAddr('pay/wcpay_c');
         $p['out_trade_no']      = $out_trade_no;
         $p['spbill_create_ip']  = $_SERVER ["REMOTE_ADDR"];
-        // $p['total_fee']         = $total_fee100;
-        $p['total_fee']         = '1';
+        $p['total_fee']         = $total_fee100;
         $p['trade_type']        = 'APP';
 
 

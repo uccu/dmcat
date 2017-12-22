@@ -214,9 +214,11 @@ trait OrderTraits{
 
         $obj->driver_id = $trip->driver_id;
         $obj->trip_id = $trip_id;
-        $obj->score = $score;
         $obj->user_id = $trip->user_id;
         $obj->type = $trip->type;
+
+        $judgeModel->where($obj)->find() && AJAX::error('已评价');
+        $obj->score = $score;
         $obj->create_time = TIME_NOW;
 
         DB::start();
@@ -224,7 +226,7 @@ trait OrderTraits{
         $judgeModel->set($obj)->add();
 
         if($trip->statuss == 50)$trip->statuss = 60;
-        if($trip->statuss == 60)$trip->statuss = 66;
+        if($trip->statuss == 55)$trip->statuss = 66;
         $trip->save();
 
         if($trip->type == 1){
