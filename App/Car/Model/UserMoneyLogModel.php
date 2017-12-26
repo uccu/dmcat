@@ -9,11 +9,11 @@ class UserMoneyLogModel extends Model{
 
     public function user(){
         
-        return $this->join(UserModel::class,'id','user_id');
+        return $this->join(UserModel::class,'id','user_id','LEFT');
     }
     public function userBank(){
         
-        return $this->join(UserBankModel::class,'id','bank_id');
+        return $this->join(UserBankModel::class,'id','bank_id','LEFT');
     }
 
 }

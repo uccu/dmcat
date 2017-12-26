@@ -9,7 +9,11 @@ class DriverMoneyLogModel extends Model{
     public $field;
     public function driver(){
         
-        return $this->join(DriverModel::class,'id','driver_id');
+        return $this->join(DriverModel::class,'id','driver_id','LEFT');
+    }
+    public function driverBank(){
+        
+        return $this->join(DriverBankModel::class,'id','bank_id','LEFT');
     }
 
 }

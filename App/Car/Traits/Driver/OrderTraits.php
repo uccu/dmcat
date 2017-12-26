@@ -75,10 +75,13 @@ trait OrderTraits{
 
         
 
-        $user = UserModel::copyMutiInstance()->select('id')->find($trip->user_id);
+        $user = UserModel::copyMutiInstance()->select('id','phone')->find($trip->user_id);
         if(!$user)AJAX::error('用户不存在');
 
         $user->online = '0';
+        if($order->phone){
+            $user->phone = $user->phone;
+        }
         
         $userOnline = UserOnlineModel::copyMutiInstance()->find($trip->user_id);
         if($userOnline && $driverPosition->latitude != 0){
@@ -361,6 +364,9 @@ trait OrderTraits{
         }else{
             AJAX::error('行程不存在M');
         }
+        if($trip->statuss != 35){
+            AJAX::error('请在确认计费前刷新计费');
+        }
         $order = $model->where(['id'=>$trip->id,'driver_id'=>$this->L->id])->find();
         !$order && AJAX::error('订单不存在');
 
@@ -370,7 +376,7 @@ trait OrderTraits{
 
         if($trip->type == 1){
 
-            $time = date('H:i',$order->start_time);
+            $time = date('H:i',$trip->in_time);
             if(!$time)$time = date('H:i');
             $data = Func::getDrivingPrice($order->city_id,$time,$distance->distance / 1000);
             $price = $data['total'];
@@ -378,7 +384,7 @@ trait OrderTraits{
 
         }elseif($trip->type == 2){
             
-            $time = date('H:i',$order->start_time);
+            $time = date('H:i',$trip->in_time);
             if(!$time)$time = date('H:i');
             $data = Func::getTaxiPrice($order->city_id,$time,$distance->distance / 1000);
             $price = $data['total'];

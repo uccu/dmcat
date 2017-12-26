@@ -12,11 +12,12 @@ class Hook implements \Lib\Tool\Hook{
         
         try{
             if($code!=200){
-                $req = json_encode($_REQUEST);
-                ErrorApiModel::copyMutiInstance()->set([
-                    'request'=>$req,'output'=>$message,'date'=>date('Y-m-d H:i:s'),'path'=>REQUEST_PATH
-                ])->add();
-
+                if(Config::get('ERROR_LOG')){
+                    $req = json_encode($_REQUEST);
+                    ErrorApiModel::copyMutiInstance()->set([
+                        'request'=>$req,'output'=>$message,'date'=>date('Y-m-d H:i:s'),'path'=>REQUEST_PATH
+                    ])->add();
+                }
             }elseif(Config::get('SUCCESS_LOG')){
                 $req = json_encode($_REQUEST);
                 $data = json_encode($data);

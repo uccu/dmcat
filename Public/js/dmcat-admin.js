@@ -73,6 +73,7 @@
         var that = this
         d = d || {};
         that.req = {url:u,param:d}
+        
         curl(u,d,function(m){
 
             j('.ibox-title h3').html(m.name)
@@ -149,7 +150,6 @@
                             }
                             var v = j('<span class="dib pr cp"><strong>上传</strong><input style="display:none" accept="image/*" type="file"></span>')
                             upPic(v.find('input'),'/home/uploadPic',function(d,f){
-                                console.log(f.parent().parent().parent())
                                 var r = j('<span class="dib pr"><i class="pa cp" style="right:5px;top:-3px;color:#fff;border-radius:50%;background:red;width:12px;height:12px"></i><a href="/pic/'+d.path+'" target="_blank"><img class="cp picImg" src="/pic/'+d.path+'" style="max-width:100%;max-height:100px;margin-right: 10px;margin-bottom: 10px;"></a><input type="hidden" name="'+f.parent().parent().parent().parent().attr('work')+'[]" value="'+d.path+'"></span>')
                                 r.find('i').click(function(){
                                     var t = j(this)
@@ -214,7 +214,7 @@
                             for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
                             return d
                         })(para.option)
-                        +'<select/></div></div>')
+                        +'<select/></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         pa.find('select').val(m.info[para.name]||para.default||'')
                         break;
                     case 'selects':
@@ -394,7 +394,7 @@
                                         for(var s in para33.fields)obj[s] = json.list[i][s]
                                         data.value.push(obj)
                                     }
-                                    console.log(data);return data
+                                    return data
                                 }
                             })
                         }
@@ -456,7 +456,8 @@
         for(var i in d){
             that.req.param[i] = d[i]
         }
-        
+        j('.load1').removeClass('fadeOutUp')
+        j('.mainList').html('')
         curl(u,d,function(m){
             
             that.opt    =   m.opt
@@ -562,9 +563,25 @@
         
         for(var e in this.thead){
             var th = j('<th>'),t = this.thead[e];
-            if(t instanceof Object);
-            else th.addClass('tc').html(t);
-            tr.append(th)
+            if(t instanceof Object){
+                if(t.type == 'checkboxs'){
+                    var checkbox = j('<input type="checkbox">');
+                    checkbox.attr('master-data-name',t.name)
+                    checkbox.appendTo(th).iCheck({checkboxClass: 'icheckbox_square-green',radioClass: 'iradio_square-green'}).on('ifChanged',function(){
+                        if(this.checked){
+                            j('[data-name="'+j(this).attr('master-data-name')+'"]').iCheck('check')
+                        }else{
+                            j('[data-name="'+j(this).attr('master-data-name')+'"]').iCheck('uncheck')
+                        }
+                    })
+                    th.find('.icheckbox_square-green').addClass('pr')
+                    th.addClass('tc')
+                }
+            }
+            else{
+                
+                th.addClass('tc').html(t);
+            }tr.append(th)
         }
         return tr
     }
@@ -630,6 +647,14 @@
                                 ti == '1' && checkbox.addClass('checked');
                                 checkbox.appendTo(td)
                             }
+                            break;
+                        case 'checkboxs':                            
+                            var checkbox = j('<input type="checkbox">');
+                            checkbox.attr('data-id',this.list[g].id)
+                            checkbox.attr('data-name',t.name)
+                            checkbox.appendTo(td).iCheck({checkboxClass: 'icheckbox_square-green',radioClass: 'iradio_square-green'})
+                            td.find('.icheckbox_square-green').addClass('pr')
+                            
                             break;
                         default:
                             var ti = this.list[g][t.name];

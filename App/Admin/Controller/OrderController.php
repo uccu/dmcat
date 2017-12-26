@@ -22,6 +22,7 @@ use App\Car\Model\DriverModel;
 use App\Car\Model\UserModel;
 use App\Car\Model\TripModel; 
 use App\Car\Model\StatusModel; 
+use App\Car\Model\AreaModel; 
 
 
 class OrderController extends Controller{
@@ -66,7 +67,7 @@ class OrderController extends Controller{
 
 
     # 管理代驾订单
-    function admin_driving(OrderDrivingModel $model,$page = 1,$limit = 10,$search,$status = -1){
+    function admin_driving(OrderDrivingModel $model,$page = 1,$limit = 50,$search,$status = -1){
         
         $this->L->adminPermissionCheck(113);
 
@@ -76,6 +77,7 @@ class OrderController extends Controller{
             [
                 'get'   => '../order/admin_driving_get',
                 'upd'   => '../order/admin_driving_upd',
+                'del'   => '../order/admin_driving_del',
                 'view'  => 'home/upd',
                 'req'   =>[
                     [
@@ -113,7 +115,7 @@ class OrderController extends Controller{
                 '起点',
                 '终点',
                 '预估价(元)',
-                
+                '总价(元)',
 
             ];
 
@@ -130,7 +132,7 @@ class OrderController extends Controller{
                 'start_name',
                 'end_name',
                 'estimated_price',
-
+                'total_fee',
 
             ];
             
@@ -146,7 +148,7 @@ class OrderController extends Controller{
         }
         
         if($search){
-            $where['search'] = ['start_name LIKE %n OR end_name LIKE %n','%'.$search.'%','%'.$search.'%'];
+            $where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
         }
 
         $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
@@ -199,15 +201,34 @@ class OrderController extends Controller{
                     'name'  =>  'id',
                 ],
                 [
-                    'title' =>  '开始维度',
-                    'name'  =>  'start_latitude',
-                    'size'  =>  '4',
+                    'title'=>'状态',
+                    'name'=>'statuss',
+                    'type'=>'select',
+                    'option'=>[
+                            
+                    ],'default'=>'0',
+                    'description'=>'<font style="color:red">（一般情况下，不能修改）</font>'
+                ],
+                [
+                    'title' =>  '联系人电话（代叫限定）',
+                    'name'  =>  'phone',
+                    'size'  =>  '2',
+                ],
+                [
+                    'title' =>  '联系人称呼（代叫限定）',
+                    'name'  =>  'name',
+                    'size'  =>  '2',
+                ],
+                [
+                    'title' =>  '用户名',
+                    'name'  =>  'user_name',
+                    'size'  =>  '2',
                     'disabled'=>true
                 ],
                 [
-                    'title' =>  '开始经度',
-                    'name'  =>  'start_longitude',
-                    'size'  =>  '4',
+                    'title' =>  '司机',
+                    'name'  =>  'driver_name',
+                    'size'  =>  '2',
                     'disabled'=>true
                 ],
                 [
@@ -217,22 +238,74 @@ class OrderController extends Controller{
                     'disabled'=>true
                 ],
                 [
-                    'title' =>  '结束维度',
-                    'name'  =>  'end_latitude',
-                    'size'  =>  '4',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '结束经度',
-                    'name'  =>  'end_longitude',
-                    'size'  =>  '4',
-                    'disabled'=>true
-                ],
-                [
                     'title' =>  '结束地址名字',
                     'name'  =>  'end_name',
                     'size'  =>  '4',
                     'disabled'=>true
+                ],
+                [
+                    'title' =>  '里程(公里)',
+                    'name'  =>  'real_distance',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '预估价(元)',
+                    'name'  =>  'estimated_price',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '服务开始时间',
+                    'name'  =>  'start_time_date',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '服务结束时间',
+                    'name'  =>  'end_time_date',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '城市',
+                    'name'  =>  'city_name',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '预估价（元）',
+                    'name'  =>  'estimated_price',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '起步价(元)',
+                    'name'  =>  'start_fee',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '里程价格(元)',
+                    'name'  =>  'way_fee',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '等待费用(元)',
+                    'name'  =>  'lay_fee',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '其他费用(元)',
+                    'name'  =>  'other_fee_content',
+                    'size'  =>  '4',
+                    'type'  =>  'textarea',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '总价格(元)',
+                    'name'  =>  'total_fee',
+                    'size'  =>  '2',
                 ],
                 [
                     'title' =>'派单',
@@ -255,17 +328,47 @@ class OrderController extends Controller{
 
         !$model->field && AJAX::error('字段没有公有化！');
 
+        $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
+        $tbody[1]['option'] = $statusArr;
 
         $info = AdminFunc::get($model,$id);
-
-        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
-
-        if($info->statuss != 5 && $info->statuss != 10){
-            $tbody[7]['disabled'] = true;
-            $tbody[7]['suggest'] = '';
-        }else{
-            $tbody[7]['suggest'] = '/admin/staff/admin_driver?typee=1&latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+        if($info){
+            $trip = TripModel::copyMutiInstance()->where(['id'=>$info->id,'type'=>1])->find();
         }
+
+        if($info->user_id)$info->user_name = UserModel::copyMutiInstance()->find($info->user_id)->name;
+        if($info->driver_id)$info->driver_name = DriverModel::copyMutiInstance()->find($info->driver_id)->name;
+
+        $info->start_time_date = $trip->in_time ? date('Y-m-d H:i:s',$trip->in_time) : '';
+        $info->end_time_date = $trip->out_time ? date('Y-m-d H:i:s',$trip->out_time) : '';
+        $info->start_fee = $trip->start_fee;
+        $info->real_distance = $trip->real_distance;
+        $info->way_fee = number_format($info->fee - $info->start_fee,2,'.','');
+
+        $contents = json_decode($trip->other_fee);
+
+        if($contents){
+            foreach($contents as $content)
+            $info->other_fee_content .= $content->type .'：￥'. $content->price."\n";
+        }
+
+        $city = AreaModel::copyMutiInstance()->find($info->city_id);
+        if($city){
+            $province = AreaModel::copyMutiInstance()->find($city->parent_id);
+        }
+        if(!$city || !$province){
+            $info->city_name = '';
+        }else{
+            $info->city_name = $province->areaName. ' ' .$city->areaName;
+        }
+        // if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
+
+        // if($info->statuss != 5 && $info->statuss != 10){
+        //     $tbody[7]['disabled'] = true;
+        //     $tbody[7]['suggest'] = '';
+        // }else{
+            $tbody[19]['suggest'] = '/admin/staff/admin_driver?typee=1&latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+        // }
         $out = 
             [
                 'info'  =>  $info,
@@ -277,30 +380,59 @@ class OrderController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_driving_upd(OrderDrivingModel $model,$id,$toDriver,DriverModel $driverModel,TripModel $tripModel){
+    function admin_driving_upd(OrderDrivingModel $model,$id,$toDriver,DriverModel $driverModel,$statuss,TripModel $tripModel){
         $this->L->adminPermissionCheck(113);
         
-        $driver = $driverModel->find($toDriver);
-        !$driver && AJAX::error('司机不存在');
         $app = $model->find($id);
         !$app && AJAX::error('订单不存在');
 
         $trip = $tripModel->where(['type'=>1,'id'=>$id])->find();
+        !$trip && AJAX::error('行程不存在');
 
         DB::start();
 
-        $app->driver_id = $driver->id;
-        $app->statuss = 20;
-        $app->save();
-        $trip->driver_id = $driver->id;
-        $trip->statuss = 20;
-        $trip->save();
+        // Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'driving']);
+        $data = Request::getSingleInstance()->request($model->field);
+        $upd = AdminFunc::upd($model,$id,$data);
+
+        if($statuss != $app->statuss){
+            $app->statuss = $statuss;
+            $app->save();
+            $trip->statuss = $statuss;
+            $trip->save();
+        }
+        
+        if($toDriver){
+            $driver = $driverModel->find($toDriver);
+            !$driver && AJAX::error('司机不存在');
+            
+
+            if(!in_array($statuss,[5,10])){
+                AJAX::error('该订单无法派单');
+            }
+
+            
+
+            $app->driver_id = $driver->id;
+            $app->statuss = 20;
+            $app->save();
+            $trip->driver_id = $driver->id;
+            $trip->statuss = 20;
+            $trip->save();
+
+            
+        }
 
         DB::commit();
 
-        // Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'driving']);
-
         $out['upd'] = 1;
+        AJAX::success($out);
+    }
+    function admin_driving_del(OrderDrivingModel $model,$id){
+        $this->L->adminPermissionCheck(113);
+        $del = AdminFunc::del($model,$id);
+        TripModel::copyMutiInstance()->where(['id'=>$id,'type'=>1])->remove();
+        $out['del'] = $del;
         AJAX::success($out);
     }
     
@@ -317,6 +449,8 @@ class OrderController extends Controller{
             [
                 'get'   => '../order/admin_taxi_get',
                 'view'  => 'home/upd',
+                'del'   => '../order/admin_driving_del',
+                'view'  => 'home/upd',
                 'req'   =>[
                     [
                         'title'=>'搜索',
@@ -329,17 +463,18 @@ class OrderController extends Controller{
                         'type'=>'select',
                         'option'=>[
                             '-1'=>'请选择',
-                            '0'=>'取消',
-                            '1'=>'创建订单',
-                            '2'=>'正在接客',
-                            '3'=>'行程中',
-                            '4'=>'待付款',
-                            '5'=>'待评价',
-                            '6'=>'完成',
+                            
                         ],'default'=>'-1'
                     ],
                 ]
             ];
+        
+        $opt['req'][1]['option'];
+
+        $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
+
+        $opt['req'][1]['option'] = $statusArr;
+        $opt['req'][1]['option']['-1'] = '请选择';
 
         # 头部标题设置
         $thead = 
@@ -352,8 +487,8 @@ class OrderController extends Controller{
                 '起点',
                 '终点',
                 '预估价(元)',
+                '总价(元)',
                 '打表'
-                
 
             ];
 
@@ -370,6 +505,7 @@ class OrderController extends Controller{
                 'start_name',
                 'end_name',
                 'estimated_price',
+                'total_fee',
                 [
                     'name'=>'meter',
                     'type'=>'checkbox',
@@ -381,7 +517,7 @@ class OrderController extends Controller{
 
         # 列表内容
         $where = [];
-        if($status != -1)$where['status'] = $status;
+        if($status != -1)$where['statuss'] = $status;
 
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
@@ -390,12 +526,12 @@ class OrderController extends Controller{
         }
         
         if($search){
-            $where['search'] = ['start_name LIKE %n OR end_name LIKE %n','%'.$search.'%','%'.$search.'%'];
+            $where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
         }
 
         $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
-            $v->status_name = ['取消','待接单','接客中','服务中','待付款','待评价','已完成'][$v->status];
+            $v->status_name = $statusArr[$v->statuss];
         }
 
 
@@ -443,32 +579,39 @@ class OrderController extends Controller{
                     'name'  =>  'id',
                 ],
                 [
-                    'title' =>  '开始维度',
-                    'name'  =>  'start_latitude',
-                    'size'  =>  '4',
+                    'title'=>'状态',
+                    'name'=>'statuss',
+                    'type'=>'select',
+                    'option'=>[
+                            
+                    ],'default'=>'0',
+                    'description'=>'<font style="color:red">（一般情况下，不能修改）</font>'
+                ],
+                [
+                    'title' =>  '联系人电话（代叫限定）',
+                    'name'  =>  'phone',
+                    'size'  =>  '2',
+                ],
+                [
+                    'title' =>  '联系人称呼（代叫限定）',
+                    'name'  =>  'name',
+                    'size'  =>  '2',
+                ],
+                [
+                    'title' =>  '用户名',
+                    'name'  =>  'user_name',
+                    'size'  =>  '2',
                     'disabled'=>true
                 ],
                 [
-                    'title' =>  '开始经度',
-                    'name'  =>  'start_longitude',
-                    'size'  =>  '4',
+                    'title' =>  '司机',
+                    'name'  =>  'driver_name',
+                    'size'  =>  '2',
                     'disabled'=>true
                 ],
                 [
                     'title' =>  '开始地址名字',
                     'name'  =>  'start_name',
-                    'size'  =>  '4',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '结束维度',
-                    'name'  =>  'end_latitude',
-                    'size'  =>  '4',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '结束经度',
-                    'name'  =>  'end_longitude',
                     'size'  =>  '4',
                     'disabled'=>true
                 ],
@@ -479,10 +622,74 @@ class OrderController extends Controller{
                     'disabled'=>true
                 ],
                 [
+                    'title' =>  '里程(公里)',
+                    'name'  =>  'real_distance',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '预估价(元)',
+                    'name'  =>  'estimated_price',
+                    'size'  =>  '4',
+                ],
+                [
+                    'title' =>  '服务开始时间',
+                    'name'  =>  'start_time_date',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '服务结束时间',
+                    'name'  =>  'end_time_date',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '城市',
+                    'name'  =>  'city_name',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '预估价（元）',
+                    'name'  =>  'estimated_price',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '起步价(元)',
+                    'name'  =>  'start_fee',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '里程价格(元)',
+                    'name'  =>  'way_fee',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '等待费用(元)',
+                    'name'  =>  'lay_fee',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '其他费用(元)',
+                    'name'  =>  'other_fee_content',
+                    'size'  =>  '4',
+                    'type'  =>  'textarea',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '总价格(元)',
+                    'name'  =>  'total_fee',
+                    'size'  =>  '2',
+                ],
+                [
                     'title' =>'派单',
                     'name'  =>'toDriver',
                     'size'  =>'4',
-                    'suggest'=>'/admin/staff/admin_driver?search=',
+                    'suggest'=>'/admin/staff/admin_driver?typee=2&search=',
                     'fields'=>[
                         'id'=>'id',
                         'name'=>'名字',
@@ -491,6 +698,7 @@ class OrderController extends Controller{
                         'dis'=>'距离'
                     ]
                 ]
+
                 
                 
 
@@ -498,18 +706,47 @@ class OrderController extends Controller{
 
         !$model->field && AJAX::error('字段没有公有化！');
 
+        $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
+        $tbody[1]['option'] = $statusArr;
 
         $info = AdminFunc::get($model,$id);
-
-        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
-
-        if($info->status != 1){
-            $tbody[7]['disabled'] = true;
-            $tbody[7]['suggest'] = '';
-        }else{
-            $tbody[7]['suggest'] = '/admin/staff/admin_driver?typee=2&latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+        if($info){
+            $trip = TripModel::copyMutiInstance()->where(['id'=>$info->id,'type'=>2])->find();
         }
 
+        if($info->user_id)$info->user_name = UserModel::copyMutiInstance()->find($info->user_id)->name;
+        if($info->driver_id)$info->driver_name = DriverModel::copyMutiInstance()->find($info->driver_id)->name;
+
+        $info->start_time_date = $trip->in_time ? date('Y-m-d H:i:s',$trip->in_time) : '';
+        $info->end_time_date = $trip->out_time ? date('Y-m-d H:i:s',$trip->out_time) : '';
+        $info->start_fee = $trip->start_fee;
+        $info->real_distance = $trip->real_distance;
+        $info->way_fee = number_format($info->fee - $info->start_fee,2,'.','');
+
+        $contents = json_decode($trip->other_fee);
+
+        if($contents){
+            foreach($contents as $content)
+            $info->other_fee_content .= $content->type .'：￥'. $content->price."\n";
+        }
+
+        $city = AreaModel::copyMutiInstance()->find($info->city_id);
+        if($city){
+            $province = AreaModel::copyMutiInstance()->find($city->parent_id);
+        }
+        if(!$city || !$province){
+            $info->city_name = '';
+        }else{
+            $info->city_name = $province->areaName. ' ' .$city->areaName;
+        }
+        // if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
+
+        // if($info->statuss != 5 && $info->statuss != 10){
+        //     $tbody[7]['disabled'] = true;
+        //     $tbody[7]['suggest'] = '';
+        // }else{
+            $tbody[19]['suggest'] = '/admin/staff/admin_driver?typee=2&latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+        // }
         $out = 
             [
                 'info'  =>  $info,
@@ -521,30 +758,63 @@ class OrderController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_taxi_upd(OrderTaxiModel $model,$id,$toDriver,DriverModel $driverModel,TripModel $tripModel){
+    function admin_taxi_upd(OrderTaxiModel $model,$id,$toDriver,DriverModel $driverModel,$statuss,TripModel $tripModel){
         $this->L->adminPermissionCheck(114);
         
-        $driver = $driverModel->find($toDriver);
-        !$driver && AJAX::error('司机不存在');
         $app = $model->find($id);
         !$app && AJAX::error('订单不存在');
 
         $trip = $tripModel->where(['type'=>2,'id'=>$id])->find();
+        !$trip && AJAX::error('行程不存在');
 
         DB::start();
+        
+        // Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'driving']);
+        $data = Request::getSingleInstance()->request($model->field);
+        $upd = AdminFunc::upd($model,$id,$data);
 
-        $app->driver_id = $driver->id;
-        $app->status = 2;
-        $app->save();
-        $trip->driver_id = $driver->id;
-        $trip->status = 2;
-        $trip->save();
+        if($statuss != $app->statuss){
+            $app->statuss = $statuss;
+            $app->save();
+            $trip->statuss = $statuss;
+            $trip->save();
+        }
+        
+        if($toDriver){
+            $driver = $driverModel->find($toDriver);
+            !$driver && AJAX::error('司机不存在');
+            
+
+            if(!in_array($statuss,[5,10])){
+                AJAX::error('该订单无法派单');
+            }
+
+            
+
+            $app->driver_id = $driver->id;
+            $app->statuss = 20;
+            $app->save();
+            $trip->driver_id = $driver->id;
+            $trip->statuss = 20;
+            $trip->save();
+
+            
+        }
+
+        
+
+        
 
         DB::commit();
 
-        // Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'taxi']);
-
         $out['upd'] = 1;
+        AJAX::success($out);
+    }
+    function admin_taxi_del(OrderTaxiModel $model,$id){
+        $this->L->adminPermissionCheck(114);
+        $del = AdminFunc::del($model,$id);
+        TripModel::copyMutiInstance()->where(['id'=>$id,'type'=>2])->remove();
+        $out['del'] = $del;
         AJAX::success($out);
     }
 
@@ -679,6 +949,7 @@ class OrderController extends Controller{
                     'type'  =>  'hidden',
                     'name'  =>  'id',
                 ],
+                
                 [
                     'title' =>  '开始维度',
                     'name'  =>  'start_latitude',
@@ -734,6 +1005,8 @@ class OrderController extends Controller{
             ];
 
         !$model->field && AJAX::error('字段没有公有化！');
+
+        
 
 
         $info = AdminFunc::get($model,$id);
@@ -871,7 +1144,7 @@ class OrderController extends Controller{
             ][$v->status];
             $v->driving_license = Func::fullPicAddr($v->driving_license);
             $v->driving_permit = Func::fullPicAddr($v->driving_permit);
-            $v->date = date('Y-m-d H:i');
+            $v->date = date('Y-m-d H:i',$v->craete_time);
         }
 
 
@@ -1082,7 +1355,7 @@ class OrderController extends Controller{
             ][$v->status];
             $v->driving_license = Func::fullPicAddr($v->driving_license);
             $v->driving_permit = Func::fullPicAddr($v->driving_permit);
-            $v->date = date('Y-m-d H:i');
+            $v->date = date('Y-m-d H:i',$v->create_time);
             $v->type_name =[
                             '0'=>'无',
                             '1'=>'代驾',

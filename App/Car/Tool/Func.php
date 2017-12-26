@@ -785,12 +785,12 @@ class Func {
 
         $city = AreaModel::copyMutiInstance()->find($city_id);
 
-        if($time < '5:00')$start_price = 14;
-        else if($time < '23:00')$start_price = 18;
-        else $start_price = 14;
+        if($time < '05:00')$start_price = 18;
+        else if($time < '23:00')$start_price = 14;
+        else $start_price = 18;
 
 
-        if($time < 5 || $time > 23){
+        if($time < '05:00' || $time > '23:00'){
             if($distance<3)$price = $start_price;
             else if($distance<10)$price = $start_price + 3.1 * ($distance - 3);
             else $price = $price = $start_price + 3.1 * 7 + 4.7 * ($distance - 10);

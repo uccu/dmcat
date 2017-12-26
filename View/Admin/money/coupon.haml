@@ -34,6 +34,13 @@
                                         %option(value="2") 出租车
                                         %option(value="3") 顺风车
                             .form-group
+                                %label.col-sm-2.control-label 类型
+                                .col-sm-2
+                                    %select.form-control(name="all" value="0")
+                                        %option(value="0") 仅勾选
+                                        %option(value="1") 全部
+                                        
+                            .form-group
                                 %label.col-sm-2.control-label 优惠券
                                 .col-sm-6
                                     %select.form-control(name="coupon_id")
@@ -80,10 +87,15 @@
                 for(var i in e.req.param)f[i]=e.req.param[i]
                 delete f.page
 
+                var arr = []
+                $('[data-name="choose"]').each(function(){if(this.checked)arr.push($(this).attr('data-id'))})
+                f.user_ids = arr.join(',')
                 f.coupon_id = $('[name="coupon_id"]').val();
+                f.all = $('[name="all"]').val();
                 if(!f.coupon_id){toastr['error']('请选择优惠券');return}
-                curl('admin_coupon_send',f,function(){
-                    curl_succ('赠送成功！')
+                curl('admin_coupon_send',f,function(w){
+                    curl_succ('赠送成功'+w.count+'个用户！')
+                    flesh()
                 });
             })
         })

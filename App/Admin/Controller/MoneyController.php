@@ -60,7 +60,7 @@ class MoneyController extends Controller{
     }
 
 
-    function admin_pay(PaymentModel $model,$page = 1,$limit = 20,$search = '',$ispaid = 0){
+    function admin_pay(PaymentModel $model,$page = 1,$limit = 20,$search = '',$ispaid = 0,$type){
         
         $this->L->adminPermissionCheck(118);
         $name = '用户';
@@ -73,13 +73,27 @@ class MoneyController extends Controller{
                 'req'   =>[
                     [
                         'title'=>'搜索',
-                        'name'=>'search'
+                        'name'=>'search',
+                        'size'=>3
                     ],
                     [
                         'title'=>'是否支付',
                         'name'=>'ispaid',
                         'type'=>'checkbox',
                         'default'=>'0'
+                    ],
+                    [
+                        'title'=>'支付方式',
+                        'name'=>'type',
+                        'type'=>'select',
+                        'default'=>'0',
+                        'option'=>[
+                            '0'=>'全部',
+                            'alipay'=>'支付宝',
+                            'wcpay'=>'微信',
+                            'offline'=>'线下',
+                            'fake'=>'模拟支付'
+                        ]
                     ],
                 ]
             ];
@@ -116,10 +130,15 @@ class MoneyController extends Controller{
         if($ispaid){
             $where['success_time'] = ['%F>0','success_time']; 
         }
+        if($type){
+            $where['pay_type'] = $type; 
+        }
         
         
         
-        if($search){
+        if($search && (float)$search){
+            $where['search'] = ['%F LIKE %n OR %F LIKE %n OR total_fee=%f','user.name','%'.$search.'%','user.phone','%'.$search.'%',$search];
+        }elseif($search){
             $where['search'] = ['%F LIKE %n OR %F LIKE %n','user.name','%'.$search.'%','user.phone','%'.$search.'%'];
         }
         $list = $model->select('user.name>user_name','user.avatar','user.phone','*')->order('ctime desc')->where($where)->page($page,$limit)->get()->toArray();
@@ -154,7 +173,7 @@ class MoneyController extends Controller{
         $opt = 
             [
                 'get'   => '../money/admin_pay_get',
-                'back'  => 'staff/pay',
+                'back'  => 'money/pay',
                 'view'  => 'home/upd',
             ];
         $tbody = 
@@ -225,6 +244,7 @@ class MoneyController extends Controller{
         $opt = 
             [
                 'get'   => '../money/admin_cash_user_get',
+                'del'   => '../money/admin_cash_user_del',
                 'view'  => 'home/upd',
                 'req'   =>[
                     [
@@ -406,6 +426,12 @@ class MoneyController extends Controller{
         $out['upd'] = $upd;
         AJAX::success($out);
     }
+    function admin_cash_user_del(UserMoneyLogModel $model,$id){
+        $this->L->adminPermissionCheck(120);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
 
     # 司机提现申请
     function admin_cash_driver(DriverMoneyLogModel $model,$page = 1,$limit = 10,$search,$type = -2){
@@ -417,6 +443,7 @@ class MoneyController extends Controller{
         $opt = 
             [
                 'get'   => '../money/admin_cash_driver_get',
+                'del'   => '../money/admin_cash_driver_del',
                 'view'  => 'home/upd',
                 'req'   =>[
                     [
@@ -446,6 +473,10 @@ class MoneyController extends Controller{
                 '用户ID',
                 '名字',
                 '提现金额',
+                '姓名',
+                '卡号',
+                '银行',
+                '分行',
                 '状态',
                 '申请时间'
                 
@@ -460,6 +491,10 @@ class MoneyController extends Controller{
                 'id',
                 'name',
                 'money',
+                'bname',
+                'code',
+                'bbname',
+                'bank_name',
                 'status_name',
                 'date',
 
@@ -477,7 +512,7 @@ class MoneyController extends Controller{
             $where['search'] = ['driver.name LIKE %n OR driver.phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
 
-        $list = $model->select('*','driver.name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        $list = $model->select('*','driver.name','driverBank.code','driverBank.name>bname','driverBank.bank_name','driverBank.bank_name','driverBank.bank.name>bbname')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
             $v->status_name = [
                 '0'=>'申请中',
@@ -598,10 +633,16 @@ class MoneyController extends Controller{
         $out['upd'] = $upd;
         AJAX::success($out);
     }
+    function admin_cash_driver_del(DriverMoneyLogModel $model,$id){
+        $this->L->adminPermissionCheck(121);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
 
 
     # 优惠券
-    function admin_coupon(UserModel $model,$search){
+    function admin_coupon(UserModel $model,$search,$limit=20,$page=1){
 
         $this->L->adminPermissionCheck(127);
 
@@ -623,12 +664,15 @@ class MoneyController extends Controller{
         # 头部标题设置
         $thead = 
             [
-
+                [
+                    'type'=>'checkboxs',
+                    'name'=>'choose'
+                ],
                 '',
                 '用户ID',
                 '手机号',
                 '名字',
-
+                '优惠券数量'
 
 
             ];
@@ -637,7 +681,10 @@ class MoneyController extends Controller{
         # 列表体设置
         $tbody = 
             [
-
+                [
+                    'name'=>'choose',
+                    'type'=>'checkboxs',
+                ],
                 [
                     'name'=>'fullPic',
                     'type'=>'pic',
@@ -647,7 +694,7 @@ class MoneyController extends Controller{
                 'id',
                 'phone',
                 'name',
-
+                'count'
 
 
             ];
@@ -663,6 +710,7 @@ class MoneyController extends Controller{
         $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->count = UserCouponModel::copyMutiInstance()->where('user_id=%d',$v->id)->select('COUNT(*) AS c','RAW')->find()->c;
         }
 
 
@@ -690,7 +738,7 @@ class MoneyController extends Controller{
 
     }
 
-    function admin_coupon_send(UserModel $model,CouponModel $cmodel,$search,$coupon_id = 0){
+    function admin_coupon_send(UserModel $model,CouponModel $cmodel,$search,$coupon_id = 0,$user_ids,$all){
 
         $this->L->adminPermissionCheck(127);
 
@@ -699,10 +747,15 @@ class MoneyController extends Controller{
         !$coupon && AJAX::error('请选择优惠券');
 
 
-        if($search){
+        if($all && $search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
 
+        if(!$all){
+            $userArr = explode(',',$user_ids);
+            (!$userArr || !$user_ids) && AJAX::error('请选择用户');
+            $where['m'] = ['id IN (%c)',$userArr];
+        }
         $list = $model->where($where)->get()->toArray();
 
 
@@ -720,7 +773,7 @@ class MoneyController extends Controller{
 
         }
 
-        AJAX::success();
+        AJAX::success(['count'=>count($list)]);
 
     }
 
@@ -898,6 +951,12 @@ class MoneyController extends Controller{
 
         $upd = AdminFunc::upd($model,$id,$data);
         $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_coupon_setting_del(CouponModel $model,$id){
+        $this->L->adminPermissionCheck(129);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
         AJAX::success($out);
     }
 

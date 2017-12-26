@@ -210,9 +210,9 @@ module.exports = {
             let distance_r = 0;
             let $price = 0;
             
-            if(hours < 5)start_price = 14;
-            else if(hours < 23)start_price = 18;
-            else start_price = 14;
+            if(hours < 5)start_price = 18;
+            else if(hours < 23)start_price = 14;
+            else start_price = 18;
 
             // if(area.parent_id == 4522847){
 

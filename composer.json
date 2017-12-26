@@ -15,7 +15,7 @@
         "mthaml/mthaml": "^1.8",
         "cebe/markdown": "^1.1",
         "twig/twig": "1.26.1",
-        "uccu/dmcat-tool":"0.2.3",
+        "uccu/dmcat-tool":"^0.2",
         "fengqi/hanzi": "^0.1.2",
         "jpush/jpush": "^3.5"
     },

@@ -395,5 +395,7 @@ class HomeController extends Controller{
         AJAX::success($out);
 
     }
+
+    
     
 }

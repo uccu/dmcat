@@ -26,6 +26,9 @@ use App\Car\Model\UsedCarModel;
 use App\Car\Model\AreaModel;
 use App\Car\Model\RoadModel;
 
+
+use App\Admin\Set\Gets;
+
 class HomeController extends Controller{
 
 
@@ -53,50 +56,26 @@ class HomeController extends Controller{
     }
 
     function admin_h5_get(H5Model $model,$id){
-        
-        $this->L->adminPermissionCheck(122);
-        $name = '';
-        
+
+        $m = Gets::getSingleInstance($model,$id);
+
+        # 权限
+        $m->checkPermission(122);
+
         # 允许操作接口
-        $opt = 
-        [
-            'get'   => '../home/admin_h5_get',
-            'upd'   => '../home/admin_h5_upd',
-            'view'  => 'home/upd',
-            
-        ];
-        $tbody = 
-        [
-            [
-                'type'  =>  'hidden',
-                'name'  =>  'id',
-            ],
-            [
-                'title' =>  '内容',
-                'name'  =>  'content',
-                'type'  =>  'h5',
-            ]
-                
-                
-                
-                
-            ];
-            
-        !$model->field && AJAX::error('字段没有公有化！');
-            
-            
-        $info = AdminFunc::get($model,$id);
-            
-            
-        $out = 
-            [
-                'info'  =>  $info,
-                'tbody' =>  $tbody,
-                'name'  =>  $name,
-                'opt'   =>  $opt,
-            ];
-            
-        AJAX::success($out);
+        $m->setOpt('get','../home/admin_h5_get');
+        $m->setOpt('upd','../home/admin_h5_upd');
+        $m->setOpt('view','home/upd');
+
+        # 设置表体
+        $m->setBody(['type'=>'hidden','name'=>'id']);
+        $m->setBody(['title'=>'内容','name'=>'content','type'=>'h5']);
+
+        # 设置名字
+        $m->setName($m->getInfo()->title);
+        
+        # 输出
+        $m->output();
             
     }
     function admin_h5_upd(H5Model $model,$id){
@@ -847,7 +826,7 @@ class HomeController extends Controller{
         View::hamlReader('home/list','Admin');
     }
 
-    function admin_brand(BrandModel $model,$page=1,$limit=10){
+    function admin_brand(BrandModel $model,$page=1,$limit=10,$search = ''){
         
         $this->L->adminPermissionCheck(136);
 
@@ -859,6 +838,13 @@ class HomeController extends Controller{
                 'view'  => 'home/upd',
                 'add'   => 'home/upd',
                 'del'   => '../home/admin_brand_del',
+                'req'   =>[
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search',
+                        'size'=>3
+                    ],
+                ]
             ];
 
         # 头部标题设置
@@ -891,7 +877,9 @@ class HomeController extends Controller{
 
         # 列表内容
         $where = [];
-        
+        if($search){
+            $where['search'] = ['%F LIKE %n','name','%'.$search.'%'];
+        }
 
         $list = $model->order('pinyin')->where($where)->get()->toArray();
 
