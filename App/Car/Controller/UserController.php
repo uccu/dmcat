@@ -287,7 +287,8 @@ class UserController extends Controller{
         $info['sex'] = $this->L->userInfo->sex;
         $info['phone'] = $this->L->userInfo->phone;
         $info['id'] = $this->L->userInfo->id;
-        $info['count'] = $userModel->select('COUNT(*) AS c','RAW')->where(['parent_id'=>$this->L->id])->find()->c;
+        // $info['count'] = $userModel->select('COUNT(*) AS c','RAW')->where(['parent_id'=>$this->L->id])->find()->c;
+        $info['count'] = $this->L->userInfo->fans;
 
         $out['info'] = $info;
 

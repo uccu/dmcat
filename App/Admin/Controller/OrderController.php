@@ -22,7 +22,10 @@ use App\Car\Model\DriverModel;
 use App\Car\Model\UserModel;
 use App\Car\Model\TripModel; 
 use App\Car\Model\StatusModel; 
-use App\Car\Model\AreaModel; 
+use App\Car\Model\AreaModel;
+
+use App\Admin\Set\Gets;
+use App\Admin\Set\Lists;
 
 
 class OrderController extends Controller{
@@ -69,115 +72,67 @@ class OrderController extends Controller{
     # 管理代驾订单
     function admin_driving(OrderDrivingModel $model,$page = 1,$limit = 50,$search,$status = -1){
         
-        $this->L->adminPermissionCheck(113);
+        $m = Lists::getSingleInstance($model,$page,$limit);
 
-        $name = '代驾订单';
+        # 权限
+        $m->checkPermission(113);
+
         # 允许操作接口
-        $opt = 
-            [
-                'get'   => '../order/admin_driving_get',
-                'upd'   => '../order/admin_driving_upd',
-                'del'   => '../order/admin_driving_del',
-                'view'  => 'home/upd',
-                'req'   =>[
-                    [
-                        'title'=>'搜索',
-                        'name'=>'search',
-                        'size'=>'3'
-                    ],
-                    [
-                        'title'=>'状态',
-                        'name'=>'status',
-                        'type'=>'select',
-                        'option'=>[
-                            '-1'=>'请选择',
-                            
-                        ],'default'=>'-1'
-                    ],
-                ]
-            ];
-        
-        $opt['req'][1]['option'];
+        $m->setOpt('get','../order/admin_driving_get');
+        $m->setOpt('upd','../order/admin_driving_upd');
+        $m->setOpt('del','../order/admin_driving_del');
+        $m->setOpt('view','home/upd');
+        $m->setOptReq(['title'=>'搜索','name'=>'search','size'=>'3']);
+        $reqC = $m->setOptReq(['title'=>'状态','name'=>'status','type'=>'select','default'=>'-1']);
 
         $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
+        $m->opt['req'][$reqC]['option'] = $statusArr;
+        $m->opt['req'][$reqC]['option']['-1'] = '请选择';
 
-        $opt['req'][1]['option'] = $statusArr;
-        $opt['req'][1]['option']['-1'] = '请选择';
+        # 设置名字
+        $m->setName('代驾订单');
+        
 
-        # 头部标题设置
-        $thead = 
-            [
+        # 设置表头
+        $m->setHead('ID');
+        $m->setHead('用户');
+        $m->setHead('司机');
+        $m->setHead('状态');
+        $m->setHead('起点');
+        $m->setHead('终点');
+        $m->setHead('预估价(元)');
+        $m->setHead('总价(元)');
 
-                'ID',
-                '用户',
-                '司机',
-                '状态',
-                '起点',
-                '终点',
-                '预估价(元)',
-                '总价(元)',
+        # 设置表体
+        $m->setBody('id');
+        $m->setBody('user_name');
+        $m->setBody('driver_name');
+        $m->setBody('status_name');
+        $m->setBody('start_name');
+        $m->setBody('end_name');
+        $m->setBody('estimated_price');
+        $m->setBody('total_fee');
 
-            ];
-
-
-        # 列表体设置
-        $tbody = 
-            [
-
-                
-                'id',
-                'user_name',
-                'driver_name',
-                'status_name',
-                'start_name',
-                'end_name',
-                'estimated_price',
-                'total_fee',
-
-            ];
-            
-
-        # 列表内容
-        $where = [];
-        if($status != -1)$where['statuss'] = $status;
+        # 筛选
+        $m->where = [];
+        if($status != -1)$m->where['statuss'] = $status;
 
         if($this->L->userInfo->type == 2){
-            $where['city.parent_id'] = $this->L->userInfo->province_id;
+            $m->where['city.parent_id'] = $this->L->userInfo->province_id;
         }elseif($this->L->userInfo->type == 1){
-            $where['city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
+            $m->where['city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
         }
-        
         if($search){
-            $where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
+            $m->where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
         }
 
-        $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
-        foreach($list as &$v){
-            $v->status_name = $statusArr[$v->statuss];
-        }
+        # 获取列表
+        $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc');
+        $m->getList(0);
 
+        $m->fetchArr('status_name','statuss',$statusArr);
 
-        # 分页内容
-        $page   = $page;
-        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
-        $limit  = $limit;
-
-        # 输出内容
-        $out = 
-            [
-
-                'opt'   =>  $opt,
-                'thead' =>  $thead,
-                'tbody' =>  $tbody,
-                'list'  =>  $list,
-                'page'  =>  $page,
-                'limit' =>  $limit,
-                'max'   =>  $max,
-                'name'  =>  $name,
-            
-            ];
-
-        AJAX::success($out);
+        $m->output();
 
     }
     function admin_driving_get(OrderDrivingModel $model,$id){
@@ -449,7 +404,7 @@ class OrderController extends Controller{
             [
                 'get'   => '../order/admin_taxi_get',
                 'view'  => 'home/upd',
-                'del'   => '../order/admin_driving_del',
+                'del'   => '../order/admin_taxi_del',
                 'view'  => 'home/upd',
                 'req'   =>[
                     [

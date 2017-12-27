@@ -299,7 +299,7 @@ class PayController extends Controller{
         $alipay_private_key = $this->L->config->alipay_rsa_private_key;
         $alipay_public_key  = $this->L->config->alipay_rsa_public_key;
 
-        $data = Request::getInstance()->request;
+        $data = Request::getSingleInstance()->request;
 
         foreach($data as &$v){
             $v = (string)$v;

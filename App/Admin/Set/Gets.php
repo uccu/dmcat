@@ -11,8 +11,8 @@ class Gets{
 
     use InstanceTrait;
 
-    public $opt;
-    public $info;
+    public $opt = [];
+    public $info = false;
     public $model;
     public $tbody;
     public $id;

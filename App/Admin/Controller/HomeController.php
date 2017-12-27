@@ -28,6 +28,7 @@ use App\Car\Model\RoadModel;
 
 
 use App\Admin\Set\Gets;
+use App\Admin\Set\Lists;
 
 class HomeController extends Controller{
 
@@ -239,75 +240,49 @@ class HomeController extends Controller{
 
     function admin_bank(BankModel $model,$page=1,$limit=20){
         
-        $this->L->adminPermissionCheck(126);
 
-        $name = '';
+        $m = Lists::getSingleInstance($model);
+
+        # 权限
+        $m->checkPermission(126);
+
         # 允许操作接口
-        $opt = 
-            [
-                'get'   => '../home/admin_bank_get',
-                'view'  => 'home/upd',
-                'add'   => 'home/upd',
-                'del'   => '../home/admin_bank_del',
-            ];
-
-        # 头部标题设置
-        $thead = 
-            [
-
-                'ID',
-                '名字',
-                '图片',
-                
-            ];
+        $m->setOpt('get','../home/admin_bank_get');
+        $m->setOpt('del','../home/admin_bank_del');
+        $m->setOpt('view','home/upd');
+        $m->setOpt('add','home/upd');
 
 
-        # 列表体设置
-        $tbody = 
-            [
+        # 设置表体
+        $m->setHead('ID');
+        $m->setHead('名字');
+        $m->setHead('图片');
 
-                
-                'id',
-                'name',
-                [
-                    'name'=>'thumb',
-                    'type'=>'pic'
-                ]
+        # 设置名字
+        $m->setName();
 
-            ];
-            
+        $m->setBody('id');
+        $m->setBody('name');
+        $m->setBody(['name'=>'thumb','type'=>'pic']);
 
-        # 列表内容
-        $where = [];
-        
-
-        $list = $model->order('id')->where($where)->get()->toArray();
-        foreach($list as &$v){
-            $v->thumb = Func::fullPicAddr($v->thumb);
-        }
+        # 筛选
+        $m->where = [];
 
 
-        # 分页内容
-        $page   = $page;
-        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
-        $limit  = $limit;
+        # 分页
+        $m->page = $page;
+        $m->limit = $limit;
 
-        # 输出内容
-        $out = 
-            [
+        # 获取列表
+        $model->order('id');
+        $m->getList(0);
 
-                'opt'   =>  $opt,
-                'thead' =>  $thead,
-                'tbody' =>  $tbody,
-                'list'  =>  $list,
-                'page'  =>  $page,
-                'limit' =>  $limit,
-                'max'   =>  $max,
-                'name'  =>  $name,
-            
-            ];
+        $m->fullPicAddr('thumb');
 
-        AJAX::success($out);
+
+        $m->output();
+
+
 
     }
     function admin_bank_get(BankModel $model,$id){
@@ -393,72 +368,43 @@ class HomeController extends Controller{
     }
 
     function admin_tag(TagModel $model,$page=1,$limit=20){
-        
-        $this->L->adminPermissionCheck(130);
 
-        $name = '';
+        $m = Lists::getSingleInstance($model,$page,$limit);
+
+        # 权限
+        $m->checkPermission(126);
+
         # 允许操作接口
-        $opt = 
-            [
-                'get'   => '../home/admin_tag_get',
-                'view'  => 'home/upd',
-                'add'   => 'home/upd',
-                'del'   => '../home/admin_tag_del',
-            ];
-
-        # 头部标题设置
-        $thead = 
-            [
-
-                'ID',
-                '名字',
-                
-            ];
+        $m->setOpt('get','../home/admin_tag_get');
+        $m->setOpt('del','../home/admin_tag_del');
+        $m->setOpt('view','home/upd');
+        $m->setOpt('add','home/upd');
 
 
-        # 列表体设置
-        $tbody = 
-            [
+        # 设置表头
+        $m->setHead('ID');
+        $m->setHead('名字');
 
-                
-                'id',
-                'name',
+        # 设置表体
+        $m->setBody('id');
+        $m->setBody('name');
 
+        # 设置名字
+        $m->setName();
 
-            ];
-            
-
-        # 列表内容
-        $where = [];
         
 
-        $list = $model->order('id')->where($where)->get()->toArray();
-        foreach($list as &$v){
-            $v->thumb = Func::fullPicAddr($v->thumb);
-        }
+        # 筛选
+        $m->where = [];
+
+        # 获取列表
+        $model->order('id');
+        $m->getList(0);
+
+        $m->fullPicAddr('thumb');
 
 
-        # 分页内容
-        $page   = $page;
-        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
-        $limit  = $limit;
-
-        # 输出内容
-        $out = 
-            [
-
-                'opt'   =>  $opt,
-                'thead' =>  $thead,
-                'tbody' =>  $tbody,
-                'list'  =>  $list,
-                'page'  =>  $page,
-                'limit' =>  $limit,
-                'max'   =>  $max,
-                'name'  =>  $name,
-            
-            ];
-
-        AJAX::success($out);
+        $m->output();
 
     }
     function admin_tag_get(TagModel $model,$id){
