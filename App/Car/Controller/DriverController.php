@@ -22,7 +22,7 @@ use App\Car\Model\DriverFundModel;
 use App\Car\Model\UserModel; 
 use App\Car\Model\PaymentModel;
 use App\Car\Model\JudgeModel;
-use App\Car\Model\IncomeModel;
+use App\Car\Model\DriverIncomeModel;
 use App\Car\Model\DriverBankModel;
 use App\Car\Model\DriverMoneyLogModel;
 use App\Car\Model\AreaModel;
@@ -342,8 +342,8 @@ class DriverController extends Controller{
 
         $info['apply_status'] = DriverApplyModel::copyMutiInstance()->where(['id'=>$this->L->id])->order('create_time desc')->find()->status;
         NULL === $info['apply_status'] && $info['apply_status'] = '-2';
-        $m = IncomeModel::copyMutiInstance();
-        $info['money_today'] = $m->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('type < 3 AND create_time>%n',TIME_TODAY)->find()->c;
+        $m = DriverIncomeModel::copyMutiInstance();
+        $info['money_today'] = $m->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         
         if(!$info['money_today'])$info['money_today'] = '0.00';
         $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type<3')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
@@ -550,21 +550,21 @@ class DriverController extends Controller{
      * @param mixed $incomeModel 
      * @return mixed 
      */
-    function income(IncomeModel $incomeModel,$page = 1,$limit = 10){
+    function income(DriverIncomeModel $incomeModel,$page = 1,$limit = 10){
 
         !$this->L->id && AJAX::error('未登录');
         $month = date('Ym');
 
         $week = TIME_TODAY - (date('w') - 1) * 24 * 3600;
 
-        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type<3')->where(['driver_id'=>$this->L->id])->where('create_time>%n',$week)->find()->m;
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',$week)->find()->m;
         if(!$money)$money = '0.00';
         $out['month'] = $money;
-        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type<3')->where(['driver_id'=>$this->L->id])->find()->m;
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where(['driver_id'=>$this->L->id])->find()->m;
         if(!$money)$money = '0.00';
         $out['all'] = $money;
 
-        $list = $incomeModel->select('*','trip.start_name','trip.end_name')->page($page,$limit)->where('type<3')->where(['driver_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
+        $list = $incomeModel->select('*','trip.start_name','trip.end_name')->page($page,$limit)->where(['driver_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
 
         foreach($list as &$v){
             $v->create_date = date('m-d H:i',$v->create_time);

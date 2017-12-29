@@ -810,173 +810,10 @@ class Func {
 
     }
 
-    
-
-
-    public static function addIncomex($driver_id,$user_id,$order,$type,$trip_id){
-        
-        $incomeModel = IncomeModel::copyMutiInstance();
-
-        $money = $order->total_fee;
-
-        $data['driver_id'] = $driver_id;
-        $data['user_id'] = $user_id;
-        $data['money'] = $money;
-        $data['type'] = $type;
-        $data['trip_id'] = $trip_id;
-        $data['month'] = date('Ym');
-        $data['create_time'] = TIME_NOW;
-
-        $driverModel = DriverModel::copyMutiInstance();
-        $userModel = UserModel::copyMutiInstance();
-
-        if($type == 1 || $type == 2){
-            
-            if($type == 1){
-
-                $money2 = ($order->fee + $order->lay_fee)* .2;
-                $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* .2;
-            }
-            if($type == 2){
-
-                $money2 = ($order->fee + $order->lay_fee)* .1;
-                $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* .1;
-            }
-            $driver = $driverModel->find($driver_id);
-            
-
-            if($driver){
-                $driverModel->set('money = money + %n',$data['money'])->save($driver->id);
-
-                # 1级
-                if($driver && $driver->parent_id){
-
-                    $driver = $driverModel->find($driver->parent_id);
-                    if($driver)$driverModel->set('money = money + %n',$money2 * .03)->save($driver->id);
-
-                    # 2级
-                    if($driver && $driver->parent_id){
-
-                        $driver = $driverModel->find($driver->parent_id);
-                        if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
-
-                        # 3级
-                        if($driver && $driver->parent_id){
-
-                            $driver = $driverModel->find($driver->parent_id);
-                            if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
-
-                            # 4级
-                            // if($driver && $driver->parent_id){
-
-                            //     $driver = $driverModel->find($driver->parent_id);
-                            //     if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
-
-                            //     # 5级
-                            //     if($driver && $driver->parent_id){
-
-                            //         $driver = $driverModel->find($driver->parent_id);
-                            //         if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
-                            //     }
-                            // }
-                        }
-                    }
-                }
-
-                
-
-
-
-            }
-
-
-
-
-
-        }elseif($type == 3){
-            $money2 = ($order->fee + $order->lay_fee)* .1;
-            $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* .1;
-            $driver = $userModel->find($driver_id);
-            if($driver){
-                $userModel->set('money = money + %n',$data['money'])->save($driver->id);
-
-                # 1级
-                if($driver && $driver->parent_id){
-
-                    $driver = $userModel->find($driver->parent_id);
-                    if($driver)$userModel->set('money = money + %n',$money2 * .03)->save($driver->id);
-
-                    # 2级
-                    if($driver && $driver->parent_id){
-
-                        $driver = $userModel->find($driver->parent_id);
-                        if($driver)$userModel->set('money = money + %n',$money2 * .01)->save($driver->id);
-
-                        # 3级
-                        if($driver && $driver->parent_id){
-
-                            $driver = $userModel->find($driver->parent_id);
-                            if($driver)$userModel->set('money = money + %n',$money2 * .01)->save($driver->id);
-
-                            # 4级
-                            // if($driver && $driver->parent_id){
-
-                            //     $driver = $userModel->find($driver->parent_id);
-                            //     if($driver)$userModel->set('money = money + %n',$money2 * .01)->save($driver->id);
-
-                            //     # 5级
-                            //     if($driver && $driver->parent_id){
-
-                            //         $driver = $driverModel->find($driver->parent_id);
-                            //         if($driver)$driverModel->set('money = money + %n',$money2 * .01)->save($driver->id);
-                            //     }
-                            // }
-                        }
-                    }
-                }
-            }
-        }
-
-
-        $user = $userModel->find($user_id);
-        if($user){
-            # 1级
-            if($user->parent_id){
-                $user = $userModel->find($user->parent_id);
-                if($user)$userModel->set('money = money + %n',$money2 * .03)->save($user->id);
-                # 2级
-                if($user && $user->parent_id){
-                    $user = $userModel->find($user->parent_id);
-                    if($user)$userModel->set('money = money + %n',$money2 * .01)->save($user->id);
-                    # 3级
-                    if($user && $user->parent_id){
-                        $user = $userModel->find($user->parent_id);
-                        if($user)$userModel->set('money = money + %n',$money2 * .01)->save($user->id);
-                        # 4级
-                        // if($user && $user->parent_id){
-                        //     $user = $userModel->find($user->parent_id);
-                        //     if($user)$userModel->set('money = money + %n',$money2 * .01)->save($user->id);
-                        //     # 5级
-                        //     if($user && $user->parent_id){
-                        //         $user = $userModel->find($user->parent_id);
-                        //         if($user)$userModel->set('money = money + %n',$money2 * .01)->save($user->id);
-                        //     }
-                        // }
-                    }
-                }
-            }
-        }
-
-        $incomeModel->set($data)->add();
-
-        return true;
-
-    }
-
-
     public static function addIncome($driver_id,$user_id,$order,$type,$trip_id){
         
         $userIncomeModel = UserIncomeModel::copyMutiInstance();
+        $driverIncomeModel = DriverIncomeModel::copyMutiInstance();
         $driverModel = DriverModel::copyMutiInstance();
         $userModel = UserModel::copyMutiInstance();
 
@@ -1019,6 +856,7 @@ class Func {
 
         # 1级
         if($user->parent_id && $user = $userModel->find($user->parent_id)){
+            
             $data['user_id'] = $user->id;
             $data['level'] = 1;
             $data['money'] = $money2 * .03;

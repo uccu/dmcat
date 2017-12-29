@@ -152,9 +152,7 @@ let act = {
             estimated_price = parseFloat(obj.estimated_price || 0),
             phone = obj.phone || '',
             name = obj.name || '',
-            city_id = parseInt(obj.city_id || 0),
-            latitudeRange = [start_latitude - 0.02,start_latitude + 0.02],
-            longitudeRange = [start_longitude - 0.02,start_longitude + 0.02];
+            city_id = parseInt(obj.city_id || 0);
         let sync = new SYNC;
         
         /** 是否有正在进行中的订单 */
@@ -183,7 +181,8 @@ let act = {
         }
         /** 查找3公里内的司机 */
         sync.add = function(id,trip_id){
-            db.get('select o.driver_id from c_driver_online o inner join c_driver d on o.driver_id=d.id where o.latitude between ? and ? and o.longitude between ? and ? and d.type_driving=1',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
+            db.get('select d.driver_id,round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) AS `distance` from c_driver_online d inner join c_driver r on d.driver_id=r.id where round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) between ? and ? and r.type_driving=1 order by distance',[start_latitude,start_latitude,start_longitude,start_latitude,start_latitude,start_longitude,0,3000],function(ids){
+                console.log(ids)
                 for(let i in ids){
                     ids[i] = ids[i].driver_id
                 }
@@ -191,8 +190,6 @@ let act = {
                 con.sendText(content({status:200,type:'askForDriving',info:obj}))
                 let run = function(n){
                     if(ids.length <= n){
-                        latitudeRange = [start_latitude - 0.05,start_latitude + 0.05]
-                        longitudeRange = [start_longitude - 0.05,start_longitude + 0.05]
                         sync.run(id,trip_id);
                         return;
                     }
@@ -216,7 +213,7 @@ let act = {
             });
         }
         sync.add = function(id){
-            db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
+            db.get('select d.driver_id,round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) AS `distance` from c_driver_online d where round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) between ? and ?',[start_latitude,start_latitude,start_longitude,start_latitude,start_latitude,start_longitude,3000,5000],function(ids){
                 for(let i in ids){
                     ids[i] = ids[i].driver_id
                 }
@@ -263,9 +260,7 @@ let act = {
             phone = obj.phone || '',
             name = obj.name || '',
             meter = obj.meter || 0,
-            city_id = parseInt(obj.city_id || 0),
-            latitudeRange = [start_latitude - 0.02,start_latitude + 0.02],
-            longitudeRange = [start_longitude - 0.02,start_longitude + 0.02];
+            city_id = parseInt(obj.city_id || 0);
             
         let sync = new SYNC;
         
@@ -283,52 +278,23 @@ let act = {
         /** 插入订单和行程 */
         sync.add = function(){
             /** 创建订单 */
-            db.insert('insert into c_order_taxi set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,statuss=5,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?,meter=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id,meter],function(id){
+            db.insert('insert into c_order_taxi set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,statuss=10,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?,meter=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id,meter],function(id){
                 if(!id)return;
                 obj.id = id;
                 /** 创建行程 */
-                db.insert('insert into c_trip set start_fee=?,statuss=5,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=2,id=?,user_id=?,create_time=?,distance=?,estimated_price=?,meter=?',[start_fee,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price,meter],function(trip_id){
+                db.insert('insert into c_trip set start_fee=?,statuss=10,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=2,id=?,user_id=?,create_time=?,distance=?,estimated_price=?,meter=?',[start_fee,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price,meter],function(trip_id){
                     obj.trip_id = trip_id
                     sync.run(id,trip_id)
                 })
             })
         }
         /** 查找3公里内的司机 */
-        sync.add = function(id,trip_id){
-            db.get('select o.driver_id from c_driver_online o inner join c_driver d on o.driver_id=d.id where o.latitude between ? and ? and o.longitude between ? and ? and d.type_taxi=1',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
-                for(let i in ids){
-                    ids[i] = ids[i].driver_id
-                }
+        sync.add = function(id){
+            db.get('select d.driver_id,round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) AS `distance` from c_driver_online d where round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) between ? and ?',[start_latitude,start_latitude,start_longitude,start_latitude,start_latitude,start_longitude,0,3000],function(ids){
+                // console.log(ids)
                 /** 发送成功信息 */
                 con.sendText(content({status:200,type:'callTaxi',info:obj}))
-                let run = function(n){
-                    if(ids.length <= n){
-                        latitudeRange = [start_latitude - 0.05,start_latitude + 0.05]
-                        longitudeRange = [start_longitude - 0.05,start_longitude + 0.05]
-                        sync.run(id,trip_id);
-                        return;
-                    }
-                    let driver = data.DriverMap.get(ids[n]+'')
-                    if(driver && !driver.serving){
-                        driver.con.sendText(content({status:200,type:'distribute',order_id:id,trip_id:trip_id}))
-                        if(user)user.clock = setTimeout(q=>run(n+1),30000)
-                    }else{
-                        run(n+1)
-                    }
-                }
-                run(0)
-            })
-        }
-        sync.add = function(id,trip_id){
 
-            db.update('update c_order_taxi set statuss=10 where id=?',[id],function(){
-                db.update('update c_trip set statuss=10 where trip_id=?',[trip_id],function(){
-                    sync.run(id);
-                });
-            });
-        }
-        sync.add = function(id){
-            db.get('select driver_id from c_driver_online where latitude between ? and ? and longitude between ? and ?',[latitudeRange[0],latitudeRange[1],longitudeRange[0],longitudeRange[1]],function(ids){
                 for(let i in ids){
                     ids[i] = ids[i].driver_id
                 }
@@ -343,7 +309,6 @@ let act = {
                             driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'create',list:r}))
                         };
                         (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
                         (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
                     }
                 }
@@ -527,11 +492,6 @@ let z = function(obj,con){
                 let name            = obj.name || ''
                 let city_id         = parseInt(obj.city_id || 0)
                 let num         = parseInt(obj.num || 1)
-
-                let latitudeRange = [start_latitude - 0.05,start_latitude + 0.05]
-                let longitudeRange = [start_longitude - 0.05,start_longitude + 0.05]
-
-
 
                 /** 创建订单 */
                 db.insert('insert into c_order_way set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?,num=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id,num],function(id){

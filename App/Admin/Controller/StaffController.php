@@ -267,7 +267,7 @@ class StaffController extends Controller{
 
 
     # 管理司机
-    function admin_driver(DriverModel $model,$page = 1,$limit = 10,$search,$typee,$longitude,$latitude){
+    function admin_driver(DriverModel $model,$page = 1,$limit = 10,$search,$typee,$longitude,$latitude,$online,$serving){
         
         $this->L->adminPermissionCheck(75);
 
@@ -285,6 +285,16 @@ class StaffController extends Controller{
                         'title'=>'搜索',
                         'name'=>'search',
                         'size'=>'3'
+                    ],
+                    [
+                        'title'=>'在线',
+                        'name'=>'online',
+                        'type'=>'checkbox'
+                    ],
+                    [
+                        'title'=>'在服务中',
+                        'name'=>'serving',
+                        'type'=>'checkbox'
                     ],
                     [
                         'title'=>'代驾',
@@ -309,6 +319,7 @@ class StaffController extends Controller{
                 '用户ID',
                 '手机号',
                 '名字',
+                '司机类型',
                 '启用',
                 '评价',
 
@@ -328,6 +339,7 @@ class StaffController extends Controller{
                 'id',
                 'phone',
                 'name',
+                'type',
                 [
                     'name'=>'active',
                     'type'=>'checkbox',
@@ -343,6 +355,14 @@ class StaffController extends Controller{
 
         # 列表内容
         $where = [];
+
+        if($online){
+            $where['www'] = ['online.latitude <> 0'];
+        }
+
+        if($serving){
+            $where['www'] = ['EXISTS(SELECT %i FROM %i WHERE %i=%F AND %i<3 AND %i IN (%c))','t.trip_id','c_trip t','t.driver_id','id','t.type','t.statuss',[20,25,30,35,40]];
+        }
 
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
@@ -371,6 +391,13 @@ class StaffController extends Controller{
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
             $v->judge = '查看';
             $v->judge_href = 'staff/judge_driver?id='.$v->id;
+
+            if($v->type_driving){
+                $v->type = '代驾';
+            }else{
+                $v->type = '出租车';
+            }
+
             if($longitude){
 
                 $v->dis = Func::getSDistance($v->latitude,$v->longitude,$latitude,$longitude);

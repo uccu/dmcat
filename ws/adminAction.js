@@ -38,28 +38,40 @@ let act = {
         if(obj.token){
             
             if(obj.token == 'mm'){
-                let admin = data.AdminMap.get(obj.id+'')
+                // let admin = data.AdminMap.get(obj.id+'')
                 /** 如果用户存在 */
-                if(admin){
+                // if(admin){
                     /** 用户重复登录无效 */
-                    if(admin.con === con)return
+                    // if(admin.con === con)return
                     /** 关闭前一次连接 */
                     // delete admin.con.admin_id
-                    admin.con.close();
-                }
+                    // admin.con.close();
+                // }
                 /** con.admin_id admin.id 字符串 */
                 con.admin_id = obj.id+''
-                admin = new UserInfo
-                admin.con = con
-                admin.id = obj.id+''
-                data.AdminMap.set(con.admin_id,admin)
+                // admin = new UserInfo
+                // admin.con = con
+                // admin.id = obj.id+''
+                // data.AdminMap.set(con.admin_id,admin)
                 console.log(`admin ${con.admin_id} linked`)
+                con.sendText(content({status:200,type:'login'}))
             }
         }
         
     },
-    pushDrivingOrder(){
-        
+    pushDrivingOrder(obj,con){
+        if(con.admin_id){
+
+            obj.trip_id;
+            ;
+
+            let driver = data.DriverMap.get(obj.driver_id + '')
+            if(driver && !driver.serving){
+                driver.con.sendText(content({status:200,type:'distribute',order_id:0,trip_id:trip_id}))
+            }
+
+            console.log(`admin ${con.admin_id} pushDrivingOrder ${trip_id} to driver ${driver.id}`)
+        }
     }
     
 

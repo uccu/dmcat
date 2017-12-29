@@ -290,6 +290,9 @@ class PayController extends Controller{
         }
 
         !$trip && AJAX::error('行程不存在');
+        if($trip->statuss>45 && $trip->pay_type == 1){
+            echo 'success';die();
+        }
         $trip->statuss != 45 && AJAX::error('无法支付该订单');
         !$order && AJAX::error('订单不存在');
 
@@ -432,6 +435,9 @@ class PayController extends Controller{
         }
 
         !$trip && AJAX::error('行程不存在');
+        if($trip->statuss>45 && $trip->pay_type == 1){
+            echo 'success';die();
+        }
         $trip->statuss != 45 && AJAX::error('无法支付该订单');
         !$order && AJAX::error('订单不存在');
 
@@ -464,7 +470,22 @@ class PayController extends Controller{
         $order->save();
 
         # 增加收入
-        Func::addIncome($trip->driver_id,$trip->user_id,$order,$trip->type,$trip->id);
+        Func::addIncome($trip->driver_id,$trip->user_id,$order,$trip->type,$trip->trip_id);
+
+    }
+
+    function test(OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
+
+        $order = $orderDrivingModel->find(207);
+        $trip = $tripModel->find(219);
+
+        $driver_id = $order->driver_id;
+        $user_id = $order->user_id;
+        $type = $trip->type;
+        $trip_id = $trip->trip_id;
+
+        Func::addIncome($driver_id,$user_id,$order,$type,$trip_id);
+
 
     }
     

@@ -62,7 +62,7 @@ class MoneyController extends Controller{
 
     function admin_pay(PaymentModel $model,$page = 1,$limit = 20,$search = '',$ispaid = 0,$type){
         
-        $this->L->adminPermissionCheck(118);
+        $this->L->adminPermissionCheck(159);
         $name = '用户';
         # 允许操作接口
         $opt = 
@@ -167,7 +167,7 @@ class MoneyController extends Controller{
         AJAX::success($out);
     }
     function admin_pay_get(PaymentModel $model,$id){
-        $this->L->adminPermissionCheck(118);
+        $this->L->adminPermissionCheck(159);
         $name = '';
         # 允许操作接口
         $opt = 

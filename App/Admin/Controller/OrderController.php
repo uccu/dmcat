@@ -23,6 +23,8 @@ use App\Car\Model\UserModel;
 use App\Car\Model\TripModel; 
 use App\Car\Model\StatusModel; 
 use App\Car\Model\AreaModel;
+use App\Car\Model\DriverIncomeModel;
+use App\Car\Model\UserIncomeModel;
 
 use App\Admin\Set\Gets;
 use App\Admin\Set\Lists;
@@ -66,11 +68,17 @@ class OrderController extends Controller{
         View::addData(['getList'=>'admin_driver_apply']);
         View::hamlReader('home/list','Admin');
     }
+
+
+    function upd(){
+
+        View::hamlReader('order/upd','Admin');
+    }
     
 
 
     # 管理代驾订单
-    function admin_driving(OrderDrivingModel $model,$page = 1,$limit = 50,$search,$status = -1){
+    function admin_driving(OrderDrivingModel $model,TripModel $tripModel,$page = 1,$limit = 50,$search,$status = -1){
         
         $m = Lists::getSingleInstance($model,$page,$limit);
 
@@ -81,7 +89,7 @@ class OrderController extends Controller{
         $m->setOpt('get','../order/admin_driving_get');
         $m->setOpt('upd','../order/admin_driving_upd');
         $m->setOpt('del','../order/admin_driving_del');
-        $m->setOpt('view','home/upd');
+        $m->setOpt('view','order/upd');
         $m->setOptReq(['title'=>'搜索','name'=>'search','size'=>'3']);
         $reqC = $m->setOptReq(['title'=>'状态','name'=>'status','type'=>'select','default'=>'-1']);
 
@@ -95,6 +103,7 @@ class OrderController extends Controller{
 
         # 设置表头
         $m->setHead('ID');
+        $m->setHead('行程ID');
         $m->setHead('用户');
         $m->setHead('司机');
         $m->setHead('状态');
@@ -102,9 +111,12 @@ class OrderController extends Controller{
         $m->setHead('终点');
         $m->setHead('预估价(元)');
         $m->setHead('总价(元)');
+        $m->setHead('司机收入');
+        $m->setHead('用户收入');
 
         # 设置表体
         $m->setBody('id');
+        $m->setBody('trip_id');
         $m->setBody('user_name');
         $m->setBody('driver_name');
         $m->setBody('status_name');
@@ -112,6 +124,8 @@ class OrderController extends Controller{
         $m->setBody('end_name');
         $m->setBody('estimated_price');
         $m->setBody('total_fee');
+        $m->setBody(['name'=>'driver_income','href'=>true]);
+        $m->setBody(['name'=>'user_income','href'=>true]);
 
         # 筛选
         $m->where = [];
@@ -131,6 +145,19 @@ class OrderController extends Controller{
         $m->getList(0);
 
         $m->fetchArr('status_name','statuss',$statusArr);
+
+        $m->each(function(&$v) use ($tripModel){
+            $trip = $tripModel->where(['id'=>$v->id,'type'=>1])->find();
+            $v->trip_id = $trip->trip_id;
+            if($v->statuss > 49 && $trip->pay_type == 1){
+                $v->driver_income = '查看';
+                $v->driver_income_href = 'order/driver_income?trip_id='.$trip->trip_id;
+                $v->user_income = '查看';
+                $v->user_income_href = 'order/user_income?trip_id='.$trip->trip_id;
+            }
+            
+
+        });
 
         $m->output();
 
@@ -390,7 +417,92 @@ class OrderController extends Controller{
         $out['del'] = $del;
         AJAX::success($out);
     }
-    
+
+    function driver_income($trip_id = 0){
+
+        View::addData(['getList'=>'admin_driver_income?trip_id='.$trip_id]);
+        View::hamlReader('home/list','Admin');
+    }
+    function admin_driver_income(DriverIncomeModel $model,$page = 1,$limit = 50,$trip_id = 0){
+        
+        $m = Lists::getSingleInstance($model,$page,$limit);
+
+        # 权限
+        $m->checkPermission(113);
+
+        # 允许操作接口
+
+        # 设置名字
+        $m->setName('代驾订单');
+        
+
+        # 设置表头
+        $m->setHead('司机');
+        $m->setHead('手机号');
+        $m->setHead('收益');
+        $m->setHead('等级');
+
+
+        # 设置表体
+        $m->setBody('driver_name');
+        $m->setBody('phone');
+        $m->setBody('money');
+        $m->setBody('level');
+
+
+        # 筛选
+        $m->where = [];
+        $m->where['trip_id'] = $trip_id;
+
+        # 获取列表
+        $model->select('*','driver.phone','driver.name>driver_name')->order('level');
+        $m->getList(1);
+
+        $m->output();
+
+    }
+
+    function user_income($trip_id = 0){
+
+        View::addData(['getList'=>'admin_user_income?trip_id='.$trip_id]);
+        View::hamlReader('home/list','Admin');
+    }
+    function admin_user_income(UserIncomeModel $model,$page = 1,$limit = 50,$trip_id = 0){
+        
+        $m = Lists::getSingleInstance($model,$page,$limit);
+
+        # 权限
+        $m->checkPermission(113);
+
+        # 允许操作接口
+
+        # 设置名字
+        $m->setName('代驾订单');
+        
+
+        # 设置表头
+        $m->setHead('用户');
+        $m->setHead('收益');
+        $m->setHead('等级');
+
+
+        # 设置表体
+        $m->setBody('id');
+        $m->setBody('user_name');
+        $m->setBody('level');
+
+
+        # 筛选
+        $m->where = [];
+        $m->where['trip_id'] = $trip_id;
+
+        # 获取列表
+        $model->select('*','user.name>user_name')->order('level');
+        $m->getList(1);
+
+        $m->output();
+
+    }
 
 
     # 管理出租车
