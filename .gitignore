@@ -6,4 +6,5 @@ Public/share
 composer.lock
 vendor
 ws/node_modules
+ws/work.out
 restart_ws
