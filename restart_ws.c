@@ -19,6 +19,6 @@ int main()
         perror("setreuid");
     printf("after setreuid uid :%u\n",getuid());
     printf("afer sertreuid euid :%u\n",geteuid());
-    system("/home/app/code/dmcat/restart_ws.sh"); //执行脚本
+    system("bash /home/app/code/dmcat/restart_ws.sh"); //执行脚本
     return 0;
 }
