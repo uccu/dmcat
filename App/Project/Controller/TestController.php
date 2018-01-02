@@ -93,7 +93,7 @@ class TestController extends Controller{
     # 更新代码
     function pull(){
 
-        system("cd ".BASE_ROOT." && \"C:\Program Files\Git\git-cmd.exe\" git pull");
+        system("cd ".BASE_ROOT." && git pull");
     }
 
     # 测试websocket

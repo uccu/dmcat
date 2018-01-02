@@ -1,7 +1,7 @@
 module.exports = {
 
-    host    :   '121.199.8.244',       
+    host    :   '39.104.59.110',       
     path    :   '/',
-    port    :   3500
+    port    :   8011
     
 }
