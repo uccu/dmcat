@@ -1,6 +1,8 @@
 .vscode
 Log/*.log
 Public/pic/20*
+Public/download
+Public/share
 composer.lock
 vendor
 ws/node_modules
