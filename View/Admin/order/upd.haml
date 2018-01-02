@@ -42,8 +42,40 @@
                 return p.searchParams.get(d);
             }
 
+            var g,f
+
+            g = function(){
+                f=new WebSocket('ws://www.disuyijian.com:7777/admin')
+                f.onopen = function(){
+                    console.log('admin 连接成功')
+                    f.send(JSON.stringify({"type":"login","id":Math.random(),"token":"mm"}))
+                }
+                f.onclose = function(){
+                    console.log('admin 2秒后重连')
+                    setTimeout(g,2000)
+                }
+
+                f.onmessage = function(z){
+
+                    var obj = JSON.parse(z.data)
+
+                    if(obj.status != 200)toastr['error'](obj.message);
+                    else if(obj.type == 'pushDrivingOrder'){
+                        curl_succ('派单成功')
+                    }
+                }
+            }
+            g()
+
             var get = wget('get');
             var id = wget('id');
+
+            window.Dmcat.submFunc = function(){
+
+                f.send(JSON.stringify({type:"pushDrivingOrder",id:$('[name="id"]').val(),trip_id:$('[name="trip_id"]').val(),driver_id:$('[name="toDriver"]').val()}))
+
+            }
+
             var e = new Dmcat.admin(get,{id:id},'info');
 
             var su = 1

@@ -718,6 +718,22 @@ trip_id 行程id
 
 
 
+2.27 支付宝充值
+pay/alipay_recharge
+money 金额
+{}
+{}
+
+
+
+2.28 微信充值
+pay/wcpay_recharge
+money 金额
+{}
+{}
+
+
+
 ws.2.1 司机登录
 @
 type 固定login

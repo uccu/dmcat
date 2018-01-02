@@ -49,10 +49,10 @@ let act = {
                 // }
                 /** con.admin_id admin.id 字符串 */
                 con.admin_id = obj.id+''
-                // admin = new UserInfo
-                // admin.con = con
-                // admin.id = obj.id+''
-                // data.AdminMap.set(con.admin_id,admin)
+                admin = new UserInfo
+                admin.con = con
+                admin.id = obj.id+''
+                data.AdminMap.set(con.admin_id,admin)
                 console.log(`admin ${con.admin_id} linked`)
                 con.sendText(content({status:200,type:'login'}))
             }
@@ -61,16 +61,32 @@ let act = {
     },
     pushDrivingOrder(obj,con){
         if(con.admin_id){
+            
+            if(!obj.driver_id){
+                con.sendText(content({status:400,type:'pushDrivingOrder',message:'请选择司机'}))
+                return
+            }
 
-            obj.trip_id;
+            if(!obj.trip_id || !obj.id || !obj.driver_id){
+                con.sendText(content({status:400,type:'pushDrivingOrder',message:'参数错误'}))
+                return
+            }
             ;
 
             let driver = data.DriverMap.get(obj.driver_id + '')
             if(driver && !driver.serving){
-                driver.con.sendText(content({status:200,type:'distribute',order_id:0,trip_id:trip_id}))
+                driver.con.sendText(content({status:200,type:'distribute',order_id:obj.id,trip_id:obj.trip_id}))
+            }else if(!driver){
+                con.sendText(content({status:400,type:'pushDrivingOrder',message:'司机不存在'}))
+                return
+            }else{
+                con.sendText(content({status:400,type:'pushDrivingOrder',message:'司机在服务中'}))
+                return
             }
 
-            console.log(`admin ${con.admin_id} pushDrivingOrder ${trip_id} to driver ${driver.id}`)
+            con.sendText(content({status:200,type:'pushDrivingOrder'}))
+
+            console.log(`admin ${con.admin_id} pushDrivingOrder ${obj.id}(${obj.trip_id}) to driver ${obj.driver_id}`)
         }
     }
     

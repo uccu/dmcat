@@ -503,6 +503,8 @@ class MoneyController extends Controller{
 
         # 列表内容
         $where = [];
+
+        $where['content'] = '提现';
         
         if($type != -2){
             $where['status'] = $type;

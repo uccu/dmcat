@@ -75,8 +75,9 @@ class DocController  extends Controller{
     
     private function _format($name){
 
-        $path = BASE_ROOT.'APP/Project/Doc/'.$name;
+        $path = BASE_ROOT.'App/Project/Doc/'.$name;
         $file = fopen($path, "r");
+        // echo $path;die();
         $ss = 0;$n = -1;
         $data = [];
         while(!feof($file)) {

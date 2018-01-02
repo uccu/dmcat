@@ -380,7 +380,7 @@ class StaffController extends Controller{
 
         if($longitude){
 
-            $model->select(['*,ABS(%F-%f) + ABS(%F-%f) AS `mul`,online.latitude,online.longitude','online.latitude',$latitude,'online.longitude',$longitude],'RAW')->order('mul desc','RAW');
+            $model->select(['*,ABS(%F-%f) + ABS(%F-%f) AS `mul`,online.latitude,online.longitude','online.latitude',$latitude,'online.longitude',$longitude],'RAW')->order('mul','RAW');
         }else{
             $model->order('create_time desc');
         }

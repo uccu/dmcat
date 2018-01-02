@@ -18,11 +18,11 @@
         let a,b,c,d,f;
 
         c = function(){
-            a=new WebSocket('ws://121.199.8.244:7777/user')
+            a=new WebSocket('ws://www.disuyijian.com:7777/user')
             
             a.onopen = function(){
                 console.log('user 连接成功')
-                a.send('{"type":"login","latitude":"31.20139500","longitude":"121.26741200","user_token":"QuK6Vn+A2SM1VUK/Fk/wLc1cLgbKL0S6SmylcE5fYvRsy6Kt7/R8xh35lbpOunTRMcXfdEiBqbnpnWRsHtHGx9NdrN/JsfvMLfijNNZLV/To="}')
+                a.send('{"type":"login","latitude":"31.20139500","longitude":"121.26741200","user_token":"wUs7TXWDhKm41jPkH1SDsFs191FL+ASV4WQPky9eW2JM69/0mU0ZDKw9YulKtaE3jvjz9x5sdeApkeDMf/QSI7OuCkp89ko4Q4ph7tL1Eg1w="}')
             }
             
             a.onclose = function(){
@@ -31,10 +31,10 @@
             }
         }
         d = function(){
-            b=new WebSocket('ws://121.199.8.244:7777/driver')
+            b=new WebSocket('ws://www.disuyijian.com:7777/driver')
             b.onopen = function(){
                 console.log('driver 连接成功')
-                b.send('{"type":"login","latitude":"31.20139500","longitude":"121.26741200","driver_token":"BJrcezGr/UlWYndGsIjn9pQK6aA5w6mJzmSc8klUtGduIqQdEO0shz8h+Bc86Ot/jVDdZs1QQoXk6WGlHdoPCLUeaNQS0uukQbR2LKwYgImA="}')
+                b.send('{"type":"login","latitude":"31.20139500","longitude":"121.26741200","driver_token":"9o+VokeYkPmXTC/Zg0LxRIfJ6PFzGmjmdYxkEPwrUeKYPUBg4IjhyOZ/MIhY4n+JXhtVs+L4KSvhQk7Exh5VKa93O1Z2EpiZU91dlcWgLRHE="}')
             }
             b.onclose = function(){
                 console.log('driver 2秒后重连')
@@ -43,7 +43,7 @@
         }
 
         g = function(){
-            f=new WebSocket('ws://121.199.8.244:7777/admin')
+            f=new WebSocket('ws://www.disuyijian.com:7777/admin')
             f.onopen = function(){
                 console.log('admin 连接成功')
                 f.send('{"type":"login","id":"1","token":"mm"}')

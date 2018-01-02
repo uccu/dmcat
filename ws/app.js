@@ -8,7 +8,13 @@ const userAction = require('./userAction')
 const driverAction = require('./driverAction')
 const adminAction = require('./adminAction')
 const db = require('./db')
-let data = require('./data')
+let data = require('./data'),
+sendAdmin = function(f){
+    for(let i of data.AdminMap){
+        i[1].con.sendText(content({status:200,type:'log',data:f}))
+    }
+
+}
 
 
 db.$(function(){
@@ -19,12 +25,12 @@ db.$(function(){
 
 let serverCallback = function(con){
 
-    console.log("one connection linked")
+    sendAdmin("one connection linked")
     let path = con.path.slice(1)
 
 
     if(['user','driver','admin'].indexOf(path) === -1){
-        console.warn('error path',path,path.indexOf(['user','driver','admin']) === -1)
+        sendAdmin(['error path',path,path.indexOf(['user','driver','admin']) === -1])
         con.sendText(content({status:400,type:'connect'}))
         con.close()
         return;
@@ -49,7 +55,7 @@ let serverCallback = function(con){
             data.AdminMap.delete(con.admin_id)
         }
 
-		console.log("one connection closed")
+		sendAdmin("one connection closed")
 	});
 	con.on("error", function (code, reason) {
 
@@ -65,14 +71,14 @@ let serverCallback = function(con){
             data.AdminMap.delete(con.admin_id)
         }
         
-		console.log("one connection occurred error")
+		sendAdmin("one connection occurred error")
     });
     con.on("text", function (str){
         let obj
         try{
             obj = JSON.parse(str)
         }catch(e){
-            console.warn('message not obj',str)
+            sendAdmin(['message not obj',str])
             return
         }
 
@@ -86,8 +92,8 @@ let serverCallback = function(con){
                 adminAction(obj,con)
             }
         }catch(e){
-            console.warn('obj has problem',str)
-            console.warn(e)
+            sendAdmin(['obj has problem',str])
+            console.log(e)
             return
         }
         
@@ -97,8 +103,8 @@ let serverCallback = function(con){
 }
 
 let server = ws.createServer(serverCallback).listen(7777)
-console.log("server started")
+sendAdmin("server started")
 
 setInterval(function(){
-    console.log('Driver:'+data.DriverMap.size,'User:'+data.UserMap.size,'Admin:'+data.AdminMap.size)
+    sendAdmin(['Driver:'+data.DriverMap.size,'User:'+data.UserMap.size,'Admin:'+data.AdminMap.size])
 },10000)

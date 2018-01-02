@@ -5,6 +5,12 @@ db = require('./db'),
 action = require('./action'),
 UserInfo = function(){},
 dis = function (lat1, lng1, lat2, lng2) {
+
+    lat1 = parseFloat(lat1)
+    lat2 = parseFloat(lat2)
+    lng1 = parseFloat(lng1)
+    lng2 = parseFloat(lng2)
+
     var radLat1 = lat1 * Math.PI / 180.0;
     var radLat2 = lat2 * Math.PI / 180.0;
     var a = radLat1 - radLat2;
@@ -13,6 +19,11 @@ dis = function (lat1, lng1, lat2, lng2) {
     s = s * 6378.137;
     s = Math.round(s * 10000) / 10;
     return s
+},sendAdmin = function(f){
+    for(let i of data.AdminMap){
+        i[1].con.sendText(content({status:200,type:'log',data:f}))
+    }
+
 },SYNC = function(){
     this._s = [];
     this._n = -1;
@@ -261,10 +272,10 @@ let act = {
         
         
         sync.add = function(trip,result){
-            if(type == 1)action.getDrivingPrice(result.city_id,trip.in_time,trip.real_distance,function(prices){
+            if(type == 1)action.getDrivingPrice(result.city_id,trip.in_time,trip.real_distance/1000,function(prices){
                 sync.run(trip,prices,result)
             })
-            else if(type == 2)action.getTaxiPrice(result.city_id,trip.in_time,trip.real_distance,function(prices){
+            else if(type == 2)action.getTaxiPrice(result.city_id,trip.in_time,trip.real_distance/1000,function(prices){
                 sync.run(trip,prices,result)
             })
         }
@@ -309,7 +320,7 @@ let act = {
         db.delete('delete from c_driver_online where driver_id=?',[con.driver_id],function(){
             data.DriverMap.delete(con.driver_id)
             delete con.driver_id
-            console.log(`driver ${con.driver_id} logout`)
+            sendAdmin(`driver ${con.driver_id} logout`);
             con.sendText(content({status:200,type:'logout'}))
         })
 
@@ -318,7 +329,7 @@ let act = {
         /** 司机是否登录 */
         if(!con.driver_id){
             con.sendText(content({status:400,type:'login',message:'未登录'}))
-            console.error('one driver login error 4')
+            sendAdmin('one driver login error 4')
             return;
         }
         let id = obj.id || 0
@@ -336,12 +347,16 @@ let act = {
 
         sync.add = function(){
 
-            console.log(`driver ${con.driver_id} updated position ${latitude},${longitude}`)
+            sendAdmin(`driver ${con.driver_id} updated position ${latitude},${longitude}`)
             db.find('select * from c_trip where driver_id=? AND type<3 AND statuss IN (20,30)',[con.driver_id],function(re){
                 
-                if(re)db.insert('insert into c_driver_serving_position set driver_id=?,trip_id=?,latitude=?,longitude=?,status=?',[driver.id,re.trip_id,latitude,longitude,re.statuss])
+                if(re){
+                    db.insert('insert into c_driver_serving_position set driver_id=?,trip_id=?,latitude=?,longitude=?,status=?',[driver.id,re.trip_id,latitude,longitude,re.statuss])
 
-                if((driver.serving && re.statuss == 30) || (re.statuss == 20 && re.meter))sync.run(re)
+                    sendAdmin(`driver ${con.driver_id} updated serving_position`)
+
+                    if((driver.serving && re.statuss == 30) || (re.statuss == 20 && re.meter))sync.run(re)
+                }
                 
             })
             
@@ -352,11 +367,13 @@ let act = {
             if(!d)return;
             
             let di;
-            if(!di || !latitude || !latitude)di = 0;
+            if(!latitude || !latitude)di = 0;
             else di = dis(d.last_latitude,d.last_longitude,latitude,longitude);
             di += d.real_distance;
                         
             db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type<3 AND statuss=30',[latitude,longitude,di,con.driver_id])
+
+            sendAdmin([`driver ${con.driver_id} add distance ${di}`,d.last_latitude,d.last_longitude,latitude,longitude])
                     
         }
 
@@ -631,8 +648,8 @@ let act = {
                 let latitude = driver.latitude = parseFloat(obj.latitude || 0)
                 let longitude = driver.longitude = parseFloat(obj.longitude || 0)
                 db.replace('replace into c_driver_online (driver_id,latitude,longitude) VALUES(?,?,?)',[d.data.info.id,latitude,longitude])
-                console.log(`driver ${d.data.info.id} linked`)
-                console.log(`driver ${con.driver_id} updated position ${latitude},${longitude}`);
+                sendAdmin(`driver ${d.data.info.id} linked`)
+                sendAdmin(`driver ${con.driver_id} updated position ${latitude},${longitude}`);
 
                 con.sendText(content({status:200,type:'login'}))
 
@@ -839,7 +856,7 @@ let act = {
         }
 
         sync.add = function(){
-            // console.log(2)
+            // sendAdmin(2)
             db.find('select * from c_order_'+className+' where id=?',[id],function(r){
                 
                 /** 订单是否存在 */
@@ -859,7 +876,7 @@ let act = {
         }
 
         sync.add = function(){
-            // console.log(3)
+            // sendAdmin(3)
 
             db.update('update c_order_'+className+' set driver_id=?,statuss=20,order_time=? where id=?',[con.driver_id,parseInt(Date.now() / 1000),id],function(){
 
@@ -867,7 +884,7 @@ let act = {
             })
         }
 
-        sync.add = function(){console.log(4)
+        sync.add = function(){
 
             action.getDis(driver.latitude,driver.longitude,result.start_latitude,result.start_longitude,3,function(st){
                 sync.run(st);
@@ -875,7 +892,7 @@ let act = {
         }
 
         sync.add = function(st){
-            // console.log(5)
+            // sendAdmin(5)
             /** 更新行程 */
             if(!st)st  = {}
             db.update('update c_trip set driver_id=?,statuss=20,duration=? where trip_id=?',[con.driver_id,st.duration||0,trip_id],function(){

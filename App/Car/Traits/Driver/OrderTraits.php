@@ -119,7 +119,7 @@ trait OrderTraits{
         $order->real_distance = $trip->real_distance;
         // if($order->real_distance < 1000)$start_distance = $order->real_distance.'米';
         // else 
-        $order->real_distance = number_format( $order->real_distance/1000,1,'.','').'公里';
+        $order->real_distance = number_format( $order->real_distance/1000,2,'.','');
 
         # 预估价
         $order->estimated_price;

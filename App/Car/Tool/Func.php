@@ -18,6 +18,8 @@ use App\Car\Model\UserIncomeModel;
 use App\Car\Model\DriverIncomeModel;
 use App\Car\Model\DriverOnlineModel;
 use App\Car\Model\UserOnlineModel;
+use App\Car\Model\DriverMoneyLogModel;
+use App\Car\Model\UserMoneyLogModel;
 use Model;
 use stdClass;
 
@@ -810,12 +812,14 @@ class Func {
 
     }
 
-    public static function addIncome($driver_id,$user_id,$order,$type,$trip_id){
+    public static function addIncome($driver_id,$user_id,$order,$type,$trip_id,$offline = 0){
         
         $userIncomeModel = UserIncomeModel::copyMutiInstance();
         $driverIncomeModel = DriverIncomeModel::copyMutiInstance();
         $driverModel = DriverModel::copyMutiInstance();
         $userModel = UserModel::copyMutiInstance();
+        $driverMoneyLog = DriverMoneyLogModel::copyMutiInstance();
+        $userMoneyLog = UserMoneyLogModel::copyMutiInstance();
 
 
         $money = $order->total_fee;
@@ -826,15 +830,18 @@ class Func {
         $data['month'] = date('Ym');
         $data['create_time'] = TIME_NOW;
 
-
         if($type == 1){
 
             $money2 = ($order->fee + $order->lay_fee)* .2;
             $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* .2;
-        }
-        else{
-            $money2 = ($order->fee + $order->lay_fee)* .1;
-            $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* .1;
+        }elseif($type == 2){
+
+            $money2 = ($order->fee + $order->lay_fee)* 0;
+            $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* 0;
+
+        }else{
+            $money2 = ($order->fee + $order->lay_fee)* 0;
+            $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* 0;
         }
 
         $user = $userModel->find($user_id);
@@ -846,24 +853,45 @@ class Func {
         }else{
             $data['driver_id'] = $driver_id;
             $driverIncomeModel->set($data)->add();
+            $data2 = [];
+            $data2['driver_id'] = $order->driver_id;
+            $data2['money'] = $offline ? - $money2 : $data['money'];
+            $data2['content'] = $offline ? '信息费' : '行程收入';
+            $data2['create_time'] = TIME_NOW;
+            $data2['status'] = 1;
+            if(!$offline || $money2)$driverMoneyLog->set($data2)->add();
             $driver = $driverModel->find($driver_id);
         }
 
         if(!$user || !$driver)AJAX::error('用户或司机不存在');
 
+        if($offline)$driver->money -= $money2;
+        else $driver->money += $data['money'];
+        $driver->save();
+
         unset($data['driver_id']);
         unset($data['user_id']);
 
         # 1级
-        if($user->parent_id && $user = $userModel->find($user->parent_id)){
+        if($user->parent_id && $money2 * .03 >= 0.01 && $user = $userModel->find($user->parent_id)){
             
             $data['user_id'] = $user->id;
             $data['level'] = 1;
             $data['money'] = $money2 * .03;
             $userIncomeModel->set($data)->add();
+
+            $data2 = [];
+            $data2['user_id'] = $user->parent_id;
+            $data2['money'] = $money2 * .03;
+            $data2['content'] = '分红';
+            $data2['create_time'] = TIME_NOW;
+            $data2['status'] = 1;
+            $userMoneyLog->set($data2)->add();
+
+
             $userModel->set('money = money + %n',$money2 * .03)->save($user->id);
             # 2级
-            if($user->parent_id && $user = $userModel->find($user->parent_id)){
+            if($user->parent_id && $money2 * .01 >= 0.01 &&$user = $userModel->find($user->parent_id)){
                 $data['user_id'] = $user->id;
                 $data['level'] = 2;
                 $data['money'] = $money2 * .01;
@@ -875,6 +903,16 @@ class Func {
                     $data['level'] = 3;
                     $data['money'] = $money2 * .01;
                     $userIncomeModel->set($data)->add();
+
+                    $data2 = [];
+                    $data2['user_id'] = $user->parent_id;
+                    $data2['money'] = $money2 * .01;
+                    $data2['content'] = '分红';
+                    $data2['create_time'] = TIME_NOW;
+                    $data2['status'] = 1;
+                    $userMoneyLog->set($data2)->add();
+
+
                     $userModel->set('money = money + %n',$money2 * .01)->save($user->id);
                     # 4级
                     if($user->parent_id && $user = $userModel->find($user->parent_id)){
@@ -882,6 +920,15 @@ class Func {
                         $data['level'] = 4;
                         $data['money'] = $money2 * .01;
                         $userIncomeModel->set($data)->add();
+
+                        $data2 = [];
+                        $data2['user_id'] = $user->parent_id;
+                        $data2['money'] = $money2 * .01;
+                        $data2['content'] = '分红';
+                        $data2['create_time'] = TIME_NOW;
+                        $data2['status'] = 1;
+                        $userMoneyLog->set($data2)->add();
+
                         $userModel->set('money = money + %n',$money2 * .01)->save($user->id);
                         # 5级
                         if($user->parent_id && $user = $userModel->find($user->parent_id)){
@@ -889,6 +936,15 @@ class Func {
                             $data['level'] = 5;
                             $data['money'] = $money2 * .01;
                             $userIncomeModel->set($data)->add();
+
+                            $data2 = [];
+                            $data2['user_id'] = $user->parent_id;
+                            $data2['money'] = $money2 * .01;
+                            $data2['content'] = '分红';
+                            $data2['create_time'] = TIME_NOW;
+                            $data2['status'] = 1;
+                            $userMoneyLog->set($data2)->add();
+                            
                             $userModel->set('money = money + %n',$money2 * .01)->save($user->id);
                         }
                     }
@@ -901,51 +957,79 @@ class Func {
 
         if($type == 3){
             # 1级
-            if($driver->parent_id && $user = $userModel->find($driver->parent_id)){
+            if($driver->parent_id && $money2 * .05 >= 0.01 && $user = $userModel->find($driver->parent_id)){
                 $data['user_id'] = $user->id;
                 $data['level'] = 1;
-                $data['money'] = $money2 * .03;
+                $data['money'] = $money2 * .05;
                 $userIncomeModel->set($data)->add();
-                $userModel->set('money = money + %n',$money2 * .03)->save($user->id);
+                $userModel->set('money = money + %n',$money2 * .05)->save($user->id);
                 # 2级
-                if($user->parent_id && $user = $userModel->find($user->parent_id)){
+                if($user->parent_id && $money2 * .03 >= 0.01 && $user = $userModel->find($user->parent_id)){
                     $data['user_id'] = $user->id;
                     $data['level'] = 2;
-                    $data['money'] = $money2 * .01;
+                    $data['money'] = $money2 * .03;
                     $userIncomeModel->set($data)->add();
-                    $userModel->set('money = money + %n',$money2 * .01)->save($user->id);
+                    $userModel->set('money = money + %n',$money2 * .03)->save($user->id);
                     # 3级
-                    if($user->parent_id && $user = $userModel->find($user->parent_id)){
+                    if($user->parent_id && $money2 * .02 >= 0.01 && $user = $userModel->find($user->parent_id)){
                         $data['user_id'] = $user->id;
                         $data['level'] = 3;
-                        $data['money'] = $money2 * .01;
+                        $data['money'] = $money2 * .02;
                         $userIncomeModel->set($data)->add();
-                        $userModel->set('money = money + %n',$money2 * .01)->save($user->id);
+                        $userModel->set('money = money + %n',$money2 * .02)->save($user->id);
                     }
                 }
             }
         }else{
             # 1级
-            if($driver->parent_id && $user = $driverModel->find($driver->parent_id)){
+            if($driver->parent_id && $money2 * .05 >= 0.01 && $user = $driverModel->find($driver->parent_id)){
                 $data['driver_id'] = $user->id;
                 $data['level'] = 1;
-                $data['money'] = $money2 * .01;
+                $data['money'] = $money2 * .05;
                 $driverIncomeModel->set($data)->add();
-                $driverModel->set('money = money + %n',$money2 * .03)->save($user->id);
+
+                $data2 = [];
+                $data2['driver_id'] = $driver->parent_id;
+                $data2['money'] = $money2 * .05;
+                $data2['content'] = '分红';
+                $data2['create_time'] = TIME_NOW;
+                $data2['status'] = 1;
+                $driverMoneyLog->set($data2)->add();
+
+                $driverModel->set('money = money + %n',$money2 * .05)->save($user->id);
                 # 2级
-                if($user->parent_id && $user = $driverModel->find($user->parent_id)){
+                if($user->parent_id && $money2 * .03 >= 0.01 && $user = $driverModel->find($user->parent_id)){
                     $data['driver_id'] = $user->id;
                     $data['level'] = 2;
-                    $data['money'] = $money2 * .01;
+                    $data['money'] = $money2 * .03;
                     $driverIncomeModel->set($data)->add();
-                    $driverModel->set('money = money + %n',$money2 * .01)->save($user->id);
+
+                    $data2 = [];
+                    $data2['driver_id'] = $driver->parent_id;
+                    $data2['money'] = $money2 * .03;
+                    $data2['content'] = '分红';
+                    $data2['create_time'] = TIME_NOW;
+                    $data2['status'] = 1;
+                    $driverMoneyLog->set($data2)->add();
+
+
+                    $driverModel->set('money = money + %n',$money2 * .03)->save($user->id);
                     # 3级
-                    if($user->parent_id && $user = $driverModel->find($user->parent_id)){
+                    if($user->parent_id && $money2 * .02 >= 0.01 && $user = $driverModel->find($user->parent_id)){
                         $data['driver_id'] = $user->id;
                         $data['level'] = 3;
-                        $data['money'] = $money2 * .01;
+                        $data['money'] = $money2 * .02;
                         $driverIncomeModel->set($data)->add();
-                        $driverModel->set('money = money + %n',$money2 * .01)->save($user->id);
+
+                        $data2 = [];
+                        $data2['driver_id'] = $driver->parent_id;
+                        $data2['money'] = $money2 * .02;
+                        $data2['content'] = '分红';
+                        $data2['create_time'] = TIME_NOW;
+                        $data2['status'] = 1;
+                        $driverMoneyLog->set($data2)->add();
+
+                        $driverModel->set('money = money + %n',$money2 * .02)->save($user->id);
                     }
                 }
             }

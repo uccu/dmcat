@@ -368,7 +368,12 @@
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="input-group col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'" '+(para.disabled?'disabled':'')+' value="'+(m.info[para.name]||para.default||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         
                         if(para.suggest){
-                            pa.find('input').after('<div class="input-group-btn"><button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right" role="menu"></ul></div><!-- /btn-group -->');
+                            pa.find('input').after('<div class="input-group-btn"><button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>'+(para.button?'<button type="button" class="btn btn-white subm">'+para.button+'</button>':'')+'<ul class="dropdown-menu dropdown-menu-right" role="menu"></ul></div><!-- /btn-group -->');
+                            if(para.button && w.Dmcat && w.Dmcat.submFunc){
+                                pa.find('.subm').click(function(){
+                                    w.Dmcat.submFunc()
+                                })
+                            }
                             pa.find('input').attr('data-fields',JSON.stringify(para.fields))
                             var para33 = para;
                             pa.find('input').bsSuggest({

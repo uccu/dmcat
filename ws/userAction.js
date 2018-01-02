@@ -15,6 +15,11 @@ dis = function (lat1, lng1, lat2, lng2) {
     s = s * 6378.137;
     s = Math.round(s * 10000) / 10;
     return s
+},sendAdmin = function(f){
+    for(let i of data.AdminMap){
+        i[1].con.sendText(content({status:200,type:'log',data:f}))
+    }
+
 },
 SYNC = function(){
     this._s = [];
@@ -83,8 +88,8 @@ let act = {
             
         }
         sync.add = function(user){
-            console.log(`user ${user.id} linked`)
-            console.log(`user ${user.id} updated position ${user.latitude},${user.longitude}`)
+            sendAdmin(`user ${user.id} linked`)
+            sendAdmin(`user ${user.id} updated position ${user.latitude},${user.longitude}`)
             con.sendText(content({status:200,type:'login'}))
         }
         sync.run()
@@ -107,7 +112,7 @@ let act = {
         }
         sync.add = function(){
             db.replace('update c_user_online set latitude=?,longitude=? where user_id=?',[latitude,longitude,user.id],function(){
-                console.log(`user ${con.user_id} updated position ${latitude},${longitude}`)
+                sendAdmin(`user ${con.user_id} updated position ${latitude},${longitude}`)
                 sync.run()
             })
         }
@@ -123,7 +128,7 @@ let act = {
                     di += d.real_distance;
                     // if(!di)di = 0;
                     db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type=3 AND status=3',[latitude,longitude,di,con.user_id])
-                    // console.log('Move distance: '+ di)
+                    // sendAdmin('Move distance: '+ di)
                 }
             })
         }
@@ -182,7 +187,7 @@ let act = {
         /** 查找3公里内的司机 */
         sync.add = function(id,trip_id){
             db.get('select d.driver_id,round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) AS `distance` from c_driver_online d inner join c_driver r on d.driver_id=r.id where round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) between ? and ? and r.type_driving=1 order by distance',[start_latitude,start_latitude,start_longitude,start_latitude,start_latitude,start_longitude,0,3000],function(ids){
-                console.log(ids)
+                sendAdmin(ids)
                 for(let i in ids){
                     ids[i] = ids[i].driver_id
                 }
@@ -214,6 +219,10 @@ let act = {
         }
         sync.add = function(id){
             db.get('select d.driver_id,round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) AS `distance` from c_driver_online d where round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) between ? and ?',[start_latitude,start_latitude,start_longitude,start_latitude,start_latitude,start_longitude,3000,5000],function(ids){
+
+                con.sendText(content({status:200,type:'gotoOrder',info:obj}))
+
+
                 for(let i in ids){
                     ids[i] = ids[i].driver_id
                 }
@@ -291,7 +300,7 @@ let act = {
         /** 查找3公里内的司机 */
         sync.add = function(id){
             db.get('select d.driver_id,round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) AS `distance` from c_driver_online d where round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) between ? and ?',[start_latitude,start_latitude,start_longitude,start_latitude,start_latitude,start_longitude,0,3000],function(ids){
-                // console.log(ids)
+                // sendAdmin(ids)
                 /** 发送成功信息 */
                 con.sendText(content({status:200,type:'callTaxi',info:obj}))
 
@@ -503,7 +512,7 @@ let z = function(obj,con){
 
                     /** 发送成功信息 */
                     con.sendText(content({status:200,type:'callWay',info:obj}))
-                    console.log(`user ${con.user_id} create an order`)
+                    sendAdmin(`user ${con.user_id} create an order`)
 
                 })
             })
@@ -545,7 +554,7 @@ let z = function(obj,con){
 
                                 // post('user/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
 
-                                console.log('one driver get cancelCallWayDriver request');
+                                sendAdmin('one driver get cancelCallWayDriver request');
                                 driver.con.sendText(content({status:200,type:'cancelCallWayDriver',id:id}))
                             }
                             /** 更新行程表 */
@@ -658,7 +667,7 @@ let z = function(obj,con){
                 let user = data.UserMap.get(id+'')
                 if(user)user.con.sendText(content({status:200,type:'orderWay',driver_id:con.user_id}))
                 con.sendText(content({status:200,type:'orderWay',user_id:con.id}))
-                console.log('one driver get the order')
+                sendAdmin('one driver get the order')
             }
             break;
         

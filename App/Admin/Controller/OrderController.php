@@ -136,9 +136,7 @@ class OrderController extends Controller{
         }elseif($this->L->userInfo->type == 1){
             $m->where['city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
         }
-        if($search){
-            $m->where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
-        }
+        $search && $m->where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
 
         # 获取列表
         $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc');
@@ -181,6 +179,10 @@ class OrderController extends Controller{
                 [
                     'type'  =>  'hidden',
                     'name'  =>  'id',
+                ],
+                [
+                    'type'  =>  'hidden',
+                    'name'  =>  'trip_id',
                 ],
                 [
                     'title'=>'状态',
@@ -297,10 +299,12 @@ class OrderController extends Controller{
                     'fields'=>[
                         'id'=>'id',
                         'name'=>'名字',
+                        'phone'=>'手机号',
                         'brand'=>'品牌',
                         'car_number'=>'车牌号',
                         'dis'=>'距离'
-                    ]
+                    ],
+                    'button'=>'派',
                 ]
 
                 
@@ -311,7 +315,7 @@ class OrderController extends Controller{
         !$model->field && AJAX::error('字段没有公有化！');
 
         $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
-        $tbody[1]['option'] = $statusArr;
+        $tbody[2]['option'] = $statusArr;
 
         $info = AdminFunc::get($model,$id);
         if($info){
@@ -325,6 +329,7 @@ class OrderController extends Controller{
         $info->end_time_date = $trip->out_time ? date('Y-m-d H:i:s',$trip->out_time) : '';
         $info->start_fee = $trip->start_fee;
         $info->real_distance = $trip->real_distance;
+        $info->trip_id = $trip->trip_id;
         $info->way_fee = number_format($info->fee - $info->start_fee,2,'.','');
 
         $contents = json_decode($trip->other_fee);
@@ -345,11 +350,11 @@ class OrderController extends Controller{
         }
         // if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
-        // if($info->statuss != 5 && $info->statuss != 10){
-        //     $tbody[7]['disabled'] = true;
-        //     $tbody[7]['suggest'] = '';
+        // if($info->statuss != 10){
+        //     $tbody[20]['disabled'] = true;
+        //     $tbody[20]['suggest'] = '';
         // }else{
-            $tbody[19]['suggest'] = '/admin/staff/admin_driver?typee=1&latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
+            $tbody[20]['suggest'] = '/admin/staff/admin_driver?typee=1&latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
         // }
         $out = 
             [
