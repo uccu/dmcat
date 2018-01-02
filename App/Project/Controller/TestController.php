@@ -122,4 +122,16 @@ class TestController extends Controller{
         
 
     }
+
+
+    function re_ws(){
+
+        echo '<pre>'; 
+        $last_line = system('/home/app/code/dmcat/restart_ws', $retval); 
+        echo ' 
+        </pre> 
+        <hr />Last line of the output: ' . $last_line . ' 
+        <hr />Return value: ' . $retval; 
+
+    }
 }
