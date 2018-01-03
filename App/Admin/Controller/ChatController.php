@@ -51,12 +51,7 @@ class ChatController extends Controller{
             [
                 'req'   =>[
                     
-                    [
-                        'title'=>'全部用户',
-                        'name'=>'all',
-                        'type'=>'checkbox',
-                        
-                    ],
+
                     [
                         'title'=>'搜索',
                         'name'=>'search',
@@ -68,7 +63,10 @@ class ChatController extends Controller{
         # 头部标题设置
         $thead = 
             [
-
+                [
+                    'type'=>'checkboxs',
+                    'name'=>'choose'
+                ],
                 '',
                 '用户ID',
                 '手机号',
@@ -80,7 +78,10 @@ class ChatController extends Controller{
         # 列表体设置
         $tbody = 
             [
-
+                [
+                    'type'=>'checkboxs',
+                    'name'=>'choose'
+                ],
                 [
                     'name'=>'fullPic',
                     'type'=>'pic',
@@ -139,13 +140,7 @@ class ChatController extends Controller{
         $opt = 
             [
                 'req'   =>[
-                    
-                    [
-                        'title'=>'全部司机',
-                        'name'=>'all',
-                        'type'=>'checkbox',
-                        
-                    ],
+
                     [
                         'title'=>'搜索',
                         'name'=>'search',
@@ -157,7 +152,10 @@ class ChatController extends Controller{
         # 头部标题设置
         $thead = 
             [
-
+                [
+                    'type'=>'checkboxs',
+                    'name'=>'choose'
+                ],
                 '',
                 '用户ID',
                 '手机号',
@@ -169,7 +167,10 @@ class ChatController extends Controller{
         # 列表体设置
         $tbody = 
             [
-
+                [
+                    'type'=>'checkboxs',
+                    'name'=>'choose'
+                ],
                 [
                     'name'=>'fullPic',
                     'type'=>'pic',
@@ -232,9 +233,19 @@ class ChatController extends Controller{
 
 
     # 发送推送
-    function sendPush(MessageModel $model,MessageH5Model $messageH5,UserModel $userModel,$page = 1,$limit = 10,$search,$h5,$message,$toAll){
+    function sendPush(MessageModel $model,MessageH5Model $messageH5,$all,UserModel $userModel,$page = 1,$limit = 10,$search,$h5,$message,$toAll,$user_ids){
         $this->L->adminPermissionCheck(141);
-        $where = $this->setWhere($search);
+        
+
+        if($all && $search){
+            $where = $this->setWhere($search);
+        }
+
+        if(!$all){
+            $userArr = explode(',',$user_ids);
+            (!$userArr || !$user_ids) && AJAX::error('请选择用户');
+            $where['m'] = ['id IN (%c)',$userArr];
+        }
         
         $list = $userModel->where($where)->get_field('id')->toArray();
 
@@ -255,9 +266,18 @@ class ChatController extends Controller{
 
         AJAX::success($out);
     }
-    function sendPush_driver(DriverMessageModel $model,MessageH5Model $messageH5,DriverModel $userModel,$page = 1,$limit = 10,$search,$h5,$message,$toAll){
+    function sendPush_driver(DriverMessageModel $model,MessageH5Model $messageH5,DriverModel $userModel,$all,$user_ids,$page = 1,$limit = 10,$search,$h5,$message,$toAll){
         $this->L->adminPermissionCheck(142);
-        $where = $this->setWhere($search);
+
+        if($all && $search){
+            $where = $this->setWhere($search);
+        }
+
+        if(!$all){
+            $userArr = explode(',',$user_ids);
+            (!$userArr || !$user_ids) && AJAX::error('请选择用户');
+            $where['m'] = ['id IN (%c)',$userArr];
+        }
         
         $list = $userModel->where($where)->get_field('id')->toArray();
 

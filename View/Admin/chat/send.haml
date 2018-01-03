@@ -26,7 +26,12 @@
     
                     .ibox-content.tc.animated.fadeInLeft
                         %form.form-horizontal.animated(method="post" onsubmit="return false;")
-                            
+                            .form-group
+                                %label.col-sm-2.control-label 类型
+                                .col-sm-2
+                                    %select.form-control(name="all" value="0")
+                                        %option(value="0") 仅勾选
+                                        %option(value="1") 全部
                             .form-group
                                 %label.col-sm-2.control-label 消息
                                 .col-sm-6
@@ -110,6 +115,10 @@
                 f.h5 = h5
                 f.toAll = toAll
                 f.message = $('.sendBox textarea').val();
+                var arr = []
+                $('[data-name="choose"]').each(function(){if(this.checked)arr.push($(this).attr('data-id'))})
+                f.user_ids = arr.join(',')
+                f.all = $('[name="all"]').val();
                 if(!f.message){toastr['error']('消息不能为空！');return}
                 curl('/admin/chat/sendPush',f,function(){
                     curl_succ('发送成功！')

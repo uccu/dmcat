@@ -46,10 +46,12 @@ class Gets{
 
     public function setOptReq($n = '',$a = ''){
         $this->opt['req'][] = $a;
+        return count($this->opt['req']) - 1;
     }
 
     public function setBody($a = ''){
         $this->tbody[] = $a;
+        return count($this->tbody) - 1;
     }
 
     public function getInfo(){
@@ -72,6 +74,13 @@ class Gets{
         ];
 
         AJAX::success($out);
+    }
+
+
+    public function fetchArr($name = '',$k = '',$arr = []){
+
+        $this->info->$name = $arr[$this->info->$k];
+
     }
 
 

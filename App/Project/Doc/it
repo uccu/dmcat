@@ -255,7 +255,7 @@ id 我的银行ID
 1.31 提现申请
 user/cashApply
 money 金额
-bank_id 银行ID
+bank_id 银行账号ID
 {"data":{},"code":200,"url":"","message":""}
 {}
 
@@ -670,7 +670,7 @@ id 代驾的订单id
 
 2.21 查看是否有正在进行中的订单
 driver/hasDuringOrder
-{"data":{"has":"1","id":"1","trip_id":"1","type":"1"},"code":200,"url":"","message":""}
+{"data":{"has":"1","id":"1","trip_id":"1","type":"1","statuss":"999999999"},"code":200,"url":"","message":""}
 {}
 
 

@@ -136,7 +136,7 @@ class OrderController extends Controller{
         }elseif($this->L->userInfo->type == 1){
             $m->where['city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
         }
-        $search && $m->where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
+        $search && $m->where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n OR user.phone LIKE %n OR driver.phone LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
 
         # 获取列表
         $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc');
@@ -147,7 +147,7 @@ class OrderController extends Controller{
         $m->each(function(&$v) use ($tripModel){
             $trip = $tripModel->where(['id'=>$v->id,'type'=>1])->find();
             $v->trip_id = $trip->trip_id;
-            if($v->statuss > 49 && $trip->pay_type == 1){
+            if($v->statuss > 49 && ($trip->pay_type == 1 || $trip->pay_type == 2)){
                 $v->driver_income = '查看';
                 $v->driver_income_href = 'order/driver_income?trip_id='.$trip->trip_id;
                 $v->user_income = '查看';
@@ -162,209 +162,107 @@ class OrderController extends Controller{
     }
     function admin_driving_get(OrderDrivingModel $model,$id){
 
-        $this->L->adminPermissionCheck(113);
-        $name = '';
+
+        $m = Gets::getSingleInstance($model,$id);
+
+        # 权限
+        $m->checkPermission(113);
 
         # 允许操作接口
-        $opt = 
-            [
-                'get'   => '../order/admin_driving_get',
-                'back'  => 'order/driving',
-                'view'  => 'home/upd',
-                'upd'   => '../order/admin_driving_upd',
+        $m->setOpt('get','../order/admin_driving_get');
+        $m->setOpt('back','order/driving');
+        $m->setOpt('upd','../order/admin_driving_upd');
+        $m->setOpt('view','home/upd');
 
-            ];
-        $tbody = 
-            [
-                [
-                    'type'  =>  'hidden',
-                    'name'  =>  'id',
-                ],
-                [
-                    'type'  =>  'hidden',
-                    'name'  =>  'trip_id',
-                ],
-                [
-                    'title'=>'状态',
-                    'name'=>'statuss',
-                    'type'=>'select',
-                    'option'=>[
-                            
-                    ],'default'=>'0',
-                    'description'=>'<font style="color:red">（一般情况下，不能修改）</font>'
-                ],
-                [
-                    'title' =>  '联系人电话（代叫限定）',
-                    'name'  =>  'phone',
-                    'size'  =>  '2',
-                ],
-                [
-                    'title' =>  '联系人称呼（代叫限定）',
-                    'name'  =>  'name',
-                    'size'  =>  '2',
-                ],
-                [
-                    'title' =>  '用户名',
-                    'name'  =>  'user_name',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '司机',
-                    'name'  =>  'driver_name',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '开始地址名字',
-                    'name'  =>  'start_name',
-                    'size'  =>  '4',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '结束地址名字',
-                    'name'  =>  'end_name',
-                    'size'  =>  '4',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '里程(公里)',
-                    'name'  =>  'real_distance',
-                    'size'  =>  '4',
-                ],
-                [
-                    'title' =>  '预估价(元)',
-                    'name'  =>  'estimated_price',
-                    'size'  =>  '4',
-                ],
-                [
-                    'title' =>  '服务开始时间',
-                    'name'  =>  'start_time_date',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '服务结束时间',
-                    'name'  =>  'end_time_date',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '城市',
-                    'name'  =>  'city_name',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '预估价（元）',
-                    'name'  =>  'estimated_price',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '起步价(元)',
-                    'name'  =>  'start_fee',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '里程价格(元)',
-                    'name'  =>  'way_fee',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '等待费用(元)',
-                    'name'  =>  'lay_fee',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '其他费用(元)',
-                    'name'  =>  'other_fee_content',
-                    'size'  =>  '4',
-                    'type'  =>  'textarea',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '总价格(元)',
-                    'name'  =>  'total_fee',
-                    'size'  =>  '2',
-                ],
-                [
-                    'title' =>'派单',
-                    'name'  =>'toDriver',
-                    'size'  =>'4',
-                    'suggest'=>'/admin/staff/admin_driver?typee=1&search=',
-                    'fields'=>[
-                        'id'=>'id',
-                        'name'=>'名字',
-                        'phone'=>'手机号',
-                        'brand'=>'品牌',
-                        'car_number'=>'车牌号',
-                        'dis'=>'距离'
-                    ],
-                    'button'=>'派',
-                ]
+        # 设置表体
+        $m->setBody(['type'  =>  'hidden','name'  =>  'id']);
+        $m->setBody(['type'  =>  'hidden','name'  =>  'trip_id']);
+        $staC = $m->setBody(['title'=>'状态','name'=>'statuss','type'=>'select','default'=>'0','description'=>'<font style="color:red">（一般情况下，不能修改）</font>']);
+        
+        $m->setBody(['title' =>  '联系人电话（代叫限定）','name'  =>  'phone','size'  =>  '2',]);
+        $m->setBody(['title' =>  '联系人称呼（代叫限定）','name'  =>  'name','size'  =>  '2',]);
+        $m->setBody(['title' =>  '用户','name'  =>  'user_name','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '用户手机号','name'  =>  'user_phone','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '司机','name'  =>  'driver_name','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '司机手机号','name'  =>  'driver_phone','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '开始地址名字','name'  =>  'start_name','size'  =>  '4','disabled'=>true]);
+        $m->setBody(['title' =>  '结束地址名字','name'  =>  'end_name','size'  =>  '4','disabled'=>true]);
+        $m->setBody(['title' =>  '实时里程(公里)','name'  =>  'real_distance','size'  =>  '4']);
+        $m->setBody(['title' =>  '预估价(元)','name'  =>  'estimated_price','size'  =>  '4']);
+        $m->setBody(['title' =>  '服务开始时间','name'  =>  'start_time_date','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '服务结束时间','name'  =>  'end_time_date','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '城市','name'  =>  'city_name','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '起步价(元)','name'  =>  'start_fee','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '里程价格(元)','name'  =>  'way_fee','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '等待费用(元)','name'  =>  'lay_fee','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '其他费用(元)','name'  =>  'other_fee_content','size'  =>  '4','type'  =>  'textarea','disabled'=>true]);
+        $m->setBody(['title' =>  '总价格(元)','name'  =>  'total_fee','size'  =>  '2']);
+        $staD = $m->setBody(['title' =>'派单','name'  =>'toDriver','size'  =>'4','suggest'=>'/admin/staff/admin_driver?typee=1&search=','fields'=>['id'=>'id','name'=>'名字','phone'=>'手机号','brand'=>'品牌','car_number'=>'车牌号','dis'=>'距离'],'button'=>'派']);
 
-                
-                
+        # 设置名字
+        $m->setName();
 
-            ];
+        
+        $m->getInfo();
 
-        !$model->field && AJAX::error('字段没有公有化！');
 
         $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
-        $tbody[2]['option'] = $statusArr;
+        $m->tbody[$staC]['option'] = $statusArr;
 
-        $info = AdminFunc::get($model,$id);
-        if($info){
-            $trip = TripModel::copyMutiInstance()->where(['id'=>$info->id,'type'=>1])->find();
+        if($m->info){
+            $trip = TripModel::copyMutiInstance()->select('*','cancelType.name>cancel_type_name')->where(['id'=>$id,'type'=>1])->find();
         }
 
-        if($info->user_id)$info->user_name = UserModel::copyMutiInstance()->find($info->user_id)->name;
-        if($info->driver_id)$info->driver_name = DriverModel::copyMutiInstance()->find($info->driver_id)->name;
+        # 司机和用户名字如果有的话
+        if($m->info->user_id){
+            $m->info->user_name = UserModel::copyMutiInstance()->find($m->info->user_id)->name;
+            $m->info->user_phone = UserModel::copyMutiInstance()->find($m->info->user_id)->phone;
+        }
+        if($m->info->driver_id){
+            $m->info->driver_name = DriverModel::copyMutiInstance()->find($m->info->driver_id)->name;
+            $m->info->driver_phone = DriverModel::copyMutiInstance()->find($m->info->driver_id)->phone;
+        }
+        # 服务开始时间、服务结束时间、起步费、真实行程距离、行程id、行程费用
+        $m->info->start_time_date = $trip->in_time ? date('Y-m-d H:i:s',$trip->in_time) : '';
+        $m->info->end_time_date = $trip->out_time ? date('Y-m-d H:i:s',$trip->out_time) : '';
+        $m->info->start_fee = $trip->start_fee;
+        $m->info->real_distance = $trip->real_distance;
+        $m->info->trip_id = $trip->trip_id;
+        $m->info->way_fee = $m->info->fee != 0?number_format($m->info->fee - $m->info->start_fee,2,'.',''):'0.00';
 
-        $info->start_time_date = $trip->in_time ? date('Y-m-d H:i:s',$trip->in_time) : '';
-        $info->end_time_date = $trip->out_time ? date('Y-m-d H:i:s',$trip->out_time) : '';
-        $info->start_fee = $trip->start_fee;
-        $info->real_distance = $trip->real_distance;
-        $info->trip_id = $trip->trip_id;
-        $info->way_fee = number_format($info->fee - $info->start_fee,2,'.','');
 
+        # 显示其他费用
         $contents = json_decode($trip->other_fee);
-
         if($contents){
             foreach($contents as $content)
-            $info->other_fee_content .= $content->type .'：￥'. $content->price."\n";
+            $m->info->other_fee_content .= $content->type .'：￥'. $content->price."\n";
         }
 
-        $city = AreaModel::copyMutiInstance()->find($info->city_id);
+        $city = AreaModel::copyMutiInstance()->find($m->info->city_id);
         if($city){
             $province = AreaModel::copyMutiInstance()->find($city->parent_id);
         }
         if(!$city || !$province){
-            $info->city_name = '';
+            $m->info->city_name = '';
         }else{
-            $info->city_name = $province->areaName. ' ' .$city->areaName;
+            $m->info->city_name = $province->areaName. ' ' .$city->areaName;
         }
-        // if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
-        // if($info->statuss != 10){
-        //     $tbody[20]['disabled'] = true;
-        //     $tbody[20]['suggest'] = '';
-        // }else{
-            $tbody[20]['suggest'] = '/admin/staff/admin_driver?typee=1&latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
-        // }
-        $out = 
-            [
-                'info'  =>  $info,
-                'tbody' =>  $tbody,
-                'name'  =>  $name,
-                'opt'   =>  $opt,
-            ];
+        if($m->info->statuss != 10){
+            $m->tbody[$staD]['disabled'] = true;
+            $m->tbody[$staD]['suggest'] = '';
+        }else{
+            $m->tbody[$staD]['suggest'] = '/admin/staff/admin_driver?typee=1&latitude='.$m->info->start_latitude.'&longitude='.$m->info->start_longitude.'&search=';
+        }
 
-        AJAX::success($out);
+        $m->info->cancelReason = $trip->cancel_type_name.' '.$trip->cancel_reason;
+
+        if($m->info->statuss == 0){
+            $m->setBody(['title' =>  '取消原因','name'  =>  'cancelReason','type'  =>  'textarea','disabled'=>true]);
+        }
+
+        # 输出
+        $m->output();
 
     }
     function admin_driving_upd(OrderDrivingModel $model,$id,$toDriver,DriverModel $driverModel,$statuss,TripModel $tripModel){
@@ -598,7 +496,7 @@ class OrderController extends Controller{
         }
         
         if($search){
-            $where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
+            $where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n OR user.phone LIKE %n OR driver.phone LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
         }
 
         $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
@@ -632,202 +530,109 @@ class OrderController extends Controller{
     }
     function admin_taxi_get(OrderTaxiModel $model,$id){
 
-        $this->L->adminPermissionCheck(114);
-        $name = '';
+
+
+        $type = 2;
+        
+
+        $m = Gets::getSingleInstance($model,$id);
+
+        # 权限
+        $m->checkPermission(114);
 
         # 允许操作接口
-        $opt = 
-            [
-                'get'   => '../order/admin_taxi_get',
-                'back'  => 'order/taxi',
-                'view'  => 'home/upd',
-                'upd'   => '../order/admin_taxi_upd',
+        $m->setOpt('get','../order/admin_taxi_get');
+        $m->setOpt('back','order/taxi');
+        $m->setOpt('upd','../order/admin_taxi_upd');
+        $m->setOpt('view','home/upd');
 
-            ];
-        $tbody = 
-            [
-                [
-                    'type'  =>  'hidden',
-                    'name'  =>  'id',
-                ],
-                [
-                    'title'=>'状态',
-                    'name'=>'statuss',
-                    'type'=>'select',
-                    'option'=>[
-                            
-                    ],'default'=>'0',
-                    'description'=>'<font style="color:red">（一般情况下，不能修改）</font>'
-                ],
-                [
-                    'title' =>  '联系人电话（代叫限定）',
-                    'name'  =>  'phone',
-                    'size'  =>  '2',
-                ],
-                [
-                    'title' =>  '联系人称呼（代叫限定）',
-                    'name'  =>  'name',
-                    'size'  =>  '2',
-                ],
-                [
-                    'title' =>  '用户名',
-                    'name'  =>  'user_name',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '司机',
-                    'name'  =>  'driver_name',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '开始地址名字',
-                    'name'  =>  'start_name',
-                    'size'  =>  '4',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '结束地址名字',
-                    'name'  =>  'end_name',
-                    'size'  =>  '4',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '里程(公里)',
-                    'name'  =>  'real_distance',
-                    'size'  =>  '4',
-                ],
-                [
-                    'title' =>  '预估价(元)',
-                    'name'  =>  'estimated_price',
-                    'size'  =>  '4',
-                ],
-                [
-                    'title' =>  '服务开始时间',
-                    'name'  =>  'start_time_date',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '服务结束时间',
-                    'name'  =>  'end_time_date',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '城市',
-                    'name'  =>  'city_name',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '预估价（元）',
-                    'name'  =>  'estimated_price',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '起步价(元)',
-                    'name'  =>  'start_fee',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '里程价格(元)',
-                    'name'  =>  'way_fee',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '等待费用(元)',
-                    'name'  =>  'lay_fee',
-                    'size'  =>  '2',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '其他费用(元)',
-                    'name'  =>  'other_fee_content',
-                    'size'  =>  '4',
-                    'type'  =>  'textarea',
-                    'disabled'=>true
-                ],
-                [
-                    'title' =>  '总价格(元)',
-                    'name'  =>  'total_fee',
-                    'size'  =>  '2',
-                ],
-                [
-                    'title' =>'派单',
-                    'name'  =>'toDriver',
-                    'size'  =>'4',
-                    'suggest'=>'/admin/staff/admin_driver?typee=2&search=',
-                    'fields'=>[
-                        'id'=>'id',
-                        'name'=>'名字',
-                        'brand'=>'品牌',
-                        'car_number'=>'车牌号',
-                        'dis'=>'距离'
-                    ]
-                ]
+        # 设置表体
+        $m->setBody(['type'  =>  'hidden','name'  =>  'id']);
+        $m->setBody(['type'  =>  'hidden','name'  =>  'trip_id']);
+        $staC = $m->setBody(['title'=>'状态','name'=>'statuss','type'=>'select','default'=>'0','description'=>'<font style="color:red">（一般情况下，不能修改）</font>']);
+        
+        $m->setBody(['title' =>  '联系人电话（代叫限定）','name'  =>  'phone','size'  =>  '2',]);
+        $m->setBody(['title' =>  '联系人称呼（代叫限定）','name'  =>  'name','size'  =>  '2',]);
+        $m->setBody(['title' =>  '用户','name'  =>  'user_name','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '用户手机号','name'  =>  'user_phone','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '司机','name'  =>  'driver_name','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '司机手机号','name'  =>  'driver_phone','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '开始地址名字','name'  =>  'start_name','size'  =>  '4','disabled'=>true]);
+        $m->setBody(['title' =>  '结束地址名字','name'  =>  'end_name','size'  =>  '4','disabled'=>true]);
+        $m->setBody(['title' =>  '实时里程(公里)','name'  =>  'real_distance','size'  =>  '4']);
+        $m->setBody(['title' =>  '预估价(元)','name'  =>  'estimated_price','size'  =>  '4']);
+        $m->setBody(['title' =>  '服务开始时间','name'  =>  'start_time_date','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '服务结束时间','name'  =>  'end_time_date','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '城市','name'  =>  'city_name','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '起步价(元)','name'  =>  'start_fee','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '里程价格(元)','name'  =>  'way_fee','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '等待费用(元)','name'  =>  'lay_fee','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '其他费用(元)','name'  =>  'other_fee_content','size'  =>  '4','type'  =>  'textarea','disabled'=>true]);
+        $m->setBody(['title' =>  '总价格(元)','name'  =>  'total_fee','size'  =>  '2']);
+        $m->setBody(['title' =>  '打表','name'  =>  'meter_1','size'  =>  '2','disabled'=>true]);
+        
 
-                
-                
+        # 设置名字
+        $m->setName();
 
-            ];
+        
+        $m->getInfo();
 
-        !$model->field && AJAX::error('字段没有公有化！');
 
         $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
-        $tbody[1]['option'] = $statusArr;
+        $m->tbody[$staC]['option'] = $statusArr;
 
-        $info = AdminFunc::get($model,$id);
-        if($info){
-            $trip = TripModel::copyMutiInstance()->where(['id'=>$info->id,'type'=>2])->find();
+        if($m->info){
+            $trip = TripModel::copyMutiInstance()->select('*','cancelType.name>cancel_type_name')->where(['id'=>$id,'type'=>$type])->find();
         }
 
-        if($info->user_id)$info->user_name = UserModel::copyMutiInstance()->find($info->user_id)->name;
-        if($info->driver_id)$info->driver_name = DriverModel::copyMutiInstance()->find($info->driver_id)->name;
+        # 司机和用户名字如果有的话
+        if($m->info->user_id){
+            $m->info->user_name = UserModel::copyMutiInstance()->find($m->info->user_id)->name;
+            $m->info->user_phone = UserModel::copyMutiInstance()->find($m->info->user_id)->phone;
+        }
+        if($m->info->driver_id){
+            $m->info->driver_name = DriverModel::copyMutiInstance()->find($m->info->driver_id)->name;
+            $m->info->driver_phone = DriverModel::copyMutiInstance()->find($m->info->driver_id)->phone;
+        }
+        # 服务开始时间、服务结束时间、起步费、真实行程距离、行程id、行程费用
+        $m->info->start_time_date = $trip->in_time ? date('Y-m-d H:i:s',$trip->in_time) : '';
+        $m->info->end_time_date = $trip->out_time ? date('Y-m-d H:i:s',$trip->out_time) : '';
+        $m->info->start_fee = $trip->start_fee;
+        $m->info->real_distance = $trip->real_distance;
+        $m->info->trip_id = $trip->trip_id;
+        $m->info->way_fee = $m->info->fee != 0?number_format($m->info->fee - $m->info->start_fee,2,'.',''):'0.00';
 
-        $info->start_time_date = $trip->in_time ? date('Y-m-d H:i:s',$trip->in_time) : '';
-        $info->end_time_date = $trip->out_time ? date('Y-m-d H:i:s',$trip->out_time) : '';
-        $info->start_fee = $trip->start_fee;
-        $info->real_distance = $trip->real_distance;
-        $info->way_fee = number_format($info->fee - $info->start_fee,2,'.','');
 
+        # 显示其他费用
         $contents = json_decode($trip->other_fee);
-
         if($contents){
             foreach($contents as $content)
-            $info->other_fee_content .= $content->type .'：￥'. $content->price."\n";
+            $m->info->other_fee_content .= $content->type .'：￥'. $content->price."\n";
         }
 
-        $city = AreaModel::copyMutiInstance()->find($info->city_id);
+        $city = AreaModel::copyMutiInstance()->find($m->info->city_id);
         if($city){
             $province = AreaModel::copyMutiInstance()->find($city->parent_id);
         }
         if(!$city || !$province){
-            $info->city_name = '';
+            $m->info->city_name = '';
         }else{
-            $info->city_name = $province->areaName. ' ' .$city->areaName;
+            $m->info->city_name = $province->areaName. ' ' .$city->areaName;
         }
-        // if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
 
-        // if($info->statuss != 5 && $info->statuss != 10){
-        //     $tbody[7]['disabled'] = true;
-        //     $tbody[7]['suggest'] = '';
-        // }else{
-            $tbody[19]['suggest'] = '/admin/staff/admin_driver?typee=2&latitude='.$info->start_latitude.'&longitude='.$info->start_longitude.'&search=';
-        // }
-        $out = 
-            [
-                'info'  =>  $info,
-                'tbody' =>  $tbody,
-                'name'  =>  $name,
-                'opt'   =>  $opt,
-            ];
+        $m->info->meter_1 = $m->info->meter?'是':'否';
 
-        AJAX::success($out);
+        $m->info->cancelReason = $trip->cancel_type_name.' '.$trip->cancel_reason;
+
+        if($m->info->statuss == 0){
+            $m->setBody(['title' =>  '取消原因','name'  =>  'cancelReason','type'  =>  'textarea','disabled'=>true]);
+        }
+
+        # 输出
+        $m->output();
+
+
 
     }
     function admin_taxi_upd(OrderTaxiModel $model,$id,$toDriver,DriverModel $driverModel,$statuss,TripModel $tripModel){

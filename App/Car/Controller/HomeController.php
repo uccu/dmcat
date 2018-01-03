@@ -15,6 +15,7 @@ use App\Car\Model\H5Model;
 use App\Car\Model\TripModel;
 use App\Car\Model\DriverOnlineModel;
 use App\Car\Middleware\L;
+use App\Car\Middleware\L2;
 use Model;
 
 class HomeController extends Controller{
@@ -23,6 +24,7 @@ class HomeController extends Controller{
     function __construct(){
 
         $this->L = L::getSingleInstance();
+        $this->L2 = L2::getSingleInstance();
 
     }
 
@@ -381,7 +383,7 @@ class HomeController extends Controller{
         if($type == 1)$model->where(['driver.type_driving'=>1]);
         elseif($type == 2)$model->where(['driver.type_taxi'=>1]);
 
-        $model->where('latitude BETWEEN %a AND longitude BETWEEN %a AND driver_id != %n',$latitudeRange,$longitudeRange,$this->L->id);
+        $model->where('latitude BETWEEN %a AND longitude BETWEEN %a AND driver_id != %n',$latitudeRange,$longitudeRange,$this->L2->id);
         
         $list = $model->get()->toArray();
         

@@ -304,6 +304,7 @@ class MoneyController extends Controller{
 
         # 列表内容
         $where = [];
+        $where['content'] = '提现';
         
         if($type != -2){
             $where['status'] = $type;
@@ -414,11 +415,14 @@ class MoneyController extends Controller{
             AJAX::error('已通过');
         }
 
-        if($status == 1){
+        if($app->status == -1){
+            AJAX::error('已审核未通过');
+        }
+
+        if($status == -1){
             
             $user = UserModel::copyMutiInstance()->find($app->user_id);
-            if($user->money < $app->money)AJAX::error('用户余额不足');
-            $user->money -= $app->money;
+            $user->money += abs( $app->money ) ;
             $user->save();
         }
 
@@ -622,12 +626,14 @@ class MoneyController extends Controller{
         if($app->status == 1){
             AJAX::error('已通过');
         }
+        if($app->status == -1){
+            AJAX::error('已审核未通过');
+        }
 
-        if($status == 1){
+        if($status == -1){
             
             $user = DriverModel::copyMutiInstance()->find($app->driver_id);
-            if($user->money < $app->money)AJAX::error('司机余额不足');
-            $user->money -= $app->money;
+            $user->money += abs($app->money);
             $user->save();
         }
 

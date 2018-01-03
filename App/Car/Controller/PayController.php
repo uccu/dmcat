@@ -61,8 +61,8 @@ class PayController extends Controller{
         !$order && AJAX::error('订单不存在');
 
         /*总价格&订单号*/
-        // $total_fee = $order->total_fee;
-        $total_fee = '0.01';
+        $total_fee = $order->total_fee;
+        // $total_fee = '0.01';
         $out_trade_no = $type.date('YmdHis',$order->create_time).Func::add_zero($order->id,6);
 
         /*生成随机码*/
@@ -124,8 +124,8 @@ class PayController extends Controller{
         !$money && AJAX::error('金额不能为0');
 
         /*总价格&订单号*/
-        // $total_fee = $money;
-        $total_fee = '0.01';
+        $total_fee = $money;
+        // $total_fee = '0.01';
         $out_trade_no = '0'.date('YmdHis',$order->create_time).Func::randWord(6,3);
 
         /*生成随机码*/
@@ -209,8 +209,8 @@ class PayController extends Controller{
         !$order && AJAX::error('订单不存在');
 
         /*总价格&订单号*/
-        // $total_fee = $order->total_fee;
-        $total_fee = '0.01';
+        $total_fee = $order->total_fee;
+        // $total_fee = '0.01';
         $out_trade_no = $type.date('YmdHis',$order->create_time).Func::add_zero($order->id,6);
 
         /*生成随机码*/
@@ -336,8 +336,8 @@ class PayController extends Controller{
         !$money && AJAX::error('金额不能为0');
 
         /*总价格&订单号*/
-        // $total_fee = $money;
-        $total_fee = '0.01';
+        $total_fee = $money;
+        // $total_fee = '0.01';
         $out_trade_no = '0'.date('YmdHis',$order->create_time).Func::randWord(6,3);
 
         /*生成随机码*/

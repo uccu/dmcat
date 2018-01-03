@@ -896,6 +896,15 @@ class Func {
                 $data['level'] = 2;
                 $data['money'] = $money2 * .01;
                 $userIncomeModel->set($data)->add();
+
+                $data2 = [];
+                $data2['user_id'] = $user->parent_id;
+                $data2['money'] = $money2 * .01;
+                $data2['content'] = '分红';
+                $data2['create_time'] = TIME_NOW;
+                $data2['status'] = 1;
+                $userMoneyLog->set($data2)->add();
+
                 $userModel->set('money = money + %n',$money2 * .01)->save($user->id);
                 # 3级
                 if($user->parent_id && $user = $userModel->find($user->parent_id)){

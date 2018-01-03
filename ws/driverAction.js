@@ -831,6 +831,24 @@ let act = {
         }
 
         let sync = new SYNC
+
+        sync.add = function(){
+            db.find('select * from c_driver where id=?',[con.driver_id],function(driver){
+
+                if(!driver){
+                    con.sendText(content({status:400,type:'orderDriving',trip_id:trip_id,message:'司机不存在'}))
+                    return;
+                }
+                
+                if(driver.money < 50){
+                    con.sendText(content({status:400,type:'orderDriving',trip_id:trip_id,message:'余额不足'}))
+                    return;
+                }
+                sync.run()
+            })
+        }
+
+
         sync.add = function(){
             db.find('select * from c_trip where trip_id=? and type<3',[trip_id,con.driver_id],function(trip){
 

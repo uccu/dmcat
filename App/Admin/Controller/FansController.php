@@ -17,6 +17,8 @@ use App\Car\Model\UserModel;
 use App\Car\Model\UserIncomeModel;
 use App\Car\Model\DriverModel;
 use App\Car\Model\DriverIncomeModel;
+use App\Car\Model\DriverMoneyLogModel;
+use App\Car\Model\UserMoneyLogModel;
 
 use App\Admin\Set\Gets;
 use App\Admin\Set\Lists;
@@ -63,6 +65,7 @@ class FansController extends Controller{
         $m->setHead('本周收入');
         $m->setHead('本月收入');
         $m->setHead('总收入');
+        $m->setHead('余额');
         $m->setHead('推荐人');
 
         # 设置表体
@@ -74,6 +77,7 @@ class FansController extends Controller{
         $m->setBody('week_income');
         $m->setBody('month_income');
         $m->setBody('all_income');
+        $m->setBody(['name'=>'money','href'=>true]);
         $m->setBody(['name'=>'parent','href'=>true]);
 
         # 设置名字
@@ -92,7 +96,7 @@ class FansController extends Controller{
         }
 
         # 获取列表
-        $model->select('id','avatar','name','phone','parent_id');
+        $model->select('id','avatar','name','phone','parent_id','money');
         $m->getList(0);
 
         $m->fullPicAddr('avatar');
@@ -118,6 +122,8 @@ class FansController extends Controller{
                 $v->parent = $parent->name;
                 $v->parent_href = 'fans/fans?search='.$parent->phone;
             }
+
+            $v->money_href = 'fans/money?user_id='.$v->id;
 
         });
 
@@ -158,6 +164,7 @@ class FansController extends Controller{
         $m->setHead('本周收入');
         $m->setHead('本月收入');
         $m->setHead('总收入');
+        $m->setHead('余额');
         $m->setHead('推荐人');
 
         # 设置表体
@@ -169,6 +176,7 @@ class FansController extends Controller{
         $m->setBody('week_income');
         $m->setBody('month_income');
         $m->setBody('all_income');
+        $m->setBody(['name'=>'money','href'=>true]);
         $m->setBody(['name'=>'parent','href'=>true]);
 
         # 设置名字
@@ -187,7 +195,7 @@ class FansController extends Controller{
         }
 
         # 获取列表
-        $model->select('id','avatar','name','phone','parent_id');
+        $model->select('id','avatar','name','phone','parent_id','money');
         $m->getList(0);
 
         $m->fullPicAddr('avatar');
@@ -214,13 +222,153 @@ class FansController extends Controller{
                 $v->parent_href = 'fans/dfans?search='.$parent->phone;
             }
 
+            $v->money_href = 'fans/dmoney?driver_id='.$v->id;
+
         });
 
 
         $m->output();
 
     }
+
+
+
+
+    function dmoney($driver_id = 0){
+
+        View::addData(['getList'=>'admin_'.__FUNCTION__.'?a=1&driver_id='.$driver_id]);
+        View::hamlReader('home/list','Admin');
+    }
+
+    function admin_dmoney(DriverMoneyLogModel $model,$page=1,$limit=10,$driver_id = 0){
+
+        $m = Lists::getSingleInstance($model,$page,$limit);
+
+        # 权限
+        $m->checkPermission(161);
+
+        $m->setOpt('del','../'.$this->controllerName.'/'.__FUNCTION__.'_del');
+
+        # 设置表头
+        $m->setHead('id');
+        $m->setHead('内容');
+        $m->setHead('金额');
+        $m->setHead('时间');
+        $m->setHead('备注');
+
+
+        # 设置表体
+        $m->setBody('id');
+        $m->setBody('content');
+        $m->setBody('money');
+        $m->setBody('date');
+        $m->setBody('remark');
+
+
+        # 设置名字
+        $m->setName();
+
+        
+
+        # 筛选
+        $m->where = [];
+        $m->where['driver_id'] = $driver_id;
+
+
+        # 获取列表
+        $model->order('id desc');
+        $m->getList();
+
+
+
+        $m->each(function(&$v) use ($model,$week,$userIncomeModel){
+            
+            $v->money  = $v->money > 0 ? '+' . $v->money : $v->money;
+
+            $v->remark = $v->status == 0 ? '审核中':($v->status == -1 ? '审核失败' : '');
+
+            $v->date = date('Y-m-d H:i:s',$v->create_time);
+
+        });
+
+
+        $m->output();
+
+    }
+
+    function admin_dmoney_del(DriverMoneyLogModel $model,$id){
+        $this->L->adminPermissionCheck(161);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
     
+
+    function money($user_id = 0){
+
+        View::addData(['getList'=>'admin_'.__FUNCTION__.'?a=1&user_id='.$user_id]);
+        View::hamlReader('home/list','Admin');
+    }
+    function admin_money(UserMoneyLogModel $model,$page=1,$limit=10,$user_id = 0){
+
+        $m = Lists::getSingleInstance($model,$page,$limit);
+
+        # 权限
+        $m->checkPermission(160);
+        $m->setOpt('del','../'.$this->controllerName.'/'.__FUNCTION__.'_del');
+
+        # 设置表头
+        $m->setHead('id');
+        $m->setHead('内容');
+        $m->setHead('金额');
+        $m->setHead('时间');
+        $m->setHead('备注');
+
+
+        # 设置表体
+        $m->setBody('id');
+        $m->setBody('content');
+        $m->setBody('money');
+        $m->setBody('date');
+        $m->setBody('remark');
+
+
+        # 设置名字
+        $m->setName();
+
+        
+
+        # 筛选
+        $m->where = [];
+        $m->where['user_id'] = $user_id;
+
+
+        # 获取列表
+        $model->order('id desc');
+        $m->getList();
+
+
+
+        $m->each(function(&$v) use ($model,$week,$userIncomeModel){
+            
+            $v->money  = $v->money > 0 ? '+' . $v->money : $v->money;
+
+            $v->remark = $v->status == 0 ? '审核中':($v->status == -1 ? '审核失败' : '');
+
+            $v->date = date('Y-m-d H:i:s',$v->create_time);
+
+        });
+
+
+        $m->output();
+
+    }
+    function admin_money_del(UserMoneyLogModel $model,$id){
+        $this->L->adminPermissionCheck(161);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
     
     
     

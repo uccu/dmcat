@@ -1144,13 +1144,21 @@ class UserController extends Controller{
 
         $model->where(['user_id'=>$this->L->id,'status'=>0])->find() && AJAX::error('已有一条提现申请正在处理中！');
 
-        $data['money'] = $money;
+        $this->L->userInfo->money < $money && AJAX::error('余额不足，无法提现');
+
+        DB::start();
+        $this->L->userInfo->money -= $money;
+        $this->L->userInfo->save();
+
+        $data['money'] = - $money;
         $data['bank_id'] = $bank_id;
         $data['create_time'] = TIME_NOW;
         $data['content'] = '提现';
         $data['user_id'] = $this->L->id;
 
         $model->set($data)->add();
+
+        DB::commit();
 
         AJAX::success();
 

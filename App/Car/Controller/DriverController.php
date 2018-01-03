@@ -561,14 +561,14 @@ class DriverController extends Controller{
 
         $week = TIME_TODAY - (date('w') - 1) * 24 * 3600;
 
-        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',$week)->find()->m;
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where(['driver_id'=>$this->L->id,'level'=>0])->where('create_time>%n',$week)->find()->m;
         if(!$money)$money = '0.00';
         $out['month'] = $money;
-        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where(['driver_id'=>$this->L->id])->find()->m;
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where(['driver_id'=>$this->L->id,'level'=>0])->find()->m;
         if(!$money)$money = '0.00';
         $out['all'] = $money;
 
-        $list = $incomeModel->select('*','trip.start_name','trip.end_name')->page($page,$limit)->where(['driver_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
+        $list = $incomeModel->select('*','trip.start_name','trip.end_name')->page($page,$limit)->where(['driver_id'=>$this->L->id,'level'=>0])->order('create_time desc')->get()->toArray();
 
         foreach($list as &$v){
             $v->create_date = date('m-d H:i',$v->create_time);
@@ -647,12 +647,21 @@ class DriverController extends Controller{
 
         $model->where(['driver_id'=>$this->L->id,'status'=>0])->find() && AJAX::error('已有一条提现申请正在处理中！');
 
-        $data['money'] = $money;
+        $this->L->userInfo->money < $money && AJAX::error('余额不足，无法提现');
+
+        DB::start();
+        $this->L->userInfo->money -= $money;
+        $this->L->userInfo->save();
+
+        $data['money'] = - $money;
         $data['bank_id'] = $bank_id;
         $data['create_time'] = TIME_NOW;
         $data['content'] = '提现';
+        $data['driver_id'] = $this->L->id;
 
         $model->set($data)->add();
+
+        DB::commit();
 
         AJAX::success();
 

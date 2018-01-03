@@ -17,6 +17,8 @@ use App\Car\Model\DriverModel;
 use App\Car\Model\AdminModel;
 use App\Car\Model\AreaModel;
 use App\Car\Model\JudgeModel;
+use App\Car\Model\UserMoneyLogModel;
+use App\Car\Model\DriverMoneyLogModel;
 
 
 class StaffController extends Controller{
@@ -103,7 +105,9 @@ class StaffController extends Controller{
                 '用户ID',
                 '手机号',
                 '名字',
+                '余额',
                 '启用',
+                
 
 
             ];
@@ -122,10 +126,12 @@ class StaffController extends Controller{
                 'id',
                 'phone',
                 'name',
+                'money',
                 [
                     'name'=>'active',
                     'type'=>'checkbox',
                 ],
+                
 
 
             ];
@@ -204,12 +210,26 @@ class StaffController extends Controller{
                     'name'  =>  'avatar',
                     'type'  =>  'avatar',
                 ],
+
+                [
+                    'title' =>  '余额',
+                    'name'  =>  'money',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+
+                [
+                    'title' =>  '充值金额',
+                    'name'  =>  'moneyk',
+                    'size'  =>  '2',
+                ],
                 
                 [
                     'title' =>  '修改密码',
                     'name'  =>  'pwd',
                     'size'  =>  '4',
                 ],
+                
                 
                 
 
@@ -233,7 +253,7 @@ class StaffController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_user_upd(UserModel $model,$id,$pwd){
+    function admin_user_upd(UserModel $model,$id,$pwd,$moneyk){
         $this->L->adminPermissionCheck(68);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
@@ -253,6 +273,26 @@ class StaffController extends Controller{
         }
 
         $upd = AdminFunc::upd($model,$id,$data);
+
+        if($moneyk && $id){
+
+            $user = $model->find($id);
+
+            $user->money += $moneyk;
+            $user->save();
+
+            $userMoneyLog = UserMoneyLogModel::copyMutiInstance();
+            $data2 = [];
+            $data2['user_id'] = $user->id;
+            $data2['money'] = $moneyk;
+            $data2['content'] = '系统充值';
+            $data2['create_time'] = TIME_NOW;
+            $data2['status'] = 1;
+            $userMoneyLog->set($data2)->add();
+
+        }
+
+        
         $out['upd'] = $upd;
         AJAX::success($out);
     }
@@ -320,6 +360,7 @@ class StaffController extends Controller{
                 '手机号',
                 '名字',
                 '司机类型',
+                '余额',
                 '启用',
                 '评价',
 
@@ -340,6 +381,7 @@ class StaffController extends Controller{
                 'phone',
                 'name',
                 'type',
+                'money',
                 [
                     'name'=>'active',
                     'type'=>'checkbox',
@@ -497,6 +539,17 @@ class StaffController extends Controller{
                     'size'  =>  '4',
                 ],
                 [
+                    'title' =>  '余额',
+                    'name'  =>  'money',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '充值金额',
+                    'name'  =>  'moneyk',
+                    'size'  =>  '2',
+                ],
+                [
                     'title' =>  '修改密码',
                     'name'  =>  'pwd',
                     'size'  =>  '4',
@@ -535,7 +588,7 @@ class StaffController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_driver_upd(DriverModel $model,$id,$pwd,$typee,$active){
+    function admin_driver_upd(DriverModel $model,$id,$pwd,$typee,$active,$moneyk){
         $this->L->adminPermissionCheck(75);
         !$model->field && AJAX::error('字段没有公有化！');
         
@@ -571,6 +624,26 @@ class StaffController extends Controller{
         }
 
         $upd = AdminFunc::upd($model,$id,$data);
+
+        if($moneyk && $id){
+
+            $driver = $model->find($id);
+
+            $driver->money += $moneyk;
+            $driver->save();
+
+            $driverMoneyLog = DriverMoneyLogModel::copyMutiInstance();
+            $data2 = [];
+            $data2['driver_id'] = $driver->id;
+            $data2['money'] = $moneyk;
+            $data2['content'] = '系统充值';
+            $data2['create_time'] = TIME_NOW;
+            $data2['status'] = 1;
+            $driverMoneyLog->set($data2)->add();
+
+        }
+
+
         $out['upd'] = $upd;
         AJAX::success($out);
     }
