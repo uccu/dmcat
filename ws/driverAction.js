@@ -840,7 +840,7 @@ let act = {
                     return;
                 }
                 
-                if(driver.money < 50){
+                if(driver.money < 50 && driver.type_driving){
                     con.sendText(content({status:400,type:'orderDriving',trip_id:trip_id,message:'余额不足'}))
                     return;
                 }

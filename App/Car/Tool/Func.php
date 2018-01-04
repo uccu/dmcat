@@ -10,15 +10,18 @@ use App\Car\Model\DriverMessageModel;
 use App\Car\Model\CaptchaModel;
 use App\Car\Model\UploadModel;
 use App\Car\Model\UserModel;
+use App\Car\Model\AdminModel;
 use App\Car\Model\DriverModel;
 use App\Car\Model\PaymentModel;
 use App\Car\Model\AreaModel;
 use App\Car\Model\IncomeModel;
 use App\Car\Model\UserIncomeModel;
 use App\Car\Model\DriverIncomeModel;
+use App\Car\Model\AdminIncomeModel;
 use App\Car\Model\DriverOnlineModel;
 use App\Car\Model\UserOnlineModel;
 use App\Car\Model\DriverMoneyLogModel;
+use App\Car\Model\AdminMoneyLogModel;
 use App\Car\Model\UserMoneyLogModel;
 use Model;
 use stdClass;
@@ -816,10 +819,13 @@ class Func {
         
         $userIncomeModel = UserIncomeModel::copyMutiInstance();
         $driverIncomeModel = DriverIncomeModel::copyMutiInstance();
+        $adminIncomeModel = AdminIncomeModel::copyMutiInstance();
         $driverModel = DriverModel::copyMutiInstance();
         $userModel = UserModel::copyMutiInstance();
+        $adminModel = AdminModel::copyMutiInstance();
         $driverMoneyLog = DriverMoneyLogModel::copyMutiInstance();
         $userMoneyLog = UserMoneyLogModel::copyMutiInstance();
+        $adminMoneyLog = AdminMoneyLogModel::copyMutiInstance();
 
 
         $money = $order->total_fee;
@@ -830,8 +836,8 @@ class Func {
         $data['month'] = date('Ym');
         $data['create_time'] = TIME_NOW;
 
-        if($type == 1){
 
+        if($type == 1){
             $money2 = ($order->fee + $order->lay_fee)* .2;
             $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* .2;
         }elseif($type == 2){
@@ -843,6 +849,9 @@ class Func {
             $money2 = ($order->fee + $order->lay_fee)* 0;
             $data['money'] = $data['money'] - ($order->fee + $order->lay_fee)* 0;
         }
+
+
+        $moneyp = $money2; 
 
         $user = $userModel->find($user_id);
 
@@ -875,6 +884,7 @@ class Func {
         # 1级
         if($user->parent_id && $money2 * .03 >= 0.01 && $user = $userModel->find($user->parent_id)){
             
+            $moneyp -= $money2 * .03;
             $data['user_id'] = $user->id;
             $data['level'] = 1;
             $data['money'] = $money2 * .03;
@@ -892,6 +902,8 @@ class Func {
             $userModel->set('money = money + %n',$money2 * .03)->save($user->id);
             # 2级
             if($user->parent_id && $money2 * .01 >= 0.01 &&$user = $userModel->find($user->parent_id)){
+
+                $moneyp -= $money2 * .01;
                 $data['user_id'] = $user->id;
                 $data['level'] = 2;
                 $data['money'] = $money2 * .01;
@@ -908,6 +920,8 @@ class Func {
                 $userModel->set('money = money + %n',$money2 * .01)->save($user->id);
                 # 3级
                 if($user->parent_id && $user = $userModel->find($user->parent_id)){
+
+                    $moneyp -= $money2 * .01;
                     $data['user_id'] = $user->id;
                     $data['level'] = 3;
                     $data['money'] = $money2 * .01;
@@ -925,6 +939,8 @@ class Func {
                     $userModel->set('money = money + %n',$money2 * .01)->save($user->id);
                     # 4级
                     if($user->parent_id && $user = $userModel->find($user->parent_id)){
+
+                        $moneyp -= $money2 * .01;
                         $data['user_id'] = $user->id;
                         $data['level'] = 4;
                         $data['money'] = $money2 * .01;
@@ -941,6 +957,8 @@ class Func {
                         $userModel->set('money = money + %n',$money2 * .01)->save($user->id);
                         # 5级
                         if($user->parent_id && $user = $userModel->find($user->parent_id)){
+
+                            $moneyp -= $money2 * .01;
                             $data['user_id'] = $user->id;
                             $data['level'] = 5;
                             $data['money'] = $money2 * .01;
@@ -992,6 +1010,8 @@ class Func {
         }else{
             # 1级
             if($driver->parent_id && $money2 * .05 >= 0.01 && $user = $driverModel->find($driver->parent_id)){
+
+                $moneyp -= $money2 * .05;
                 $data['driver_id'] = $user->id;
                 $data['level'] = 1;
                 $data['money'] = $money2 * .05;
@@ -1008,6 +1028,8 @@ class Func {
                 $driverModel->set('money = money + %n',$money2 * .05)->save($user->id);
                 # 2级
                 if($user->parent_id && $money2 * .03 >= 0.01 && $user = $driverModel->find($user->parent_id)){
+
+                    $moneyp -= $money2 * .03;
                     $data['driver_id'] = $user->id;
                     $data['level'] = 2;
                     $data['money'] = $money2 * .03;
@@ -1025,6 +1047,8 @@ class Func {
                     $driverModel->set('money = money + %n',$money2 * .03)->save($user->id);
                     # 3级
                     if($user->parent_id && $money2 * .02 >= 0.01 && $user = $driverModel->find($user->parent_id)){
+
+                        $moneyp -= $money2 * .02;
                         $data['driver_id'] = $user->id;
                         $data['level'] = 3;
                         $data['money'] = $money2 * .02;
@@ -1043,6 +1067,26 @@ class Func {
                 }
             }
         }
+
+        if($moneyp < 0.01)return true;
+
+
+        $admin = $adminModel->where('city_id LIKE %n','%'.$order->city_id.'%')->find();
+
+        if(!$admin)return true;
+
+        // $moneyp = $admin->profit * $moneyp;
+        if($moneyp < 0.01)return true;
+
+        unset($data['user_id']);
+        unset($data['driver_id']);
+        $data['admin_id'] = $admin->id;
+        $data['money'] = $moneyp;
+        $data['level'] = 0;
+        $adminIncomeModel->set($data)->add();
+
+        $adminModel->set('money = money + %f',$moneyp)->save($admin->id);
+
 
         return true;
 

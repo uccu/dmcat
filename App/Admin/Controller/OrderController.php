@@ -25,6 +25,7 @@ use App\Car\Model\StatusModel;
 use App\Car\Model\AreaModel;
 use App\Car\Model\DriverIncomeModel;
 use App\Car\Model\UserIncomeModel;
+use App\Car\Model\AdminIncomeModel;
 
 use App\Admin\Set\Gets;
 use App\Admin\Set\Lists;
@@ -41,9 +42,9 @@ class OrderController extends Controller{
 
 
     /*  代驾 */
-    function driving(){
+    function driving($id = 0){
 
-        View::addData(['getList'=>'admin_driving']);
+        View::addData(['getList'=>'admin_driving?id='.$id]);
         View::hamlReader('home/list','Admin');
     }
     /* 出租车 */
@@ -78,7 +79,7 @@ class OrderController extends Controller{
 
 
     # 管理代驾订单
-    function admin_driving(OrderDrivingModel $model,TripModel $tripModel,$page = 1,$limit = 50,$search,$status = -1){
+    function admin_driving(OrderDrivingModel $model,TripModel $tripModel,$id = 0,$page = 1,$limit = 50,$search,$status = -1){
         
         $m = Lists::getSingleInstance($model,$page,$limit);
 
@@ -113,6 +114,7 @@ class OrderController extends Controller{
         $m->setHead('总价(元)');
         $m->setHead('司机收入');
         $m->setHead('用户收入');
+        $m->setHead('代理收入');
 
         # 设置表体
         $m->setBody('id');
@@ -126,9 +128,11 @@ class OrderController extends Controller{
         $m->setBody('total_fee');
         $m->setBody(['name'=>'driver_income','href'=>true]);
         $m->setBody(['name'=>'user_income','href'=>true]);
+        $m->setBody(['name'=>'admin_income','href'=>true]);
 
         # 筛选
         $m->where = [];
+        if($id)$m->where['id'] = $id;
         if($status != -1)$m->where['statuss'] = $status;
 
         if($this->L->userInfo->type == 2){
@@ -152,6 +156,8 @@ class OrderController extends Controller{
                 $v->driver_income_href = 'order/driver_income?trip_id='.$trip->trip_id;
                 $v->user_income = '查看';
                 $v->user_income_href = 'order/user_income?trip_id='.$trip->trip_id;
+                $v->admin_income = '查看';
+                $v->admin_income_href = 'order/admin_income?trip_id='.$trip->trip_id;
             }
             
 
@@ -401,6 +407,48 @@ class OrderController extends Controller{
 
         # 获取列表
         $model->select('*','user.name>user_name')->order('level');
+        $m->getList(1);
+
+        $m->output();
+
+    }
+
+    function admin_income($trip_id = 0){
+
+        View::addData(['getList'=>'admin_admin_income?trip_id='.$trip_id]);
+        View::hamlReader('home/list','Admin');
+    }
+    function admin_admin_income(AdminIncomeModel $model,$page = 1,$limit = 50,$trip_id = 0){
+        
+        $m = Lists::getSingleInstance($model,$page,$limit);
+
+        # 权限
+        $m->checkPermission(113);
+
+        # 允许操作接口
+
+        # 设置名字
+        $m->setName('代驾订单');
+        
+
+        # 设置表头
+        $m->setHead('代理');
+        $m->setHead('收入');
+        $m->setHead('收益');
+
+
+        # 设置表体
+        $m->setBody('user_name');
+        $m->setBody('money');
+        $m->setBody('profit');
+
+
+        # 筛选
+        $m->where = [];
+        $m->where['trip_id'] = $trip_id;
+
+        # 获取列表
+        $model->select('*','admin.name>user_name')->order('level');
         $m->getList(1);
 
         $m->output();

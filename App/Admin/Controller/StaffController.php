@@ -19,6 +19,8 @@ use App\Car\Model\AreaModel;
 use App\Car\Model\JudgeModel;
 use App\Car\Model\UserMoneyLogModel;
 use App\Car\Model\DriverMoneyLogModel;
+use App\Car\Model\AdminIncomeModel;
+use App\Car\Model\AdminMoneyLogModel;
 
 
 class StaffController extends Controller{
@@ -685,6 +687,8 @@ class StaffController extends Controller{
                 '用户ID',
                 '手机号',
                 '名字',
+                '未结算余额',
+                '已结算',
                 '启用',
 
 
@@ -704,6 +708,8 @@ class StaffController extends Controller{
                 'id',
                 'phone',
                 'name',
+                'money',
+                'history_profit',
                 [
                     'name'=>'active',
                     'type'=>'checkbox',
@@ -772,7 +778,7 @@ class StaffController extends Controller{
                     'name'  =>  'id',
                 ],
                 [
-                    'title' =>  '手机号',
+                    'title' =>  '账号',
                     'name'  =>  'phone',
                     'size'  =>  '4',
                 ],
@@ -785,6 +791,17 @@ class StaffController extends Controller{
                     'title' =>  '头像',
                     'name'  =>  'avatar',
                     'type'  =>  'avatar',
+                ],
+                [
+                    'title' =>  '未结算收入',
+                    'name'  =>  'money',
+                    'size'  =>  '2',
+                    'disabled'=>true
+                ],
+                [
+                    'title' =>  '分红比例(小数)',
+                    'name'  =>  'profit',
+                    'size'  =>  '2',
                 ],
                 [
                     
@@ -823,7 +840,7 @@ class StaffController extends Controller{
         AJAX::success($out);
 
     }
-    function admin_admin_upd(AdminModel $model,AreaModel $aModel,$id,$pwd,$active,$city_id){
+    function admin_admin_upd(AdminMoneyLogModel $adminMoneyLog,AdminModel $model,AreaModel $aModel,$id,$pwd,$active,$city_id,$profit,$money){
         $this->L->adminPermissionCheck(67);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
@@ -858,8 +875,27 @@ class StaffController extends Controller{
                 
             }
         }
+        unset($data['money']);
+        if($id){
+            $data['moneyk'] = ['history_profit = history_profit + money*%f,money = 0',$profit];
 
+            AdminIncomeModel::copyMutiInstance()->set('profit = money*%f,level=1',$profit)->where(['admin_id'=>$id,'level'=>'0.00'])->save();
+        
+            $data2 = [];
+            $data2['admin_id'] = $id;
+            $data2['money'] = $money*$profit;
+            $data2['content'] = '分红';
+            $data2['create_time'] = TIME_NOW;
+            $data2['status'] = 1;
+
+            $adminMoneyLog->set($data2)->add();
+        
+        }
         $upd = AdminFunc::upd($model,$id,$data);
+
+        
+
+
         $out['upd'] = $upd;
         AJAX::success($out);
     }

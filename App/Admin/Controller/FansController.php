@@ -14,11 +14,15 @@ use DB;
 
 # 数据模型
 use App\Car\Model\UserModel;
+use App\Car\Model\AdminModel;
 use App\Car\Model\UserIncomeModel;
 use App\Car\Model\DriverModel;
 use App\Car\Model\DriverIncomeModel;
+use App\Car\Model\AdminIncomeModel;
 use App\Car\Model\DriverMoneyLogModel;
+use App\Car\Model\AdminMoneyLogModel;
 use App\Car\Model\UserMoneyLogModel;
+use App\Car\Model\TripModel;
 
 use App\Admin\Set\Gets;
 use App\Admin\Set\Lists;
@@ -124,6 +128,78 @@ class FansController extends Controller{
             }
 
             $v->money_href = 'fans/money?user_id='.$v->id;
+
+        });
+
+
+        $m->output();
+
+    }
+
+
+
+    function afans($search = ''){
+
+        View::addData(['getList'=>'admin_'.__FUNCTION__.'?a=1&search='.$search]);
+        View::hamlReader('home/list','Admin');
+    }
+
+    function admin_afans(AdminModel $model,$page=1,$limit=10,$search){
+
+        $m = Lists::getSingleInstance($model,$page,$limit);
+
+        # 权限
+        $m->checkPermission(162);
+
+        # 允许操作接口
+
+        $m->setOpt('view','home/upd');
+        $m->setOpt('get','../staff/admin_admin_get');
+
+        $m->setOptReq(['title'=>'搜索','name'=>'search','size'=>'3']);
+
+
+        # 设置表头
+        $m->setHead('');
+        $m->setHead('ID');
+        $m->setHead('名字');
+        $m->setHead('账号');
+        $m->setHead('已结算');
+        $m->setHead('未结算余额');
+
+        # 设置表体
+        $m->setBody(['type'=>'pic','name'=>'avatar','size'=> "30"]);
+        $m->setBody('id');
+        $m->setBody('name');
+        $m->setBody('phone');
+        $m->setBody(['name'=>'history_profit','href'=>true]);
+        $m->setBody('money');
+
+        # 设置名字
+        $m->setName();
+
+        
+
+        # 筛选
+        $m->where = [];
+        $m->where['type'] = ['type < 7'];
+
+        if($search){
+            $m->where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        }
+
+        # 获取列表
+        $model->select('id','avatar','name','phone','money','history_profit');
+        $m->getList(0);
+
+        $m->fullPicAddr('avatar');
+
+        $week = TIME_TODAY - (date('w') - 1) * 24 * 3600;
+        $userIncomeModel = AdminIncomeModel::copyMutiInstance();
+        $m->each(function(&$v) use ($model,$week,$userIncomeModel){
+
+
+            $v->history_profit_href = 'fans/amoney?admin_id='.$v->id;
 
         });
 
@@ -364,6 +440,79 @@ class FansController extends Controller{
 
     }
     function admin_money_del(UserMoneyLogModel $model,$id){
+        $this->L->adminPermissionCheck(161);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+    function amoney($admin_id = 0){
+
+        View::addData(['getList'=>'admin_'.__FUNCTION__.'?a=1&admin_id='.$admin_id]);
+        View::hamlReader('home/list','Admin');
+    }
+    function admin_amoney(AdminIncomeModel $model,$page=1,$limit=10,$admin_id = 0){
+
+        $m = Lists::getSingleInstance($model,$page,$limit);
+
+        # 权限
+        $m->checkPermission(160);
+        $m->setOpt('del','../'.$this->controllerName.'/'.__FUNCTION__.'_del');
+
+        # 设置表头
+        $m->setHead('行程id');
+        $m->setHead('收入');
+        $m->setHead('收益');
+        $m->setHead('订单类型');
+        $m->setHead('订单');
+        $m->setHead('时间');
+
+
+        # 设置表体
+        $m->setBody('trip_id');
+        $m->setBody('money');
+        $m->setBody('profit');
+        $m->setBody('type');
+        $m->setBody(['name'=>'order','href'=>true]);
+        $m->setBody('date');
+
+
+        # 设置名字
+        $m->setName();
+
+        
+
+        # 筛选
+        $m->where = [];
+        $m->where['admin_id'] = $admin_id;
+
+
+        # 获取列表
+        $model->order('id desc');
+        $m->getList();
+
+
+
+        $m->each(function(&$v) use ($model,$week,$userIncomeModel){
+            
+            $v->money  = $v->money > 0 ? '+' . $v->money : $v->money;
+            $v->profit  = $v->profit > 0 ? '+' . $v->profit : $v->profit;
+            $v->type = '代驾';
+            $v->date = date('Y-m-d H:i:s',$v->create_time);
+
+            $trip = TripModel::copyMutiInstance()->find($v->trip_id);
+
+            $v->order = '查看';
+            $v->order_href = 'order/driving?id='.$trip->id;
+
+        });
+
+
+        $m->output();
+
+    }
+    function admin_amoney_del(AdminMoneyLogModel $model,$id){
         $this->L->adminPermissionCheck(161);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;

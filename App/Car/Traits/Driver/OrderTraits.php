@@ -309,20 +309,30 @@ trait OrderTraits{
      * @param mixed $end_name 
      * @return mixed 
      */
-    function changeEnd($id,OrderDrivingModel $orderDrivingModel,TripModel $tripModel,$end_latitude,$end_longitude,$end_name){
+    function changeEnd($id,$trip_id,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,TripModel $tripModel,$end_latitude,$end_longitude,$end_name){
 
-        // $this->L->id = 17;
+        // $this->L->id = 16;
         !$this->L->id && AJAX::error('未登录');
 
-        !$id && AJAX::error('订单参数缺失');
+        (!$id && !$trip_id) && AJAX::error('订单参数缺失');
 
         if(!$end_latitude || !$end_longitude || !$end_name)AJAX::error('订单参数缺失');
 
-        $order = $orderDrivingModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
-        !$order && AJAX::error('订单不存在');
+        if($id){
 
-        $trip = $tripModel->where(['id'=>$id,'type'=>1,'driver_id'=>$this->L->id])->find();
-        !$trip && AJAX::error('行程不存在');
+            $order = $orderDrivingModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
+            $trip = $tripModel->where(['id'=>$id,'type'=>1,'driver_id'=>$this->L->id])->find();
+            !$trip && AJAX::error('行程不存在');
+        }elseif($trip_id){
+            $trip = $tripModel->where(['trip_id'=>$trip_id,'driver_id'=>$this->L->id])->find();
+            !$trip && AJAX::error('行程不存在');
+            if($trip->type == 1){
+                $order = $orderDrivingModel->where(['id'=>$trip->id,'driver_id'=>$this->L->id])->find();
+            }elseif($trip->type == 2){
+                $order = $orderTaxiModel->where(['id'=>$trip->id,'driver_id'=>$this->L->id])->find();
+            }
+        }
+        !$order && AJAX::error('订单不存在');
 
         DB::start();
         $trip->end_latitude = $end_latitude;
