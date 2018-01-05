@@ -26,6 +26,8 @@ use App\Car\Model\AreaModel;
 use App\Car\Model\DriverIncomeModel;
 use App\Car\Model\UserIncomeModel;
 use App\Car\Model\AdminIncomeModel;
+use App\Car\Model\DriverOnlineModel;
+use App\Car\Model\DriverServingPositionModel;
 
 use App\Admin\Set\Gets;
 use App\Admin\Set\Lists;
@@ -114,7 +116,7 @@ class OrderController extends Controller{
         $m->setHead('总价(元)');
         $m->setHead('司机收入');
         $m->setHead('用户收入');
-        $m->setHead('代理收入');
+        $m->setHead('线路');
 
         # 设置表体
         $m->setBody('id');
@@ -128,7 +130,7 @@ class OrderController extends Controller{
         $m->setBody('total_fee');
         $m->setBody(['name'=>'driver_income','href'=>true]);
         $m->setBody(['name'=>'user_income','href'=>true]);
-        $m->setBody(['name'=>'admin_income','href'=>true]);
+        $m->setBody(['name'=>'route','href'=>true]);
 
         # 筛选
         $m->where = [];
@@ -155,11 +157,10 @@ class OrderController extends Controller{
                 $v->driver_income = '查看';
                 $v->driver_income_href = 'order/driver_income?trip_id='.$trip->trip_id;
                 $v->user_income = '查看';
-                $v->user_income_href = 'order/user_income?trip_id='.$trip->trip_id;
-                $v->admin_income = '查看';
-                $v->admin_income_href = 'order/admin_income?trip_id='.$trip->trip_id;
+                $v->user_income_href = 'order/user_income?trip_id='.$trip->trip_id;   
             }
-            
+            $v->route = '查看';
+            $v->route_href = 'order/map?trip_id='.$trip->trip_id;
 
         });
 
@@ -193,7 +194,7 @@ class OrderController extends Controller{
         $m->setBody(['title' =>  '司机手机号','name'  =>  'driver_phone','size'  =>  '2','disabled'=>true]);
         $m->setBody(['title' =>  '开始地址名字','name'  =>  'start_name','size'  =>  '4','disabled'=>true]);
         $m->setBody(['title' =>  '结束地址名字','name'  =>  'end_name','size'  =>  '4','disabled'=>true]);
-        $m->setBody(['title' =>  '实时里程(公里)','name'  =>  'real_distance','size'  =>  '4']);
+        $m->setBody(['title' =>  '实时里程(公里)','name'  =>  'real_distance','size'  =>  '4','disabled'=>true]);
         $m->setBody(['title' =>  '预估价(元)','name'  =>  'estimated_price','size'  =>  '4']);
         $m->setBody(['title' =>  '服务开始时间','name'  =>  'start_time_date','size'  =>  '2','disabled'=>true]);
         $m->setBody(['title' =>  '服务结束时间','name'  =>  'end_time_date','size'  =>  '2','disabled'=>true]);
@@ -232,7 +233,7 @@ class OrderController extends Controller{
         $m->info->start_time_date = $trip->in_time ? date('Y-m-d H:i:s',$trip->in_time) : '';
         $m->info->end_time_date = $trip->out_time ? date('Y-m-d H:i:s',$trip->out_time) : '';
         $m->info->start_fee = $trip->start_fee;
-        $m->info->real_distance = $trip->real_distance;
+        $m->info->real_distance = $trip->real_distance / 1000;
         $m->info->trip_id = $trip->trip_id;
         $m->info->way_fee = $m->info->fee != 0?number_format($m->info->fee - $m->info->start_fee,2,'.',''):'0.00';
 
@@ -457,7 +458,7 @@ class OrderController extends Controller{
 
 
     # 管理出租车
-    function admin_taxi(OrderTaxiModel $model,$page = 1,$limit = 10,$search,$status = -1){
+    function admin_taxi(OrderTaxiModel $model,TripModel $tripModel,$page = 1,$limit = 10,$search,$status = -1){
         
         $this->L->adminPermissionCheck(114);
 
@@ -506,7 +507,8 @@ class OrderController extends Controller{
                 '终点',
                 '预估价(元)',
                 '总价(元)',
-                '打表'
+                '打表',
+                '线路'
 
             ];
 
@@ -528,7 +530,8 @@ class OrderController extends Controller{
                     'name'=>'meter',
                     'type'=>'checkbox',
                     'disabled'=>true
-                ]
+                ],
+                ['name'=>'route','href'=>true]
 
             ];
             
@@ -550,6 +553,12 @@ class OrderController extends Controller{
         $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
             $v->status_name = $statusArr[$v->statuss];
+
+            $trip = $tripModel->where(['id'=>$v->id,'type'=>2])->find();
+
+            $v->route = '查看';
+            $v->route_href = 'order/map?trip_id='.$trip->trip_id;
+
         }
 
 
@@ -607,7 +616,7 @@ class OrderController extends Controller{
         $m->setBody(['title' =>  '司机手机号','name'  =>  'driver_phone','size'  =>  '2','disabled'=>true]);
         $m->setBody(['title' =>  '开始地址名字','name'  =>  'start_name','size'  =>  '4','disabled'=>true]);
         $m->setBody(['title' =>  '结束地址名字','name'  =>  'end_name','size'  =>  '4','disabled'=>true]);
-        $m->setBody(['title' =>  '实时里程(公里)','name'  =>  'real_distance','size'  =>  '4']);
+        $m->setBody(['title' =>  '实时里程(公里)','name'  =>  'real_distance','size'  =>  '4','disabled'=>true]);
         $m->setBody(['title' =>  '预估价(元)','name'  =>  'estimated_price','size'  =>  '4']);
         $m->setBody(['title' =>  '服务开始时间','name'  =>  'start_time_date','size'  =>  '2','disabled'=>true]);
         $m->setBody(['title' =>  '服务结束时间','name'  =>  'end_time_date','size'  =>  '2','disabled'=>true]);
@@ -647,7 +656,7 @@ class OrderController extends Controller{
         $m->info->start_time_date = $trip->in_time ? date('Y-m-d H:i:s',$trip->in_time) : '';
         $m->info->end_time_date = $trip->out_time ? date('Y-m-d H:i:s',$trip->out_time) : '';
         $m->info->start_fee = $trip->start_fee;
-        $m->info->real_distance = $trip->real_distance;
+        $m->info->real_distance = $trip->real_distance / 1000;
         $m->info->trip_id = $trip->trip_id;
         $m->info->way_fee = $m->info->fee != 0?number_format($m->info->fee - $m->info->start_fee,2,'.',''):'0.00';
 
@@ -1415,5 +1424,38 @@ class OrderController extends Controller{
         AJAX::success($out);
     }
     
+
+    function map($trip_id = 0){
+
+        
+
+        $data['key'] = $this->L->config->GAODE_KEY;
+        $data['trip_id'] = $trip_id;
+
+        View::addData($data);
+        View::hamlReader('order/map','Admin');
+
+    }
+
+
+    function mapInfo($trip_id = 0,TripModel $tripModel,DriverOnlineModel $driverOnlineModel,DriverServingPositionModel $driverServingPosition){
+
+        
+        $info = AdminFunc::get($tripModel,$trip_id);
+
+        if($info->statuss == 30 && $info->driver_id){
+            $info->driverPosition = $driverOnlineModel->find($info->driver_id);
+        }
+
+        $info->lines = $driverServingPosition->where(['trip_id'=>$trip_id,'status'=>30])->order('id')->get()->toArray();
+
+        
+
+        $out['info'] = $info;
+
+        AJAX::success($out);
+
+    }
+
 }
     

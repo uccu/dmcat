@@ -23,6 +23,7 @@ use App\Car\Model\OrderTaxiModel;
 use App\Car\Model\OrderWayModel;
 use App\Car\Model\TripDrivingLogModel;
 use App\Car\Model\UserOnlineModel;
+use App\Car\Model\DriverServingPositionModel;
 
 /**
  *  司机订单相关
@@ -38,7 +39,7 @@ trait OrderTraits{
      * @return mixed 
      */
     function orderInfo_daijia($id = 0,
-        OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel,$trip_id = 0,$type = 1){
+        OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel,$trip_id = 0,$type = 1,DriverServingPositionModel $driverServingPosition){
         
         // $this->L->id = 1;
         !$this->L->id && AJAX::error('未登录');
@@ -95,6 +96,17 @@ trait OrderTraits{
         $order->start_formatted_address = $startMsg->formatted_address;
         $startMsg = Func::getArea($order->end_latitude,$order->end_longitude);
         $order->end_formatted_address = $startMsg->formatted_address;
+
+
+        if($trip->statuss == 20){
+
+            $out['route'] = $driverServingPosition->where(['trip_id'=>$trip->trip_id,'status'=>20])->order('id')->get()->toArray();
+        }
+
+        if($trip->statuss > 30){
+
+            $out['route'] = $driverServingPosition->where(['trip_id'=>$trip->trip_id,'status'=>30])->order('id')->where()->get()->toArray();
+        }
 
 
         # 当已抢单，没有接到乘客开始服务，计算司机与起点的距离

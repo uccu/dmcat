@@ -1,0 +1,156 @@
+- extends "base.haml"
+
+
+- block body
+    
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                #modal_new.ibox.float-e-margins
+                    .ibox-title
+                        %h3 
+                    .ibox-content
+                        #container(tabindex="0")
+                            
+                        .ibox-title.optBox
+                            
+                            %button.btn.btn-success.flesh(type="button" onclick="location.reload()") 刷新
+
+    
+- block otherCss
+    :css
+        .modal-backdrop.in{z-index:1049 !important}
+        #container{
+            height: 500px;
+            margin: 0px;
+            outline: 0;
+        }
+        .amap-marker .marker-route {
+            position: absolute;
+            width: 40px;
+            height: 44px;
+            color: #e90000;
+            background: url(http://webapi.amap.com/theme/v1.3/images/newpc/poi-1.png) no-repeat;
+            cursor: pointer;
+        }
+        .amap-marker .marker-marker-bus-from {
+            background-position: -334px -180px;
+        }
+        .amap-marker .marker-marker-bus-end {
+            background-position: -334px -134px;
+        }
+        .amap-marker .marker-marker-bus-driver {
+            background-position: -357px -52px;
+        }
+    -# %link(href="http://cache.amap.com/lbs/static/main1119.css" rel="stylesheet")
+    %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
+    %link(href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet")
+
+                        
+
+
+
+- block otherScript
+    %script(src="/js/plugins/summernote/summernote.min.js")
+    %script(src="/js/plugins/summernote/summernote-zh-CN.js")
+    %script(src="/js/plugins/suggest/bootstrap-suggest.min.js")
+    %script(src="http://webapi.amap.com/maps?v=1.4.3&key=#{key}")
+    %script(src="http://cache.amap.com/lbs/static/addToolbar.js")
+    :javascript
+        var map = new AMap.Map('container',{
+            resizeEnable: true,
+        });
+        var dis = function (lat1, lng1, lat2, lng2) {
+            var radLat1 = lat1 * Math.PI / 180.0;
+            var radLat2 = lat2 * Math.PI / 180.0;
+            var a = radLat1 - radLat2;
+            var b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
+            var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+            s = s * 6378.137;
+            s = Math.round(s * 10000) / 10;
+            return s
+        }
+        $(function(j){
+
+            
+
+
+            curl('mapInfo',{trip_id:'#{trip_id}'},function(data){
+                
+                map.setZoom(10);
+
+                if(data.info.start_latitude && data.info.end_latitude){
+
+                    var longitude = (parseFloat(data.info.start_longitude) + parseFloat(data.info.end_longitude))/2;
+                    var latitude = (parseFloat( data.info.start_latitude ) + parseFloat(data.info.end_latitude))/2;
+                    map.setCenter([longitude,latitude]);
+
+                    var ds = dis(data.info.start_latitude,data.info.start_longitude,data.info.end_latitude,data.info.end_longitude)
+                    
+                    map.setZoom(Math.log2(  61316608.796825856 / parseFloat(ds)))
+                    // console.log(parseFloat(ds),Math.log2(  61316608.796825856 / parseFloat(ds)))
+                }
+
+                if(data.info.start_latitude){
+                    
+                    new AMap.Marker({ //添加自定义点标记
+                        map: map,
+                        position: [data.info.start_longitude,data.info.start_latitude], //基点位置
+                        draggable: false,  //是否可拖动
+                        content: '<div class="marker-route marker-marker-bus-from"></div>'   //自定义点标记覆盖物内容
+                    });
+                }
+                if(data.info.end_latitude){
+                    new AMap.Marker({ //添加自定义点标记
+                        map: map,
+                        position: [data.info.end_longitude,data.info.end_latitude], //基点位置
+                        draggable: false,  //是否可拖动
+                        content: '<div class="marker-route marker-marker-bus-end"></div>'   //自定义点标记覆盖物内容
+                    });
+                }
+
+                if(data.info.driverPosition){
+
+                    new AMap.Marker({ //添加自定义点标记
+                        map: map,
+                        position: [data.info.driverPosition.longitude,data.info.driverPosition.latitude], //基点位置
+                        draggable: false,  //是否可拖动
+                        content: '<div class="marker-route marker-marker-bus-driver"></div>'   //自定义点标记覆盖物内容
+                    });
+                }
+
+                if(data.info.lines.length){
+                    var lineArr = [
+                        
+                    ];
+
+                    for(var i in data.info.lines){
+
+                        lineArr.push([data.info.lines[i].longitude,data.info.lines[i].latitude])
+
+                    }
+                    console.log(lineArr)
+                    var polyline = new AMap.Polyline({
+                        path: lineArr,          //设置线覆盖物路径
+                        strokeColor: "#3366FF", //线颜色
+                        strokeOpacity: 1,       //线透明度
+                        strokeWeight: 5,        //线宽
+                        strokeStyle: "solid",   //线样式
+                        strokeDasharray: [10, 5] //补充线样式
+                    });
+                    polyline.setMap(map);
+                }
+
+
+            })
+            
+            
+            
+            
+            
+
+        });
+
+
+    
+        
