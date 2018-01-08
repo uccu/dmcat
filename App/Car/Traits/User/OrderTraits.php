@@ -98,7 +98,7 @@ trait OrderTraits{
             $driver =  $driverModel->select('id>driver_id','name','avatar','phone','judge_score')->find($order->driver_id);
             if($driver){
 
-                $driver->orderCount = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>49')->where('type<3')->where(['driver_id'=>$order->driver_id])->find()->c;
+                $driver->orderCount = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>49')->where('type IN (1,2)')->where(['driver_id'=>$order->driver_id])->find()->c;
                 $driver->online = '0';
                 $out['driverInfo'] = $driver;
             }else{
@@ -170,8 +170,9 @@ trait OrderTraits{
                 $order->start_fee = $data['start'];
                 $order->total_fee = $order->fee - $order->coupon;
             }elseif($trip->type == 3){
-                // $price = Func::getWayPrice($distance->distance / 1000,$num);
-                // $out['start_price'] = '20.00';
+                $prices = Func::getWayPrice($distance->distance / 1000,$order->num);
+                $price = $prices['price'];
+                $out['start_price'] = $prices['start'];
             }
             
         }

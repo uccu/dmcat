@@ -633,7 +633,7 @@ class UserController extends Controller{
         }
 
         if($trip->type != 3){
-            $score = $judgeModel->select('AVG(score) AS c','RAW')->where(['driver_id'=>$trip->driver_id])->where('type<3')->find()->c;
+            $score = $judgeModel->select('AVG(score) AS c','RAW')->where(['driver_id'=>$trip->driver_id])->where('type IN (1,2)')->find()->c;
             !$score && $score = 0;
             $driverModel->set(['judge_score'=>$score])->save($trip->driver_id);
         }else{
@@ -821,8 +821,9 @@ class UserController extends Controller{
         $longitudeRange = [$route->start_longitude - 0.2, $route->start_longitude + 0.2];
 
         $where['x1'] = ['start_latitude BETWEEN %a AND start_longitude BETWEEN %a',$latitudeRange,$longitudeRange];
-        $where['status'] = 1;
-        $list = $orderWayModel->where($where)->select(['*,ABS(%F-%f) + ABS(%F-%f) AS `mul`','start_latitude',$route->start_latitude,'start_longitude',$route->start_longitude],'RAW')->order('mul desc','RAW')->get()->toArray();
+        $where['statuss'] = 10;
+        $where['trip.type'] = 3;
+        $list = $orderWayModel->where($where)->select(['*,ABS(%F-%f) + ABS(%F-%f) AS `mul`,%F','start_latitude',$route->start_latitude,'start_longitude',$route->start_longitude,'trip.trip_id'],'RAW')->order('mul desc','RAW')->get()->toArray();
         // echo $orderWayModel->sql;die();
 
         foreach($list as &$v){
@@ -864,18 +865,10 @@ class UserController extends Controller{
         !$trip && AJAX::error('行程不存在');
         $trip->driver_id && AJAX::errror('该订单已接单');
         $user = $userOnlineModel->find($this->L->id);
-        if(!$user || !$trip->start_latitude){
-            $duration = 0;
-        }else{
 
-            $result = Func::getDistance($user->latitude,$user->longitude,$user->start_latitude,$user->start_longitude,1);
-            $duration = $result ? $result->duration : 0;
 
-        }
-
-        $data['status'] = 2;
+        $data['status'] = 20;
         $data['driver_id'] = $this->L->id;
-        $data['duration'] = $duration;
         DB::start();
         $tripModel->set($data)->where(['type'=>3,'id'=>$id])->save();
         $data['order_time'] = TIME_NOW;
@@ -1305,7 +1298,7 @@ class UserController extends Controller{
     }
 
 
-
+    # 是否有正在进行中的订单
     function hasDuringOrder(TripModel $model){
 
         !$this->L->id && AJAX::error('未登录');

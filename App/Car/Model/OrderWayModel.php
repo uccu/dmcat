@@ -13,7 +13,7 @@ class OrderWayModel extends Model{
     }
     public function driver(){
 
-        return $this->join(DriverModel::class,'id','driver_id','LEFT');
+        return $this->join(UserModel::class,'id','driver_id','LEFT');
     }
     public function city(){
         
@@ -22,5 +22,10 @@ class OrderWayModel extends Model{
     public function stat(){
         
         return $this->join(StatusModel::class,'id','statuss','LEFT');
+    }
+
+    public function trip(){
+        
+        return $this->join(TripModel::class,'id','id');
     }
 }

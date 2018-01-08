@@ -615,74 +615,6 @@ class Func {
     }
 
 
-
-    public static function finishPay($payment_id,$online = 1){
-
-        $paymentModel = PaymentModel::copyMutiInstance();
-        $payment = $paymentModel->find($payment_id);
-        if(!$payment)return false;
-        if(!$payment->success_time)return false;
-
-        /** 获取行程 */
-        $tripModel = TripModel::copyMutiInstance();
-        $trip = $tripModel->find($payment->trip_id);
-
-        /** 司机不存在 */
-        if(!$trip->driver_id)return false;
-        $driver = DriverModel::copyMutiInstance()->find($trip->driver_id);
-        if(!$driver)return false;
-
-        /** 状态不为待支付 */
-        if($trip->status != 4)return false;
-
-        /** 获取金额 */
-        $money = $payment->total_fee;
-
-        /** 代驾/出租车 */
-        if($trip->type < 3){
-
-            if($online){
-
-                /** 减少用户现金 */
-
-                /** 增加司机现金 */
-
-            }else{
-
-
-                
-            }
-
-            
-            
-
-        }else{
-
-            if($online){
-
-                /** 减少用户现金 */
-
-                /** 增加司机现金 */
-
-            }
-
-        }
-
-
-
-        $trip->status = 5;
-        $trip->save();
-
-        if($trip->type == 1)OrderDriving::copyMutiInstance()->set(['status'=>5])->save($trip->id);
-        elseif($trip->type == 2)OrderTaxi::copyMutiInstance()->set(['status'=>5])->save($trip->id);
-        elseif($trip->type == 3)OrderWay::copyMutiInstance()->set(['status'=>5])->save($trip->id);
-
-
-        return true;
-
-    }
-
-
     /**   根据两点间的经纬度计算距离  
      *转载自：http://www.jb51.net/article/56967.htm 
      * @param float $lat 纬度值  
@@ -770,7 +702,8 @@ class Func {
 
 
     public static function getWayPrice($distance = 0,$num = 1){
-
+        
+        $start_fee = 20;
         if($distance<6)$price = 20;
         elseif($distance<100)$price = 20 + 1.5 * ($distance - 6);
         elseif($distance<300)$price = 20 + 1.5 * (100 - 6) + 1.4 * ($distance - 100);
@@ -778,13 +711,16 @@ class Func {
 
         if($num == 2){
             $price *= 1.7;
+            $start_fee *= 1.7;
         }elseif($num == 3){
             $price *= 2.8;
+            $start_fee *= 2.8;
         }elseif($num == 4){
             $price *= 4.1;
+            $start_fee *= 4.1;
         }
 
-        return number_format($price,2,'.','');
+        return ['price'=>number_format($price,2,'.',''),'start'=>number_format($start_fee,2,'.','')];
 
     }
 
@@ -1103,6 +1039,19 @@ class Func {
         }
 
         return DriverOnlineModel::copyMutiInstance()->find($id);
+    }
+
+
+    static function searchGeo($address){
+
+        $data['key'] = $key = L::getSingleInstance()->config->GAODE_KEY;
+        $data['address'] = $address;
+
+        $data = json_decode(self::curl('http://restapi.amap.com/v3/geocode/geo',$data));
+
+        if(!$data->status)return false;
+
+        return $data->geocodes[0];
     }
 
 }

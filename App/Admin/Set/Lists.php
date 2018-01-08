@@ -21,6 +21,7 @@ class Lists{
     public $where = [];
     public $model;
     public $name = '';
+    public $other = [];
 
     public function __construct($model,$page,$limit){
 
@@ -98,7 +99,7 @@ class Lists{
             'limit' =>  $this->limit,
             'max'   =>  $this->max,
             'name'  =>  $this->name,
-        
+            'other' =>  $this->other
         ];
 
         AJAX::success($out);

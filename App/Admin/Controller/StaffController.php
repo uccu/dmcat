@@ -405,7 +405,7 @@ class StaffController extends Controller{
         }
 
         if($serving){
-            $where['www'] = ['EXISTS(SELECT %i FROM %i WHERE %i=%F AND %i<3 AND %i IN (%c))','t.trip_id','c_trip t','t.driver_id','id','t.type','t.statuss',[20,25,30,35,40]];
+            $where['www'] = ['EXISTS(SELECT %i FROM %i WHERE %i=%F AND %i AND %i IN (%c))','t.trip_id','c_trip t','t.driver_id','id','t.type','t.statuss',[20,25,30,35,40]];
         }
 
         if($this->L->userInfo->type == 2){
@@ -438,8 +438,10 @@ class StaffController extends Controller{
 
             if($v->type_driving){
                 $v->type = '代驾';
-            }else{
+            }elseif($v->type_taxi){
                 $v->type = '出租车';
+            }else{
+                $v->type = '无';
             }
 
             if($longitude){
@@ -597,11 +599,14 @@ class StaffController extends Controller{
         $data = Request::getSingleInstance()->request($model->field);
 
         if(is_null($active)){
-            if(!$typee)AJAX::error('请选择类型');
+            if(!$typee){
+                $data['type_driving'] = 0;
+                $data['type_taxi'] = 0;
+            }
             if($typee == 1){
                 $data['type_driving'] = 1;
                 $data['type_taxi'] = 0;
-            }else{
+            }elseif($typee == 2){
                 $data['type_driving'] = 0;
                 $data['type_taxi'] = 1;
             }
@@ -1209,7 +1214,7 @@ class StaffController extends Controller{
         $where = [];
 
         $where['driver_id'] = $id;
-        $where['type'] = ['type<3'];
+        $where['type'] = ['type IN (1,2)'];
 
         $list = $model->select('*','user.name','user.avatar','user.phone')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){

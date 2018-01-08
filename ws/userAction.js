@@ -460,111 +460,188 @@ let act = {
 
         
 
-    }
-    
+    },
+    callWay(obj,con){
 
-}
+        /** 用户是否登录 */
+        if(!con.user_id)return;
 
+        /** 获取参数 */
+        let start_latitude  = parseFloat(obj.start_latitude || 0)
+        let start_longitude = parseFloat(obj.start_longitude || 0)
+        let end_latitude    = parseFloat(obj.end_latitude || 0)
+        let end_longitude   = parseFloat(obj.end_longitude || 0)
+        let start_name      = obj.start_name || ''
+        let end_name        = obj.end_name || ''
+        let create_time     = parseInt(Date.now() / 1000)
+        let distance        = parseInt(obj.distance || 0)
+        let start_time      = parseInt(obj.start_time || 0)
+        let estimated_price = parseFloat(obj.estimated_price || 0)
+        let phone           = obj.phone || ''
+        let name            = obj.name || ''
+        let city_id         = parseInt(obj.city_id || 0)
+        let num             = parseInt(obj.num || 1)
+        let start_fee       = obj.start_fee || '0.00'
+        let sync = new SYNC
 
-let z = function(obj,con){
-
-    if(act[obj.type])act[obj.type](obj,con);
-
-    else switch(obj.type){
-
-        case 'callWay':
-            /** 用户是否登录 */
-            if(!con.user_id)break;
-
+        sync.add = function(){
             /** 查询进行中的订单 */
-            db.find('select * from c_trip where user_id=? and status in (1,2,3,4)',[con.user_id],function(result){
-
+            db.find('select * from c_trip where user_id=? and statuss in (5,10,20,25,30,35,45)',[con.user_id],function(result){
                 /** 判断是否有订单正在执行中 */
                 if(result){
                     con.sendText(content({status:400,type:'callWay',message:'不能重复下单'}))
                     return
                 }
-
-                /** 获取参数 */
-                let start_latitude  = parseFloat(obj.start_latitude || 0)
-                let start_longitude = parseFloat(obj.start_longitude || 0)
-                let end_latitude    = parseFloat(obj.end_latitude || 0)
-                let end_longitude   = parseFloat(obj.end_longitude || 0)
-                    
-                let start_name      = obj.start_name || ''
-                let end_name        = obj.end_name || ''
-                let create_time     = parseInt(Date.now() / 1000)
-                let distance        = parseInt(obj.distance || 0)
-                let start_time      = parseInt(obj.start_time || 0)
-                let estimated_price = parseFloat(obj.estimated_price || 0)
-                let phone           = obj.phone || ''
-                let name            = obj.name || ''
-                let city_id         = parseInt(obj.city_id || 0)
-                let num         = parseInt(obj.num || 1)
-
-                /** 创建订单 */
-                db.insert('insert into c_order_way set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,status=1,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?,num=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id,num],function(id){
-
-                    obj.id = id
-
-                    /** 创建行程 */
-                    db.insert('insert into c_trip set status=1,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=3,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price])
-
-                    /** 发送成功信息 */
-                    con.sendText(content({status:200,type:'callWay',info:obj}))
-                    sendAdmin(`user ${con.user_id} create an order`)
-
-                })
+                sync.run()
             })
-            break;
-        case 'cancelCallWay':
-            if(con.user_id){
+        }
 
-                let id = obj.id || 0
-                /** 查询订单 */
-
-                db.find('select * from c_trip where id=? and type = 3 and user_id=?',[id,con.user_id],function(trip){
-
-                    if(!trip){
-                        con.sendText(content({status:400,type:'cancelCallWay',id:id,message:'行程不存在'}))
-                        return;
-                    }
-                    db.find('select * from c_order_way where id=? and user_id=?',[id,con.user_id],function(result){
-
-                        /** 订单不存在返回 */
-                        if(!result)return;
-
-                        if(result.order_time + 120 < parseInt(Date.now() / 1000) && result.order_time + trip.duration + 120 > parseInt(Date.now() / 1000)){
-                            con.sendText(content({status:400,type:'cancelCallWay',id:id,message:'行程无法取消'}))
-                            return;
-                        }
-                        
-                        /** 订单状态只有在12时候可以取消 */
-                        if([1,2].indexOf(parseInt(result.status))==-1)return;
-                        
-                        /** 更新订单状态为取消 */
-                        db.update('update c_order_way set status=0 where id=?',[id],function(){
-                            
-                            /** 发送成功信息 */
-                            con.sendText(content({status:200,type:'cancelCallWay',id:id}))
-
-                            let driver_id = result.driver_id
-                            let driver = data.UserMap.get(driver_id+'')
-                            if(driver){
-
-                                // post('user/push',{id:result.driver_id,message:'用户取消了订单！',type:'cancel_order'});
-
-                                sendAdmin('one driver get cancelCallWayDriver request');
-                                driver.con.sendText(content({status:200,type:'cancelCallWayDriver',id:id}))
-                            }
-                            /** 更新行程表 */
-                            db.update('update c_trip set status=0 where id=? and type=3',[id])
-                        })
-                    })
+        sync.add = function(){
+            /** 创建订单 */
+                db.insert('insert into c_order_way set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,statuss=10,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?,num=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,con.user_id,distance,estimated_price,start_time,phone,name,city_id,num],function(id){
+                    obj.id = id
+                    sync.run()
                 })
+        }
+        sync.add = function(){
+            /** 创建行程 */
+            db.insert('insert into c_trip set statuss=10,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=3,id=?,user_id=?,create_time=?,distance=?,estimated_price=?,start_fee=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,obj.id,con.user_id,create_time,distance,estimated_price,start_fee],function(trip_id){
+                obj.trip_id = trip_id
+                /** 发送成功信息 */
+                con.sendText(content({status:200,type:'callWay',info:obj}))
+                sendAdmin(`user ${con.user_id} create an order`)
+            })
+        }
+        sync.run()
+    },
+    orderWay(obj,con){
+
+        /** 司机是否登录 */
+        if(!con.user_id){
+            con.sendText(content({status:400,type:'login',message:'未登录'}))
+            console.error('one user login error 9')
+            return
+        }
+
+        /** 获取代驾订单id */
+        let id
+        let type
+        let className
+        let result
+        let trip_id = obj.trip_id || 0
+        let driver = data.UserMap.get(con.user_id)
+
+        /** 参数是否传了 */
+        if(!trip_id){
+            con.sendText(content({status:400,type:'orderWay',trip_id:trip_id,message:'行程不存在'}))
+            return;
+        }
+
+        let sync = new SYNC
+
+        sync.add = function(){
+            db.find('select * from c_user where id=?',[con.user_id],function(driver){
+
+                if(!driver){
+                    con.sendText(content({status:400,type:'orderWay',trip_id:trip_id,message:'司机不存在'}))
+                    return;
+                }
+
+                sync.run()
+            })
+        }
+
+
+        sync.add = function(){
+            db.find('select * from c_trip where trip_id=? and type IN (3)',[trip_id,con.user_id],function(trip){
+
+                if(!trip){
+                    con.sendText(content({status:400,type:'orderWay',trip_id:trip_id,message:'行程不存在'}))
+                    return;
+                }
+                sync.trip = trip
+                id = trip.id
+                type = trip.type
+                /** 订单状态 */
+                if([5,10].indexOf(parseInt(trip.statuss))==-1){
+                    con.sendText(content({status:400,type:'orderWay',trip_id:trip_id,message:'无法接单'}))
+                    return;
+                }
+                className = trip.type == 1?'driving':trip.type == 2?'taxi':'way'
+                if(className == 'way'){
+                    con.sendText(content({status:400,type:'orderWay',message:'行程不存在N'}))
+                    return;
+                }
+                sync.run(trip)
+            })
+        }
+
+        sync.add = function(){
+            // sendAdmin(2)
+            db.find('select * from c_order_'+className+' where id=?',[id],function(r){
                 
-            }
-            break;
+                /** 订单是否存在 */
+                if(!r){
+                    con.sendText(content({status:400,type:'orderWay',message:'订单不存在'}))
+                    return;
+                }
+                /** 订单是否属于登录司机 */
+                if(r.driver_id != 0){
+                    con.sendText(content({status:400,type:'orderWay',message:'无权限'}))
+                    return;
+                }
+                result = r;
+                sync.run()
+            })
+            
+        }
+
+        sync.add = function(){
+            // sendAdmin(3)
+
+            db.update('update c_order_'+className+' set driver_id=?,statuss=20,order_time=? where id=?',[con.user_id,parseInt(Date.now() / 1000),id],function(){
+
+                sync.run();
+            })
+        }
+
+        sync.add = function(){
+
+            action.getDis(driver.latitude,driver.longitude,result.start_latitude,result.start_longitude,3,function(st){
+                sync.run(st);
+            })
+        }
+
+        sync.add = function(st){
+            // sendAdmin(5)
+            /** 更新行程 */
+            if(!st)st  = {}
+            db.update('update c_trip set driver_id=?,statuss=20,duration=? where trip_id=?',[con.user_id,st.duration||0,trip_id],function(){
+
+                con.sendText(content({status:200,type:'orderWay_driver',id:id,trip_id:trip_id}))
+
+
+                let user = data.UserMap.get(result.user_id+'')
+                if(user){
+                    if(user && user.clock)clearTimeout(user.clock);
+                    user.con.sendText(content({status:200,type:'orderWay',trip_id:trip_id,id:id}))
+                }
+                
+            })
+        }
+
+        sync.run();
+    }
+}
+
+
+let z = function(obj,con){
+
+    if(act[obj.type]){
+        act[obj.type](obj,con);
+    }else switch(obj.type){
+
+        
         case 'startWay':
             /** 司机是否登录 */
             if(con.user_id){

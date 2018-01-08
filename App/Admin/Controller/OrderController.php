@@ -754,15 +754,17 @@ class OrderController extends Controller{
 
 
     # 管理顺风车
-    function admin_way(OrderWayModel $model,$page = 1,$limit = 10,$search,$status = -1){
+    function admin_way(OrderWayModel $model,TripModel $tripModel ,$page = 1,$limit = 10,$search,$status = -1){
         
         $this->L->adminPermissionCheck(115);
 
-        $name = '';
+        $name = '顺风车订单';
         # 允许操作接口
         $opt = 
             [
                 'get'   => '../order/admin_way_get',
+                'view'  => 'home/upd',
+                'del'   => '../order/admin_way_del',
                 'view'  => 'home/upd',
                 'req'   =>[
                     [
@@ -776,30 +778,33 @@ class OrderController extends Controller{
                         'type'=>'select',
                         'option'=>[
                             '-1'=>'请选择',
-                            '0'=>'取消',
-                            '1'=>'创建订单',
-                            '2'=>'正在接客',
-                            '3'=>'行程中',
-                            '4'=>'待付款',
-                            '5'=>'待评价',
-                            '6'=>'完成',
+                            
                         ],'default'=>'-1'
                     ],
                 ]
             ];
+        
+        $opt['req'][1]['option'];
+
+        $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
+
+        $opt['req'][1]['option'] = $statusArr;
+        $opt['req'][1]['option']['-1'] = '请选择';
 
         # 头部标题设置
         $thead = 
             [
 
                 'ID',
+                '行程ID',
                 '用户',
                 '司机',
                 '状态',
                 '起点',
                 '终点',
                 '预估价(元)',
-                
+                '总价(元)',
+                '线路'
 
             ];
 
@@ -810,19 +815,22 @@ class OrderController extends Controller{
 
                 
                 'id',
+                'trip_id',
                 'user_name',
                 'driver_name',
                 'status_name',
                 'start_name',
                 'end_name',
                 'estimated_price',
+                'total_fee',
+                ['name'=>'route','href'=>true]
 
             ];
             
 
         # 列表内容
         $where = [];
-        if($status != -1)$where['status'] = $status;
+        if($status != -1)$where['statuss'] = $status;
 
         if($this->L->userInfo->type == 2){
             $where['city.parent_id'] = $this->L->userInfo->province_id;
@@ -831,12 +839,18 @@ class OrderController extends Controller{
         }
         
         if($search){
-            $where['search'] = ['start_name LIKE %n OR end_name LIKE %n','%'.$search.'%','%'.$search.'%'];
+            $where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n OR user.phone LIKE %n OR driver.phone LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
         }
 
         $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
-            $v->status_name = ['取消','待接单','接客中','服务中','待付款','待评价','已完成'][$v->status];
+            $v->status_name = $statusArr[$v->statuss];
+
+            $trip = $tripModel->where(['id'=>$v->id,'type'=>3])->find();
+            $v->trip_id = $trip->trip_id;
+            $v->route = '查看';
+            $v->route_href = 'order/map?trip_id='.$trip->trip_id;
+
         }
 
 
@@ -862,6 +876,10 @@ class OrderController extends Controller{
 
         AJAX::success($out);
 
+
+
+
+        
     }
     function admin_way_get(OrderWayModel $model,$id){
 
@@ -991,6 +1009,13 @@ class OrderController extends Controller{
         $out['upd'] = 1;
         AJAX::success($out);
     }
+    function admin_way_del(OrderWayModel $model,$id){
+        $this->L->adminPermissionCheck(115);
+        $del = AdminFunc::del($model,$id);
+        TripModel::copyMutiInstance()->where(['id'=>$id,'type'=>3])->remove();
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
 
 
     # 顺风车申请
@@ -1019,6 +1044,7 @@ class OrderController extends Controller{
 
                 '用户ID',
                 '名字',
+                '手机号',
                 '品牌',
                 '车牌',
                 '驾照',
@@ -1037,6 +1063,7 @@ class OrderController extends Controller{
                 
                 'id',
                 'name',
+                'phone',
                 'brand',
                 'car_number',
                 [
@@ -1069,7 +1096,7 @@ class OrderController extends Controller{
             $where['search'] = ['user.name LIKE %n OR user.phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
 
-        $list = $model->select('*','user.name','city.areaName>city')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        $list = $model->select('*','user.name','user.phone','city.areaName>city')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
             $v->status_name = [
                 '0'=>'申请中',
@@ -1224,6 +1251,7 @@ class OrderController extends Controller{
 
                 '用户ID',
                 '名字',
+                '手机号',
                 '品牌',
                 '车牌',
                 '驾照',
@@ -1243,6 +1271,7 @@ class OrderController extends Controller{
                 
                 'id',
                 'name',
+                'phone',
                 'brand',
                 'car_number',
                 [
@@ -1280,7 +1309,7 @@ class OrderController extends Controller{
             $where['search'] = ['driver.name LIKE %n OR driver.phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
 
-        $list = $model->select('*','driver.name','city.areaName>city')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        $list = $model->select('*','driver.phone','driver.name','city.areaName>city')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
             $v->status_name = [
                 '0'=>'申请中',

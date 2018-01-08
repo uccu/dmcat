@@ -558,6 +558,7 @@
 
             }
             j('.load1').addClass('fadeOutUp')
+            w.loadListFunc && w.loadListFunc(m)
         })
 
 

@@ -346,7 +346,7 @@ class DriverController extends Controller{
         $info['money_today'] = $m->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         
         if(!$info['money_today'])$info['money_today'] = '0.00';
-        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type<3')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
+        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type IN (1,2)')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         $out['info'] = $info;
 
         AJAX::success($out);
@@ -424,7 +424,7 @@ class DriverController extends Controller{
         // $this->L->id = 3;
         !$this->L->id && AJAX::error('未登录');
         $where['driver_id'] = $this->L->id;
-        $where['type'] = ['type<3'];
+        $where['type'] = ['type IN (1,2)'];
         $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
 
         $select = ['start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,statuss,driver_id,coupon,total_fee,fee,stat.user_name,stat.driver_name'];
@@ -452,7 +452,7 @@ class DriverController extends Controller{
         }
 
 
-        $order_count = $tripModel->select('COUNT(*) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('statuss>44')->where('type<3')->find()->c;
+        $order_count = $tripModel->select('COUNT(*) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('statuss>44')->where('type IN (1,2)')->find()->c;
 
         $out['list'] = $list;
         $out['order_count'] = $order_count;
@@ -538,7 +538,7 @@ class DriverController extends Controller{
 
         !$this->L->id && AJAX::error('未登录');
 
-        $list = $judgeModel->select('*','user.name','user.avatar')->where('type<3')->where(['driver_id'=>$this->L->id])->order('create_time desc')->page($page,$limit)->get()->toArray();
+        $list = $judgeModel->select('*','user.name','user.avatar')->where('type IN (1,2)')->where(['driver_id'=>$this->L->id])->order('create_time desc')->page($page,$limit)->get()->toArray();
 
         $out['list'] = $list;
 

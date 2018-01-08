@@ -348,7 +348,7 @@ let act = {
         sync.add = function(){
 
             sendAdmin(`driver ${con.driver_id} updated position ${latitude},${longitude}`)
-            db.find('select * from c_trip where driver_id=? AND type<3 AND statuss IN (20,30)',[con.driver_id],function(re){
+            db.find('select * from c_trip where driver_id=? AND type IN (1,2) AND statuss IN (20,30)',[con.driver_id],function(re){
                 
                 if(re){
                     db.insert('insert into c_driver_serving_position set driver_id=?,trip_id=?,latitude=?,longitude=?,status=?',[driver.id,re.trip_id,latitude,longitude,re.statuss])
@@ -371,7 +371,7 @@ let act = {
             else di = dis(d.last_latitude,d.last_longitude,latitude,longitude);
             di += d.real_distance;
                         
-            db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type<3 AND statuss=30',[latitude,longitude,di,con.driver_id])
+            db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type IN (1,2) AND statuss=30',[latitude,longitude,di,con.driver_id])
 
             sendAdmin([`driver ${con.driver_id} add distance ${di}`,d.last_latitude,d.last_longitude,latitude,longitude])
                     
@@ -402,7 +402,7 @@ let act = {
         let sync = new SYNC
         sync.add = function(){
 
-            db.find('select * from c_trip where trip_id=? and driver_id=? and type<3',[trip_id,con.driver_id],function(trip){
+            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2)',[trip_id,con.driver_id],function(trip){
 
                 if(!trip){
                     con.sendText(content({status:400,type:'waiting',trip_id:trip_id,message:'行程不存在'}))
@@ -453,7 +453,7 @@ let act = {
         let sync = new SYNC
         sync.add = function(){
 
-            db.find('select * from c_trip where trip_id=? and driver_id=? and type<3',[trip_id,con.driver_id],function(trip){
+            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2)',[trip_id,con.driver_id],function(trip){
 
                 if(!trip){
                     con.sendText(content({status:400,type:'endWaiting',trip_id:trip_id,message:'行程不存在'}))
@@ -538,7 +538,7 @@ let act = {
         let sync = new SYNC
         sync.add = function(){
 
-            db.find('select * from c_trip where trip_id=? and driver_id=? and type<3',[trip_id,con.driver_id],function(trip){
+            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2)',[trip_id,con.driver_id],function(trip){
 
                 if(!trip){
                     con.sendText(content({status:400,type:'confirmPrice',trip_id:trip_id,message:'行程不存在'}))
@@ -653,7 +653,7 @@ let act = {
 
                 con.sendText(content({status:200,type:'login'}))
 
-                db.find('select * from c_trip where driver_id=? AND type<3 and statuss in(20,25,30,35)',[driver.id],function(re){
+                db.find('select * from c_trip where driver_id=? AND type IN (1,2) and statuss in(20,25,30,35)',[driver.id],function(re){
                     if(re)driver.serving = 1;
                     if(driver.serving)return
                     let g = function(r){
@@ -711,7 +711,7 @@ let act = {
         }
         else if(trip_id){
             sync.add = function(){
-                db.find('select * from c_trip where trip_id=? and driver_id=? and type<3',[trip_id,con.driver_id],function(w){sync.run(w)})
+                db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2)',[trip_id,con.driver_id],function(w){sync.run(w)})
             }
         }
         else{
@@ -850,7 +850,7 @@ let act = {
 
 
         sync.add = function(){
-            db.find('select * from c_trip where trip_id=? and type<3',[trip_id,con.driver_id],function(trip){
+            db.find('select * from c_trip where trip_id=? and type IN (1,2)',[trip_id,con.driver_id],function(trip){
 
                 if(!trip){
                     con.sendText(content({status:400,type:'orderDriving',trip_id:trip_id,message:'行程不存在'}))

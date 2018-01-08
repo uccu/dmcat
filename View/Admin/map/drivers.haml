@@ -1,0 +1,105 @@
+- extends "base.haml"
+
+
+- block body
+
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                .ibox.float-e-margins
+                    :css
+                        .topw .row>div{
+                            padding-bottom:20px
+                        }
+                    .ibox-title.topw(style="padding-top:20px")
+                        .row
+                .load1.sk-spinner.sk-spinner-wave.animated
+                    .sk-rect1
+                    .sk-rect2
+                    .sk-rect3
+                    .sk-rect4
+                    .sk-rect5
+                
+                .ibox.mainList2.float-e-margins
+                    #container(tabindex="0")
+                    #count(style="margin-top:30px")
+- block otherCss
+    :css
+        .modal-backdrop.in{z-index:1049 !important}
+        #container{
+            height: 500px;
+            margin: 0px;
+            outline: 0;
+        }
+        .amap-marker .marker-route {
+            position: absolute;
+            width: 40px;
+            height: 44px;
+            color: #e90000;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+        .amap-marker .marker-marker-bus-b {
+            background-image: url(/pic/jd_03.png)
+        }
+        .amap-marker .marker-marker-bus-n {
+            background-image: url(/pic/jd_07.png)
+        }
+- block otherScript
+    %script(src="http://webapi.amap.com/maps?v=1.4.3&key=#{key}")
+    -# %script(src="http://cache.amap.com/lbs/static/addToolbar.js")
+    :javascript
+        var map = new AMap.Map('container',{
+            resizeEnable: true,
+        });
+        var marks = [];
+        var loc;
+        var dis = function (lat1, lng1, lat2, lng2) {
+            var radLat1 = lat1 * Math.PI / 180.0;
+            var radLat2 = lat2 * Math.PI / 180.0;
+            var a = radLat1 - radLat2;
+            var b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
+            var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+            s = s * 6378.137;
+            s = Math.round(s * 10000) / 10;
+            return s
+        }
+        window.loadListFunc = function(m){
+            $('#count').text('共'+m.other.allCount+'司机，其中已接单的有'+m.other.bCount+'个司机，未接单的有'+m.other.nCount+'个司机')
+            
+            if(m.other.location){
+                if(m.other.location != loc){
+                    map.setCenter(m.other.location)
+                    loc = m.other.location
+                }
+                
+            }
+            while(marks.length){
+                
+                map.remove(marks.shift())
+
+            }
+            for(var i in m.list){
+                marks.push(new AMap.Marker({ //添加自定义点标记
+                    map: map,
+                    position: [m.list[i].longitude,m.list[i].latitude], //基点位置
+                    draggable: false,  //是否可拖动
+                    content: '<div class="marker-route marker-marker-bus-'+(m.list[i].busy == '1'?'b':'n')+'"></div>'   //自定义点标记覆盖物内容
+                }));
+            }
+        }
+        $(function(){
+            var e = new Dmcat.admin('#{getList|raw}')
+            window.flesh = function(){
+                e.flesh()
+            }
+            setInterval(function(){
+                e.flesh()
+            },20000)
+        })
+            
+        
+        
+            

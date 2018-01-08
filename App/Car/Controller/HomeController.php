@@ -129,8 +129,9 @@ class HomeController extends Controller{
 
         }elseif($type == 3){
 
-            $price = Func::getWayPrice($distance->distance / 1000,$num);
-            $out['start_price'] = '20.00';
+            $prices = Func::getWayPrice($distance->distance / 1000,$num);
+            $price = $prices['price'];
+            $out['start_price'] = $prices['start'];
 
         }elseif($type == 2){
             
@@ -389,7 +390,7 @@ class HomeController extends Controller{
         
         foreach($list as &$v){
 
-            $v->busy =  TripModel::copyMutiInstance()->where(['driver_id'=>$v->driver_id])->where('type < 3 AND status IN (%c)',[20,25,30,35],$this->L->id)->find() ? '1' : '0';
+            $v->busy =  TripModel::copyMutiInstance()->where(['driver_id'=>$v->driver_id])->where('type IN (1,2) AND status IN (%c)',[20,25,30,35],$this->L->id)->find() ? '1' : '0';
         }
 
 

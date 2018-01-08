@@ -72,7 +72,7 @@ module.exports = {
     
     driverGetOrders(a,o,f){
         // console.log(a,o)
-        db.get('select * from c_trip where statuss=10 and type<3 and start_latitude between ? and ? and start_longitude between ? and ? and driver_id=0 order by create_time desc',[a-0.1,a+0.1,o-0.1,o+0.1],function(w){
+        db.get('select * from c_trip where statuss=10 and type IN (1,2) and start_latitude between ? and ? and start_longitude between ? and ? and driver_id=0 order by create_time desc',[a-0.1,a+0.1,o-0.1,o+0.1],function(w){
             if(w.length){
 
                 loopD(a,o,w,f)
