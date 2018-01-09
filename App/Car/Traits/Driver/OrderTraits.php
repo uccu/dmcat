@@ -81,11 +81,11 @@ trait OrderTraits{
 
         $user->online = '0';
         if($order->phone){
-            $user->phone = $user->phone;
+            $user->phone = $order->phone;
         }
         
         $userOnline = UserOnlineModel::copyMutiInstance()->find($trip->user_id);
-        if($userOnline && $driverPosition->latitude != 0){
+        if($userOnline && $userOnline->latitude != 0){
             $user->position = $userOnline;
             $user->online = '1';
         }
@@ -429,5 +429,12 @@ trait OrderTraits{
         AJAX::success();
 
 
+    }
+
+    function test(){
+
+        $a = substr('20180109123232',0,4) .'-'. substr('20180109123232',4,2) .'-'. substr('20180109123232',6,2).' '. substr('20180109123232',8,2) .':'. substr('20180109123232',10,2) .':'. substr('20180109123232',12);
+
+        var_dump($a);
     }
 }

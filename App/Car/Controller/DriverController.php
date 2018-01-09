@@ -347,6 +347,9 @@ class DriverController extends Controller{
         
         if(!$info['money_today'])$info['money_today'] = '0.00';
         $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type IN (1,2)')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
+        
+        $info['time'] = '3000';
+        
         $out['info'] = $info;
 
         AJAX::success($out);

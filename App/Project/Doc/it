@@ -373,6 +373,26 @@ id 行程ID
 {}
 
 
+
+
+1.46 修改终点位置
+user/changeEnd
+trip_id 行程id
+end_latitude 纬度
+end_longitude 经度
+end_name 终点位置
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
+1.47 刷新计费
+user/refleshPrice
+trip_id 行程id
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
 ws.1.1 用户登录
 @
 type 固定login

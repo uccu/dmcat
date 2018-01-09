@@ -401,7 +401,7 @@ class UserController extends Controller{
                     else $v->driverInfo = DriverModel::copyMutiInstance()->select('avatar','name','sex','phone','judge_score','car_number','brand')->find($v->driver_id);
                     if(!$v->driverInfo)$v->driver_id = '0';
                     else{
-                        $v->driverInfo->order_count = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type<2')->where(['driver_id'=>$v->driver_id])->find()->c;
+                        $v->driverInfo->order_count = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>44')->where('type<2')->where(['driver_id'=>$v->driver_id])->find()->c;
                     }
                 }
             }
@@ -420,9 +420,9 @@ class UserController extends Controller{
         !$this->L->id && AJAX::error('未登录');
         $where['driver_id'] = $this->L->id;
         $where['type'] = 3;
-        $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
+        $list = $tripModel->select('*','stat.user_name','stat.driver_name')->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
 
-        $select = 'start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,status,driver_id';
+        $select = ['start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,statuss,driver_id,coupon,total_fee,fee,stat.user_name,stat.driver_name'];
 
         foreach($list as $k=>&$v){
 
@@ -445,7 +445,7 @@ class UserController extends Controller{
         }
 
 
-        $order_count = $tripModel->select('COUNT(*) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('status>3')->where('type=3')->find()->c;
+        $order_count = $tripModel->select('COUNT(*) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('statuss>44')->where('type=3')->find()->c;
 
         $out['list'] = $list;
         $out['order_count'] = $order_count;
@@ -959,15 +959,15 @@ class UserController extends Controller{
      * @param mixed $paymentModel 
      * @return mixed 
      */
-    function offlinePay($id,TripModel $tripModel,PaymentModel $paymentModel){
+    function offlinePay($trip_id,TripModel $tripModel,PaymentModel $paymentModel){
     
         !$this->L->id && AJAX::error('未登录');
         !$this->L->userInfo->type && AJAX::error('不是司机');
 
-        $trip = $tripModel->find($id);
+        $trip = $tripModel->find($trip_id);
 
         $trip->driver_id != $this->L->id && AJAX::error('无权限');
-        $trip->status != 4 && AJAX::error('该订单已过期');
+        $trip->statuss != 45 && AJAX::error('该订单已过期');
         $trip->type != 3 && AJAX::error('error');
 
         $data['user_id'] = $trip->user_id;
@@ -989,22 +989,22 @@ class UserController extends Controller{
         $data['pay_type'] = 'offline';
         $data['update_time'] = TIME_NOW;
         $data['success_date'] = date('Y-m-d',TIME_NOW);
-        $data['trip_id'] = $id;
+        $data['trip_id'] = $trip_id;
 
         DB::start();
 
 
         $paymentModel->set($data)->add();
 
-        $trip->status = 5;
+        $trip->statuss = 50;
         $trip->save();
 
         if($trip->type == 1){
-            Model::copyMutiInstance('order_driving')->set(['status'=>5])->save($trip->id);
+            Model::copyMutiInstance('order_driving')->set(['statuss'=>50])->save($trip->id);
         }elseif($trip->type == 2){
-            Model::copyMutiInstance('order_taxi')->set(['status'=>5])->save($trip->id);
+            Model::copyMutiInstance('order_taxi')->set(['statuss'=>50])->save($trip->id);
         }elseif($trip->type == 3){
-            Model::copyMutiInstance('order_way')->set(['status'=>5])->save($trip->id);
+            Model::copyMutiInstance('order_way')->set(['statuss'=>50])->save($trip->id);
         }
         
 
