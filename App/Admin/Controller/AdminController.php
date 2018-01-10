@@ -12,15 +12,8 @@ use App\Car\Tool\AdminFunc;
 use Uccu\DmcatTool\Tool\AJAX;
 
 # 数据模型
-use App\Car\Model\UserModel;
-use App\Car\Model\DriverModel;
 use App\Car\Model\AdminModel;
 use App\Car\Model\AreaModel;
-use App\Car\Model\JudgeModel;
-use App\Car\Model\UserMoneyLogModel;
-use App\Car\Model\DriverMoneyLogModel;
-use App\Car\Model\AdminIncomeModel;
-use App\Car\Model\AdminMoneyLogModel;
 
 use App\Admin\Set\Gets;
 use App\Admin\Set\Lists;
