@@ -354,7 +354,14 @@ trait OrderTraits{
         $order->other_fee = $trip->other_fee ? json_decode($trip->other_fee):[];
         $order->cancel_type_name = $trip->cancel_type_name;
         $order->cancel_reason = $trip->cancel_reason;
-        
+        $order->during = $trip->during;
+        $order->pay_type = $trip->pay_type;
+        $order->laying = $trip->laying;
+        $order->start_lay_time = $trip->start_lay_time;
+        if($trip->laying){
+            $order->during = $trip->during + TIME_NOW - $order->start_lay_time;
+            if($order->during > 600)$order->lay_fee = ceil(($order->during-600)/60);
+        }
 
         $out['info'] = $order;
         $out['type'] = $type;

@@ -111,6 +111,7 @@ module.exports = {
     },
     getWayPrice($distance,$num){
         var $price = 0;
+        var start = 20;
         if($distance<6)$price = 20;
         else if($distance<100)$price = 20 + 1.5 * ($distance - 6);
         else if($distance<300)$price = 20 + 1.5 * (100 - 6) + 1.4 * ($distance - 100);
@@ -118,10 +119,13 @@ module.exports = {
 
         if($num == 2){
             $price *= 1.7;
+            start  *= 1.7;
         }else if($num == 3){
             $price *= 2.8;
+            start  *= 2.8;
         }else if($num == 4){
             $price *= 4.1;
+            start  *= 4.1
         }
 
         return $price;

@@ -901,6 +901,9 @@ let act = {
             else if(type == 2)action.getTaxiPrice(result.city_id,trip.in_time,trip.real_distance/1000,function(prices){
                 sync.run(trip,prices,result)
             })
+            else if(type == 3)action.getWayPrice(trip.real_distance/1000,result.num,function(prices){
+                sync.run(trip,prices,result)
+            })
         }
         sync.add = function(trip,prices,result){
             db.update('update c_trip set driver_id=?,statuss=35,laying=0,out_time=?,start_fee=? where trip_id=?',[con.user_id,parseInt(Date.now() / 1000),prices.start,trip_id],function(){

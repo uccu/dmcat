@@ -4,7 +4,7 @@ const db = require('./db')
 
 
 let connection;
-let cb;
+let cbs;
 function handleDisconnect() {
     connection = mysql.createConnection(db_config);                                               
     connection.connect(function(err) {              
@@ -14,7 +14,10 @@ function handleDisconnect() {
         return;
         }         
         console.log("connect db success");
-        cb instanceof Function && cb()
+        if(cbs instanceof Function){
+            cbs()
+            cbs = undefined
+        }
 
     });                                                                           
     connection.on('error', function(err) {
@@ -30,7 +33,7 @@ function handleDisconnect() {
 handleDisconnect();
 
 exports.$ = function(c){
-    cb = c
+    cbs = c
 }
 exports.find = function(sql,param,cb){
 
@@ -44,7 +47,14 @@ exports.find = function(sql,param,cb){
 
             if(err){
                 console.log('[SELECT ERROR] - ',err.message);
-                cb instanceof Function && cb(false)
+                if(err.message == 'read ECONNRESET'){
+                    cbs = function(){
+                        exports.replace(sql,param,cb)
+                    }
+                    handleDisconnect();
+                }else{
+                    cb instanceof Function && cb(false)
+                }
                 return;
             }        
             cb instanceof Function && cb(result.length?result[0]:false)
@@ -64,9 +74,16 @@ exports.get = function(sql,param,cb){
 
             if(err){
                 console.log('[SELECT ERROR] - ',err.message);
-                cb instanceof Function && cb([])
+                if(err.message == 'read ECONNRESET'){
+                    cbs = function(){
+                        exports.replace(sql,param,cb)
+                    }
+                    handleDisconnect();
+                }else{
+                    cb instanceof Function && cb([])
+                }
                 return;
-            }        
+            }
             cb instanceof Function && cb(result?result:[])
         });
     
@@ -85,8 +102,14 @@ exports.insert = function(sql,param,cb){
 
             if(err){
                 console.log('[INSERT ERROR] - ',err.message);
-                console.log(err);
-                cb instanceof Function && cb(0)
+                if(err.message == 'read ECONNRESET'){
+                    cbs = function(){
+                        exports.replace(sql,param,cb)
+                    }
+                    handleDisconnect();
+                }else{
+                    cb instanceof Function && cb(0)
+                }
                 return;
             }        
             cb instanceof Function && cb(result?result.insertId:0)
@@ -107,10 +130,18 @@ exports.replace = function(sql,param,cb){
 
             if(err){
                 console.log('[REPLACE ERROR] - ',err.message);
-                cb instanceof Function && cb(0)
+                if(err.message == 'read ECONNRESET'){
+                    cbs = function(){
+                        exports.replace(sql,param,cb)
+                    }
+                    handleDisconnect();
+                }else{
+                    cb instanceof Function && cb(0)
+                }
                 return;
-            }        
+            }
             cb instanceof Function && cb(result?result.insertId:0)
+            
         });
     
 }
@@ -127,9 +158,15 @@ exports.update = function(sql,param,cb){
         connection.query(sql,param,function (err, result) {
 
             if(err){
-                console.log('[UPDATE ERROR]');
-                console.log(err);
-                cb instanceof Function && cb(0)
+                console.log('[UPDATE ERROR]',err.message);
+                if(err.message == 'read ECONNRESET'){
+                    cbs = function(){
+                        exports.replace(sql,param,cb)
+                    }
+                    handleDisconnect();
+                }else{
+                    cb instanceof Function && cb(0)
+                }
                 return;
             }        
             cb instanceof Function && cb(result?result.affectedRows:0)
@@ -150,7 +187,14 @@ exports.delete = function(sql,param,cb){
 
             if(err){
                 console.log('[DELETE ERROR] - ',err.message);
-                cb instanceof Function && cb(0)
+                if(err.message == 'read ECONNRESET'){
+                    cbs = function(){
+                        exports.replace(sql,param,cb)
+                    }
+                    handleDisconnect();
+                }else{
+                    cb instanceof Function && cb(0)
+                }
                 return;
             }        
             cb instanceof Function && cb(result?result.affectedRows:0)
