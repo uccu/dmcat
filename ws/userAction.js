@@ -916,6 +916,7 @@ let act = {
             db.update('update c_order_'+className+' set statuss=35,distance=?,fee=?,total_fee=? where id=?',[trip.real_distance/1000,fee,total_fee,id],function(){
                 sync.run(result)
             })
+
         }
         sync.add = function(result){
             /** 设置司机状态 */
@@ -1003,7 +1004,7 @@ let act = {
         let sync = new SYNC
         sync.add = function(){
 
-            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2)',[trip_id,con.user_id],function(trip){
+            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (3)',[trip_id,con.user_id],function(trip){
 
                 if(!trip){
                     con.sendText(content({status:400,type:'endWaitingDriver',trip_id:trip_id,message:'行程不存在'}))
@@ -1051,7 +1052,7 @@ let act = {
 
             })
 
-            
+
         }
 
         sync.run()
@@ -1166,119 +1167,7 @@ let z = function(obj,con){
 
     if(act[obj.type]){
         act[obj.type](obj,con);
-    }else switch(obj.type){
-
-        
-        case 'startWay':
-            /** 司机是否登录 */
-            if(con.user_id){
-
-                /** 获取订单ID */
-                let id = obj.id
-
-                /** 查询订单 */
-                db.find('select * from c_order_way where id=?',[id],function(result){
-
-                    /** 订单是否存在 */
-                    if(!result)return;
-
-                    /** 订单是否属于登录司机 */
-                    if(result.driver_id != con.user_id)return;
-
-                    /** 订单是否是带接客状态 */
-                    if(result.status != 2)return;
-
-                        /** 更新订单 */
-                        db.update('update c_order_way set status=3 where id=?',[id],function(){
-                            /** 获取司机 */
-                            let driver = data.UserMap.get(con.user_id+'')
-                            /** 更新行程 */
-                            db.update('update c_trip set driver_id=?,status=3,in_time=?,last_latitude=?,last_longitude=? where id=? and type=3',[con.user_id,parseInt(Date.now() / 1000),driver.latitude,driver.longitude,id],function(){
-
-                                db.update('update c_driver_way set status=0 where user_id=? and status=1',[con.user_id,con.user_id],function(){
-
-                                    
-                                    /** 设置司机状态为服务中 */
-                                    driver.serving = 1;
-                                    con.sendText(content({status:200,type:'startWay',id:id}))
-
-                                    /** 获取用户 */
-                                    let user = data.UserMap.get(result.user_id+'')
-                                    if(user)user.con.sendText(content({status:200,type:'startWay',id:id}))
-
-                                })
-
-                                
-                            })
-                        })
-                    
-                })
-            }
-            break;
-        case 'endWay':
-        
-            /** 司机是否登录 */
-            if(con.user_id){
-
-                /** 获取订单ID */
-                let id = obj.id
-
-                /** 查询订单 */
-                db.find('select * from c_order_way where id=?',[id],function(result){
-
-                    /** 订单是否存在 */
-                    if(!result)return;
-
-                    /** 订单是否属于登录司机 */
-                    if(result.driver_id != con.user_id)return;
-
-                    /** 订单是否是带接客状态 */
-                    if(result.status != 3)return;
-                    db.find('select * from c_trip where id=? and type=3',[id],function(trip){
-                        
-                        if(!trip)return;
-
-                        let fee = action.getWayPrice(result.distance,result.num);
-                        let total_fee = fee - result.coupon;
-
-                        /** 更新订单 */
-                        db.update('update c_order_way set status=4,distance=?,fee=?,total_fee=? where id=?',[trip.real_distance/1000,fee,total_fee,id],function(){
-
-                            /** 更新行程 */
-                            db.update('update c_trip set driver_id=?,status=4,out_time=? where id=? and type=3',[con.user_id,parseInt(Date.now() / 1000),id],function(){
-
-                                /** 获取司机 */
-                                let driver = data.UserMap.get(con.user_id+'')
-                                /** 设置司机状态 */
-                                driver.serving = 0;
-                                con.sendText(content({status:200,type:'endWay',id:id}))
-
-                                /** 获取用户 */
-                                let user = data.UserMap.get(result.user_id+'')
-                                if(user)user.con.sendText(content({status:200,type:'endWay',id:id}))
-                                
-                            })
-                        })
-                    })
-                })
-            }
-            break;
-
-        case 'orderWay':
-            /** 司机是否登录 */
-            if(con.user_id){
-                let id = obj.id
-                let user = data.UserMap.get(id+'')
-                if(user)user.con.sendText(content({status:200,type:'orderWay',driver_id:con.user_id}))
-                con.sendText(content({status:200,type:'orderWay',user_id:con.id}))
-                sendAdmin('one driver get the order')
-            }
-            break;
-        
-        default:
-            break;
     }
-
 
 
 }

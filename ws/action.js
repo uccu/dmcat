@@ -109,7 +109,7 @@ module.exports = {
         })
 
     },
-    getWayPrice($distance,$num){
+    getWayPrice($distance,$num,g){
         var $price = 0;
         var start = 20;
         if($distance<6)$price = 20;
@@ -128,7 +128,11 @@ module.exports = {
             start  *= 4.1
         }
 
-        return $price;
+        g({
+            total:$price,
+            distance:$price-start,
+            start:start,
+        })
     },
     getDrivingPrice(city_id,in_time,distance,g){
 
