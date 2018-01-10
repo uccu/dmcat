@@ -12,4 +12,9 @@ class UserIncomeModel extends Model{
         return $this->join(UserModel::class,'id','user_id');
     }
 
+    public function trip(){
+
+        return $this->join(TripModel::class,'trip_id','trip_id','LEFT');
+    }
+
 }

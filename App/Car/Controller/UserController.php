@@ -32,7 +32,7 @@ use App\Car\Model\UserScoreLogModel;
 use App\Car\Model\UserMoneyLogModel; 
 use App\Car\Model\UserBankModel; 
 use App\Car\Model\UserCouponModel; 
-use App\Car\Model\IncomeModel; 
+use App\Car\Model\UserIncomeModel; 
 use App\Car\Model\FeedbackModel; 
 use App\Car\Model\UsedCarModel; 
 use App\Car\Model\RoadModel; 
@@ -952,21 +952,21 @@ class UserController extends Controller{
      * @param mixed $incomeModel 
      * @return mixed 
      */
-    function income(IncomeModel $incomeModel,$page = 1 ,$limit = 10){
+    function income(UserIncomeModel $incomeModel,$page = 1 ,$limit = 10){
 
         !$this->L->id && AJAX::error('未登录');
         $month = date('Ym');
 
         $week = TIME_TODAY - (date('w') - 1) * 24 * 3600;
 
-        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type=3')->where(['driver_id'=>$this->L->id])->where('create_time>%n',$week)->find()->m;
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where(['user_id'=>$this->L->id])->where('create_time>%n',$week)->find()->m;
         if(!$money)$money = '0.00';
         $out['month'] = $money;
-        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where('type=3')->where(['driver_id'=>$this->L->id])->find()->m;
+        $money = $incomeModel->select('SUM(`money`) AS m','RAW')->where(['user_id'=>$this->L->id])->find()->m;
         if(!$money)$money = '0.00';
         $out['all'] = $money;
 
-        $list = $incomeModel->select('*','trip.start_name','trip.end_name')->page($page,$limit)->where('type=3')->where(['driver_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
+        $list = $incomeModel->select('*','trip.start_name','trip.end_name')->page($page,$limit)->where(['user_id'=>$this->L->id])->order('create_time desc')->get()->toArray();
 
         // $list2 = [];
 

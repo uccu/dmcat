@@ -173,6 +173,9 @@ trait OrderTraits{
             $order->during = $trip->during + TIME_NOW - $order->start_lay_time;
             if($order->during > 600)$order->lay_fee = ceil(($order->during-600)/60);
         }
+        if(in_array($order->statuss,[30])){
+            $order->total_fee += $order->lay_fee;
+        }
 
         $order->hasLog = TripDrivingLogModel::copyMutiInstance()->find($trip->trip_id) ?'1':'0';
 
