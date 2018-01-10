@@ -103,6 +103,9 @@ let act = {
         }
         let sync = new SYNC;
         let user = data.UserMap.get(con.user_id)
+        if(!user){
+            return
+        }
         let latitude = user.latitude = parseFloat(obj.latitude || 0)
         let longitude = user.longitude = parseFloat(obj.longitude || 0)
 
@@ -201,7 +204,7 @@ let act = {
                     let driver = data.DriverMap.get(ids[n]+'')
                     if(driver && !driver.serving){
                         driver.con.sendText(content({status:200,type:'distribute',order_id:id,trip_id:trip_id}))
-                        if(user)user.clock = setTimeout(q=>run(n+1),30000)
+                        data.clock.set(obj.user_id + '',setTimeout(q=>run(n+1),30000))
                     }else{
                         run(n+1)
                     }
@@ -423,8 +426,7 @@ let act = {
                     cancel_type = 3;
                     }else cancel_type = 5;
                 }
-                
-                if(user && user.clock)clearTimeout(user.clock);
+                if(data.clock.get(result.user_id+''))clearTimeout(data.clock.get(result.user_id+''));
                 
                 db.update('update c_order_'+className+' set statuss=0 where id=?',[id],function(){
                     db.update('update c_trip set cancel_type=?,statuss=0,cancel_reason=? where trip_id=?',[cancel_type,reason,trip_id],function(){
@@ -655,8 +657,9 @@ let act = {
 
 
                 let user = data.UserMap.get(result.user_id+'')
+                if(data.clock.get(result.user_id+''))clearTimeout(data.clock.get(result.user_id+''));
                 if(user){
-                    if(user && user.clock)clearTimeout(user.clock);
+                    
                     user.con.sendText(content({status:200,type:'orderWay',trip_id:trip_id,id:id}))
                 }
                 

@@ -88,7 +88,118 @@ let act = {
 
             console.log(`admin ${con.admin_id} pushDrivingOrder ${obj.id}(${obj.trip_id}) to driver ${obj.driver_id}`)
         }
-    }
+    },
+    askForDrivingV2(obj,con){ /** 发起代驾订单 */
+        if(!obj.user_id){
+            con.sendText(content({status:400,type:'login',message:'未登录'}))
+            console.error('one user login error 5')
+            return
+        }
+
+        let user = data.UserMap.get(obj.user_id + '')
+        let 
+            start_latitude = parseFloat(obj.start_latitude || 0),
+            start_longitude = parseFloat(obj.start_longitude || 0),
+            end_latitude = parseFloat(obj.end_latitude || 0),
+            end_longitude = parseFloat(obj.end_longitude || 0),
+            start_name = obj.start_name || '',
+            end_name = obj.end_name || '',
+            start_fee = obj.start_fee || '0.00',
+            create_time = parseInt(Date.now() / 1000),
+            distance = parseFloat(obj.distance || 0),
+            start_time = parseInt(obj.start_time || 0),
+            estimated_price = parseFloat(obj.estimated_price || 0),
+            phone = obj.phone || '',
+            name = obj.name || '',
+            city_id = parseInt(obj.city_id || 0);
+        let sync = new SYNC;
+        
+        /** 是否有正在进行中的订单 */
+        sync.add = function(){
+            db.find('select * from c_trip where user_id=? and statuss in (5,10,15,20,25,30,35,40,45)',[obj.user_id],function(result){
+                /** 判断是否有订单正在执行中 */
+                if(result){
+                    con.sendText(content({status:400,type:'askForDriving',message:'不能重复下单.'+result.trip_id}))
+                    return
+                }
+                sync.run();
+            })
+        }
+        /** 插入订单和行程 */
+        sync.add = function(){
+            /** 创建订单 */
+            db.insert('insert into c_order_driving set start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,create_time=?,statuss=5,user_id=?,distance=?,estimated_price=?,start_time=?,phone=?,name=?,city_id=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,obj.user_id,distance,estimated_price,start_time,phone,name,city_id],function(id){
+                if(!id)return;
+                obj.id = id;
+                /** 创建行程 */
+                db.insert('insert into c_trip set start_fee=?,statuss=5,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=1,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[start_fee,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,obj.user_id,create_time,distance,estimated_price],function(trip_id){
+                    obj.trip_id = trip_id
+                    sync.run(id,trip_id)
+                })
+            })
+        }
+        /** 查找3公里内的司机 */
+        sync.add = function(id,trip_id){
+            db.get('select d.driver_id,round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) AS `distance` from c_driver_online d inner join c_driver r on d.driver_id=r.id where round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) between ? and ? and r.type_driving=1 order by distance',[start_latitude,start_latitude,start_longitude,start_latitude,start_latitude,start_longitude,0,3000],function(ids){
+                sendAdmin(ids)
+                for(let i in ids){
+                    ids[i] = ids[i].driver_id
+                }
+                /** 发送成功信息 */
+                con.sendText(content({status:200,type:'askForDriving',info:obj}))
+                let run = function(n){
+                    if(ids.length <= n){
+                        sync.run(id,trip_id);
+                        return;
+                    }
+                    let driver = data.DriverMap.get(ids[n]+'')
+                    if(driver && !driver.serving){
+                        driver.con.sendText(content({status:200,type:'distribute',order_id:id,trip_id:trip_id}))
+                        data.clock.set(obj.user_id + '',setTimeout(q=>run(n+1),30000))
+                    }else{
+                        run(n+1)
+                    }
+                }
+                run(0)
+            })
+        }
+        sync.add = function(id,trip_id){
+
+            db.update('update c_order_driving set statuss=10 where id=?',[id],function(){
+                db.update('update c_trip set statuss=10 where trip_id=?',[trip_id],function(){
+                    sync.run(id);
+                });
+            });
+        }
+        sync.add = function(id){
+            db.get('select d.driver_id,round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) AS `distance` from c_driver_online d where round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) between ? and ?',[start_latitude,start_latitude,start_longitude,start_latitude,start_latitude,start_longitude,3000,5000],function(ids){
+
+                con.sendText(content({status:200,type:'gotoOrder',info:obj}))
+
+
+                for(let i in ids){
+                    ids[i] = ids[i].driver_id
+                }
+                
+                let drivers = []
+                for(let k in ids){
+                    drivers.push(ids[k])
+                    let driver = data.DriverMap.get(ids[k]+'')
+                    if(driver){
+                        if(driver.serving)continue
+                        let g = function(r){
+                            driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'create',list:r}))
+                        };
+                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
+                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
+                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                    }
+                }
+                if(drivers.length)db.update('update c_order_driving set driver_ids=? where id=?',[drivers.join(','),id])
+            })
+        }
+        sync.run();
+    },
     
 
 }

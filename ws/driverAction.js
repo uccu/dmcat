@@ -766,8 +766,8 @@ let act = {
         sync.add = function(result){
             con.sendText(content({status:200,type:'cancelAskForDrivingDriver',id:id,trip_id:trip_id}))
             let user = data.UserMap.get(result.user_id+'')
+            if(data.clock.get(result.user_id+''))clearTimeout(data.clock.get(result.user_id+''));
             if(user){
-                if(user && user.clock)clearTimeout(user.clock);
                 user.con.sendText(content({status:200,type:'statusChange'}))
                 user.con.sendText(content({status:200,type:'cancelAskForDrivingDriver',id:id,trip_id:trip_id}))
             }
@@ -929,8 +929,8 @@ let act = {
                     (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
                 }
                 let user = data.UserMap.get(result.user_id+'')
+                if(data.clock.get(result.user_id+''))clearTimeout(data.clock.get(result.user_id+''));
                 if(user){
-                    if(user && user.clock)clearTimeout(user.clock);
                     user.con.sendText(content({status:200,type:'orderDriving',trip_id:trip_id,id:id}))
                     // post('user/push',{id:result.user_id,message:'有司机接了您的订单！',type:'order_order'});
                 }
