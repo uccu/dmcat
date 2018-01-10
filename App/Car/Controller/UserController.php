@@ -962,7 +962,7 @@ class UserController extends Controller{
     function offlinePay($trip_id,TripModel $tripModel,PaymentModel $paymentModel){
     
         !$this->L->id && AJAX::error('未登录');
-        !$this->L->userInfo->type && AJAX::error('不是司机');
+
 
         $trip = $tripModel->find($trip_id);
 
@@ -985,7 +985,7 @@ class UserController extends Controller{
         !$order && AJAX::error('error');
         
         $data['total_fee'] = $order->total_fee;
-        $data['out_trade_no'] = 'C'.date('YmdHis',$trip->create_time).Func::add_zero($trip->id,6);
+        $data['out_trade_no'] = DATE_TODAY.Func::randWord(10,3);
         $data['pay_type'] = 'offline';
         $data['update_time'] = TIME_NOW;
         $data['success_date'] = date('Y-m-d',TIME_NOW);
@@ -997,6 +997,7 @@ class UserController extends Controller{
         $paymentModel->set($data)->add();
 
         $trip->statuss = 50;
+        $trip->pay_type = 2;
         $trip->save();
 
         if($trip->type == 1){
@@ -1006,6 +1007,10 @@ class UserController extends Controller{
         }elseif($trip->type == 3){
             Model::copyMutiInstance('order_way')->set(['statuss'=>50])->save($trip->id);
         }
+
+
+
+        Func::addIncome($trip->driver_id,$trip->user_id,$order,$trip->type,$trip->trip_id,1);
         
 
         DB::commit();
