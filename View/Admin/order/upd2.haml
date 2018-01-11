@@ -68,38 +68,25 @@
             }
             g()
 
+
+            window.startFnPreprocessKeyword = function(d){
+                
+                return d
+
+            }
+
+            window.endFnPreprocessKeyword = function(d){
+
+                
+                return d
+            }
+
             var get = wget('get');
             var e = new Dmcat.admin(get,{},'info');
 
-            function getCity(){
+            
 
-                var province_id = $('[name="province_id"]').val()
-                if(province_id != '0'){
-                    var province_name = $('[value="'+province_id+'"]').text()
-                    if(!province_name){
-                        toastr['error']('请选择省市');return false
-                    }
-                }else{
-                    toastr['error']('请选择省市');return false
-                }
-                var city_id = $('[name="city_id"]').val()
-                if(city_id != '0' && city_id != null){
-                    var city_name = $('[value="'+city_id+'"]').text()
-                    if(!city_name){
-                        toastr['error']('请选择省市');return false
-                    }
-                }else{
-                    toastr['error']('请选择省市');return false
-                }
-
-                return {
-                    province_name:province_name,
-                    city_name:city_name,
-                    city_id:city_id,
-                }
-            }
-
-            function getLocation(cityInfo,s,f){
+            function getLocation(s,f){
 
                 var data = $('[name="'+s+'"]').data()
                 var id = parseInt($('[name="'+s+'"]').attr('data-id'))
@@ -126,10 +113,11 @@
 
             }
 
+            
+
             $('#pai').click(function(){
                 
-                var cityInfo = getCity();
-                if(!cityInfo)return
+                
                 if(!$('[name="start"]').val()){
                     toastr['error']('请填写起点地址');return false
                 }
@@ -139,9 +127,9 @@
                 if(!$('[name="sphone"]').val()){
                     toastr['error']('请填写发起人手机号');return false
                 }
-                getLocation(cityInfo,'start',function(start){
+                getLocation('start',function(start){
                     // curl_succ('获取起点地址成功')
-                    getLocation(cityInfo,'end',function(end){
+                    getLocation('end',function(end){
                         // curl_succ('获取终点地址成功')
                         curl('/home/getLocationInfo',{start_latitude:start.location[1],start_longitude:start.location[0],end_latitude:end.location[1],end_longitude:end.location[0],type:1},function(w){
                             
@@ -164,7 +152,7 @@
                                 obj.estimated_price = w.totalPrice
                                 obj.phone = $('[name="phone"]').val()
                                 obj.name = $('[name="phone"]').val()
-                                obj.city_id = cityInfo.city_id
+                                obj.city_id = w.area.cityId
                                 obj.user_id = u.info.id
                                 obj.type = 'askForDrivingV2'
 
