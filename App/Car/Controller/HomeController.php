@@ -399,6 +399,33 @@ class HomeController extends Controller{
 
     }
 
+
+    /** 正向获取地理编码
+     * searchGeo
+     * @param mixed $address 
+     * @return mixed 
+     */
+    function searchGeo($address){
+
+        if($address){
+
+            $data['key'] = $key = L::getSingleInstance()->config->GAODE_KEY;
+            $data['keywords'] = $address;
+            $data = json_decode(Func::curl('http://restapi.amap.com/v3/place/text?parameters',$data));
+
+            if(!$data->status)AJAX::error('获取失败');
+
+            $list = $data->pois;
+        }else{
+            $list = [];
+        }
+
+        
+        $out['list'] = $list;
+
+        AJAX::success($out);
+    }
+
     
     
 }

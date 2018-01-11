@@ -119,7 +119,7 @@ let act = {
             db.find('select * from c_trip where user_id=? and statuss in (5,10,15,20,25,30,35,40,45)',[obj.user_id],function(result){
                 /** 判断是否有订单正在执行中 */
                 if(result){
-                    con.sendText(content({status:400,type:'askForDriving',message:'不能重复下单.'+result.trip_id}))
+                    con.sendText(content({status:400,type:'askForDriving',message:'该用户不能重复下单.'+result.trip_id}))
                     return
                 }
                 sync.run();
@@ -141,7 +141,6 @@ let act = {
         /** 查找3公里内的司机 */
         sync.add = function(id,trip_id){
             db.get('select d.driver_id,round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) AS `distance` from c_driver_online d inner join c_driver r on d.driver_id=r.id where round( 6378.138 * 2 * asin( sqrt( pow( sin( (d.latitude* PI()/180- ? * PI() /180)/2 ),2 )+ cos(d.latitude* PI()/180)*cos(? * PI() /180)* pow( sin( (d.longitude* PI()/180 - ? * PI()/180)/2 ),2 ) ) )*1000 ) between ? and ? and r.type_driving=1 order by distance',[start_latitude,start_latitude,start_longitude,start_latitude,start_latitude,start_longitude,0,3000],function(ids){
-                sendAdmin(ids)
                 for(let i in ids){
                     ids[i] = ids[i].driver_id
                 }

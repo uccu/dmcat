@@ -305,7 +305,33 @@ class StaffController extends Controller{
         AJAX::success($out);
     }
 
+    function admin_user_get2(UserModel $model,$phone){
 
+        $this->L->adminPermissionCheck(68);
+
+        Func::check_phone($phone);
+        
+        $info = $model->where('phone=%n',$phone)->find();
+
+        if($info){
+            $data['salt'] = Func::randWord(6);
+            $data['password'] = $this->encrypt_password($pwd,$data['salt']);
+            $data['create_time'] = TIME_NOW;
+            $data['phone'] = $phone;
+
+            $upd = AdminFunc::upd($model,0,$data)->getStatus();
+            $info = $model->find($upd);
+        }
+
+        $out = 
+            [
+                'info'  =>  $info,
+
+            ];
+
+        AJAX::success($out);
+
+    }
 
 
     # 管理司机

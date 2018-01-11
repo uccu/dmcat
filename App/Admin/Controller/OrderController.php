@@ -77,6 +77,12 @@ class OrderController extends Controller{
 
         View::hamlReader('order/upd','Admin');
     }
+
+
+    function upd2(){
+
+        View::hamlReader('order/upd2','Admin');
+    }
     
 
 
@@ -1484,6 +1490,50 @@ class OrderController extends Controller{
 
         AJAX::success($out);
 
+    }
+
+    # 400派单
+    function admin_400_get(OrderDrivingModel $model,$id){
+
+        $m = Gets::getSingleInstance($model,0);
+
+        # 权限
+        $m->checkPermission(165);
+
+        # 允许操作接口
+        $m->setOpt('get','../order/admin_400_get');
+
+        # 设置表体
+        $m->setBody(['type'=>'hidden','name'=>'id']);
+        $m->setBody(['title'=>'发起人（手机号）','name'=>'sphone','size'=>'4']);
+        $staD = $m->setBody(['title' =>'起点','name'  =>'start','size'  =>'4','fields'=>['cityname'=>'城市','name'=>'名字','address'=>'详细地址']]);
+        $staD2 = $m->setBody(['title' =>'终点','name'  =>'end','size'  =>'4','fields'=>['name'=>'名字','address'=>'详细地址']]);
+        $m->setBody(['title'=>'代叫电话','name'=>'phone','size'=>'4']);
+        $m->setBody(['title'=>'代叫人','name'=>'name','size'=>'4']);
+        $m->setBody([
+                    'type'  =>  'selects',
+                    'url'   =>  '/home/area',
+                    'detail'=>[
+                        ['name'=>'province_id' ,'title' =>  '省'],
+                        ['name'=>'city_id'     ,'title' =>  '市']
+                    ]
+                ]);
+
+        $m->tbody[$staD]['suggest'] = '/home/searchGeo?address=';
+        $m->tbody[$staD2]['suggest'] = '/home/searchGeo?address=';
+
+        # 设置名字
+        $m->setName('400派单');
+        
+        # 输出
+        $out = [
+            'info'  =>  $m->info,
+            'tbody' =>  $m->tbody,
+            'name'  =>  $m->name,
+            'opt'   =>  $m->opt,
+        ];
+        
+        AJAX::success($out);
     }
 
 }

@@ -1,0 +1,174 @@
+- extends "base.haml"
+
+
+- block body
+    
+    .wrapper.wrapper-content
+        .row
+            .col-sm-12
+                #modal_new.ibox.float-e-margins
+                    .ibox-title
+                        %h3 
+                    .ibox-content
+                        %form.form-horizontal.animated.fadeInRight(method="post")
+                            
+                        .ibox-title.optBox
+                            
+                            %button.btn.btn-success.flesh(type="button" onclick="location.reload()") 刷新
+                            %button.btn.btn-primary.flesh#pai(type="button") 派单
+
+    
+- block otherCss
+    :css
+        .modal-backdrop.in{z-index:1049 !important}
+
+    %link(href="/css/plugins/summernote/summernote.css" rel="stylesheet")
+    %link(href="/css/plugins/summernote/summernote-bs3.css" rel="stylesheet")
+
+                        
+
+
+
+- block otherScript
+    %script(src="/js/plugins/summernote/summernote.min.js")
+    %script(src="/js/plugins/summernote/summernote-zh-CN.js")
+    %script(src="/js/plugins/suggest/bootstrap-suggest.min.js")
+    :javascript
+        $(function(j){
+            
+            
+
+            var wget = function(d){
+                var p =new URL(location);
+                return p.searchParams.get(d);
+            }
+
+            var g,f
+
+            g = function(){
+                f=new WebSocket('ws://www.disuyijian.com:7777/admin')
+                f.onopen = function(){
+                    console.log('admin 连接成功')
+                    f.send(JSON.stringify({"type":"login","id":Math.random(),"token":"mm"}))
+                }
+                f.onclose = function(){
+                    console.log('admin 2秒后重连')
+                    setTimeout(g,2000)
+                }
+
+                f.onmessage = function(z){
+
+                    var obj = JSON.parse(z.data)
+
+                    if(obj.status != 200)toastr['error'](obj.message);
+                    else if(obj.type == 'askForDriving'){
+                        curl_succ('派单成功')
+                    }
+                }
+            }
+            g()
+
+            var get = wget('get');
+            var e = new Dmcat.admin(get,{},'info');
+
+            function getCity(){
+
+                var province_id = $('[name="province_id"]').val()
+                if(province_id != '0'){
+                    var province_name = $('[value="'+province_id+'"]').text()
+                    if(!province_name){
+                        toastr['error']('请选择省市');return false
+                    }
+                }else{
+                    toastr['error']('请选择省市');return false
+                }
+                var city_id = $('[name="city_id"]').val()
+                if(city_id != '0' && city_id != null){
+                    var city_name = $('[value="'+city_id+'"]').text()
+                    if(!city_name){
+                        toastr['error']('请选择省市');return false
+                    }
+                }else{
+                    toastr['error']('请选择省市');return false
+                }
+
+                return {
+                    province_name:province_name,
+                    city_name:city_name,
+                    city_id:city_id,
+                }
+            }
+
+            function getLocation(cityInfo,s,f){
+
+                curl('/home/searchGeo',{address:cityInfo.province_name+cityInfo.city_name+$('[name="'+s+'"]').val()},function(d){
+                    var location = d.location.split(',')
+                    var name = d.formatted_address
+                    f({location:location,name:name})
+                })
+            }
+
+            $('#pai').click(function(){
+                
+                var cityInfo = getCity();
+                if(!cityInfo)return
+                if(!$('[name="start"]').val()){
+                    toastr['error']('请填写起点地址');return false
+                }
+                if(!$('[name="end"]').val()){
+                    toastr['error']('请填写终点地址');return false
+                }
+                if(!$('[name="sphone"]').val()){
+                    toastr['error']('请填写发起人手机号');return false
+                }
+                getLocation(cityInfo,'start',function(start){
+                    curl_succ('获取起点地址成功')
+                    getLocation(cityInfo,'end',function(end){
+                        curl_succ('获取终点地址成功')
+                        curl('/home/getLocationInfo',{start_latitude:start.location[1],start_longitude:start.location[0],end_latitude:end.location[1],end_longitude:end.location[0],type:1},function(w){
+                            
+                            if(w.distance.info){
+                                toastr['error'](w.distance.info);return false
+                            }
+
+                            curl_succ('获取预估价距离成功')
+
+                            curl('/admin/staff/admin_user_get2',{phone:$('[name="sphone"]').val()},function(u){
+                                var obj = {}
+                                obj.start_latitude = start.location[1]
+                                obj.start_longitude = start.location[0]
+                                obj.end_latitude = end.location[1]
+                                obj.end_longitude = end.location[0]
+                                obj.start_name = start.name
+                                obj.end_name = end.name
+                                obj.start_fee = w.start_price
+                                obj.distance = w.distance.distance
+                                obj.estimated_price = w.totalPrice
+                                obj.phone = $('[name="phone"]').val()
+                                obj.name = $('[name="phone"]').val()
+                                obj.city_id = cityInfo.city_id
+                                obj.user_id = u.info.id
+                                obj.type = 'askForDrivingV2'
+
+                                f.send(JSON.stringify(obj))
+
+                            })
+
+                            
+
+                        })
+
+                    })
+                })
+
+
+
+            })
+
+            
+
+        });
+
+
+    
+        

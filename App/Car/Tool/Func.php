@@ -1051,7 +1051,7 @@ class Func {
 
         if(!$data->status)return false;
 
-        return $data->geocodes[0];
+        return $data->geocodes[0] ? $data->geocodes[0] :false;
     }
 
 }
