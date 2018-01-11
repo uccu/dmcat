@@ -365,7 +365,7 @@
                         })
                         break;
                     default:
-                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="input-group col-sm-'+(para.size || 6)+'"><input class="form-control" name="'+para.name+'" '+(para.disabled?'disabled':'')+' value="'+(m.info[para.name]||para.default||'')+'" placeholder="'+(para.placeholder||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="input-group col-sm-'+(para.size || 6)+'"><input '+(para.fnPreprocessKeyword?'fnpreprocesskeyword="'+para.fnPreprocessKeyword+'"':'')+' class="form-control" name="'+para.name+'" '+(para.disabled?'disabled':'')+' value="'+(m.info[para.name]||para.default||'')+'"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         
                         if(para.suggest){
                             pa.find('input').after('<div class="input-group-btn"><button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>'+(para.button?'<button type="button" class="btn btn-white subm">'+para.button+'</button>':'')+'<ul class="dropdown-menu dropdown-menu-right" role="menu"></ul></div><!-- /btn-group -->');
@@ -377,6 +377,7 @@
                             pa.find('input').attr('data-fields',JSON.stringify(para.fields))
                             var para33 = para;
                             pa.find('input').bsSuggest({
+                                name:para.name,
                                 indexId:0,
                                 indexKey:0,
                                 idField:'id',
@@ -387,6 +388,11 @@
                                 effectiveFieldsAlias:para.fields,
                                 showHeader:false,
                                 url:para.suggest,
+                                fnPreprocessKeyword:function(a,b,c){
+                                    var f = j('[name="'+b.name+'"]').attr('fnpreprocesskeyword')
+                                    if(f)return w[f](a)
+                                    else return a
+                                },
                                 processData:function(json){
                                     json = json.data;
                                     var i,len,data={value:[]};
