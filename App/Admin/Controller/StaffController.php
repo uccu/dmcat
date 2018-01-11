@@ -313,13 +313,13 @@ class StaffController extends Controller{
         
         $info = $model->where('phone=%n',$phone)->find();
 
-        if($info){
+        if(!$info){
             $data['salt'] = Func::randWord(6);
             $data['password'] = $this->encrypt_password($pwd,$data['salt']);
             $data['create_time'] = TIME_NOW;
             $data['phone'] = $phone;
 
-            $upd = AdminFunc::upd($model,0,$data)->getStatus();
+            $upd = $model->set($data)->add()->getStatus();
             $info = $model->find($upd);
         }
 

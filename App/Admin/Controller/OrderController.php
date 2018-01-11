@@ -1506,8 +1506,8 @@ class OrderController extends Controller{
         # 设置表体
         $m->setBody(['type'=>'hidden','name'=>'id']);
         $m->setBody(['title'=>'发起人（手机号）','name'=>'sphone','size'=>'4']);
-        $staD = $m->setBody(['title' =>'起点','name'  =>'start','size'  =>'4','fields'=>['cityname'=>'城市','name'=>'名字','address'=>'详细地址']]);
-        $staD2 = $m->setBody(['title' =>'终点','name'  =>'end','size'  =>'4','fields'=>['name'=>'名字','address'=>'详细地址']]);
+        $staD = $m->setBody(['title' =>'起点','name'  =>'start','size'  =>'4','fields'=>['name'=>'名字','cityname'=>'城市','address'=>'详细地址','location'=>'经纬度','id'=>'id'],'add_data'=>['location']]);
+        $staD2 = $m->setBody(['title' =>'终点','name'  =>'end','size'  =>'4','fields'=>['name'=>'名字','cityname'=>'城市','address'=>'详细地址','location'=>'经纬度','id'=>'id'],'add_data'=>['location']]);
         $m->setBody(['title'=>'代叫电话','name'=>'phone','size'=>'4']);
         $m->setBody(['title'=>'代叫人','name'=>'name','size'=>'4']);
         $m->setBody([

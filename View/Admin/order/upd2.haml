@@ -101,11 +101,29 @@
 
             function getLocation(cityInfo,s,f){
 
-                curl('/home/searchGeo',{address:cityInfo.province_name+cityInfo.city_name+$('[name="'+s+'"]').val()},function(d){
-                    var location = d.location.split(',')
-                    var name = d.formatted_address
-                    f({location:location,name:name})
-                })
+                var data = $('[name="'+s+'"]').data()
+                var id = parseInt($('[name="'+s+'"]').attr('data-id'))
+
+                if(!id && s == 'start'){
+                    console.log(id,1)
+                    toastr['error']('请选择起点地址');return false
+                }
+                if(!id && s == 'end'){
+                    toastr['error']('请选择终点地址');return false
+                }
+
+                var obj = data.bsSuggest.options.data.value[id-1]
+                if(!obj && s == 'start'){
+                    console.log(obj,2)
+                    toastr['error']('请选择起点地址');return false
+                }
+                if(!obj && s == 'end'){
+                    toastr['error']('请选择终点地址');return false
+                }
+                var location = obj.location.split(',')
+                var name = obj.name
+                f({location:location,name:name})
+
             }
 
             $('#pai').click(function(){
@@ -122,9 +140,9 @@
                     toastr['error']('请填写发起人手机号');return false
                 }
                 getLocation(cityInfo,'start',function(start){
-                    curl_succ('获取起点地址成功')
+                    // curl_succ('获取起点地址成功')
                     getLocation(cityInfo,'end',function(end){
-                        curl_succ('获取终点地址成功')
+                        // curl_succ('获取终点地址成功')
                         curl('/home/getLocationInfo',{start_latitude:start.location[1],start_longitude:start.location[0],end_latitude:end.location[1],end_longitude:end.location[0],type:1},function(w){
                             
                             if(w.distance.info){

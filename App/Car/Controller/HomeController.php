@@ -416,6 +416,9 @@ class HomeController extends Controller{
             if(!$data->status)AJAX::error('获取失败');
 
             $list = $data->pois;
+            foreach($list as $k=>&$v){
+                $v->id = $k+1;
+            }
         }else{
             $list = [];
         }
