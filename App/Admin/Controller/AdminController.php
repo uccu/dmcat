@@ -147,8 +147,9 @@ class AdminController extends Controller{
         $m->setOpt('add','home/upd');
         $m->setOptReq(['title'=>'搜索','name'=>'search','size'=>'3']);
 
-        $district_id && $areaModel->find($district_id)->parent_id != $city_id && $district_id = '0';
         $city_id && $areaModel->find($city_id)->parent_id != $province_id && $city_id = '0';
+        $district_id && $areaModel->find($district_id)->parent_id != $city_id && $district_id = '0';
+        
 
         $provinces = $areaModel->where('level=0')->order('pinyin')->get_field('areaName','id');
         $citys = $province_id ? $areaModel->where('parent_id=%d',$province_id)->order('pinyin')->get_field('areaName','id') : [];
@@ -157,6 +158,8 @@ class AdminController extends Controller{
         $z1 = $m->setOptReq(['title'=>'省','name'=>'province_id','type'=>'select','size'=>'2','default'=>$province_id]);
         $z2 = $m->setOptReq(['title'=>'市','name'=>'city_id','type'=>'select','size'=>'2','default'=>$city_id]);
         $z3 = $m->setOptReq(['title'=>'区','name'=>'district_id','type'=>'select','size'=>'2','default'=>$district_id]);
+
+        
 
         $m->opt['req'][$z1]['option'] = $provinces;
         $m->opt['req'][$z2]['option'] = $citys;
