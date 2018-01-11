@@ -71,14 +71,26 @@
 
             window.startFnPreprocessKeyword = function(d){
                 
-                return d
+                var province_id1 = $('[name="province_id1"]').val();
+                if(province_id1 == '0'){
+                    toastr['error']('请选择起点地址');
+                    return ''
+                }
+                var province_name = $('[value="'+province_id1+'"]').text();
+                console.log(province_name,province_id1)
+                return province_name+d
 
             }
 
             window.endFnPreprocessKeyword = function(d){
-
                 
-                return d
+                var province_id2 = $('[name="province_id2"]').val();
+                if(province_id2 == '0'){
+                    toastr['error']('请选择终点地址');
+                    return ''
+                }
+                var province_name = $('[value="'+province_id2+'"]').text();
+                return province_name+d
             }
 
             var get = wget('get');

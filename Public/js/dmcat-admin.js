@@ -223,7 +223,7 @@
                         for(var i in para.detail){
                             i = parseInt(i)
 
-                            var pa0 = j('<div class="form-group" url="'+url+'" all="'+(para.detail[i].all?'1':'0')+'" work="'+para.detail[i].name+'" work-type="'+para.detail[i].type+'" default="'+(m.info[para.detail[i].name]||para.detail[i].default||0)+'" next-work="'+(para.detail[i+1]?para.detail[i+1].name:'')+'"><label class="col-sm-2 control-label">'+para.detail[i].title+'</label><div class="col-sm-'+(para.detail[i].size || 2)+'"><select class="form-control" '+(para.disabled?'disabled':'')+' name="'+para.detail[i].name+'"><select/></div></div>')
+                            var pa0 = j('<div class="form-group" url="'+url+'" all="'+(para.detail[i].all?'1':'0')+'" work="'+para.detail[i].name+'" work-type="'+para.detail[i].type+'" default="'+(m.info[para.detail[i].name]||para.detail[i].default||0)+'" next-work="'+(para.detail[i+1]?para.detail[i+1].name:'')+'"><label class="col-sm-2 control-label">'+para.detail[i].title+'</label><div class="input-group col-sm-'+(para.detail[i].size || 2)+'"><select class="form-control" '+(para.disabled?'disabled':'')+' name="'+para.detail[i].name+'"><select/></div></div>')
                             if(para.detail[i].type == 'checkboxs'){
                                 var sp = pa0.find('select').parent()
                                 pa0.find('select').remove()
@@ -503,13 +503,14 @@
                     }
                     switch(that.opt.req[i].type){
                         case 'select':
-                            var pa = j('<div class="col-sm-3 animated fadeInRight"><div class="input-group"><span class="input-group-addon">'+that.opt.req[i].title+'</span><select name="'+that.opt.req[i].name+'" class="form-control">'+(function(o){
+                            var pa = j('<div class="col-sm-'+(that.opt.req[i].size||3)+' animated fadeInRight"><div class="input-group"><span class="input-group-addon">'+that.opt.req[i].title+'</span><select name="'+that.opt.req[i].name+'" class="form-control">'+(function(o){
                                 var d = '';
                                 for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
                                 return d
                             })(that.opt.req[i].option)+'</select></div></div>')
                             pa.appendTo('.topw .row')
                             pa.find('select').val(that.req.param[that.opt.req[i].name]||that.opt.req[i].default||'')
+                            if(pa.find('select').val() === null)pa.find('select').val(that.opt.req[i].default||'')
                             that.req.param[that.opt.req[i].name] = pa.find('select').val()
                             pa.find('select').change(function(){
                                 that.req.param[j(this).attr('name')] = $(this).val()
