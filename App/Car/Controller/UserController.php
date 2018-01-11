@@ -96,23 +96,6 @@ class UserController extends Controller{
         $info->avatar = 'noavatar.png';
         $info->save();
 
-        $parent_id = $info->parent_id;
-
-        for($i=0;$i<5;$i++){
-
-            if($parent_id){
-
-                $parent = $model->find($parent_id);
-                if($parent){
-
-                    $parent->fans += 1;
-                    $parent->save();
-                    $parent_id = $parent->parent_id;
-                }else break;
-
-            }else break;
-
-        }
 
         DB::commit();
         
@@ -205,7 +188,7 @@ class UserController extends Controller{
      * @param mixed $cookie 
      * @return mixed 
      */
-    function register($terminal = 0,UserModel $model,$password = null,$phone = null,$phone_captcha,$cookie = false,$parent_id = 0){
+    function register($terminal = 0,UserModel $model,$password = null,$phone = null,$phone_captcha,$cookie = false){
         
         
         //是否储存登录信息到cookie

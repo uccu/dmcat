@@ -217,6 +217,12 @@
                         +'<select/></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         pa.find('select').val(m.info[para.name]||para.default||'')
                         break;
+                    case 'checkbox':
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="input-group col-sm-'+(para.size || 2)+'" style="margin-top: 8px;"><input type="checkbox" class="form-control" '+(para.disabled?'disabled':'')+' name="'+para.name+'" style="display:none"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
+                        if(m.info[para.name] != '0')pa.find('input').attr('checked','checked');
+                        pa.find('input').iCheck({checkboxClass: 'icheckbox_square-green',radioClass: 'iradio_square-green'})
+
+                        break;
                     case 'selects':
                         var url = para.url
                         var pa = $('<div>')
@@ -227,7 +233,8 @@
                             if(para.detail[i].type == 'checkboxs'){
                                 var sp = pa0.find('select').parent()
                                 pa0.find('select').remove()
-                                sp.append('<input type="hidden" name="'+para.detail[i].name+'">')
+                                var m = j('<input type="hidden" name="'+para.detail[i].name+'">');
+                                sp.append(m)
                             }
                             if(pa0.attr('next-work')){
                                 pa0.find('select').change(function(){

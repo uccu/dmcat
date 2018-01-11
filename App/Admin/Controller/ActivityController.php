@@ -18,8 +18,8 @@ use App\Car\Model\UserModel;
 use App\Admin\Set\Gets;
 use App\Admin\Set\Lists;
 
-# 用户管理管理
-class UserController extends Controller{
+# 活动管理
+class ActivityController extends Controller{
 
     function __construct(){
 
@@ -33,13 +33,13 @@ class UserController extends Controller{
         return sha1($this->salt.md5($password).$salt);
     }
 
-    # 用户管理
-    function user(){
+    # 活动管理
+    function activity(){
 
         View::addData(['getList'=>'admin_'.__FUNCTION__]);
         View::hamlReader('home/list','Admin');
     }
-    function admin_user(UserModel $model,$page = 1,$limit = 10,$search,$car_number){
+    function admin_activity(ActivityModel $model,$page = 1,$limit = 10,$search,$car_number){
         $m = Lists::getSingleInstance($model,$page,$limit);
         # 权限
         $m->checkPermission(5);
@@ -84,7 +84,7 @@ class UserController extends Controller{
         $m->output();
 
     }
-    function admin_user_get(UserModel $model,$id){
+    function admin_activity_get(ActivityModel $model,$id){
         $m = Gets::getSingleInstance($model,$id);
         # 权限
         $m->checkPermission(5);
@@ -108,7 +108,7 @@ class UserController extends Controller{
         $m->getInfo();
         $m->output();
     }
-    function admin_user_upd(UserModel $model,$id,$pwd,$active,$birth){
+    function admin_activity_upd(ActivityModel $model,$id,$pwd,$active,$birth){
 
         $this->L->adminPermissionCheck(5);
         !$model->field && AJAX::error('字段没有公有化！');
@@ -136,7 +136,7 @@ class UserController extends Controller{
         $out['upd'] = $upd;
         AJAX::success($out);
     }
-    function admin_user_del(UserModel $model,$id){
+    function admin_activity_del(ActivityModel $model,$id){
         $this->L->adminPermissionCheck(5);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;

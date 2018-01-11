@@ -356,8 +356,8 @@ class Func {
 
         if(!$phone)AJAX::error('手机号不能为空！');
 
-        $rand = self::randWord(4,3);
-        // $rand = '1234';
+        // $rand = self::randWord(4,3);
+        $rand = '1234';
 
         $data['captcha'] = $rand;
         $data['time'] = TIME_NOW + 300;
@@ -391,11 +391,9 @@ class Func {
         $data['sendTime'] = '';
         $data['extno'] = '';
 
-        $re = self::curl('http://59.110.69.166:8080/sms.aspx',$data);
-
-        $u = simplexml_load_string($re);
-        // echo $re;die();
-        if($u->returnstatus == 'Faild')AJAX::error('发送失败：'.($u ? $u->message : '网络连接失败！'));
+        // $re = self::curl('http://59.110.69.166:8080/sms.aspx',$data);
+        // $u = simplexml_load_string($re);
+        // if($u->returnstatus == 'Faild')AJAX::error('发送失败：'.($u ? $u->message : '网络连接失败！'));
 
         return true;
 

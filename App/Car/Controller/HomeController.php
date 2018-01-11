@@ -15,7 +15,6 @@ use App\Car\Model\H5Model;
 use App\Car\Model\TripModel;
 use App\Car\Model\DriverOnlineModel;
 use App\Car\Middleware\L;
-use App\Car\Middleware\L2;
 use Model;
 
 class HomeController extends Controller{
@@ -24,7 +23,6 @@ class HomeController extends Controller{
     function __construct(){
 
         $this->L = L::getSingleInstance();
-        $this->L2 = L2::getSingleInstance();
 
     }
 
