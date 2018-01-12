@@ -76,9 +76,7 @@ class GroupController extends Controller{
         $model->select('*','parent.areaName>province_name');
         $model->order('pinyin');
         $m->getList(0);
-        $m->each(function(&$v){
-            $v->create_date = date('Y-m-d H:i:s',$v->create_time);
-        });
+
         $m->output();
 
     }
@@ -188,9 +186,7 @@ class GroupController extends Controller{
         $model->select('*','parent.areaName>city_name','parent.parent2.areaName>province_name');
         $model->order('pinyin');
         $m->getList(0);
-        $m->each(function(&$v){
-            $v->create_date = date('Y-m-d H:i:s',$v->create_time);
-        });
+
         $m->output();
 
     }
@@ -321,9 +317,7 @@ class GroupController extends Controller{
         $model->select('*','parent.areaName>district_name','parent.parent2.areaName>city_name','parent.parent2.parent3.areaName>province_name');
         $model->order('pinyin');
         $m->getList(0);
-        $m->each(function(&$v){
-            $v->create_date = date('Y-m-d H:i:s',$v->create_time);
-        });
+
         $m->output();
 
     }
