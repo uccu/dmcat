@@ -9,6 +9,7 @@ const driverAction = require('./driverAction')
 const adminAction = require('./adminAction')
 const db = require('./db')
 let data = require('./data'),
+post = require('./post'),
 sendAdmin = function(f){
     for(let i of data.AdminMap){
         i[1].con.sendText(content({status:200,type:'log',data:f}))
@@ -50,6 +51,7 @@ let serverCallback = function(con){
         }else if(con.driver_id){
             data.DriverMap.delete(con.driver_id)
             db.delete('delete from c_driver_online where driver_id=?',[con.driver_id])
+            post('driver/ws_logout',{driver_id:con.driver_id})
         }else if(con.admin_id){
             data.AdminMap.delete(con.admin_id)
         }
@@ -65,6 +67,7 @@ let serverCallback = function(con){
         }else if(con.driver_id){
             data.DriverMap.delete(con.driver_id)
             db.delete('delete from c_driver_online where driver_id=?',[con.driver_id])
+            post('driver/ws_logout',{driver_id:con.driver_id})
         }else if(con.admin_id){
             data.AdminMap.delete(con.admin_id)
         }

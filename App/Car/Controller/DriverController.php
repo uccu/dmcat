@@ -322,7 +322,7 @@ class DriverController extends Controller{
 
 
     # 我的信息
-    function getMyInfo(DriverModel $driverModel){
+    function getMyInfo(DriverModel $driverModel,DriverOnlineModel $driverOnlineModel){
         // $this->L->id = 3;
         !$this->L->id && AJAX::error('未登录');
 
@@ -346,13 +346,76 @@ class DriverController extends Controller{
         $info['money_today'] = $m->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         
         if(!$info['money_today'])$info['money_today'] = '0.00';
-        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('status>3')->where('type IN (1,2)')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
+        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>44')->where('type IN (1,2)')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         
-        $info['time'] = '3000';
+        $online = $driverOnlineModel->find($this->L->id);
+
+        if($online){
+            if(date('d',$this->L->userInfo->last_time) != date('d',TIME_NOW)){
+
+                $time = TIME_NOW - TIME_TODAY;
+            }else{
+                $time = TIME_NOW - $this->L->userInfo->last_time;
+                $time = $this->L->userInfo->time + $time;
+            }
+        }else{
+            $time = $this->L->userInfo->time;
+        }
+
+        $info['time'] = $time;
         
         $out['info'] = $info;
 
         AJAX::success($out);
+    }
+
+    function getMyInfo2(DriverModel $driverModel){
+        // $this->L->id = 3;
+        !$this->L->id && AJAX::error('未登录');
+
+        $info['avatar'] = $this->L->userInfo->avatar;
+        $info['name'] = $this->L->userInfo->name;
+        $info['sex'] = $this->L->userInfo->sex;
+        $info['phone'] = $this->L->userInfo->phone;
+        $info['brand'] = $this->L->userInfo->brand;
+        $info['car_number'] = $this->L->userInfo->car_number;
+        $info['type_driving'] = $this->L->userInfo->type_driving;
+        $info['type_taxi'] = $this->L->userInfo->type_taxi;
+        $info['id'] = $this->L->id;
+        $info['judge_score'] = $this->L->userInfo->judge_score;
+        $info['money'] = $this->L->userInfo->money;
+
+        if(date('d',$this->L->userInfo->last_time) != date('d',TIME_NOW)){
+            $this->L->userInfo->time = 0;
+        }
+
+        $this->L->userInfo->last_time = TIME_NOW;
+        $this->L->userInfo->save();
+        $out['info'] = $info;
+
+        AJAX::success($out);
+    }
+
+    function ws_logout($driver_id,DriverModel $driverModel){
+
+        $driver = $driverModel->find($driver_id);
+
+        if($driver && $driver->last_time){
+            
+            if(date('d',$driver->last_time) != date('d',TIME_NOW)){
+
+                $time = TIME_NOW - TIME_TODAY;
+                $driver->time = $time;
+                $driver->save();
+            }else{
+                $time = TIME_NOW - $driver->last_time;
+                $driver->time += $time;
+                $driver->save();
+            }
+
+        }
+        AJAX::success();
+
     }
 
     # 修改我的信息

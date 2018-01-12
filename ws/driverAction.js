@@ -318,10 +318,15 @@ let act = {
         if(!con.driver_id)return;
 
         db.delete('delete from c_driver_online where driver_id=?',[con.driver_id],function(){
-            data.DriverMap.delete(con.driver_id)
-            delete con.driver_id
-            sendAdmin(`driver ${con.driver_id} logout`);
-            con.sendText(content({status:200,type:'logout'}))
+
+            post('driver/ws_logout',{driver_id:con.driver_id},function(d){
+
+                data.DriverMap.delete(con.driver_id)
+                delete con.driver_id
+                sendAdmin(`driver ${con.driver_id} logout`);
+                con.sendText(content({status:200,type:'logout'}))
+                
+            })
         })
 
     },
@@ -623,7 +628,7 @@ let act = {
         let sync = new SYNC;
 
         sync.add = function(){
-            post('driver/getMyinfo',{driver_token:obj.driver_token},function(d){
+            post('driver/getMyinfo2',{driver_token:obj.driver_token},function(d){
                 if(!d)con.sendText(content({status:400,type:'login',message:'网络错误'}))
                 if(d.code != 200){
                     
@@ -955,6 +960,18 @@ let act = {
         sync.run();
 
         
+    },
+    offline(obj,con){
+
+        let trip_id = obj.trip_id || 0
+        db.find('select * from c_trip where trip_id=?',[obj.trip_id],function(result){
+            con.sendText(content({status:200,type:'offlineDriver'}))
+            let user = data.UserMap.get(result.user_id+'')
+            if(user){
+                user.con.sendText(content({status:200,type:'offline'}))
+                user.con.sendText(content({status:200,type:'statusChange'}))
+            }
+        })
     }
     
 

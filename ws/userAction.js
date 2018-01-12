@@ -204,7 +204,7 @@ let act = {
                     let driver = data.DriverMap.get(ids[n]+'')
                     if(driver && !driver.serving){
                         driver.con.sendText(content({status:200,type:'distribute',order_id:id,trip_id:trip_id}))
-                        data.clock.set(obj.user_id + '',setTimeout(q=>run(n+1),30000))
+                        data.clock.set(con.user_id + '',setTimeout(q=>run(n+1),30000))
                     }else{
                         run(n+1)
                     }
@@ -1163,6 +1163,19 @@ let act = {
         }
         sync.run()
     },
+    offline(obj,con){
+
+        let trip_id = obj.trip_id || 0
+        db.find('select * from c_trip where trip_id=?',[obj.trip_id],function(result){
+            con.sendText(content({status:200,type:'offlineDriver'}))
+            let user = data.UserMap.get(result.user_id+'')
+            if(user){
+                user.con.sendText(content({status:200,type:'offline'}))
+                user.con.sendText(content({status:200,type:'statusChange'}))
+            }
+        })
+    }
+
 }
 
 
