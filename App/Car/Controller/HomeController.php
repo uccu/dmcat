@@ -9,13 +9,14 @@ use View;
 use Request;
 use stdClass;
 use App\Car\Tool\Func;
-use App\Car\Model\AreaModel;
-use App\Car\Model\UserCouponModel;
-use App\Car\Model\H5Model;
-use App\Car\Model\TripModel;
-use App\Car\Model\DriverOnlineModel;
 use App\Car\Middleware\L;
 use Model;
+
+use App\Car\Model\H5Model;
+use App\Car\Model\AreaModel;
+use App\Car\Model\ActivityModel;
+
+
 
 class HomeController extends Controller{
 
@@ -55,127 +56,6 @@ class HomeController extends Controller{
         AJAX::success($out);
     }
 
-    function h5($id,H5Model $model){
-
-        $m = $model->find($id);
-
-        if($m)View::addData(['title'=>$m->name,'content'=>$m->content]);
-
-        View::hamlReader('h5','App');
-    }
-
-    function getArea($latitude,$longitude){
-        $out = Func::getArea($latitude,$longitude);
-        if(!$out)AJAX::error('获取失败');
-        AJAX::success($out);
-
-    }
-
-    function getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude){
-
-        $out = Func::getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude);
-        if(!$out)AJAX::error('获取失败');
-        AJAX::success($out);
-    }
-
-    function getEstimatedPrice($distance,$type = 1){
-        
-        $price = Func::getEstimatedPrice($distance,$type);
-        if(!$price)AJAX::error('获取失败');
-        $out['price'] = $price;
-        AJAX::success($out);
-    }
-
-
-    /** 获取地理位置信息
-     * getLocationInfo
-     * @param mixed $start_latitude 
-     * @param mixed $start_longitude 
-     * @param mixed $end_latitude 
-     * @param mixed $end_longitude 
-     * @param mixed $areaModel 
-     * @param mixed $type 
-     * @return mixed 
-     */
-    function getLocationInfo(UserCouponModel $userCouponModel,$start_latitude,$start_longitude,$end_latitude,$end_longitude,AreaModel $areaModel,$num = 1,$type = 0,$time,$timeLine){
-
-        $area = Func::getArea($start_latitude,$start_longitude);
-        if(!$area)AJAX::error('位置获取失败');
-
-        // $areaModel = Model('area_t');
-
-        $area->cityId = $areaModel->where(['areaName'=>$area->city,'area_t.areaName'=>$area->province])->find()->id;
-
-        if(!$area->cityId){
-
-            $area->cityId = $areaModel->where(['areaName'=>$area->district,'area_t.areaName'=>$area->city])->find()->id;
-
-        }
-
-        !$area->cityId && AJAX::error('区域ID获取失败！');
-
-        $distance = Func::getDistance($start_latitude,$start_longitude,$end_latitude,$end_longitude,1);
-        if(!$distance)AJAX::error('距离获取失败');
-
-        if($type == 1){
-
-            if($timeLine)$time = date('H:i',$timeLine);
-            if(!$time)$time = date('H:i');
-            $data = Func::getDrivingPrice($area->cityId,$time,$distance->distance / 1000);
-            $price = $data['total'];
-            $out['start_price'] = $data['start'];
-
-        }elseif($type == 3){
-
-            $prices = Func::getWayPrice($distance->distance / 1000,$num);
-            $price = $prices['price'];
-            $out['start_price'] = $prices['start'];
-
-        }elseif($type == 2){
-            
-            if($timeLine)$time = date('H:i',$timeLine);
-            if(!$time)$time = date('H:i');
-            $data = Func::getTaxiPrice($area->cityId,$time,$distance->distance / 1000);
-            $price = $data['total'];
-            $out['start_price'] = $data['start'];
-
-        }else{
-            $price = Func::getEstimatedPrice($distance->distance / 1000);
-            $out['start_price'] = '20.00';
-        }
-        if(!$price)AJAX::error('预估价获取失败');
-
-        $out['area']        = $area;
-
-        $distance->distance = number_format( $distance->distance / 1000,2,'.','');
-        $out['distance']    = $distance;
-
-            
-        $out['price']       = $price;
-        
-        $out['coupon']      = '0.00';
-
-        // $this->L->id = 43;
-        if($this->L->id){
-
-            $coupon = $userCouponModel->where(['user_id'=>$this->L->id])->where('end_time>%n',TIME_NOW)->where(['type'=>$type])->order('money desc')->find();
-            if($coupon) $out['coupon'] = $coupon->money;
-            
-        }
-
-        $out['totalPrice']  = \number_format($price - $out['coupon'],2,'.','');
-        if($out['totalPrice'] < 0)$out['totalPrice'] = '0.00';
-        
-
-        AJAX::success($out);
-
-    }
-
-
-    
-
-
-
     /** 获取省市
      * area
      * @param mixed $id 
@@ -196,202 +76,33 @@ class HomeController extends Controller{
     }
 
 
-     # 获取预约时间
-    function time(){
+    
+    /** 获取H5页面
+     * h5
+     * @param mixed $id 
+     * @param mixed $model 
+     * @return mixed 
+     */
+    function h5($id,H5Model $model){
 
-        $h = date('H',TIME_NOW);
-        $i = date('i',TIME_NOW);
+        $m = $model->find($id);
 
-        $t = TIME_TODAY + 2*24*3600;
-        $t2 = TIME_TODAY + 24*3600;
+        if($m)View::addData(['title'=>$m->name,'content'=>$m->content]);
 
-        for($e = TIME_YESTERDAY;$e < $t;$e += 600){
-
-            if($e < TIME_NOW){
-
-            }elseif($e < $t2){
-                $data['t1'][date('H',$e)][] = [
-                    'timestamp'=>$e,
-                    'name'=>date('i',$e)
-                ];
-            }else{
-                $data['t2'][date('H',$e)][] = [
-                    'timestamp'=>$e,
-                    'name'=>date('i',$e)
-                ];
-            }
-
-
-        }
-
-        foreach($data['t1'] as $k=>&$v){
-
-            $v = [
-                'name'=>$k,
-                'list'=>$v
-            ];
-        }
-        $data['t1'] = array_values($data['t1']);
-
-        foreach($data['t2'] as $k=>&$v){
-
-            $v = [
-                'name'=>$k,
-                'list'=>$v
-            ];
-        }
-        $data['t2'] = array_values($data['t2']);
-
-        $data = [
-            [
-                'name'=>'今天',
-                'list'=>$data['t1']
-            ],[
-                'name'=>'明天',
-                'list'=>$data['t2']
-            ]
-        ];
-
-        AJAX::success(['data'=>$data]);
-
-
-    }
-
-
-    function bank(){
-
-        $list = Model::copyMutiInstance('bank')->get()->toArray();
-        $out['list'] = $list;
-        AJAX::success($out);
-    }
-
-
-    function checkCity($start_latitude,$start_longitude,$end_latitude,$end_longitude){
-
-        $area = Func::getArea($end_latitude,$start_longitude);
-        $area2 = Func::getArea($end_latitude,$end_longitude);
-        if(!$area || !$area2)AJAX:: error('地址坐标获取失败');
-        $area->city == $area2->city && AJAX::error('起始地与目的地不能同市！');
-
-        AJAX::success();
-    }
-
-
-    function brand(){
-
-        $list = Model::copyMutiInstance('car_brand')->order('pinyin')->get()->toArray();
-
-        $list2 = [];
-        foreach($list as $v){
-            $list2[$v->first][] = $v;
-        }
-        $list3 = [];
-        foreach($list2 as $k=>$v){
-            $list3[] = [
-                'key'=>$k,
-                'value'=>$v
-            ];
-        }
-
-        $out['list'] = $list3;
-        AJAX::success($out);
-    }
-
-    function model($brand_id){
-
-        $list = Model::copyMutiInstance('car_model')->where(['brand_id'=>$brand_id])->order('pinyin')->get()->toArray();
-
-        $out['list'] = $list;
-        AJAX::success($out);
-    }
-
-    function color(){
-
-        $list = Model::copyMutiInstance('color')->order('pinyin')->get()->toArray();
-
-        $out['list'] = $list;
-        AJAX::success($out);
-    }
-
-    function questionList(){
-
-        $list = Model::copyMutiInstance('question')->selectExcept('content')->get()->toArray();
-
-        $out['list'] = $list;
-        AJAX::success($out);
-    }
-
-    function questionInfo($id){
-
-        $info = Model::copyMutiInstance('question')->find($id);
-        !$info && AJAX::error('错误！');
-        $out['info'] = $info;
-        AJAX::success($out);
-    }
-
-    function questionInfo_h5($id){
-
-        $info = Model::copyMutiInstance('question')->find($id);
-        !$info && AJAX::error('错误！');
-
-        View::addData(['title'=>$info->name,'content'=>$info->content]);
         View::hamlReader('h5','App');
     }
 
-    function getVersion(){
 
-        $info['driver_version'] = $this->L->config->driver_version;
-        $info['driver_version_file'] = $this->L->config->driver_version_file;
-        
-        if($info['driver_version_file']){
 
-            $info['driver_version_file_path'] = Func::fullAddr('download/getVersionFile_driver');
-        }
 
-        $info['user_version'] = $this->L->config->user_version;
-        $info['user_version_file'] = $this->L->config->user_version_file;
-
-        if($info['user_version_file']){
-
-            $info['user_version_file_path'] = Func::fullAddr('download/getVersionFile_user');
-        }
-
-        AJAX::success($info);
-    }
-
-    function te(){
-
-        $a = '01:11'<'01:12';
-        $b = '01:11'<'01:10';
-        $c = '01:11'<'01:11';
-
-        var_dump($a,$b,$c);
-    }
-
-    /** 获取附近的司机
-     * getDrivers
-     * @param mixed $latitude 
-     * @param mixed $longitude 
+    /** 获取活动
+     * getActivities
+     * @param mixed $model 
      * @return mixed 
      */
-    function getDrivers($latitude = 0,$longitude = 0,DriverOnlineModel $model,$type = 0){
+    function getActivities(ActivityModel $model){
 
-        $latitudeRange = [$latitude - 0.05,$latitude + 0.05];
-        $longitudeRange = [$longitude - 0.05,$longitude + 0.05];
-
-        if($type == 1)$model->where(['driver.type_driving'=>1]);
-        elseif($type == 2)$model->where(['driver.type_taxi'=>1]);
-
-        $model->where('latitude BETWEEN %a AND longitude BETWEEN %a AND driver_id != %n',$latitudeRange,$longitudeRange,$this->L2->id);
-        
-        $list = $model->get()->toArray();
-        
-        foreach($list as &$v){
-
-            $v->busy =  TripModel::copyMutiInstance()->where(['driver_id'=>$v->driver_id])->where('type IN (1,2) AND status IN (%c)',[20,25,30,35],$this->L->id)->find() ? '1' : '0';
-        }
-
-
+        $list = $model->where('status=1')->order('level desc','create_time desc')->get()->toArray();
         $out['list'] = $list;
         AJAX::success($out);
 
