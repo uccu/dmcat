@@ -90,6 +90,7 @@
                 save.on('click',function(){
                     var data = j('#modal_new form').serializeArray(),k
                     j('#modal_new form .summernote[data-name]').each(function(){data.push({name:j(this).attr('data-name'),value:j(this).summernote('code').replace(/<xml>[\s\S]*<\/xml>/ig,'')})})
+                    j('#modal_new form input[useid]').each(function(){data.push({name:j(this).attr('data-name'),value:j(this).attr('data-id')})})
                     curl(m.opt.upd,data,function(b){
                         curl_succ('success!');
                         m.opt.back && setTimeout(function(){gotoTag(m.opt.back,1)},1000)
@@ -400,12 +401,17 @@
                                 })
                             }
                             pa.find('input').attr('data-fields',JSON.stringify(para.fields))
+                            if(para.useId){
+                                pa.find('input').attr('data-name',pa.find('input').attr('name'));
+                                pa.find('input').attr('useid',1);
+                                pa.find('input').removeAttr('name')
+                            }
                             var para33 = para;
                             pa.find('input').bsSuggest({
                                 name:para.name,
-                                indexId:0,
-                                indexKey:0,
-                                idField:'id',
+                                indexId:para.index?para.index:0,
+                                indexKey:para.index?para.index:0,
+                                idField:para.idName?para.idName:'id',
                                 allowNoKeyword:true,
                                 multiWord:false,
                                 separator:",",

@@ -70,7 +70,7 @@ class AdminController extends Controller{
         # 筛选
         $m->where = [];
         $m->where['type'] = 6;
-        $search && $m->where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        $search && $m->where['search'] = ['name LIKE %n OR phone LIKE %n OR mobile LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
         # 获取列表
         $model->order('create_time desc');
         $m->getList(0);
@@ -202,9 +202,9 @@ class AdminController extends Controller{
         elseif($city_id)$m->where['city_id'] = $city_id;
         elseif($province_id)$m->where['province_id'] = $province_id;
 
-        $search && $m->where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        $search && $m->where['search'] = ['name LIKE %n OR phone LIKE %n OR mobile LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
         # 获取列表
-        $model->select('*','province.areaName>province_name','city.areaName>city_name','district.areaName>district_name')->order('create_time desc');
+        $model->select('*','parkingLot.name>parking_lot_name','province.areaName>province_name','city.areaName>city_name','district.areaName>district_name')->order('create_time desc');
         $m->getList(0);
         $m->fullPicAddr('avatar');
         $m->output();
@@ -226,7 +226,7 @@ class AdminController extends Controller{
         $m->setBody(['title'  =>  '名字','name'  =>  'name','size'  =>  '2']);
         $m->setBody(['title'  =>  '头像','name'  =>  'avatar','type'=>'avatar']);
         $m->setBody(['title'  =>  '修改密码','name'  =>  'pwd','size'  =>  '2']);
-        $m->setBody(['title'  =>  '停车场名称','name'  =>  'parking_lot_id','size'  =>  '2']);
+        $m->setBody(['useId'=>true,'index'=>1,'title'  =>  '停车场名称','name'  =>  'parking_lot_id','size'  =>'4','suggest'=>'/admin/parking/admin_lot?search=','fields'=>['id'=>'name','name'=>'停车场名字','province_name'=>'省','city_name'=>'市','district_name'=>'区','address'=>'地址']]);
         $m->setBody(['type'  =>  'selects','url'   =>  '/home/area',
             'detail'=>[
                 ['name'=>'province_id' ,'title' =>  '省'],
@@ -236,11 +236,12 @@ class AdminController extends Controller{
         ]);
         $m->setBody(['title'  =>  '地址','name'  =>  'address','size'  =>  '4']);
         # 设置名字
-        $m->setName('用户管理');
+        $m->setName('停车场管理员管理');
+        $model->select('*','parkingLot.name>parking_lot_id');
         $m->getInfo();
         $m->output();
     }
-    function admin_stop_upd(AdminModel $model,$id,$pwd,$active){
+    function admin_stop_upd(AdminModel $model,$id,$pwd,$active,$parking_lot_id){
 
         $this->L->adminPermissionCheck(2);
         !$model->field && AJAX::error('字段没有公有化！');
@@ -249,6 +250,15 @@ class AdminController extends Controller{
         unset($data['salt']);
         unset($data['id']);
         $data['type'] = 1;
+        if(!$parking_lot_id)unset($data['parking_lot_id']);
+
+        if($parking_lot_id){
+            $admin2 = $model->where('parking_lot_id=%d',$parking_lot_id)->find();
+            if($admin2 && $admin2->phone != $id){
+                $admin2->parking_lot_id = 0;
+                $admin2->save();
+            }
+        }
 
         if(!$id){
             $data['salt'] = Func::randWord(6);
@@ -308,7 +318,7 @@ class AdminController extends Controller{
         # 筛选
         $m->where = [];
         $m->where['type'] = 2;
-        $search && $m->where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        $search && $m->where['search'] = ['name LIKE %n OR phone LIKE %n OR mobile LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
         # 获取列表
         $model->order('create_time desc');
         $m->getList(0);

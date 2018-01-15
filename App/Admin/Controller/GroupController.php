@@ -361,7 +361,7 @@ class GroupController extends Controller{
         $data = Request::getSingleInstance()->request($model->field);
 
         unset($data['id']);
-        if(!$parent_id)AJAX::error('请选择市');
+        if(!$parent_id)AJAX::error('请选择区');
 
         $data['pinyin'] = Hanzi::pinyin($areaName)['pinyin'];
         $data['first'] = strtoupper($pinyin[0]);

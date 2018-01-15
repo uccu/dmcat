@@ -27,7 +27,7 @@ class HomeController extends Controller{
 
     }
 
-
+    # 上传头像
     function upAvatar(){
 
         $out['path'] = Func::uploadFiles('file',100,100);
@@ -37,6 +37,7 @@ class HomeController extends Controller{
         AJAX::success($out);
     }
 
+    # 上传图片
     function uploadPic(){
 
         $out['path'] = Func::uploadFiles('file');
@@ -46,6 +47,8 @@ class HomeController extends Controller{
         AJAX::success($out);
 
     }
+
+    # 上传文件
     function uploadFile(){
         
         $id = Func::upload('file');
@@ -106,6 +109,21 @@ class HomeController extends Controller{
         $out['list'] = $list;
         AJAX::success($out);
 
+    }
+
+    /** 活动h5详情
+     * activityH5
+     * @param mixed $model 
+     * @param mixed $id 
+     * @return mixed 
+     */
+    function activityH5(ActivityModel $model,$id = 0){
+
+        $m = $model->find($id);
+
+        if($m)View::addData(['title'=>$m->name,'content'=>$m->detail]);
+
+        View::hamlReader('h5','App');
     }
 
     

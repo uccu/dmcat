@@ -1,8 +1,42 @@
+0.0 说明
+xxxxx
+接口前缀 http://121.199.8.244:3500/
+图片前缀 http://121.199.8.244:3500/pic/
+下载文件 http://121.199.8.244:3500/pic/download/file/+文件id
+{}
+{}
+
+0.1 上传单张头像
+home/upAvatar
+file 图片文件
+{"data":{"path":"xxx.jpg","fpath":"/pic/xxx.jpg","apath":"http://121.199.8.244:3500/pic/xxx.jpg",},"code":200,"url":"","message":""}
+{}
+
+0.2 上传单张图片
+home/uploadPic
+file 图片文件
+{"data":{"path":"xxx.jpg","fpath":"/pic/xxx.jpg","apath":"http://121.199.8.244:3500/pic/xxx.jpg",},"code":200,"url":"","message":""}
+{}
+
+0.3 上传单个文件
+home/uploadFile
+file 图片文件
+{"data":{"path":"2","fpath":"/pic/file.jpg","apath":"http://121.199.8.244:3500/pic/file.jpg",},"code":200,"url":"","message":""}
+{path:文件id}
+
+0.4 下载文件
+download/file?id=xxx
+id 文件id
+{}
+{}
+
+
+
 1.1 登录
 user/login
 phone 手机号
 password 密码
-{"data":{"user_token":"PmO3h8PU9g0tEKBARu+JlTQ+i2JUBxsUBBE8sF5Q2\/Xxji0jTH4Ug66oZ\/QICRlPrBkMYbvAl7AD6Ls4Aco2Etub7BseppEThHq\/ZVZJi70I=","id":"41","avatar":"noavatar.png","name":"\u7528\u6237000041"},"code":200,"url":"","message":""}
+{"data":{"user_token":"1hJI\/irXUx5zYgSMqjhBOKe8g3UFhivjuF7RAAM\/SHI3uufexUdF8F6MgKowB\/Jpnt5zUwwKvIAw91RK5FZOuP0uYBG3vD7miARl3nbXetNM=","id":"1","avatar":"noavatar.png","name":"cat"},"code":200,"url":"","message":""}
 {user_token:用户TOKEN,id:用户ID}
 
 
@@ -15,7 +49,7 @@ phone 手机号
 phone_captcha 手机验证码
 terminal 终端1ios,2android,0其他
 parent_id 推荐码（推荐人ID）
-{"data":{"user_token":"PmO3h8PU9g0tEKBARu+JlTQ+i2JUBxsUBBE8sF5Q2\/Xxji0jTH4Ug66oZ\/QICRlPrBkMYbvAl7AD6Ls4Aco2Etub7BseppEThHq\/ZVZJi70I=","id":"41","avatar":"noavatar.png","name":"\u7528\u6237000041"},"code":200,"url":"","message":""}
+{"data":{"user_token":"1hJI\/irXUx5zYgSMqjhBOKe8g3UFhivjuF7RAAM\/SHI3uufexUdF8F6MgKowB\/Jpnt5zUwwKvIAw91RK5FZOuP0uYBG3vD7miARl3nbXetNM=","id":"1","avatar":"noavatar.png","name":"cat"},"code":200,"url":"","message":""}
 {user_token:用户TOKEN,id:用户ID}
 
 
@@ -24,7 +58,14 @@ user/forget_password
 new_password 新的密码
 phone 手机号
 phone_captcha 手机验证码
-{"data":{"user_token":"PmO3h8PU9g0tEKBARu+JlTQ+i2JUBxsUBBE8sF5Q2\/Xxji0jTH4Ug66oZ\/QICRlPrBkMYbvAl7AD6Ls4Aco2Etub7BseppEThHq\/ZVZJi70I=","id":"41","avatar":"noavatar.png","name":"\u7528\u6237000041"},"code":200,"url":"","message":""}
+{"data":{"user_token":"1hJI\/irXUx5zYgSMqjhBOKe8g3UFhivjuF7RAAM\/SHI3uufexUdF8F6MgKowB\/Jpnt5zUwwKvIAw91RK5FZOuP0uYBG3vD7miARl3nbXetNM=","id":"1","avatar":"noavatar.png","name":"cat"},"code":200,"url":"","message":""}
+{user_token:用户TOKEN,id:用户ID}
+
+1.3.2 修改密码
+user/change_password
+new_password 新的密码
+old_password 旧的密码
+{"data":{"user_token":"1hJI\/irXUx5zYgSMqjhBOKe8g3UFhivjuF7RAAM\/SHI3uufexUdF8F6MgKowB\/Jpnt5zUwwKvIAw91RK5FZOuP0uYBG3vD7miARl3nbXetNM=","id":"1","avatar":"noavatar.png","name":"cat"},"code":200,"url":"","message":""}
 {user_token:用户TOKEN,id:用户ID}
 
 
@@ -38,7 +79,7 @@ phone 手机号
 
 1.5 获取我的信息
 user/getMyInfo
-{"data":{"info":{"avatar":"noavatar.png","name":"\u7528\u6237000041","sex":"0","phone":"13661730893","id":"41"}},"code":200,"url":"","message":""}
+{"data":{"info":{"avatar":"noavatar.png","name":"cat","sex":"0","phone":"13661730893","id":"1","car_number_1":"1","car_number_2":"2","car_number_3":"3","birth":"2001-10-11"}},"code":200,"url":"","message":""}
 {sex:性别1男2女0无}
 
 
@@ -47,7 +88,7 @@ user/changeMyInfo
 name 用户名
 avatar 头像（路径）
 sex 性别
-birth 生日（YYYY-mm-dd）
+birth 生日（YYYY\mm\dd）
 {"data":{},"code":200,"url":"","message":""}
 {}
 
@@ -57,4 +98,49 @@ user/changeMyAvatar
 avatar 头像文件的二进制流
 {"data":{},"code":200,"url":"","message":""}
 {}
+
+
+1.8 意见反馈
+user/feedback
+content 内容
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
+
+2.1 获取活动列表
+home/getActivities
+{"data":{"list":[{"id":"2","name":"ceshi!!!","thumb":"nopic.jpg","link":"https:\/\/www.baidu.com","type":"0","status":"1","detail":"","create_time":"1515745525","level":"2"},{"id":"3","name":"ceshi2","thumb":"nopic.jpg","link":"e2e","type":"0","status":"1","detail":"ss","create_time":"1515746397","level":"1"}]},"code":200,"url":"","message":""}
+{type:类型0图文活动2外部链接,thumb:图片,link:外部图片}
+
+
+2.2 活动h5详情
+home/activityH5?id=xxxx
+id 活动id
+{}
+{}
+
+
+2.3 各种h5
+home/h5?id=xxxx
+id h5页面的id
+{}
+{}
+
+
+
+3.1 获取附近的停车场
+parking/lotNearby
+longitude 经度
+latitude 纬度
+{"data":{"list":[{"id":"1","name":"\u6d4b\u8bd5\u505c\u8f66\u573a","group_id":"4525508","address":"\u534e\u5f90\u516c\u8def888\u53f7","count":"20","empty":"0","fee":"100.00","open_time":"10:00 ~ 11:00","free":"0","top_fee":"100.00","com":"0","create_time":"1515986516","latitude":"31.29927816","longitude":"121.41344076","active":"1","thumb":"","group_name":"\u5f90\u6cfe\u5546\u5708","district_name":"\u9752\u6d66\u533a","city_name":"\u4e0a\u6d77\u5e02","province_name":"\u4e0a\u6d77\u5e02","distance":"0.1120"}]},"code":200,"url":"","message":""}
+{id:停车场id,name:名字,fee:标准收费（元/小时）,empty:空闲车位,thumb:图片,distance:距离（单位米）,address:具体地址,count:总车位数,open_time:营业时间,free:免费时长（小时）,top_fee:封顶费用,province_name:省,city_name:市,district_name:区,group_name:商圈}
+
+3.2 获取停车场信息
+id 停车场id
+longitude 经度
+latitude 纬度
+{"data":{"info":{"id":"1","name":"\u6d4b\u8bd5\u505c\u8f66\u573a","group_id":"4525508","address":"\u534e\u5f90\u516c\u8def888\u53f7","count":"20","empty":"0","fee":"100.00","open_time":"10:00 ~ 11:00","free":"0","top_fee":"100.00","com":"0","create_time":"1515986516","latitude":"31.29927816","longitude":"121.41344076","active":"1","thumb":"","group_name":"\u5f90\u6cfe\u5546\u5708","district_name":"\u9752\u6d66\u533a","city_name":"\u4e0a\u6d77\u5e02","province_name":"\u4e0a\u6d77\u5e02","distance":"12962.7230"}},"code":200,"url":"","message":""}
+{id:停车场id,name:名字,fee:标准收费（元/小时）,empty:空闲车位,thumb:图片,distance:距离（单位米）,address:具体地址,count:总车位数,open_time:营业时间,free:免费时长（小时）,top_fee:封顶费用,province_name:省,city_name:市,district_name:区,group_name:商圈}
+
 

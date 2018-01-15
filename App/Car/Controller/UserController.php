@@ -161,18 +161,18 @@ class UserController extends Controller{
 
         $where['user_id'] = $this->L->id;
         $where['isread'] = 0;
-        $e = MessageModel::copyMutiInstance()->where($where)->find();
+        // $e = MessageModel::copyMutiInstance()->where($where)->find();
 
-        if($e)$data['hasMessage'] = '1';
-        else $data['hasMessage'] = '0';
+        // if($e)$data['hasMessage'] = '1';
+        // else $data['hasMessage'] = '0';
 
         $out = [
             'user_token'=>$user_token,
             'id'=>$info->id,
             'avatar'=>$info->avatar,
             'name'=>$info->name,
-            'type'=>$info->type,
-            'hasMessage'=>$data['hasMessage']
+            // 'type'=>$info->type,
+            // 'hasMessage'=>$data['hasMessage']
             
         ];
         
@@ -243,6 +243,28 @@ class UserController extends Controller{
 
     }
 
+    function change_password($new_password,$old_password,$cookie = false){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        $model = UserModel::copyMutiInstance();
+        
+        $userInfo = $this->userInfo;
+
+        $password = $this->encrypt_password($old_password,$userInfo->salt);
+
+        if($password != $userInfo->password){
+            AJAX::error('原密码错误');
+        }
+
+        $userInfo->password = $this->encrypt_password($new_password,$userInfo->salt);
+        $userInfo->save();
+
+        $this->_out_info($userInfo);
+
+
+    }
+
     
     /** 发送手机验证码
      * captcha
@@ -270,8 +292,10 @@ class UserController extends Controller{
         $info['sex'] = $this->L->userInfo->sex;
         $info['phone'] = $this->L->userInfo->phone;
         $info['id'] = $this->L->userInfo->id;
-        // $info['count'] = $userModel->select('COUNT(*) AS c','RAW')->where(['parent_id'=>$this->L->id])->find()->c;
-        $info['count'] = $this->L->userInfo->fans;
+        $info['car_number_1'] = $this->L->userInfo->car_number_1;
+        $info['car_number_2'] = $this->L->userInfo->car_number_2;
+        $info['car_number_3'] = $this->L->userInfo->car_number_3;
+        $info['birth'] = $this->L->userInfo->birth;
 
         $out['info'] = $info;
 
@@ -279,12 +303,15 @@ class UserController extends Controller{
     }
 
     # 修改我的信息
-    function changeMyInfo($name,$avatar,$sex){
+    function changeMyInfo($name,$avatar,$sex,$car_number_1,$car_number_2,$car_number_3){
 
         !$this->L->id && AJAX::error('未登录');
 
         $name && $this->L->userInfo->name = $name;
         $avatar && $this->L->userInfo->avatar = $avatar;
+        $car_number_1 && $this->L->userInfo->car_number_1 = $car_number_1;
+        $car_number_2 && $this->L->userInfo->car_number_2 = $car_number_2;
+        $car_number_3 && $this->L->userInfo->car_number_3 = $car_number_3;
         $sex != NULL && $this->L->userInfo->sex = $sex;
 
         $this->L->userInfo->save();

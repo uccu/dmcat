@@ -96,7 +96,7 @@ class UserController extends Controller{
         $m->setBody(['type'  =>  'hidden','name'  =>  'id']);
         $m->setBody(['title'  =>  '账号(手机号)','name'  =>  'phone','size'  =>  '2']);
         $m->setBody(['title'  =>  '名字','name'  =>  'name','size'  =>  '2']);
-        $m->setBody(['title'  =>  '出生年月','name'  =>  'birth','size'  =>  '2','placeholder'=>'格式：YYYY-mm-dd']);
+        $m->setBody(['title'  =>  '出生年月','name'  =>  'birth','size'  =>  '2','placeholder'=>'格式：YYYY\mm\dd']);
         $m->setBody(['title'  =>  '车牌号1','name'  =>  'car_number_1','size'  =>  '2']);
         $m->setBody(['title'  =>  '车牌号2','name'  =>  'car_number_2','size'  =>  '2']);
         $m->setBody(['title'  =>  '车牌号3','name'  =>  'car_number_3','size'  =>  '2']);
@@ -119,7 +119,7 @@ class UserController extends Controller{
 
         // var_dump(strlen($birth));
         
-        (is_null($active) && (strlen($birth) != 10 || !strtotime($birth))) && AJAX::error('生日的格式错误');
+        (is_null($active) && (strlen($birth) != 10 || !strtotime(str_replace('\\','-',$birth)))) && AJAX::error('生日的格式错误');
 
 
         if(!$id){

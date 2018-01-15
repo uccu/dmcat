@@ -19,5 +19,9 @@ class AdminModel extends Model{
 
         return $this->join(AreaModel::class,'id','district_id','LEFT');
     }
+    public function parkingLot(){
+
+        return $this->join(ParkingLotModel::class,'id','parking_lot_id','LEFT');
+    }
 
 }
