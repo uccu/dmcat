@@ -296,6 +296,7 @@ class UserController extends Controller{
         $info['car_number_2'] = $this->L->userInfo->car_number_2;
         $info['car_number_3'] = $this->L->userInfo->car_number_3;
         $info['birth'] = $this->L->userInfo->birth;
+        $info['count'] = '999';
 
         $out['info'] = $info;
 

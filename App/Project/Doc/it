@@ -61,6 +61,7 @@ phone_captcha 手机验证码
 {"data":{"user_token":"1hJI\/irXUx5zYgSMqjhBOKe8g3UFhivjuF7RAAM\/SHI3uufexUdF8F6MgKowB\/Jpnt5zUwwKvIAw91RK5FZOuP0uYBG3vD7miARl3nbXetNM=","id":"1","avatar":"noavatar.png","name":"cat"},"code":200,"url":"","message":""}
 {user_token:用户TOKEN,id:用户ID}
 
+
 1.3.2 修改密码
 user/change_password
 new_password 新的密码
@@ -79,7 +80,7 @@ phone 手机号
 
 1.5 获取我的信息
 user/getMyInfo
-{"data":{"info":{"avatar":"noavatar.png","name":"cat","sex":"0","phone":"13661730893","id":"1","car_number_1":"1","car_number_2":"2","car_number_3":"3","birth":"2001-10-11"}},"code":200,"url":"","message":""}
+{"data":{"info":{"avatar":"noavatar.png","name":"cat","sex":"0","phone":"13661730893","id":"1","car_number_1":"1","car_number_2":"2","car_number_3":"3","birth":"2001\10\11","count":"停车记录次数"}},"code":200,"url":"","message":""}
 {sex:性别1男2女0无}
 
 
@@ -89,6 +90,9 @@ name 用户名
 avatar 头像（路径）
 sex 性别
 birth 生日（YYYY\mm\dd）
+car_number_1 车牌1
+car_number_2 车牌2
+car_number_3 车牌3
 {"data":{},"code":200,"url":"","message":""}
 {}
 
