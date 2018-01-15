@@ -109,6 +109,7 @@ class StaffController extends Controller{
                 '名字',
                 '余额',
                 '启用',
+                '注册时间',
                 
 
 
@@ -133,7 +134,7 @@ class StaffController extends Controller{
                     'name'=>'active',
                     'type'=>'checkbox',
                 ],
-                
+                'create_date'
 
 
             ];
@@ -149,6 +150,7 @@ class StaffController extends Controller{
         $list = $model->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
+            $v->create_date = date('Y-m-d H:i:s',$v->create_time);
         }
 
 
@@ -391,6 +393,7 @@ class StaffController extends Controller{
                 '余额',
                 '启用',
                 '评价',
+                '注册时间'
 
             ];
 
@@ -417,7 +420,8 @@ class StaffController extends Controller{
                 [
                     'name'=>'judge',
                     'href'=>true
-                ]
+                ],
+                'create_date'
 
 
             ];
@@ -458,6 +462,7 @@ class StaffController extends Controller{
 
         $list = $model->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){
+            $v->create_date = date('Y-m-d H:i:s',$v->create_time);
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
             $v->judge = '查看';
             $v->judge_href = 'staff/judge_driver?id='.$v->id;
@@ -972,7 +977,8 @@ class StaffController extends Controller{
                 '手机号',
                 '名字',
                 '启用',
-                '评价'
+                '评价',
+                '注册时间'
 
 
             ];
@@ -998,7 +1004,8 @@ class StaffController extends Controller{
                 [
                     'name'=>'judge',
                     'href'=>true
-                ]
+                ],
+                'create_date'
 
 
             ];
@@ -1029,6 +1036,7 @@ class StaffController extends Controller{
         $list = $model->where($where)->page($page,$limit)->get()->toArray();
         // echo $model->sql;die();
         foreach($list as &$v){
+            $v->create_date = date('Y-m-d H:i:s',$v->create_time);
             $v->fullPic = $v->avatar ? Func::fullPicAddr($v->avatar) : Func::fullPicAddr('noavatar.png');
             $v->judge = '查看';
             $v->judge_href = 'staff/judge?id='.$v->id;
