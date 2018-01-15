@@ -97,7 +97,7 @@ trait OrderTraits{
 
         if($order->driver_id){
 
-            $driver =  $driverModel->select('id>driver_id','name','avatar','phone','judge_score')->find($order->driver_id);
+            $driver =  $driverModel->select('id>driver_id','name','avatar','phone','judge_score','car_number','brand')->find($order->driver_id);
             if($driver){
 
                 $driver->orderCount = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>49')->where('type IN (1,2)')->where(['driver_id'=>$order->driver_id])->find()->c;
