@@ -137,6 +137,7 @@ latitude 纬度
 {id:停车场id,name:名字,fee:标准收费（元/小时）,empty:空闲车位,thumb:图片,distance:距离（单位米）,address:具体地址,count:总车位数,open_time:营业时间,free:免费时长（小时）,top_fee:封顶费用,province_name:省,city_name:市,district_name:区,group_name:商圈}
 
 3.2 获取停车场信息
+parking/lotInfo
 id 停车场id
 longitude 经度
 latitude 纬度
