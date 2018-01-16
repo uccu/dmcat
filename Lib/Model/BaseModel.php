@@ -170,7 +170,11 @@ class BaseModel{
         }elseif(!$this->query){
 
             $this->where = preg_replace('#`\w+`\.#',' ',$this->where); 
+
             if($this->where)$sql .= ' WHERE '.$this->where;
+            if($this->order)$sql .= ' ORDER BY '.$this->order;
+            if($this->limit)$sql .= ' LIMIT '.$this->limit;
+            if($this->offset)$sql .= ' OFFSET '.$this->offset;
             
             if($this->deleteSafe && !$this->where)E::throwEx('WHERE Is Empty');
 
