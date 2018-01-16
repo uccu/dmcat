@@ -107,20 +107,20 @@ class ParkingController extends Controller{
         # 筛选
         $m->where = [];
         if($group_id)$m->where['group_id'] = $group_id;
-        elseif($district_id)$m->where['groups.parent_id'] = $district_id;
-        elseif($city_id)$m->where['groups.parent.parent_id'] = $city_id;
-        elseif($province_id)$m->where['groups.parent.parent2.parent_id'] = $province_id;
+        elseif($district_id)$m->where['district_id'] = $district_id;
+        elseif($city_id)$m->where['district.parent_id'] = $city_id;
+        elseif($province_id)$m->where['district.parent.parent_id'] = $province_id;
 
         if($com != '-1'){
             $m->where['com'] = $com;
         }
 
-        $search && $m->where['search'] = ['name LIKE %n OR admin.name LIKE %n OR admin.mobile LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
+        $search && $m->where['search'] = ['name LIKE %n OR admin.name LIKE %n OR admin.mobile LIKE %n OR address LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
 
         # 获取列表
         $model->order('create_time desc');
-        $model->select('*','groups.areaName>group_name','groups.parent.areaName>district_name','groups.parent.parent2.areaName>city_name','groups.parent.parent2.areaName>province_name');
-        $m->getList(0);
+        $model->select('*','groups.areaName>group_name','district.areaName>district_name','district.parent.areaName>city_name','district.parent.parent2.areaName>province_name');
+        $m->getList(0); 
         $m->each(function(&$v) USE ($adminModel){
 
             $v->parking_space = $v->empty . '/' . $v->count;
@@ -171,7 +171,7 @@ class ParkingController extends Controller{
         
         # 设置名字
         $m->setName('活动管理');
-        $model->select('*','admin.name>admin','groups.parent_id>district_id','groups.parent.parent_id>city_id','groups.parent.parent2.parent_id>province_id');
+        $model->select('*','admin.name>admin','district.parent_id>city_id','district.parent.parent_id>province_id');
         $m->getInfo();
         $m->output();
     }

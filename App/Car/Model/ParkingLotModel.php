@@ -9,7 +9,12 @@ class ParkingLotModel extends Model{
 
     public function groups(){
 
-        return $this->join(AreaModel::class,'id','group_id');
+        return $this->join(AreaModel::class,'id','group_id','LEFT');
+    }
+
+    public function district(){
+
+        return $this->join(AreaModel::class,'id','district_id','LEFT');
     }
 
     public function admin(){
