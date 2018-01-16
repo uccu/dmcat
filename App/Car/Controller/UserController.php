@@ -304,7 +304,7 @@ class UserController extends Controller{
     }
 
     # 修改我的信息
-    function changeMyInfo($name,$avatar,$sex,$car_number_1,$car_number_2,$car_number_3){
+    function changeMyInfo($name,$avatar,$sex,$car_number_1,$car_number_2,$car_number_3,$birth){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -313,6 +313,7 @@ class UserController extends Controller{
         $car_number_1 && $this->L->userInfo->car_number_1 = $car_number_1;
         $car_number_2 && $this->L->userInfo->car_number_2 = $car_number_2;
         $car_number_3 && $this->L->userInfo->car_number_3 = $car_number_3;
+        $birth && $this->L->userInfo->birth = $birth;
         $sex != NULL && $this->L->userInfo->sex = $sex;
 
         $this->L->userInfo->save();
