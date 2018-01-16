@@ -21,8 +21,13 @@ class Hook implements \Lib\Tool\Hook{
             }elseif(Config::get('SUCCESS_LOG')){
                 $req = json_encode($_REQUEST);
                 $data = json_encode($data);
-                SuccessApiModel::copyMutiInstance()->order('id desc')->where('1=1')->offset(1000)->limit(1000)->remove();
-                SuccessApiModel::copyMutiInstance()->set([
+
+                $model = SuccessApiModel::copyMutiInstance();
+                $count = $model->select('COUNT(*) AS c','RAW')->find()->c;
+                if($count > 999){
+                    $model->order('id')->where('1=1')->limit($count - 9999)->remove();
+                }
+                $model->set([
                     'request'=>$req,'output'=>$data,'date'=>date('Y-m-d H:i:s'),'path'=>REQUEST_PATH
                 ])->add();
 
