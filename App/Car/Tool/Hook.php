@@ -23,7 +23,7 @@ class Hook implements \Lib\Tool\Hook{
                 $data = json_encode($data);
 
                 $model = SuccessApiModel::copyMutiInstance();
-                $count = $model->select('COUNT(*) AS c','RAW')->find()->c;
+                $count = $model->getCount();
                 if($count > 999){
                     $model->order('id')->where('1=1')->limit($count - 9999)->remove();
                 }

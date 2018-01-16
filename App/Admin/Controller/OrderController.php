@@ -1407,23 +1407,23 @@ class OrderController extends Controller{
             ],
         ];
             
-            !$model->field && AJAX::error('字段没有公有化！');
+        !$model->field && AJAX::error('字段没有公有化！');
             
             
-            $info = AdminFunc::get($model,$id);
+        $info = AdminFunc::get($model,$id);
 
             
-            $out = 
-            [
+        $out = 
+        [
                 'info'  =>  $info,
                 'tbody' =>  $tbody,
                 'name'  =>  $name,
                 'opt'   =>  $opt,
-            ];
+        ];
             
-            AJAX::success($out);
+        AJAX::success($out);
             
-        }
+    }
         
         
 
