@@ -340,7 +340,10 @@ class DriverController extends Controller{
 
         $info['count'] = $driverModel->select('COUNT(*) AS c','RAW')->where(['parent_id'=>$this->L->id])->find()->c;
 
-        $info['apply_status'] = DriverApplyModel::copyMutiInstance()->where(['id'=>$this->L->id])->order('create_time desc')->find()->status;
+        $driverApply = DriverApplyModel::copyMutiInstance()->where(['id'=>$this->L->id])->order('create_time desc')->find();
+
+        $info['apply_status'] = $driverApply->status;
+        $info['apply_status_reason'] = $driverApply->reason?$driverApply->reason:'';
         NULL === $info['apply_status'] && $info['apply_status'] = '-2';
         $m = DriverIncomeModel::copyMutiInstance();
         $info['money_today'] = $m->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;

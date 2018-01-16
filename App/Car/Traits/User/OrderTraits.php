@@ -477,7 +477,7 @@ trait OrderTraits{
 
             $time = date('H:i',$trip->in_time);
             if(!$time)$time = date('H:i');
-            $data = Func::getWayPrice($order->city_id,$time,$distance->distance / 1000);
+            $data = Func::getWayPrice($distance->distance / 1000,$order->num);
             $price = $data['price'];
             $start = $data['start'];
 

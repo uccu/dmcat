@@ -173,6 +173,7 @@ class OrderController extends Controller{
         $m->output();
 
     }
+
     function admin_driving_get(OrderDrivingModel $model,$id){
 
 
@@ -1111,7 +1112,7 @@ class OrderController extends Controller{
             ][$v->status];
             $v->driving_license = Func::fullPicAddr($v->driving_license);
             $v->driving_permit = Func::fullPicAddr($v->driving_permit);
-            $v->date = date('Y-m-d H:i',$v->craete_time);
+            $v->date = date('Y-m-d H:i',$v->create_time);
         }
 
 
@@ -1167,32 +1168,33 @@ class OrderController extends Controller{
                     '0'=>'申请中',
                     '1'=>'审核通过',
                     '-1'=>'审核失败'
-                    ]
-                ],
-                
-                
-                
-                
-            ];
-            
-            !$model->field && AJAX::error('字段没有公有化！');
-            
-            
-            $info = AdminFunc::get($model,$id);
-            
-            if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
-            
-            $out = 
+                ]
+            ],
             [
-                'info'  =>  $info,
-                'tbody' =>  $tbody,
-                'name'  =>  $name,
-                'opt'   =>  $opt,
-            ];
+                'type'  =>  'textarea',
+                'name'  =>  'reason',
+                'title' =>  '失败理由'
+            ],
+        ];
             
-            AJAX::success($out);
+        !$model->field && AJAX::error('字段没有公有化！');
             
-        }
+            
+        $info = AdminFunc::get($model,$id);
+            
+        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
+            
+        $out = 
+        [
+            'info'  =>  $info,
+            'tbody' =>  $tbody,
+            'name'  =>  $name,
+            'opt'   =>  $opt,
+        ];
+            
+        AJAX::success($out);
+            
+    }
         
         
 
@@ -1396,13 +1398,14 @@ class OrderController extends Controller{
                     '0'=>'申请中',
                     '1'=>'审核通过',
                     '-1'=>'审核失败'
-                    ]
-                ],
-                
-                
-                
-                
-            ];
+                ]
+            ],
+            [
+                'type'  =>  'textarea',
+                'name'  =>  'reason',
+                'title' =>  '失败理由'
+            ],
+        ];
             
             !$model->field && AJAX::error('字段没有公有化！');
             

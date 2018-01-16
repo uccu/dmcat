@@ -337,7 +337,7 @@ class PayController extends Controller{
 
         /*总价格&订单号*/
         $total_fee = $money;
-        // $total_fee = '0.01';
+        $total_fee = '0.01';
         $out_trade_no = '0'.date('YmdHis',$order->create_time).Func::randWord(6,3);
 
         /*生成随机码*/
@@ -346,9 +346,9 @@ class PayController extends Controller{
 
         $total_fee100 = floor($total_fee*100);
         
-        $p['appid']             = $this->L->config->wcpay_appid;
+        $p['appid']             = $this->L->config->wcpay_appid_driver;
         $p['body']              = '充值';
-        $p['mch_id']            = $this->L->config->wcpay_mch_id;
+        $p['mch_id']            = $this->L->config->wcpay_mch_id_driver;
         $p['nonce_str']         = $nonce_str;
         $p['notify_url']        = Func::fullAddr('pay/wcpay_c_recharge');
         $p['out_trade_no']      = $out_trade_no;
@@ -387,7 +387,7 @@ class PayController extends Controller{
         $data['pay_type'] = 'wcpay';
         $data['total_fee'] = $total_fee;
         $data['out_trade_no'] = $out_trade_no;
-        $data['trip_id'] = $trip_id;
+        $data['trip_id'] = 0;
 
         if(!$da){
 
@@ -421,7 +421,7 @@ class PayController extends Controller{
 
             $data['error'] = '微信预支付交易失败.'.$result->err_code.'.'.$result->err_code_des;
 
-            $id = PaymentModel::getSingleInstance()->set($data)->add()->getStatus();
+            $id = DriverPaymentModel::getSingleInstance()->set($data)->add()->getStatus();
             if(!$id)AJAX::success('支付单生成失败');
 
             AJAX::error($data['error']);
@@ -432,8 +432,8 @@ class PayController extends Controller{
         $data['prepay_time'] = TIME_NOW;
         $data['pay_nonce_str'] = $nonce_str2;
 
-        $data2['appid'] = $this->L->config->wcpay_appid;
-        $data2['partnerid'] = $this->L->config->wcpay_mch_id;
+        $data2['appid'] = $this->L->config->wcpay_appid_driver;
+        $data2['partnerid'] = $this->L->config->wcpay_mch_id_driver;
         $data2['package'] = 'Sign=WXPay';
         $data2['noncestr'] = $nonce_str2;
         $data2['timestamp'] = TIME_NOW.'';
@@ -446,7 +446,7 @@ class PayController extends Controller{
 
         $data2['sign'] = strtoupper ( md5 ( $signStr ) );
         $data2['prepay_id'] = $data2['prepayid'];
-        $id = PaymentModel::getSingleInstance()->set($data)->add()->getStatus();
+        $id = DriverPaymentModel::getSingleInstance()->set($data)->add()->getStatus();
         if(!$id)AJAX::success('支付单生成失败');
 
         AJAX::success($data2);
@@ -743,7 +743,7 @@ class PayController extends Controller{
     }
 
 
-    function wcpay_c_recharg(DriverPaymentModel $paymentModel,DriverModel $model){
+    function wcpay_c_recharge(DriverPaymentModel $paymentModel,DriverModel $model){
 
         $postStr = file_get_contents ( 'php://input' );
         $xmlObject =  simplexml_load_string ( $postStr );
