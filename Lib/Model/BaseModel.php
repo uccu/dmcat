@@ -174,7 +174,6 @@ class BaseModel{
             if($this->where)$sql .= ' WHERE '.$this->where;
             if($this->order)$sql .= ' ORDER BY '.$this->order;
             if($this->limit)$sql .= ' LIMIT '.$this->limit;
-            if($this->offset)$sql .= ' OFFSET '.$this->offset;
             
             if($this->deleteSafe && !$this->where)E::throwEx('WHERE Is Empty');
 
@@ -221,6 +220,13 @@ class BaseModel{
         }
 
         return $this->get()->find(0);
+
+    }
+
+    # 获取数量
+    public function getCount(){
+
+        return $this->select('COUNT(*) AS c','RAW')->find()->c;
 
     }
 
