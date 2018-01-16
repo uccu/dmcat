@@ -39,7 +39,7 @@ class ParkingController extends Controller{
 
         // $latitude = 31.30027816;
         // $longitude = 121.41354076;
-        $list = $parkingLotModel->select(['*,groups.areaName AS group_name,groups.parent.areaName AS district_name,groups.parent.parent2.areaName AS city_name,groups.parent.parent2.areaName AS province_name,round(6378.138*2*asin(sqrt(pow(sin((%f*pi()/180-latitude*pi()/180)/2),2)+cos(%f*pi()/180)*cos(latitude*pi()/180)*pow(sin((%f*pi()/180-longitude*pi()/180)/2),2)))*1000)/1000 as distance',$latitude,$latitude,$longitude],'raw')->where('round(6378.138*2*asin(sqrt(pow(sin((%f*pi()/180-latitude*pi()/180)/2),2)+cos(%f*pi()/180)*cos(latitude*pi()/180)*pow(sin((%f*pi()/180-longitude*pi()/180)/2),2)))*1000)/1000 <= %d',$latitude,$latitude,$longitude,$distance)->order('distance','raw')->get()->toArray();
+        $list = $parkingLotModel->select(['*,groups.areaName AS group_name,groups.parent.areaName AS district_name,groups.parent.parent2.areaName AS city_name,groups.parent.parent2.areaName AS province_name,round(6378.138*2*asin(sqrt(pow(sin((%f*pi()/180-latitude*pi()/180)/2),2)+cos(%f*pi()/180)*cos(latitude*pi()/180)*pow(sin((%f*pi()/180-longitude*pi()/180)/2),2)))*1000) as distance',$latitude,$latitude,$longitude],'raw')->where('round(6378.138*2*asin(sqrt(pow(sin((%f*pi()/180-latitude*pi()/180)/2),2)+cos(%f*pi()/180)*cos(latitude*pi()/180)*pow(sin((%f*pi()/180-longitude*pi()/180)/2),2)))*1000) <= %d',$latitude,$latitude,$longitude,$distance*1000)->order('distance','raw')->get()->toArray();
 
         $out['list'] = $list;
 
@@ -59,7 +59,7 @@ class ParkingController extends Controller{
 
         // $latitude = 31.30027816;
         // $longitude = 121.41354076;
-        $info = $parkingLotModel->select(['*,groups.areaName AS group_name,groups.parent.areaName AS district_name,groups.parent.parent2.areaName AS city_name,groups.parent.parent2.areaName AS province_name,round(6378.138*2*asin(sqrt(pow(sin((%f*pi()/180-latitude*pi()/180)/2),2)+cos(%f*pi()/180)*cos(latitude*pi()/180)*pow(sin((%f*pi()/180-longitude*pi()/180)/2),2)))*1000)/1000 as distance',$latitude,$latitude,$longitude],'raw')->find($id);
+        $info = $parkingLotModel->select(['*,groups.areaName AS group_name,groups.parent.areaName AS district_name,groups.parent.parent2.areaName AS city_name,groups.parent.parent2.areaName AS province_name,round(6378.138*2*asin(sqrt(pow(sin((%f*pi()/180-latitude*pi()/180)/2),2)+cos(%f*pi()/180)*cos(latitude*pi()/180)*pow(sin((%f*pi()/180-longitude*pi()/180)/2),2)))*1000) as distance',$latitude,$latitude,$longitude],'raw')->find($id);
 
         if(!$info)AJAX::error('停车场不存在');
 
