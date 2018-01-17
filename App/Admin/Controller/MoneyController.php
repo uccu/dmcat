@@ -462,6 +462,10 @@ class MoneyController extends Controller{
                 'get'   => '../money/admin_cash_admin_get',
                 'del'   => '../money/admin_cash_admin_del',
                 'view'  => 'home/upd',
+                'button'=>[
+                    'name'=>'提现',
+                    'href'=>'home/upd?id=5&get=../driver/admin_cash_get'
+                ],
                 'req'   =>[
                     [
                         'title'=>'搜索',
@@ -482,10 +486,7 @@ class MoneyController extends Controller{
                     ]
                 ]
             ];
-        if($this->L->userInfo->type == 1 || $this->L->userInfo->type == 2){
-            unset($opt['view']);
-            unset($opt['del']);
-        }
+        
 
         # 头部标题设置
         $thead = 
@@ -524,6 +525,13 @@ class MoneyController extends Controller{
 
         # 列表内容
         $where = [];
+        if($this->L->userInfo->type == 1 || $this->L->userInfo->type == 2){
+            unset($opt['view']);
+            unset($opt['del']);
+            $where['admin_id'] = $this->L->id;
+        }else{
+            unset($opt['button']);
+        }
         $where['content'] = '提现';
         
         if($type != -2){

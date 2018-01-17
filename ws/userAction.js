@@ -320,8 +320,8 @@ let act = {
                         let g = function(r){
                             driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'create',list:r}))
                         };
-                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
+                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
                     }
                 }
                 if(drivers.length)db.update('update c_order_taxi set driver_ids=? where id=?',[drivers.join(','),id])

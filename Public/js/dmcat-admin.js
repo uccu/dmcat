@@ -90,6 +90,7 @@
                 save.on('click',function(){
                     var data = j('#modal_new form').serializeArray(),k
                     j('#modal_new form .summernote[data-name]').each(function(){data.push({name:j(this).attr('data-name'),value:j(this).summernote('code').replace(/<xml>[\s\S]*<\/xml>/ig,'')})})
+                    j('#modal_new form input[useid]').each(function(){data.push({name:j(this).attr('data-name'),value:j(this).attr('data-id')})})
                     curl(m.opt.upd,data,function(b){
                         curl_succ('success!');
                         m.opt.back && setTimeout(function(){gotoTag(m.opt.back,1)},1000)
@@ -211,7 +212,10 @@
                     case 'select':
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="col-sm-'+(para.size || 2)+'"><select class="form-control" '+(para.disabled?'disabled':'')+' name="'+para.name+'">'+(function(o){
                             var d = '';
-                            for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
+                            for(var q in o){
+                                if(typeof o[q] == 'object')d += '<option value="'+o[q].id+'">'+o[q].value+'</option>'
+                                else d += '<option value="'+q+'">'+o[q]+'</option>'
+                            }
                             return d
                         })(para.option)
                         +'<select/></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
@@ -221,7 +225,22 @@
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="input-group col-sm-'+(para.size || 2)+'" style="margin-top: 8px;"><input type="checkbox" class="form-control" '+(para.disabled?'disabled':'')+' name="'+para.name+'" style="display:none"></div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
                         if(m.info[para.name] != '0')pa.find('input').attr('checked','checked');
                         pa.find('input').iCheck({checkboxClass: 'icheckbox_square-green',radioClass: 'iradio_square-green'})
-
+                        break;
+                    case 'radio':
+                        
+                        var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="form-inline col-sm-'+(para.size || 6)+'">'+(function(o){
+                            var d = '';
+                            for(var q in o)d += '<label class="control-label cp" style="margin-right:10px"><input class="form-control" '+(m.info[para.name] == q)+' type="radio" name="'+para.name+'" value="'+q+'" style="display:none">'+o[q]+'</label>'
+                            return d
+                        })(para.option)
+                        +'</div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
+                        var sd = pa.find('input:radio[value="'+m.info[para.name]+'"]');
+                        if(sd.length){
+                            sd.attr('checked','checked')
+                        }else{
+                            pa.find('input:radio[value="'+para.default+'"]').attr('checked','checked');
+                        }
+                        pa.find('input').iCheck({checkboxClass: 'icheckbox_square-green',radioClass: 'iradio_square-green'})
                         break;
                     case 'selects':
                         var url = para.url
@@ -233,8 +252,7 @@
                             if(para.detail[i].type == 'checkboxs'){
                                 var sp = pa0.find('select').parent()
                                 pa0.find('select').remove()
-                                var qw = j('<input type="hidden" name="'+para.detail[i].name+'">');
-                                sp.append(qw)
+                                sp.append(j('<input type="hidden" name="'+para.detail[i].name+'">'))
                             }
                             if(pa0.attr('next-work')){
                                 pa0.find('select').change(function(){
@@ -382,12 +400,17 @@
                                 })
                             }
                             pa.find('input').attr('data-fields',JSON.stringify(para.fields))
+                            if(para.useId){
+                                pa.find('input').attr('data-name',pa.find('input').attr('name'));
+                                pa.find('input').attr('useid',1);
+                                pa.find('input').removeAttr('name')
+                            }
                             var para33 = para;
                             pa.find('input').bsSuggest({
                                 name:para.name,
-                                indexId:0,
-                                indexKey:0,
-                                idField:'id',
+                                indexId:para.index?para.index:0,
+                                indexKey:para.index?para.index:0,
+                                idField:para.idName?para.idName:'id',
                                 allowNoKeyword:true,
                                 multiWord:false,
                                 separator:",",
@@ -499,8 +522,13 @@
                 })
             }
             if(that.opt.add){
-                j('<div class="col-sm-1 animated fadeInRight"><a class="btn btn-primary btn-outline">新增</a></div>').appendTo('.topw .row').on('click',function(){
-                    gotoNewTag(that.opt.add+'?get='+that.opt.get,'新增'+that.name)
+                j('<div class="col-sm-1 animated fadeInRight"><a class="btn btn-primary btn-outline">'+(that.opt.tname||'新增')+'</a></div>').appendTo('.topw .row').on('click',function(){
+                    gotoNewTag(that.opt.add+'?get='+that.opt.get,(that.opt.tname||'新增')+that.name)
+                })
+            }
+            if(that.opt.button){
+                j('<div class="col-sm-1 animated fadeInRight"><a class="btn btn-primary btn-outline">'+that.opt.button.name+'</a></div>').appendTo('.topw .row').on('click',function(){
+                    gotoNewTag(that.opt.button.href,that.opt.button.name)
                 })
             }
             if(that.opt.req){
@@ -512,7 +540,10 @@
                         case 'select':
                             var pa = j('<div class="col-sm-'+(that.opt.req[i].size||3)+' animated fadeInRight"><div class="input-group"><span class="input-group-addon">'+that.opt.req[i].title+'</span><select name="'+that.opt.req[i].name+'" class="form-control">'+(function(o){
                                 var d = '';
-                                for(var q in o)d += '<option value="'+q+'">'+o[q]+'</option>'
+                                for(var q in o){
+                                    if(typeof o[q] == 'object')d += '<option value="'+o[q].id+'">'+o[q].value+'</option>'
+                                    else d += '<option value="'+q+'">'+o[q]+'</option>'
+                                }
                                 return d
                             })(that.opt.req[i].option)+'</select></div></div>')
                             pa.appendTo('.topw .row')

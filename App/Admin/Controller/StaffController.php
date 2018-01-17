@@ -435,7 +435,7 @@ class StaffController extends Controller{
         }
 
         if($serving){
-            $where['www'] = ['EXISTS(SELECT %i FROM %i WHERE %i=%F AND %i AND %i IN (%c))','t.trip_id','c_trip t','t.driver_id','id','t.type','t.statuss',[20,25,30,35,40]];
+            $where['www2'] = ['EXISTS(SELECT %i FROM %i WHERE %i=%F AND %i AND %i IN (%c))','t.trip_id','c_trip t','t.driver_id','id','t.type','t.statuss',[20,25,30,35,40]];
         }
 
         if($this->L->userInfo->type == 2){

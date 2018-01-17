@@ -179,7 +179,7 @@ class DriverController extends Controller{
         $m = Gets::getSingleInstance($model,$id);
 
         # 权限
-        $m->checkPermission(166);
+        $m->checkPermission(167);
 
         # 允许操作接口
         $m->setOpt('get','../driver/admin_cash_get');
@@ -209,10 +209,23 @@ class DriverController extends Controller{
         $m->output();
             
     }
-    function admin_cash_upd(AdminMoneyLogModel $model,$id = 0,$money){
-        $this->L->adminPermissionCheck(166);
+    function admin_cash_upd(AdminMoneyLogModel $model,$id = 0,$money,$code,$bank_name){
+        $this->L->adminPermissionCheck(167);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
+
+        if($money <= 0){
+            AJAX::error('请填写提现金额');
+        }
+        if(!$code){
+            AJAX::error('请填写卡号');
+        }
+        if(!$bank_name){
+            AJAX::error('请填写分行全称');
+        }
+        if(!$name){
+            AJAX::error('请填写姓名');
+        }
         
         $data['money'] = -$money;
         $data['create_time'] = TIME_NOW;
@@ -226,7 +239,7 @@ class DriverController extends Controller{
 
         $this->L->userInfo->balance -= $money;
         $this->L->userInfo->balance < 0 && AJAX::error('余额不足');
-        $this->L->save();
+        $this->L->userInfo->save();
 
         $upd = AdminFunc::upd($model,$id,$data);
 

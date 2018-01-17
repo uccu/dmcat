@@ -34,7 +34,7 @@
             b=new WebSocket('ws://www.disuyijian.com:7777/driver')
             b.onopen = function(){
                 console.log('driver 连接成功')
-                b.send('{"type":"login","latitude":"31.20139500","longitude":"121.26741200","driver_token":"bBZ6jKJI83KsBy1kz/B0wbMn2pD1JH6o6h8uVhHA5nzR3bWeWLsgfT2RwPljmvKNgO27mxIdwxScwHaGh96XMqxdlAq2ZgNve7FOKorBhYsQ="}')
+                b.send('{"type":"login","latitude":"31.20139500","longitude":"121.26741200","driver_token":"IA1pkHww9ZUfetoZ+ktMhB6NM0cEJNEj7hOTyscIvftCPbyJqmSehn8ZxEvMv+JAxHe7f0lyfDsu4g1vL1+ZYhAK726BSqNWMbCClJ9aAniA="}')
             }
             b.onclose = function(){
                 console.log('driver 2秒后重连')
