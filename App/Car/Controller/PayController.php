@@ -337,7 +337,7 @@ class PayController extends Controller{
 
         /*总价格&订单号*/
         $total_fee = $money;
-        $total_fee = '0.01';
+        // $total_fee = '0.01';
         $out_trade_no = '0'.date('YmdHis',$order->create_time).Func::randWord(6,3);
 
         /*生成随机码*/
