@@ -11,9 +11,9 @@ class AdminMoneyLogModel extends Model{
         
         return $this->join(AdminModel::class,'id','admin_id','LEFT');
     }
-    public function adminBank(){
+    public function bank(){
         
-        return $this->join(AdminBankModel::class,'id','bank_id','LEFT');
+        return $this->join(BankModel::class,'id','bank_id','LEFT');
     }
 
 }

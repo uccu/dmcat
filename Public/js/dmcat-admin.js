@@ -233,8 +233,8 @@
                             if(para.detail[i].type == 'checkboxs'){
                                 var sp = pa0.find('select').parent()
                                 pa0.find('select').remove()
-                                var m = j('<input type="hidden" name="'+para.detail[i].name+'">');
-                                sp.append(m)
+                                var qw = j('<input type="hidden" name="'+para.detail[i].name+'">');
+                                sp.append(qw)
                             }
                             if(pa0.attr('next-work')){
                                 pa0.find('select').change(function(){

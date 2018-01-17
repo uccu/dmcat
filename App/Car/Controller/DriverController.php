@@ -381,6 +381,7 @@ class DriverController extends Controller{
         $info['sex'] = $this->L->userInfo->sex;
         $info['phone'] = $this->L->userInfo->phone;
         $info['brand'] = $this->L->userInfo->brand;
+        $info['city_id'] = $this->L->userInfo->city_id;
         $info['car_number'] = $this->L->userInfo->car_number;
         $info['type_driving'] = $this->L->userInfo->type_driving;
         $info['type_taxi'] = $this->L->userInfo->type_taxi;

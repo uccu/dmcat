@@ -11,9 +11,15 @@ use App\Car\Tool\AdminFunc;
 use Uccu\DmcatTool\Tool\AJAX;
 use fengqi\Hanzi\Hanzi;
 use Model;
+use DB;
 
 use App\Car\Model\DriverCancelReasonModel;
+use App\Car\Model\AdminMoneyLogModel;
+use App\Car\Model\BankModel;
 
+
+use App\Admin\Set\Gets;
+use App\Admin\Set\Lists;
 
 class DriverController extends Controller{
 
@@ -164,6 +170,68 @@ class DriverController extends Controller{
         $this->L->adminPermissionCheck(158);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+    function admin_cash_get(AdminMoneyLogModel $model,BankModel $bankModel,$id = 0){
+
+        $m = Gets::getSingleInstance($model,$id);
+
+        # 权限
+        $m->checkPermission(166);
+
+        # 允许操作接口
+        $m->setOpt('get','../driver/admin_cash_get');
+        $m->setOpt('upd','../driver/admin_cash_upd');
+        $m->setOpt('view','driver/upd');
+        $m->setOpt('back','money/cash_admin');
+
+        # 设置表体
+        $m->setBody(['title'=>'当前余额','name'=>'balance','size'=>2,'disabled'=>true]);
+        $m->setBody(['title'=>'姓名','name'=>'name','size'=>2]);
+        $s = $m->setBody(['title'=>'银行','name'=>'bank_id','type'=>'select','default'=>'0']);
+        $m->setBody(['title'=>'卡号','name'=>'code']);
+        $m->setBody(['title'=>'分行全称','name'=>'bank_name']);
+        $m->setBody(['title'=>'提现金额','name'=>'money','size'=>2,'default'=>'0.00']);
+        $m->setBody(['title'=>'备注','name'=>'mes','type'=>'textarea']);
+        
+
+        $m->tbody[$s]['option'] = $bankModel->get_field('name','id');
+        $m->tbody[$s]['option']['0'] = '请选择';
+
+        # 设置名字
+        $m->setName($m->getInfo()->title);
+
+        $m->info->balance = $this->L->userInfo->balance;
+        
+        # 输出
+        $m->output();
+            
+    }
+    function admin_cash_upd(AdminMoneyLogModel $model,$id = 0,$money){
+        $this->L->adminPermissionCheck(166);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        
+        $data['money'] = -$money;
+        $data['create_time'] = TIME_NOW;
+        $data['admin_id'] = $this->L->id;
+        $data['content'] = '提现';
+
+        if(!$data['bank_id'])AJAX::error('请选择银行');
+
+
+        DB::start();
+
+        $this->L->userInfo->balance -= $money;
+        $this->L->userInfo->balance < 0 && AJAX::error('余额不足');
+        $this->L->save();
+
+        $upd = AdminFunc::upd($model,$id,$data);
+
+        DB::commit();
+        $out['upd'] = $upd;
         AJAX::success($out);
     }
     

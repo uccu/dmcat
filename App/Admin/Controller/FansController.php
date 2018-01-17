@@ -95,6 +95,12 @@ class FansController extends Controller{
             $m->where['parent_id'] = $parent_id;
         }
 
+        if($this->L->userInfo->type == 2){
+            $m->where['city.parent_id'] = $this->L->userInfo->province_id;
+        }elseif($this->L->userInfo->type == 1){
+            $m->where['city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
+        }
+
         if($search){
             $m->where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
         }
@@ -264,6 +270,11 @@ class FansController extends Controller{
         $m->where = [];
         if($parent_id){
             $m->where['parent_id'] = $parent_id;
+        }
+        if($this->L->userInfo->type == 2){
+            $m->where['city.parent_id'] = $this->L->userInfo->province_id;
+        }elseif($this->L->userInfo->type == 1){
+            $m->where['city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
         }
 
         if($search){

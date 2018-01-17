@@ -47,6 +47,7 @@ exports.find = function(sql,param,cb){
 
             if(err){
                 console.log('[SELECT ERROR] - ',err.message);
+                console.log(err);
                 if(err.message == 'read ECONNRESET'){
                     cbs = function(){
                         exports.replace(sql,param,cb)
@@ -74,6 +75,7 @@ exports.get = function(sql,param,cb){
 
             if(err){
                 console.log('[SELECT ERROR] - ',err.message);
+                console.log(err);
                 if(err.message == 'read ECONNRESET'){
                     cbs = function(){
                         exports.replace(sql,param,cb)

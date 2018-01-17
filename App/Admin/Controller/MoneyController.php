@@ -19,6 +19,7 @@ use App\Car\Model\DriverModel;
 use App\Car\Model\UserCouponModel;
 use App\Car\Model\DriverMoneyLogModel;
 use App\Car\Model\CouponModel;
+use App\Car\Model\AdminMoneyLogModel;
 
 
 
@@ -56,6 +57,11 @@ class MoneyController extends Controller{
     function cash_driver(){
 
         View::addData(['getList'=>'admin_cash_driver']);
+        View::hamlReader('home/list','Admin');
+    }
+    function cash_admin(){
+
+        View::addData(['getList'=>'admin_cash_admin']);
         View::hamlReader('home/list','Admin');
     }
 
@@ -132,6 +138,12 @@ class MoneyController extends Controller{
         }
         if($type){
             $where['pay_type'] = $type; 
+        }
+
+        if($this->L->userInfo->type == 2){
+            $where['user.city.parent_id'] = $this->L->userInfo->province_id;
+        }elseif($this->L->userInfo->type == 1){
+            $where['user.city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
         }
         
         
@@ -432,6 +444,214 @@ class MoneyController extends Controller{
     }
     function admin_cash_user_del(UserMoneyLogModel $model,$id){
         $this->L->adminPermissionCheck(120);
+        $del = AdminFunc::del($model,$id);
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+    # 代理提现申请
+    function admin_cash_admin(AdminMoneyLogModel $model,$page = 1,$limit = 10,$search,$type = -2){
+        
+        $this->L->adminPermissionCheck(167);
+
+        $name = '';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../money/admin_cash_admin_get',
+                'del'   => '../money/admin_cash_admin_del',
+                'view'  => 'home/upd',
+                'req'   =>[
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search',
+                        'size'=>'3'
+                    ],
+                    [
+                        'title'=>'状态',
+                        'name'=>'type',
+                        'type'=>'select',
+                        'option'=>[
+                            '-2'=>'全部',
+                            '-1'=>'未通过',
+                            '0'=>'待审核',
+                            '1'=>'已通过'
+                        ],'default'=>'-2',
+                        'size'=>'2'
+                    ]
+                ]
+            ];
+        if($this->L->userInfo->type == 1 || $this->L->userInfo->type == 2){
+            unset($opt['view']);
+            unset($opt['del']);
+        }
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                '代理ID',
+                '代理名',
+                '提现金额',
+                '姓名',
+                '卡号',
+                '银行',
+                '分行',
+                '状态',
+                '申请时间'
+                
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                
+                'id',
+                'name',
+                'money',
+                'bname',
+                'code',
+                'bbname',
+                'bank_name',
+                'status_name',
+                'date',
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        $where['content'] = '提现';
+        
+        if($type != -2){
+            $where['status'] = $type;
+        }
+        
+        if($search){
+            $where['search'] = ['admin.name LIKE %n OR admin.phone LIKE %n','%'.$search.'%','%'.$search.'%'];
+        }
+
+        $list = $model->select('*','admin.name','name>bname','bank.name>bbname')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        foreach($list as &$v){
+            $v->status_name = [
+                '0'=>'申请中',
+                '1'=>'审核通过',
+                '-1'=>'审核失败'
+            ][$v->status];
+            $v->date = date('Y-m-d H:i',$v->create_time);
+        }
+
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_cash_admin_get(AdminMoneyLogModel $model,$id){
+        
+        $this->L->adminPermissionCheck(167);
+        $name = '';
+        
+        # 允许操作接口
+        $opt = 
+        [
+            'get'   => '../money/admin_cash_admin_get',
+            'upd'   => '../money/admin_cash_admin_upd',
+            'back'  => 'money/cash_admin',
+            'view'  => 'home/upd',
+            
+        ];
+        $tbody = 
+        [
+            [
+                'type'  =>  'hidden',
+                'name'  =>  'id',
+            ],
+            [
+                'title' =>  '状态',
+                'name'  =>  'status',
+                'type'  =>  'select',
+                'option'=>[
+                    '0'=>'申请中',
+                    '1'=>'审核通过',
+                    '-1'=>'审核失败'
+                ]
+            ],
+                
+                
+                
+                
+            ];
+            
+        !$model->field && AJAX::error('字段没有公有化！');
+            
+            
+        $info = AdminFunc::get($model,$id);
+        if($info->status != 0)$tbody[1]['disabled'] = true;
+            
+        if(!in_array($info->master_type,[0,1,2]))$info->master_type = -1;
+            
+        $out = 
+            [
+                'info'  =>  $info,
+                'tbody' =>  $tbody,
+                'name'  =>  $name,
+                'opt'   =>  $opt,
+            ];
+            
+        AJAX::success($out);
+            
+    }
+    function admin_cash_admin_upd(AdminMoneyLogModel $model,$id,$status){
+        $this->L->adminPermissionCheck(167);
+        !$model->field && AJAX::error('字段没有公有化！');
+        $data = Request::getSingleInstance()->request($model->field);
+        
+        $app = $model->find($id);
+        !$app && AJAX::error('error');
+
+        if($app->status == 1){
+            AJAX::error('已通过');
+        }
+
+        if($app->status == -1){
+            AJAX::error('已审核未通过');
+        }
+
+        if($status == -1){
+            
+            $user = AdminModel::copyMutiInstance()->find($app->user_id);
+            $user->balance += abs( $app->money ) ;
+            $user->save();
+        }
+
+        $upd = AdminFunc::upd($model,$id,$data);
+        $out['upd'] = $upd;
+        AJAX::success($out);
+    }
+    function admin_cash_admin_del(AdminMoneyLogModel $model,$id){
+        $this->L->adminPermissionCheck(167);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;
         AJAX::success($out);

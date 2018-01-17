@@ -76,21 +76,24 @@ class MapController extends Controller{
         # 允许操作接口
 
         $m->setOptReq(['title'=>'类型','name'=>'type','type'=>'select','default'=>'1','option'=>['1'=>'代驾','2'=>'出租车','3'=>'顺风车']]);
-        $reqC1 = $m->setOptReq(['title'=>'省','name'=>'province','type'=>'select','default'=>$province]);
-        $reqC2 = $m->setOptReq(['title'=>'市','name'=>'city','type'=>'select','default'=>$city]);
+        
+        if($this->L->userInfo->type == 2 || $this->L->userInfo->type == 1){
+
+        }else{
 
         
+            $reqC1 = $m->setOptReq(['title'=>'省','name'=>'province','type'=>'select','default'=>$province]);
+            $reqC2 = $m->setOptReq(['title'=>'市','name'=>'city','type'=>'select','default'=>$city]);
+            $provinces = $areaModel->where(['level'=>0])->order('pinyin')->get_field('areaName','id');
+            $m->opt['req'][$reqC1]['option'] = $provinces;
+            $m->opt['req'][$reqC1]['option']['0'] = '请选择';
+            if($province){
+                $citys = $areaModel->where(['parent_id'=>$province])->order('pinyin')->get_field('areaName','id');
+                $m->opt['req'][$reqC2]['option'] = $citys;
+            }
+            $m->opt['req'][$reqC2]['option']['0'] = '请选择';
 
-        $provinces = $areaModel->where(['level'=>0])->order('pinyin')->get_field('areaName','id');
-        $m->opt['req'][$reqC1]['option'] = $provinces;
-
-        $m->opt['req'][$reqC1]['option']['0'] = '请选择';
-
-        if($province){
-            $citys = $areaModel->where(['parent_id'=>$province])->order('pinyin')->get_field('areaName','id');
-            $m->opt['req'][$reqC2]['option'] = $citys;
         }
-        $m->opt['req'][$reqC2]['option']['0'] = '请选择';
 
         # 设置名字
         $m->setName('代驾订单');
@@ -100,6 +103,14 @@ class MapController extends Controller{
         # 筛选
         $m->where = [];
         $m->where['online'] = ['online.latitude>0'];
+
+        if($this->L->userInfo->type == 2){
+            $m->where['city.parent_id'] = $this->L->userInfo->province_id;
+        }elseif($this->L->userInfo->type == 1){
+            $m->where['city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
+        }
+
+        
         if($type == 1)$m->where['type_driving'] = 1;
         elseif($type == 2)$m->where['type_taxi'] = 1;
         elseif($type == 3)$m->where['type'] = 1;

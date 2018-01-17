@@ -300,9 +300,9 @@ let act = {
             let g = function(r){
                 driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'end',list:r}))
             };
-            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
+            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
+            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
             
 
             /** 获取用户 */
@@ -648,6 +648,7 @@ let act = {
                 driver.id = d.data.info.id
                 driver.type_driving = d.data.info.type_driving == 1?1:0
                 driver.type_taxi = d.data.info.type_taxi == 1?1:0
+                driver.city_id = d.data.info.city_id
                 data.DriverMap.set(d.data.info.id,driver)
 
                 let latitude = driver.latitude = parseFloat(obj.latitude || 0)
@@ -667,9 +668,9 @@ let act = {
 
                     
 
-                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
+                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
+                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
                     
                 })
             })
@@ -783,9 +784,9 @@ let act = {
                         driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
                         driver.serving = 0;
                     };
-                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
+                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
+                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
                 }
             }else{
                 let driver_ids = result.driver_ids
@@ -798,9 +799,9 @@ let act = {
                             let g = function(r){
                                 driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
                             };
-                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
+                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
+                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
                         }
                     }
                 }
@@ -929,9 +930,9 @@ let act = {
                     let g = function(r){
                         driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
                     };
-                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                    (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
+                    (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
+                    (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
                 }
                 let user = data.UserMap.get(result.user_id+'')
                 if(data.clock.get(result.user_id+''))clearTimeout(data.clock.get(result.user_id+''));
@@ -948,9 +949,9 @@ let act = {
                             let g = function(r){
                                 driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order',list:r}))
                             };
-                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                            (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
+                            (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
+                            (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
                         }
                     }
                 }

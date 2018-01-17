@@ -839,6 +839,7 @@ class StaffController extends Controller{
                     'name'  =>  'profit',
                     'size'  =>  '2',
                 ],
+                
                 [
                     
                     'type'  =>  'selects',
@@ -912,8 +913,8 @@ class StaffController extends Controller{
             }
         }
         unset($data['money']);
-        if($id){
-            $data['moneyk'] = ['history_profit = history_profit + money*%f,money = 0',$profit];
+        if($id && $profit){
+            $data['moneyk'] = ['history_profit = history_profit + money*%f,balance = balance + money*%f,money = 0',$profit];
 
             AdminIncomeModel::copyMutiInstance()->set('profit = money*%f,level=1',$profit)->where(['admin_id'=>$id,'level'=>'0.00'])->save();
         

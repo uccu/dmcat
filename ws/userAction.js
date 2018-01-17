@@ -181,7 +181,7 @@ let act = {
                 if(!id)return;
                 obj.id = id;
                 /** 创建行程 */
-                db.insert('insert into c_trip set start_fee=?,statuss=5,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=1,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[start_fee,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price],function(trip_id){
+                db.insert('insert into c_trip set city_id=?,start_fee=?,statuss=5,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=1,id=?,user_id=?,create_time=?,distance=?,estimated_price=?',[city_id,start_fee,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price],function(trip_id){
                     obj.trip_id = trip_id
                     sync.run(id,trip_id)
                 })
@@ -239,9 +239,9 @@ let act = {
                         let g = function(r){
                             driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'create',list:r}))
                         };
-                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
+                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
+                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
                     }
                 }
                 if(drivers.length)db.update('update c_order_driving set driver_ids=? where id=?',[drivers.join(','),id])
@@ -294,7 +294,7 @@ let act = {
                 if(!id)return;
                 obj.id = id;
                 /** 创建行程 */
-                db.insert('insert into c_trip set start_fee=?,statuss=10,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=2,id=?,user_id=?,create_time=?,distance=?,estimated_price=?,meter=?',[start_fee,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price,meter],function(trip_id){
+                db.insert('insert into c_trip set city_id=?,start_fee=?,statuss=10,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=2,id=?,user_id=?,create_time=?,distance=?,estimated_price=?,meter=?',[city_id,start_fee,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,id,con.user_id,create_time,distance,estimated_price,meter],function(trip_id){
                     obj.trip_id = trip_id
                     sync.run(id,trip_id)
                 })
@@ -455,9 +455,9 @@ let act = {
                             driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'order_cancel',list:r}));
                             driver.serving = 0;
                         };
-                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                        (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
+                        (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
+                        (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
                     }
                 }else{
                     let driver_ids = result.driver_ids
@@ -470,9 +470,9 @@ let act = {
                                 let g = function(r){
                                     driver.con.sendText(content({status:200,type:'fleshDrivingList','mode':'cancel',list:r}))
                                 };
-                                (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g);
-                                (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g);
-                                (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g);
+                                (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
+                                (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
+                                (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
                             }
                         }
                     }
@@ -540,7 +540,7 @@ let act = {
         }
         sync.add = function(){
             /** 创建行程 */
-            db.insert('insert into c_trip set statuss=10,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=3,id=?,user_id=?,create_time=?,distance=?,estimated_price=?,start_fee=?',[start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,obj.id,con.user_id,create_time,distance,estimated_price,start_fee],function(trip_id){
+            db.insert('insert into c_trip set city_id=?statuss=10,start_latitude=?,start_longitude=?,end_latitude=?,end_longitude=?,start_name=?,end_name=?,type=3,id=?,user_id=?,create_time=?,distance=?,estimated_price=?,start_fee=?',[city_id,start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,obj.id,con.user_id,create_time,distance,estimated_price,start_fee],function(trip_id){
                 obj.trip_id = trip_id
                 /** 发送成功信息 */
                 con.sendText(content({status:200,type:'callWay',info:obj}))
