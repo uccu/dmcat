@@ -74,15 +74,14 @@ class ParkingController extends Controller{
     }
 
     
-    function auto(AreaModel $areaModel,ParkingLotModel $parkingLotModel,$page = 3){
+    function auto(AreaModel $areaModel,ParkingLotModel $parkingLotModel,$page = 1){
         
         $groups = [];
-        for($page=0;$page<0;$page++){
-            echo $page; 
+        if(1){
             $data['key'] = $this->L->config->GAODE_KEY;
             $data['types'] = '150900';
             $data['city'] = '上海';
-            $data['keywords'] = '青浦区';
+            $data['keywords'] = '长宁区';
             $data['extensions'] = 'all';
             $data['page'] = $page;
             $s = Func::curl('http://restapi.amap.com/v3/place/text',$data);
@@ -90,9 +89,8 @@ class ParkingController extends Controller{
             $s = json_decode($s);
 
 
-            echo ' '.count($s->pois);
+            $count = count($s->pois);
 
-            if(!count($s->pois))break;
             $ff = 0;
 
             
@@ -143,13 +141,19 @@ class ParkingController extends Controller{
                 if(!$parkingLotModel->where('gaode_id=%n',$v->id)->find()){
                     $parkingLotModel->set($d)->add();
                     $ff++;
+                }else{
+                    $parkingLotModel->where('gaode_id=%n',$v->id)->set($d)->save();
                 }
             }
 
-            echo ' IN '.$ff.'<br>';
+            
         }
 
-        // AJAX::success($s);
+        $ss['count'] = $count;
+        $ss['page'] = $page;
+        $ss['ff'] = $ff;
+
+        AJAX::success($ss);
     }
     
 }

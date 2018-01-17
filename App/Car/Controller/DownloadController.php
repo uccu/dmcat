@@ -11,6 +11,8 @@ use App\Car\Middleware\L;
 use App\Car\Model\UploadModel;
 use App\Car\Tool\Func;
 
+use App\Car\Model\VersionModel;
+
 class DownloadController extends Controller{
 
 
@@ -51,13 +53,10 @@ class DownloadController extends Controller{
 
     }
 
-    function getVersionFile_driver(){
+    function getVersionFile(VersionModel $model){
 
-        header('Location:'.Func::fullAddr('download/file/'.$this->L->config->driver_version_file).'/m.apk');
-        
-    }
-    function getVersionFile_user(){
+        $version = $model->order('create_time desc')->find();
 
-        header('Location:'.Func::fullAddr('download/file/'.$this->L->config->user_version_file).'/m.apk');
+        header('Location:'.Func::fullAddr('download/file/'.$version->file_id).'/m.apk');
     }
 }

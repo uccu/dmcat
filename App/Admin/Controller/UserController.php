@@ -76,7 +76,7 @@ class UserController extends Controller{
         # 筛选
         $m->where = [];
         $search && $m->where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
-        $car_number && $m->where['car_number'] = ['car_number_1 = %n OR car_number_2 LIKE %n OR car_number_3 LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
+        $car_number && $m->where['car_number'] = ['car_number_1 LIKE %n OR car_number_2 LIKE %n OR car_number_3 LIKE %n','%'.$car_number.'%','%'.$car_number.'%','%'.$car_number.'%'];
         # 获取列表
         $model->order('create_time desc');
         $m->getList(0);
