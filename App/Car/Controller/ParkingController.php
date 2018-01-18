@@ -37,7 +37,7 @@ class ParkingController extends Controller{
      * @param mixed $latitude 
      * @return mixed 
      */
-    function lotNearby($distance = 3,ParkingLotModel $parkingLotModel,$longitude = 0,$latitude = 0){
+    function lotNearby($distance = 1,ParkingLotModel $parkingLotModel,$longitude = 0,$latitude = 0){
 
         // $latitude = 31.30027816;
         // $longitude = 121.41354076;

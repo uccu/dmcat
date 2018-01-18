@@ -377,7 +377,7 @@ class UserController extends Controller{
     function getMyCarList(){
 
         !$this->L->id && AJAX::error('未登录');
-
+        $list = [];
         if($this->L->userInfo->car_number_1)$list[] = $this->L->userInfo->car_number_1;
         if($this->L->userInfo->car_number_2)$list[] = $this->L->userInfo->car_number_2;
         if($this->L->userInfo->car_number_3)$list[] = $this->L->userInfo->car_number_3;
@@ -397,7 +397,7 @@ class UserController extends Controller{
     function delMyCar($id){
 
         !$this->L->id && AJAX::error('未登录');
-
+        $list = [];
         if($this->L->userInfo->car_number_1)$list[] = $this->L->userInfo->car_number_1;
         if($this->L->userInfo->car_number_2)$list[] = $this->L->userInfo->car_number_2;
         if($this->L->userInfo->car_number_3)$list[] = $this->L->userInfo->car_number_3;
@@ -405,16 +405,22 @@ class UserController extends Controller{
         unset($list[$id - 1]);
 
         $list = array_values($list);
-
+        $h = 0;
         foreach($list as $k=>$v){
             $n = 'car_number_'.($k+1);
             $this->L->userInfo->$n = $v;
+            $h++;
+        }
+        for($i=$h;$i<3;$i++){
+            $n = 'car_number_'.($i+1);
+            $this->L->userInfo->$n = '';
         }
 
         $this->L->userInfo->save();
 
         $out['count'] = count($list);
         $out['list'] = $list;
+        // $out['info'] = $this->L->userInfo;
 
         AJAX::success($out);
     }
@@ -427,7 +433,7 @@ class UserController extends Controller{
     function addMyCar($car_number){
 
         !$this->L->id && AJAX::error('未登录');
-
+        $list = [];
         if($this->L->userInfo->car_number_1)$list[] = $this->L->userInfo->car_number_1;
         if($this->L->userInfo->car_number_2)$list[] = $this->L->userInfo->car_number_2;
         if($this->L->userInfo->car_number_3)$list[] = $this->L->userInfo->car_number_3;
@@ -440,10 +446,15 @@ class UserController extends Controller{
         $list[] = $car_number;
 
         $list = array_values($list);
-
+        $h = 0;
         foreach($list as $k=>$v){
             $n = 'car_number_'.($k+1);
             $this->L->userInfo->$n = $v;
+            $h++;
+        }
+        for($i=$h;$i<3;$i++){
+            $n = 'car_number_'.($i+1);
+            $this->L->userInfo->$n = '';
         }
 
         $this->L->userInfo->save();
@@ -452,6 +463,28 @@ class UserController extends Controller{
         $out['list'] = $list;
 
         AJAX::success($out);
+    }
+
+    /** 修改我的车辆信息
+     * editMyCar
+     * @param mixed $car_number 
+     * @param mixed $id 
+     * @return mixed 
+     */
+    function editMyCar($car_number,$id){
+
+        !$this->L->id && AJAX::error('未登录');
+
+        !in_array($id,[1,2,3]) && AJAX::error('id不正确');
+        if(!$car_number)AJAX::error('车牌号错误');
+
+        $n = 'car_number_'.$id;
+        $this->L->userInfo->$n = $car_number;
+
+        $this->L->userInfo->save();
+
+        AJAX::success();
+
     }
     
     

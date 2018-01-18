@@ -118,15 +118,24 @@ user/getMyCarList
 {}
 
 1.10 删除我的车辆信息
-user/delMyCarList
+user/delMyCar
 id 第几个（1，2，3）
 {"data":{"list":["沪A88888","沪A11111"],"count":"2"},"code":200,"url":"","message":""}
 {}
 
 1.11 添加我的车辆信息
-user/delMyCarList
+user/addMyCar
 car_number 车牌号
 {"data":{"list":["沪A88888","沪A11111"],"count":"2"},"code":200,"url":"","message":""}
+{}
+
+
+
+1.12 添加我的车辆信息
+user/editMyCar
+car_number 车牌号
+id 第几个（1，2，3）
+{"data":{},"code":200,"url":"","message":""}
 {}
 
 

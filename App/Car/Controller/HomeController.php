@@ -126,6 +126,9 @@ class HomeController extends Controller{
         View::hamlReader('h5','App');
     }
 
+
+    
+
     
     
 }
