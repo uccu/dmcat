@@ -112,6 +112,25 @@ content 内容
 
 
 
+1.9 获取我的车辆信息
+user/getMyCarList
+{"data":{"list":["沪A88888","沪A11111","沪A00000"],"count":"3"},"code":200,"url":"","message":""}
+{}
+
+1.10 删除我的车辆信息
+user/delMyCarList
+id 第几个（1，2，3）
+{"data":{"list":["沪A88888","沪A11111"],"count":"2"},"code":200,"url":"","message":""}
+{}
+
+1.11 添加我的车辆信息
+user/delMyCarList
+car_number 车牌号
+{"data":{"list":["沪A88888","沪A11111"],"count":"2"},"code":200,"url":"","message":""}
+{}
+
+
+
 2.1 获取活动列表
 home/getActivities
 {"data":{"list":[{"id":"2","name":"ceshi!!!","thumb":"nopic.jpg","link":"https:\/\/www.baidu.com","type":"0","status":"1","detail":"","create_time":"1515745525","level":"2"},{"id":"3","name":"ceshi2","thumb":"nopic.jpg","link":"e2e","type":"0","status":"1","detail":"ss","create_time":"1515746397","level":"1"}]},"code":200,"url":"","message":""}

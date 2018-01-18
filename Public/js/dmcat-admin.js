@@ -230,7 +230,7 @@
                         
                         var pa = j('<div class="form-group" work="'+para.name+'"><label class="col-sm-2 control-label">'+para.title+'</label><div class="form-inline col-sm-'+(para.size || 6)+'">'+(function(o){
                             var d = '';
-                            for(var q in o)d += '<label class="control-label cp" style="margin-right:10px"><input class="form-control" '+(m.info[para.name] == q)+' type="radio" name="'+para.name+'" value="'+q+'" style="display:none">'+o[q]+'</label>'
+                            for(var q in o)d += '<label class="control-label cp" style="margin-right:10px"><input class="form-control" '+(m.info[para.name] == q)+' type="radio" name="'+para.name+'" value="'+q+'" style="display:none" '+(para.disabled?'disabled':'')+'>'+o[q]+'</label>'
                             return d
                         })(para.option)
                         +'</div>'+(para.description?'<label class="col-sm-2 control-label" style="text-align:left">'+para.description+'</label>':'')+'</div>')
@@ -522,8 +522,13 @@
                 })
             }
             if(that.opt.add){
-                j('<div class="col-sm-1 animated fadeInRight"><a class="btn btn-primary btn-outline">新增</a></div>').appendTo('.topw .row').on('click',function(){
-                    gotoNewTag(that.opt.add+'?get='+that.opt.get,'新增'+that.name)
+                j('<div class="col-sm-1 animated fadeInRight"><a class="btn btn-primary btn-outline">'+(that.opt.tname||'新增')+'</a></div>').appendTo('.topw .row').on('click',function(){
+                    gotoNewTag(that.opt.add+'?get='+that.opt.get,(that.opt.tname||'新增')+that.name)
+                })
+            }
+            if(that.opt.button){
+                j('<div class="col-sm-1 animated fadeInRight"><a class="btn btn-primary btn-outline">'+that.opt.button.name+'</a></div>').appendTo('.topw .row').on('click',function(){
+                    gotoNewTag(that.opt.button.href,that.opt.button.name)
                 })
             }
             if(that.opt.req){

@@ -38,7 +38,7 @@ class ParkingController extends Controller{
         View::addData(['getList'=>'admin_'.__FUNCTION__]);
         View::hamlReader('home/list','Admin');
     }
-    function admin_lot(ParkingLotModel $model,AreaModel $areaModel,AdminModel $adminModel,$page = 1,$limit = 10,$search,$province_id,$city_id,$district_id,$group_id,$com = -1){
+    function admin_lot(ParkingLotModel $model,AreaModel $areaModel,AdminModel $adminModel,$page = 1,$limit = 50,$search,$province_id,$city_id,$district_id,$group_id,$com = -1){
         $m = Lists::getSingleInstance($model,$page,$limit);
         # 权限
         $m->checkPermission(12);
@@ -89,6 +89,9 @@ class ParkingController extends Controller{
         $m->setHead('车位');
         $m->setHead('收费/小时');
         $m->setHead('开启');
+        if($this->L->userInfo->type != 1){
+            $m->setHead('合作');
+        }
        
         # 设置表体
         $m->setBody('id');
@@ -102,7 +105,9 @@ class ParkingController extends Controller{
         $m->setBody('parking_space');
         $m->setBody('fee');
         $m->setBody(['name'=>'active','type'=>'checkbox']);
-
+        if($this->L->userInfo->type != 1){
+            $m->setBody(['name'=>'com','type'=>'checkbox']);
+        }
         
         # 筛选
         $m->where = [];
@@ -115,12 +120,16 @@ class ParkingController extends Controller{
             $m->where['com'] = $com;
         }
 
+        if($this->L->userInfo->type == 1){
+            $m->where['id'] = $this->L->userInfo->parking_lot_id;
+        }
+
         $search && $m->where['search'] = ['name LIKE %n OR admin.name LIKE %n OR admin.mobile LIKE %n OR address LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
 
         # 获取列表
         $model->order('create_time desc');
         $model->select('*','groups.areaName>group_name','district.areaName>district_name','district.parent.areaName>city_name','district.parent.parent2.areaName>province_name');
-        $m->getList(0); 
+        $m->getList(0);
         $m->each(function(&$v) USE ($adminModel){
 
             $v->parking_space = $v->empty . '/' . $v->count;
@@ -147,7 +156,7 @@ class ParkingController extends Controller{
         # 设置表体
         $m->setBody(['type'   =>  'hidden','name'  =>  'id']);
         $m->setBody(['title'  =>  '停车场名称','name'  =>  'name','size'  =>  '2']);
-        $m->setBody(['title'  =>  '选择物业账号','name'  =>'admin','size'  =>'4','suggest'=>'/admin/admin/admin_stop?search=','fields'=>['phone'=>'账号','name'=>'名字','mobile'=>'手机号']]);
+        if($this->L->userInfo->type != 1)$m->setBody(['title'  =>  '选择物业账号','name'  =>'admin','size'  =>'4','suggest'=>'/admin/admin/admin_stop?search=','fields'=>['phone'=>'账号','name'=>'名字','mobile'=>'手机号']]);
         $m->setBody([
                     
                 'type'  =>  'selects',
@@ -168,8 +177,10 @@ class ParkingController extends Controller{
         $m->setBody(['title'  =>  '营业时长','name'  =>  'open_time','size'  =>  '2','default'=>'全天']);
         $m->setBody(['title'  =>  '免费时长/小时','name'  =>  'free','size'  =>  '2','default'=>'0']);
         $m->setBody(['title'  =>  '封顶费用','name'  =>  'top_fee','size'  =>  '2']);
-        $m->setBody(['title'  =>  '是否为合作关系','name'  =>  'com','type'=>'radio','option'=>['0'=>'否','1'=>'是'],'default'=>'0']);
+        $gh = $m->setBody(['title'  =>  '是否为合作关系','name'  =>  'com','type'=>'radio','option'=>['0'=>'否','1'=>'是'],'default'=>'0']);
+        if($this->L->userInfo->type == 1)$m->tbody[$gh]['disabled'] = true;
         
+
         # 设置名字
         $m->setName('活动管理');
         $model->select('*','admin.name>admin','district.parent_id>city_id','district.parent.parent_id>province_id');
@@ -181,6 +192,9 @@ class ParkingController extends Controller{
         $this->L->adminPermissionCheck(12);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);
+
+        $data['pic'] = Request::getSingleInstance()->request('pic','raw');
+        $data['pic'] = implode(',',$data['pic']);
 
         unset($data['id']);
         if(!$id)$data['create_time'] = TIME_NOW;
