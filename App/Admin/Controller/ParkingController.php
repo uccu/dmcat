@@ -205,6 +205,7 @@ class ParkingController extends Controller{
 
         if($admin && $id){
             $admin = $adminModel->where('phone=%n',$admin)->find();
+            if(!$admin)AJAX::error('管理账号不存在');
             $admin2 = $adminModel->where('parking_lot_id=%d',$id)->find();
 
             if($admin2 && $admin2 != $admin){
