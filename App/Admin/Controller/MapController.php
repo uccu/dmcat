@@ -51,7 +51,12 @@ class MapController extends Controller{
         # 权限
         $m->checkPermission(164);
 
-        if($province){
+        if($this->L->userInfo->type == 2 || $this->L->userInfo->type == 1){
+            $provinceObj = $areaModel->select('areaName>value','id','areaName')->find($this->L->userInfo->province_id);
+            $province = $provinceObj->id;
+            $provinceName = $provinceObj->areaName;
+            $areaName = $provinceName;
+        }elseif($province){
             $provinceName = $areaModel->find($province)->areaName;
             $areaName = $provinceName;
         }
@@ -79,20 +84,34 @@ class MapController extends Controller{
         
         if($this->L->userInfo->type == 2 || $this->L->userInfo->type == 1){
 
-        }else{
+            $reqC1 = $m->setOptReq(['title'=>'省','name'=>'province','type'=>'select','default'=>'0']);
+            $reqC2 = $m->setOptReq(['title'=>'市','name'=>'city','type'=>'select','default'=>'0']);
+            
+            $m->opt['req'][$reqC1]['option'] = [$provinceObj];
+            $m->opt['req'][$reqC1]['default'] = $provinceObj->id;
 
+        }else{
         
             $reqC1 = $m->setOptReq(['title'=>'省','name'=>'province','type'=>'select','default'=>$province]);
             $reqC2 = $m->setOptReq(['title'=>'市','name'=>'city','type'=>'select','default'=>$city]);
-            $provinces = $areaModel->where(['level'=>0])->order('pinyin')->get_field('areaName','id');
+            $provinces = $areaModel->where(['level'=>0])->order('pinyin')->get_field('areaName','id')->toArray();
             $m->opt['req'][$reqC1]['option'] = $provinces;
             $m->opt['req'][$reqC1]['option']['0'] = '请选择';
+
+        }
+
+        if($this->L->userInfo->type == 1){
+
             if($province){
-                $citys = $areaModel->where(['parent_id'=>$province])->order('pinyin')->get_field('areaName','id');
-                $m->opt['req'][$reqC2]['option'] = $citys;
+                $m->opt['req'][$reqC2]['option'] = $areaModel->where(['parent_id'=>$province])->where('id IN (%c)',explode(',',$this->L->userInfo->city_id))->order('pinyin')->get_field('areaName','id')->toArray();
             }
             $m->opt['req'][$reqC2]['option']['0'] = '请选择';
 
+        }else{
+            if($province){
+                $m->opt['req'][$reqC2]['option'] = $areaModel->where(['parent_id'=>$province])->order('pinyin')->get_field('areaName','id')->toArray();
+            }
+            $m->opt['req'][$reqC2]['option']['0'] = '请选择';
         }
 
         # 设置名字

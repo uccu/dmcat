@@ -209,7 +209,7 @@ class DriverController extends Controller{
         $m->output();
             
     }
-    function admin_cash_upd(AdminMoneyLogModel $model,$id = 0,$money,$code,$bank_name){
+    function admin_cash_upd(AdminMoneyLogModel $model,$id = 0,$money,$code,$bank_name,$name){
         $this->L->adminPermissionCheck(167);
         !$model->field && AJAX::error('字段没有公有化！');
         $data = Request::getSingleInstance()->request($model->field);

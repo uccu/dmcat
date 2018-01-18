@@ -70,7 +70,7 @@
             $('#count').text('共'+m.other.allCount+'司机，其中已接单的有'+m.other.bCount+'个司机，未接单的有'+m.other.nCount+'个司机')
             
             if(m.other.location){
-                if(m.other.location != loc){
+                if(!loc || ( m.other.location[0] != loc[0] || m.other.location[1] != loc[1]) ){
                     map.setCenter(m.other.location)
                     loc = m.other.location
                 }

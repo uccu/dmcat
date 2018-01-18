@@ -723,8 +723,9 @@ class StaffController extends Controller{
                 '用户ID',
                 '手机号',
                 '名字',
-                '未结算余额',
+                '未结算',
                 '已结算',
+                '余额',
                 '启用',
 
 
@@ -746,6 +747,7 @@ class StaffController extends Controller{
                 'name',
                 'money',
                 'history_profit',
+                'balance',
                 [
                     'name'=>'active',
                     'type'=>'checkbox',
@@ -905,16 +907,16 @@ class StaffController extends Controller{
             $ids = explode(',',$city_id);
 
             foreach($ids as $i){
-                if($model->where('city_id LIKE %n AND id != %n','%'.$i.'%',$id)->find()){
+                if($x = $model->where('city_id LIKE %n AND id != %n','%'.$i.'%',$id)->find()){
                     $name = $aModel->find($i)->areaName;
-                    AJAX::error('`'.$name.'`已经有人管理！');
+                    AJAX::error('`'.$name.'`已经有'.$x->id.'管理！');
                 }
                 
             }
         }
         unset($data['money']);
         if($id && $profit){
-            $data['moneyk'] = ['history_profit = history_profit + money*%f,balance = balance + money*%f,money = 0',$profit];
+            $data['moneyk'] = ['history_profit = history_profit + money*%f,balance = balance + money*%f,money = 0',$profit,$profit];
 
             AdminIncomeModel::copyMutiInstance()->set('profit = money*%f,level=1',$profit)->where(['admin_id'=>$id,'level'=>'0.00'])->save();
         
@@ -928,6 +930,7 @@ class StaffController extends Controller{
             $adminMoneyLog->set($data2)->add();
         
         }
+        // AJAX::success($data);
         $upd = AdminFunc::upd($model,$id,$data);
 
         

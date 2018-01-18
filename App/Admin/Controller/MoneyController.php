@@ -20,6 +20,7 @@ use App\Car\Model\UserCouponModel;
 use App\Car\Model\DriverMoneyLogModel;
 use App\Car\Model\CouponModel;
 use App\Car\Model\AdminMoneyLogModel;
+use App\Car\Model\AdminModel;
 
 
 
@@ -649,7 +650,7 @@ class MoneyController extends Controller{
 
         if($status == -1){
             
-            $user = AdminModel::copyMutiInstance()->find($app->user_id);
+            $user = AdminModel::copyMutiInstance()->find($app->admin_id);
             $user->balance += abs( $app->money ) ;
             $user->save();
         }
