@@ -25,6 +25,7 @@ use App\Car\Model\AdminMoneyLogModel;
 use App\Car\Model\UserMoneyLogModel;
 use Model;
 use stdClass;
+use Uccu\AliyunSms\SendSms;
 
 
 class Func {
@@ -356,13 +357,21 @@ class Func {
 
         if(!$phone)AJAX::error('手机号不能为空！');
 
-        // $rand = self::randWord(4,3);
-        $rand = '1234';
+        $rand = self::randWord(4,3);
+        // $rand = '1234';
 
         $data['captcha'] = $rand;
         $data['time'] = TIME_NOW + 300;
         $data['create_time'] = TIME_NOW;
         $data['phone'] = $phone;
+
+        if($z = CaptchaModel::copyMutiInstance()->where(
+            [
+                'phone'=>$phone
+            ]
+        )->order('create_time desc')->find()){
+            if($z->create_time + 20 > TIME_NOW)AJAX::error('获取验证码过于频繁，请稍候再试！');
+        }
 
         CaptchaModel::copyMutiInstance()->set($data)->add();
         CaptchaModel::copyMutiInstance()->where(
@@ -378,16 +387,33 @@ class Func {
         )->select('COUNT(*) AS c','RAW')->find()->c;
 
         if($count > 3){
-            AJAX::error('发送验证码过于频繁，请稍候再试！');
+            AJAX::error('请求验证码过于频繁，请稍候再试！');
         }
+        
 
         $data['content'] = '【位哆哆】您的手机验证码是：'.$rand.'，若非本人操作，请忽略！';
 
+        
 
-        // $re = self::curl('http://59.110.69.166:8080/sms.aspx',$data);
-        // $u = simplexml_load_string($re);
-        // if($u->returnstatus == 'Faild')AJAX::error('发送失败：'.($u ? $u->message : '网络连接失败！'));
+        $c = new SendSms;
 
+        $c->setAccessKey('LTAIGdMd64uR1fhD','PJGapAyNYABl9EFJk0TJ59tSyvLJ79');
+        $c->setParams([
+            'PhoneNumbers'=>$phone,
+            'SignName'=>'位哆哆',
+            'TemplateCode'=>'SMS_122281580',
+            'TemplateParam'=>[
+                "code" => $rand
+            ],
+        ]);
+
+        
+        $v = $c->sendSms();
+        
+        if($v->Code != 'OK'){
+            // var_dump($v);die();
+            AJAX::error($v->Message);
+        }
         return true;
 
     }
