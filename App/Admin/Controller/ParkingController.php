@@ -170,7 +170,7 @@ class ParkingController extends Controller{
             ]);
         $m->setBody(['title'  =>  '详细地址','name'=>'address']);
         $m->setBody(['title'  =>  '封面','name'=>'thumb','type'=>'pic']);
-        $m->setBody(['title'  =>  '图片','name'=>'pic','type'=>'picss']);
+        $m->setBody(['title'  =>  '图片','name'=>'pic','type'=>'picss','default'=>'']);
         $m->setBody(['title'  =>  '车位数量','name'  =>  'count','default'=>'0','size'  =>  '1']);
         $m->setBody(['title'  =>  '空余车位','name'  =>  'empty','disabled'  =>  true,'default'=>'0','size'  =>  '1']);
         $m->setBody(['title'  =>  '收费标准/小时','name'  =>  'fee','size'  =>  '2','default'=>'0']);
