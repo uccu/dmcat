@@ -31,6 +31,10 @@ id 文件id
 {}
 
 
+0.5 版本信息
+home/version
+{"data":{"id":"2","create_time":"1516160599","content":"test2","file_id":"2","version":"1.0.1","hard":"0"},"code":200,"url":"","message":""}
+{hard:是否强制更新,version:版本号,content:描述}
 
 1.1 登录
 user/login
@@ -165,6 +169,8 @@ id h5页面的id
 parking/lotNearby
 longitude 经度
 latitude 纬度
+myLongitude 我的经度
+myLatitude 我的纬度
 {"data":{"list":[{"id":"1","name":"\u6d4b\u8bd5\u505c\u8f66\u573a","group_id":"4525508","address":"\u534e\u5f90\u516c\u8def888\u53f7","count":"20","empty":"0","fee":"100.00","open_time":"10:00 ~ 11:00","free":"0","top_fee":"100.00","com":"0","create_time":"1515986516","latitude":"31.29927816","longitude":"121.41344076","active":"1","thumb":"","group_name":"\u5f90\u6cfe\u5546\u5708","district_name":"\u9752\u6d66\u533a","city_name":"\u4e0a\u6d77\u5e02","province_name":"\u4e0a\u6d77\u5e02","distance":"0.1120"}]},"code":200,"url":"","message":""}
 {id:停车场id,name:名字,fee:标准收费（元/小时）,empty:空闲车位,thumb:图片,distance:距离（单位米）,address:具体地址,count:总车位数,open_time:营业时间,free:免费时长（小时）,top_fee:封顶费用,province_name:省,city_name:市,district_name:区,group_name:商圈}
 

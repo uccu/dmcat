@@ -112,6 +112,7 @@ class HomeController extends Controller{
         $m->setHead('描述');
         $m->setHead('发布时间');
         $m->setHead('apk');
+        $m->setHead('强制更新');
        
         # 设置表体
         $m->setBody('id');
@@ -119,6 +120,7 @@ class HomeController extends Controller{
         $m->setBody('content');
         $m->setBody('create_date');
         $m->setBody(['name'=>'down','href'=>true]);
+        $m->setBody(['name'=>'hard','type'=>'checkbox']);
 
         
         # 筛选
@@ -148,7 +150,7 @@ class HomeController extends Controller{
         $m->setBody(['title'  =>  '版本号','name'  =>  'version','size'  =>  '4']);
         $m->setBody(['title'  =>  '描述','name'  =>  'content','size'  =>  '4']);
         $m->setBody(['title'  =>  'apk文件','name'  =>  'file_id','type'  =>  'file']);
-        
+        $m->setBody(['title'  =>  '强制更新','name'  =>  'hard','type'=>'radio','option'=>['0'=>'否','1'=>'是'],'default'=>'0']);
         # 设置名字
         $m->setName('版本控制');
         $m->getInfo();
@@ -168,7 +170,7 @@ class HomeController extends Controller{
         $out['upd'] = $upd;
         AJAX::success($out);
     }
-    function admin_activity_del(VersionModel $model,$id){
+    function admin_version_del(VersionModel $model,$id){
         $this->L->adminPermissionCheck(24);
         $del = AdminFunc::del($model,$id);
         $out['del'] = $del;

@@ -37,11 +37,11 @@ class ParkingController extends Controller{
      * @param mixed $latitude 
      * @return mixed 
      */
-    function lotNearby($distance = 1,ParkingLotModel $parkingLotModel,$longitude = 0,$latitude = 0){
+    function lotNearby($distance = 1,ParkingLotModel $parkingLotModel,$longitude = 0,$latitude = 0,$myLongitude = 0,$myLatitude = 0){
 
         // $latitude = 31.30027816;
         // $longitude = 121.41354076;
-        $list = $parkingLotModel->select(['*,groups.areaName AS group_name,district.areaName AS district_name,district.parent.areaName AS city_name,district.parent.parent2.areaName AS province_name,round(6378.138*2*asin(sqrt(pow(sin((%f*pi()/180-latitude*pi()/180)/2),2)+cos(%f*pi()/180)*cos(latitude*pi()/180)*pow(sin((%f*pi()/180-longitude*pi()/180)/2),2)))*1000) as distance',$latitude,$latitude,$longitude],'raw')->where('round(6378.138*2*asin(sqrt(pow(sin((%f*pi()/180-latitude*pi()/180)/2),2)+cos(%f*pi()/180)*cos(latitude*pi()/180)*pow(sin((%f*pi()/180-longitude*pi()/180)/2),2)))*1000) <= %d',$latitude,$latitude,$longitude,$distance*1000)->order('distance','raw')->get()->toArray();
+        $list = $parkingLotModel->select(['*,groups.areaName AS group_name,district.areaName AS district_name,district.parent.areaName AS city_name,district.parent.parent2.areaName AS province_name,round(6378.138*2*asin(sqrt(pow(sin((%f*pi()/180-latitude*pi()/180)/2),2)+cos(%f*pi()/180)*cos(latitude*pi()/180)*pow(sin((%f*pi()/180-longitude*pi()/180)/2),2)))*1000) as distance',$myLatitude,$myLatitude,$myLongitude],'raw')->where('round(6378.138*2*asin(sqrt(pow(sin((%f*pi()/180-latitude*pi()/180)/2),2)+cos(%f*pi()/180)*cos(latitude*pi()/180)*pow(sin((%f*pi()/180-longitude*pi()/180)/2),2)))*1000) <= %d',$latitude,$latitude,$longitude,$distance*1000)->order('distance','raw')->get()->toArray();
 
         $out['list'] = $list;
 

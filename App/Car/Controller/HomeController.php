@@ -15,6 +15,7 @@ use Model;
 use App\Car\Model\H5Model;
 use App\Car\Model\AreaModel;
 use App\Car\Model\ActivityModel;
+use App\Car\Model\VersionModel;
 
 
 
@@ -126,7 +127,16 @@ class HomeController extends Controller{
         View::hamlReader('h5','App');
     }
 
+    /** 版本信息
+     * version
+     * @return mixed 
+     */
+    function version(VersionModel $model){
 
+        $version = $model->order('create_time desc')->find();
+
+        AJAX::success($version);
+    }
     
 
     

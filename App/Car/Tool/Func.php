@@ -381,15 +381,8 @@ class Func {
             AJAX::error('发送验证码过于频繁，请稍候再试！');
         }
 
-        $data['content'] = '【壹键出行】您的手机验证码是：'.$rand.'，若非本人操作，请忽略！';
-        $data['userid'] = 179;
-        $data['account'] = 'dsxx';
-        $data['password'] = 'dsxx';
-        $data['action'] = 'send';
-        // $data['action'] = 'checkkeyword';
-        $data['mobile'] = $phone;
-        $data['sendTime'] = '';
-        $data['extno'] = '';
+        $data['content'] = '【位哆哆】您的手机验证码是：'.$rand.'，若非本人操作，请忽略！';
+
 
         // $re = self::curl('http://59.110.69.166:8080/sms.aspx',$data);
         // $u = simplexml_load_string($re);
