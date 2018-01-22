@@ -98,7 +98,7 @@ class GroupController extends Controller{
         $m->tbody[$p]['option'] = array_merge(['请选择'],$m->tbody[$p]['option']);
         
         # 设置名字
-        $m->setName('活动管理');
+        $m->setName('城市管理');
         $m->getInfo();
         $m->output();
     }
@@ -215,7 +215,7 @@ class GroupController extends Controller{
         
         
         # 设置名字
-        $m->setName('活动管理');
+        $m->setName('地区管理');
 
         $model->select('*','parent.parent_id>province_id');
 
@@ -347,7 +347,7 @@ class GroupController extends Controller{
         
         
         # 设置名字
-        $m->setName('活动管理');
+        $m->setName('商圈管理');
 
         $model->select('*','parent.parent_id>city_id','parent.parent2.parent_id>province_id');
 

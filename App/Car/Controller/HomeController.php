@@ -139,6 +139,11 @@ class HomeController extends Controller{
     }
     
 
-    
+    function searchGeo($address){
+
+        $z = Func::searchGeo($address);
+
+        AJAX::success($z);
+    }
     
 }

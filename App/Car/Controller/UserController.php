@@ -92,7 +92,7 @@ class UserController extends Controller{
         !$info->id && AJAX::error('新用户创建失败');
         
         $info = $model->find($info->id);
-        $info->name = '用户'.Func::add_zero($info->id,6);
+        $info->name = '';
         $info->avatar = 'noavatar.png';
         $info->save();
 

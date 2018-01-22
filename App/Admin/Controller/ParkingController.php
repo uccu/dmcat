@@ -182,12 +182,12 @@ class ParkingController extends Controller{
         
 
         # 设置名字
-        $m->setName('活动管理');
+        $m->setName('停车场管理');
         $model->select('*','admin.name>admin','district.parent_id>city_id','district.parent.parent_id>province_id');
         $m->getInfo();
         $m->output();
     }
-    function admin_lot_upd(ParkingLotModel $model,AdminModel $adminModel,$id,$pwd,$active,$admin){
+    function admin_lot_upd(ParkingLotModel $model,AreaModel $areaModel,AdminModel $adminModel,$id,$active,$admin,$district_id,$city_id,$province_id,$address){
 
         $this->L->adminPermissionCheck(12);
         !$model->field && AJAX::error('字段没有公有化！');
@@ -198,6 +198,20 @@ class ParkingController extends Controller{
 
         unset($data['id']);
         if(!$id)$data['create_time'] = TIME_NOW;
+
+        $provinceName = $areaModel->find($province_id)->areaName;
+        $cityName = $areaModel->find($city_id)->areaName;
+        $districtName = $areaModel->find($district_id)->areaName;
+        
+        $allAddr = $provinceName.$cityName.$districtName.$address;
+        if(!$allAddr)AJAX::error('获取经纬度失败，请填写正确的地址');
+
+        $z = Func::searchGeo($allAddr);
+        if(!$z || !$z->location)AJAX::error('获取经纬度失败，请填写正确的地址');
+        $location = explode(',',$z->location);
+        
+        $data['latitude'] = $location[1];
+        $data['longitude'] = $location[0];
 
         $upd = AdminFunc::upd($model,$id,$data);
 
