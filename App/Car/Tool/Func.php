@@ -152,8 +152,9 @@ class Func {
     /* 密码安全性验证 */
     static function check_password($password){
         !$password && AJAX::error('密码为空');
-        preg_match('#^\d+$#',$password) && AJAX::error('密码需要英文字母+数字组成');
-        preg_match('#^[a-z]+$#i',$password) && AJAX::error('密码需要英文字母+数字组成');
+        $len = strlen($password);
+        if($len < 6)AJAX::error('密码不能短于6位');
+        if($len > 16)AJAX::error('密码不能长于16位');
         return true;
     }
     
