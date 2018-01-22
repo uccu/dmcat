@@ -133,7 +133,7 @@ class HomeController extends Controller{
             $price = $prices['price'];
             $out['start_price'] = $prices['start'];
 
-        }elseif($type == 2){
+        }elseif($type == 2|| $type == 4){
             
             if($timeLine)$time = date('H:i',$timeLine);
             if(!$time)$time = date('H:i');
@@ -383,6 +383,7 @@ class HomeController extends Controller{
 
         if($type == 1)$model->where(['driver.type_driving'=>1]);
         elseif($type == 2)$model->where(['driver.type_taxi'=>1]);
+        elseif($type == 4)$model->where(['driver.type_kuai'=>1]);
 
         $model->where('latitude BETWEEN %a AND longitude BETWEEN %a AND driver_id != %n',$latitudeRange,$longitudeRange,$this->L2->id);
         
@@ -390,7 +391,7 @@ class HomeController extends Controller{
         
         foreach($list as &$v){
 
-            $v->busy =  TripModel::copyMutiInstance()->where(['driver_id'=>$v->driver_id])->where('type IN (1,2) AND status IN (%c)',[20,25,30,35],$this->L->id)->find() ? '1' : '0';
+            $v->busy =  TripModel::copyMutiInstance()->where(['driver_id'=>$v->driver_id])->where('type IN (1,2,4) AND status IN (%c)',[20,25,30,35],$this->L->id)->find() ? '1' : '0';
         }
 
 

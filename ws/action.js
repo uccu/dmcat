@@ -109,6 +109,19 @@ module.exports = {
         })
 
     },
+
+    driverGetOrdersKuai(a,o,f,c){
+        // console.log(a,o)
+        db.get('select * from c_trip where statuss=10 and type=4 and start_latitude between ? and ? and start_longitude between ? and ? and driver_id=0 and city_id=? order by create_time desc',[a-0.1,a+0.1,o-0.1,o+0.1,c||0],function(w){
+            if(w.length){
+
+                loopD(a,o,w,f)
+            }else{
+                f && f(w)
+            }
+        })
+
+    },
     getWayPrice($distance,$num,g){
         var $price = 0;
         var start = 20;
@@ -201,6 +214,52 @@ module.exports = {
         });
     },
     getTaxiPrice(city_id,in_time,distance,g){
+
+        distance = parseFloat(distance)
+        in_time = parseFloat(in_time)
+        let date = new Date;
+        date.setTime(in_time * 1000)
+        let hours = date.getHours()
+        db.find('select * from c_area where id=?',[city_id],function(area){
+
+            if(!area)return;
+            let level = area.seq;
+            if(!level)return;
+
+            let start_price = 0;
+            let distance_price = 0;
+            let distance_r = 0;
+            let $price = 0;
+            
+            if(hours < 5)start_price = 18;
+            else if(hours < 23)start_price = 14;
+            else start_price = 18;
+
+            // if(area.parent_id == 4522847){
+
+
+
+            if(hours < 5 || hours > 23){
+                if(distance<3)$price = start_price;
+                else if(distance<10)$price = start_price + 3.1 * (distance - 3);
+                else $price = $price = start_price + 3.1 * 7 + 4.7 * (distance - 10);
+            }else{
+                if(distance<3)$price = start_price;
+                else if(distance<10)$price = start_price + 2.4 * (distance - 3);
+                else $price = $price = start_price + 2.4 * 7 + 3.6 * (distance - 10);
+            }
+
+            g({
+                total:$price,
+                start:start_price
+            })
+
+            
+
+
+        });
+    },
+    getKuaiPrice(city_id,in_time,distance,g){
 
         distance = parseFloat(distance)
         in_time = parseFloat(in_time)

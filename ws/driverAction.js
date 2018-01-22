@@ -83,7 +83,7 @@ let act = {
                 }
                 id = result.id
                 type = result.type
-                className = result.type == 1?'driving':result.type == 2?'taxi':'way'
+                className = result.type == 1?'driving':(result.type == 2?'taxi':(result.type == 4?'kuai':'way'))
                 if(className == 'way'){
                     con.sendText(content({status:400,type:'arriveStartPosition',message:'行程不存在N'}))
                     return;
@@ -143,7 +143,7 @@ let act = {
                 }
                 id = trip.id
                 type = trip.type
-                className = trip.type == 1?'driving':trip.type == 2?'taxi':'way'
+                className = trip.type == 1?'driving':(trip.type == 2?'taxi':(trip.type == 4?'kuai':'way'))
                 if(className == 'way'){
                     con.sendText(content({status:400,type:'startDriving',message:'行程不存在N'}))
                     return;
@@ -239,7 +239,7 @@ let act = {
                 }
                 id = trip.id
                 type = trip.type
-                className = trip.type == 1?'driving':trip.type == 2?'taxi':'way'
+                className = trip.type == 1?'driving':(trip.type == 2?'taxi':(trip.type == 4?'kuai':'way'))
                 if(className == 'way'){
                     con.sendText(content({status:400,type:'endDriving',message:'行程不存在N'}))
                     return;
@@ -278,6 +278,9 @@ let act = {
             else if(type == 2)action.getTaxiPrice(result.city_id,trip.in_time,trip.real_distance/1000,function(prices){
                 sync.run(trip,prices,result)
             })
+            else if(type == 4)action.getKuaiPrice(result.city_id,trip.in_time,trip.real_distance/1000,function(prices){
+                sync.run(trip,prices,result)
+            })
         }
         sync.add = function(trip,prices,result){
             db.update('update c_trip set driver_id=?,statuss=35,laying=0,out_time=?,start_fee=? where trip_id=?',[con.driver_id,parseInt(Date.now() / 1000),prices.start,trip_id],function(){
@@ -303,6 +306,7 @@ let act = {
             (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
             (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
             (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
+            (driver.type_kuai) && action.driverGetOrdersKuai(driver.latitude,driver.longitude,g,driver.city_id);
             
 
             /** 获取用户 */
@@ -353,7 +357,7 @@ let act = {
         sync.add = function(){
 
             sendAdmin(`driver ${con.driver_id} updated position ${latitude},${longitude}`)
-            db.find('select * from c_trip where driver_id=? AND type IN (1,2) AND statuss IN (20,30)',[con.driver_id],function(re){
+            db.find('select * from c_trip where driver_id=? AND type IN (1,2,4) AND statuss IN (20,30)',[con.driver_id],function(re){
                 
                 if(re){
                     db.insert('insert into c_driver_serving_position set driver_id=?,trip_id=?,latitude=?,longitude=?,status=?',[driver.id,re.trip_id,latitude,longitude,re.statuss])
@@ -376,7 +380,7 @@ let act = {
             else di = dis(d.last_latitude,d.last_longitude,latitude,longitude);
             di += d.real_distance;
                         
-            db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type IN (1,2) AND statuss=30',[latitude,longitude,di,con.driver_id])
+            db.update('update c_trip set last_latitude=?,last_longitude=?,real_distance=? where driver_id=? AND type IN (1,2,4) AND statuss=30',[latitude,longitude,di,con.driver_id])
 
             sendAdmin([`driver ${con.driver_id} add distance ${di}`,d.last_latitude,d.last_longitude,latitude,longitude])
                     
@@ -407,7 +411,7 @@ let act = {
         let sync = new SYNC
         sync.add = function(){
 
-            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2)',[trip_id,con.driver_id],function(trip){
+            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2,4)',[trip_id,con.driver_id],function(trip){
 
                 if(!trip){
                     con.sendText(content({status:400,type:'waiting',trip_id:trip_id,message:'行程不存在'}))
@@ -458,7 +462,7 @@ let act = {
         let sync = new SYNC
         sync.add = function(){
 
-            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2)',[trip_id,con.driver_id],function(trip){
+            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2,4)',[trip_id,con.driver_id],function(trip){
 
                 if(!trip){
                     con.sendText(content({status:400,type:'endWaiting',trip_id:trip_id,message:'行程不存在'}))
@@ -489,6 +493,9 @@ let act = {
                 sync.run(trip,during)
             });
             else if(trip.type==3)db.update('update c_order_way set lay_fee=? where id=?',[lay_fee,trip.id],function(){
+                sync.run(trip,during)
+            })
+            else if(trip.type==4)db.update('update c_order_kuai set lay_fee=? where id=?',[lay_fee,trip.id],function(){
                 sync.run(trip,during)
             })
 
@@ -543,7 +550,7 @@ let act = {
         let sync = new SYNC
         sync.add = function(){
 
-            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2)',[trip_id,con.driver_id],function(trip){
+            db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2,4)',[trip_id,con.driver_id],function(trip){
 
                 if(!trip){
                     con.sendText(content({status:400,type:'confirmPrice',trip_id:trip_id,message:'行程不存在'}))
@@ -564,6 +571,8 @@ let act = {
                 db.find('select * from c_order_driving where id=?',[trip.id],function(w){sync.run(w)})
             }else if(trip.type==2){
                 db.find('select * from c_order_taxi where id=?',[trip.id],function(w){sync.run(w)})
+            }else if(trip.type==4){
+                db.find('select * from c_order_kuai where id=?',[trip.id],function(w){sync.run(w)})
             }
         }
 
@@ -606,6 +615,8 @@ let act = {
                 db.update('update c_order_driving set statuss=45,total_fee=? where id=?',[sync.total,sync.trip.id],function(w){sync.run(w)})
             }else if(sync.trip.type==2){
                 db.update('update c_order_taxi set statuss=45,total_fee=? where id=?',[sync.total,sync.trip.id],function(w){sync.run(w)})
+            }else if(sync.trip.type==4){
+                db.update('update c_order_kuai set statuss=45,total_fee=? where id=?',[sync.total,sync.trip.id],function(w){sync.run(w)})
             }
         }
         sync.add = function(){
@@ -648,6 +659,7 @@ let act = {
                 driver.id = d.data.info.id
                 driver.type_driving = d.data.info.type_driving == 1?1:0
                 driver.type_taxi = d.data.info.type_taxi == 1?1:0
+                driver.type_kuai = d.data.info.type_kuai == 1?1:0
                 driver.city_id = d.data.info.city_id
                 data.DriverMap.set(d.data.info.id,driver)
 
@@ -659,7 +671,7 @@ let act = {
 
                 con.sendText(content({status:200,type:'login'}))
 
-                db.find('select * from c_trip where driver_id=? AND type IN (1,2) and statuss in(20,25,30,35)',[driver.id],function(re){
+                db.find('select * from c_trip where driver_id=? AND type IN (1,2,4) and statuss in(20,25,30,35)',[driver.id],function(re){
                     if(re)driver.serving = 1;
                     if(driver.serving)return
                     let g = function(r){
@@ -671,7 +683,9 @@ let act = {
                     (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
                     (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
                     (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
-                    
+                    if(driver.type_kuai){
+                        action.driverGetOrdersKuai(driver.latitude,driver.longitude,g,driver.city_id);
+                    }
                 })
             })
 
@@ -717,7 +731,7 @@ let act = {
         }
         else if(trip_id){
             sync.add = function(){
-                db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2)',[trip_id,con.driver_id],function(w){sync.run(w)})
+                db.find('select * from c_trip where trip_id=? and driver_id=? and type IN (1,2,4)',[trip_id,con.driver_id],function(w){sync.run(w)})
             }
         }
         else{
@@ -737,7 +751,7 @@ let act = {
             trip_id = trip.trip_id;
             id = trip.id;
 
-            className = trip.type == 1?'driving':trip.type == 2?'taxi':'way'
+            className = trip.type == 1?'driving':(trip.type == 2?'taxi':(trip.type == 4?'kuai':'way'))
 
             db.find('select * from c_order_'+className+' where id=? and driver_id=?',[id,con.driver_id],function(result){
 
@@ -787,6 +801,7 @@ let act = {
                     (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
                     (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
                     (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
+                    (driver.type_kuai) && action.driverGetOrdersKuai(driver.latitude,driver.longitude,g,driver.city_id);
                 }
             }else{
                 let driver_ids = result.driver_ids
@@ -802,6 +817,7 @@ let act = {
                             (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
                             (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
                             (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
+                            (driver.type_kuai) && action.driverGetOrdersKuai(driver.latitude,driver.longitude,g,driver.city_id);
                         }
                     }
                 }
@@ -856,7 +872,7 @@ let act = {
 
 
         sync.add = function(){
-            db.find('select * from c_trip where trip_id=? and type IN (1,2)',[trip_id,con.driver_id],function(trip){
+            db.find('select * from c_trip where trip_id=? and type IN (1,2,4)',[trip_id,con.driver_id],function(trip){
 
                 if(!trip){
                     con.sendText(content({status:400,type:'orderDriving',trip_id:trip_id,message:'行程不存在'}))
@@ -870,7 +886,7 @@ let act = {
                     con.sendText(content({status:400,type:'orderDriving',trip_id:trip_id,message:'无法接单'}))
                     return;
                 }
-                className = trip.type == 1?'driving':trip.type == 2?'taxi':'way'
+                className = trip.type == 1?'driving':(trip.type == 2?'taxi':(trip.type == 4?'kuai':'way'))
                 if(className == 'way'){
                     con.sendText(content({status:400,type:'orderDriving',message:'行程不存在N'}))
                     return;
@@ -933,6 +949,7 @@ let act = {
                     (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
                     (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
                     (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
+                    (driver.type_kuai) && action.driverGetOrdersKuai(driver.latitude,driver.longitude,g,driver.city_id);
                 }
                 let user = data.UserMap.get(result.user_id+'')
                 if(data.clock.get(result.user_id+''))clearTimeout(data.clock.get(result.user_id+''));
@@ -952,6 +969,7 @@ let act = {
                             (driver.type_driving && driver.type_taxi) && action.driverGetOrders(driver.latitude,driver.longitude,g,driver.city_id);
                             (driver.type_driving && !driver.type_taxi) && action.driverGetOrdersDriving(driver.latitude,driver.longitude,g,driver.city_id);
                             (!driver.type_driving && driver.type_taxi) && action.driverGetOrdersTaxi(driver.latitude,driver.longitude,g,driver.city_id);
+                            (driver.type_kuai) && action.driverGetOrdersKuai(driver.latitude,driver.longitude,g,driver.city_id);
                         }
                     }
                 }

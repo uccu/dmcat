@@ -15,6 +15,7 @@ use Uccu\DmcatTool\Tool\AJAX;
 # model
 use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\OrderTaxiModel;
+use App\Car\Model\OrderKuaiModel;
 use App\Car\Model\OrderWayModel;
 use App\Car\Model\TripModel;
 use App\Car\Model\DriverModel;
@@ -38,7 +39,7 @@ trait OrderTraits{
      * @return mixed 
      */
     function orderInfo_daijia($id = 0,$type = 1,$trip_id = 0,
-        OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel,DriverModel $driverModel,UserModel $userModel,DriverServingPositionModel $driverServingPosition){
+        OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel,TripModel $tripModel,DriverModel $driverModel,UserModel $userModel,DriverServingPositionModel $driverServingPosition){
         
         // $this->L->id = 46;
         !$this->L->id && AJAX::error('未登录');
@@ -54,6 +55,8 @@ trait OrderTraits{
                 $order = $orderDrivingModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
             }elseif ($trip->type == 2){
                 $order = $orderTaxiModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
+            }elseif ($trip->type == 4){
+                $order = $orderKuaiModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
             }elseif ($trip->type == 3){
                 $driverModel = $userModel;
                 $order = $orderWayModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
@@ -66,6 +69,8 @@ trait OrderTraits{
                 $order = $orderDrivingModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
             }elseif ($type == 2){
                 $order = $orderTaxiModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
+            }elseif ($type == 4){
+                $order = $orderKuaiModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
             }elseif ($trip->type == 3){
                 $driverModel = $userModel;
                 $order = $orderWayModel->where(['id'=>$id,'user_id'=>$this->L->id])->find();
@@ -100,7 +105,7 @@ trait OrderTraits{
             $driver =  $driverModel->select('id>driver_id','name','avatar','phone','judge_score','car_number','brand')->find($order->driver_id);
             if($driver){
 
-                $driver->orderCount = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>49')->where('type IN (1,2)')->where(['driver_id'=>$order->driver_id])->find()->c;
+                $driver->orderCount = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>49')->where('type IN (1,2,4)')->where(['driver_id'=>$order->driver_id])->find()->c;
                 $driver->online = '0';
                 $out['driverInfo'] = $driver;
             }else{
@@ -194,7 +199,7 @@ trait OrderTraits{
 
 
     function orderInfoDriver($id = 0,$type = 1,$trip_id = 0,
-        OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel,DriverModel $driverModel,UserModel $userModel,DriverServingPositionModel $driverServingPosition){
+        OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel,TripModel $tripModel,DriverModel $driverModel,UserModel $userModel,DriverServingPositionModel $driverServingPosition){
         
         // $this->L->id = 46;
         !$this->L->id && AJAX::error('未登录');
@@ -210,6 +215,8 @@ trait OrderTraits{
                 $order = $orderDrivingModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
             }elseif ($trip->type == 2){
                 $order = $orderTaxiModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
+            }elseif ($trip->type == 4){
+                $order = $orderKuaiModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
             }elseif ($trip->type == 3){
                 $driverModel = $userModel;
                 $order = $orderWayModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
@@ -222,6 +229,8 @@ trait OrderTraits{
                 $order = $orderDrivingModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
             }elseif ($type == 2){
                 $order = $orderTaxiModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
+            }elseif ($type == 4){
+                $order = $orderKuaiModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
             }elseif ($trip->type == 3){
                 $driverModel = $userModel;
                 $order = $orderWayModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
@@ -256,7 +265,7 @@ trait OrderTraits{
             $driver =  $driverModel->select('id>driver_id','name','avatar','phone','judge_score')->find($order->driver_id);
             if($driver){
 
-                $driver->orderCount = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>49')->where('type IN (1,2)')->where(['driver_id'=>$order->driver_id])->find()->c;
+                $driver->orderCount = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>49')->where('type IN (1,2,4)')->where(['driver_id'=>$order->driver_id])->find()->c;
                 $driver->online = '0';
                 $out['driverInfo'] = $driver;
             }else{
@@ -513,7 +522,7 @@ trait OrderTraits{
      * @param mixed $orderWayModel 
      * @return mixed 
      */
-    function judge_driver(UserModel $userModel,DriverModel $driverModel,JudgeDriverModel $judgeModel,TripModel $tripModel,$score,$trip_id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
+    function judge_driver(UserModel $userModel,DriverModel $driverModel,JudgeDriverModel $judgeModel,TripModel $tripModel,$score,$trip_id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -553,6 +562,9 @@ trait OrderTraits{
         }elseif($trip->type == 2){
 
             $orderTaxiModel->set(['statuss'=>$trip->statuss])->save($trip->id);
+        }elseif($trip->type == 4){
+
+            $orderKuaiModel->set(['statuss'=>$trip->statuss])->save($trip->id);
             
         }elseif($trip->type == 3){
 

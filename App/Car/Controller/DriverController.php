@@ -17,6 +17,7 @@ use App\Car\Model\DriverMessageModel;
 use App\Car\Model\DriverFeedbackModel;
 use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\OrderTaxiModel;
+use App\Car\Model\OrderKuaiModel;
 use App\Car\Model\TripModel;
 use App\Car\Model\DriverFundModel; 
 use App\Car\Model\UserModel; 
@@ -186,6 +187,7 @@ class DriverController extends Controller{
             'name'=>$info->name,
             'tpye_driving'=>$info->type_driving,
             'tpye_taxi'=>$info->type_taxi,
+            'type_kuai'=>$info->type_kuai,
             'hasMessage'=>$data['hasMessage'],
             'apply_status'=> NULL === $apply_status ? '-2' : $apply_status
             
@@ -333,6 +335,7 @@ class DriverController extends Controller{
         $info['brand'] = $this->L->userInfo->brand;
         $info['car_number'] = $this->L->userInfo->car_number;
         $info['type_driving'] = $this->L->userInfo->type_driving;
+        $info['type_kuai'] = $this->L->userInfo->type_kuai;
         $info['type_taxi'] = $this->L->userInfo->type_taxi;
         $info['id'] = $this->L->id;
         $info['judge_score'] = $this->L->userInfo->judge_score;
@@ -349,7 +352,7 @@ class DriverController extends Controller{
         $info['money_today'] = $m->select('SUM(money) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         
         if(!$info['money_today'])$info['money_today'] = '0.00';
-        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>44')->where('type IN (1,2)')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
+        $info['order_today'] = TripModel::copyMutiInstance()->select('COUNT(*) AS c','RAW')->where('statuss>44')->where('type IN (1,2,4)')->where(['driver_id'=>$this->L->id])->where('create_time>%n',TIME_TODAY)->find()->c;
         
         $online = $driverOnlineModel->find($this->L->id);
 
@@ -384,6 +387,7 @@ class DriverController extends Controller{
         $info['city_id'] = $this->L->userInfo->city_id;
         $info['car_number'] = $this->L->userInfo->car_number;
         $info['type_driving'] = $this->L->userInfo->type_driving;
+        $info['type_kuai'] = $this->L->userInfo->type_kuai;
         $info['type_taxi'] = $this->L->userInfo->type_taxi;
         $info['id'] = $this->L->id;
         $info['judge_score'] = $this->L->userInfo->judge_score;
@@ -489,12 +493,12 @@ class DriverController extends Controller{
 
 
     /** 获取行程 */
-    function getTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel){
+    function getTripList($page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel){
 
         // $this->L->id = 3;
         !$this->L->id && AJAX::error('未登录');
         $where['driver_id'] = $this->L->id;
-        $where['type'] = ['type IN (1,2)'];
+        $where['type'] = ['type IN (1,2,4)'];
         $list = $tripModel->where($where)->order('create_time desc')->page($page,$limit)->get()->toArray();
 
         $select = ['start_latitude,start_longitude,end_latitude,end_longitude,start_name,end_name,create_time,statuss,driver_id,coupon,total_fee,fee,stat.user_name,stat.driver_name'];
@@ -507,6 +511,8 @@ class DriverController extends Controller{
                 $v->orderInfo = $orderDrivingModel->select($select,'RAW')->find($v->id);
             }elseif($v->type == 2){
                 $v->orderInfo = $orderTaxiModel->select($select,'RAW')->find($v->id);
+            }elseif($v->type == 4){
+                $v->orderInfo = $orderKuaiModel->select($select,'RAW')->find($v->id);
             }
             
             if(!$v->orderInfo)unset($list[$k]);
@@ -522,7 +528,7 @@ class DriverController extends Controller{
         }
 
 
-        $order_count = $tripModel->select('COUNT(*) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('statuss>44')->where('type IN (1,2)')->find()->c;
+        $order_count = $tripModel->select('COUNT(*) AS c','RAW')->where(['driver_id'=>$this->L->id])->where('statuss>44')->where('type IN (1,2,4)')->find()->c;
 
         $out['list'] = $list;
         $out['order_count'] = $order_count;
@@ -562,6 +568,8 @@ class DriverController extends Controller{
             $order = Model::copyMutiInstance('order_taxi')->find($trip->id);
         }elseif($trip->type == 3){
             $order = Model::copyMutiInstance('order_way')->find($trip->id);
+        }elseif($trip->type == 4){
+            $order = Model::copyMutiInstance('order_kuai')->find($trip->id);
         }
 
         !$order && AJAX::error('error');
@@ -588,6 +596,8 @@ class DriverController extends Controller{
             Model::copyMutiInstance('order_taxi')->set(['statuss'=>50])->save($trip->id);
         }elseif($trip->type == 3){
             Model::copyMutiInstance('order_way')->set(['statuss'=>50])->save($trip->id);
+        }elseif($trip->type == 4){
+            Model::copyMutiInstance('order_kuai')->set(['statuss'=>50])->save($trip->id);
         }
 
 
@@ -608,7 +618,7 @@ class DriverController extends Controller{
 
         !$this->L->id && AJAX::error('未登录');
 
-        $list = $judgeModel->select('*','user.name','user.avatar')->where('type IN (1,2)')->where(['driver_id'=>$this->L->id])->order('create_time desc')->page($page,$limit)->get()->toArray();
+        $list = $judgeModel->select('*','user.name','user.avatar')->where('type IN (1,2,4)')->where(['driver_id'=>$this->L->id])->order('create_time desc')->page($page,$limit)->get()->toArray();
 
         $out['list'] = $list;
 
@@ -765,7 +775,7 @@ class DriverController extends Controller{
         
         $where['driver_id'] = $this->L->id;
         $where['statuss'] = ['statuss IN (%c)',[5,10,20,25,30,35,40,45]];
-        $where['type'] = ['type IN (%c)',[1,2]];
+        $where['type'] = ['type IN (%c)',[1,2,4]];
 
         $trip = $model->where($where)->find();
 

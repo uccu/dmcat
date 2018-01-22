@@ -20,6 +20,7 @@ use App\Car\Model\UserModel;
 use App\Car\Model\DriverModel;
 use App\Car\Model\JudgeDriverModel;
 use App\Car\Model\OrderTaxiModel;
+use App\Car\Model\OrderKuaiModel;
 use App\Car\Model\OrderWayModel;
 use App\Car\Model\TripDrivingLogModel;
 use App\Car\Model\UserOnlineModel;
@@ -39,7 +40,7 @@ trait OrderTraits{
      * @return mixed 
      */
     function orderInfo_daijia($id = 0,
-        OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel,$trip_id = 0,$type = 1,DriverServingPositionModel $driverServingPosition){
+        OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel,TripModel $tripModel,$trip_id = 0,$type = 1,DriverServingPositionModel $driverServingPosition){
         
         // $this->L->id = 1;
         !$this->L->id && AJAX::error('未登录');
@@ -56,6 +57,8 @@ trait OrderTraits{
                 $order = $orderDrivingModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
             }elseif($type == 2){
                 $order = $orderTaxiModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
+            }elseif($type == 4){
+                $order = $orderKuaiModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
             }
             !$order && AJAX::error('订单不存在');
 
@@ -64,6 +67,8 @@ trait OrderTraits{
                 $order = $orderDrivingModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
             }elseif($type == 2){
                 $order = $orderTaxiModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
+            }elseif($type == 4){
+                $order = $orderKuaiModel->where(['id'=>$id,'driver_id'=>$this->L->id])->find();
             }
             !$order && AJAX::error('订单不存在');
 
@@ -214,7 +219,7 @@ trait OrderTraits{
      * @param mixed $orderWayModel 
      * @return mixed 
      */
-    function judge_driver(UserModel $userModel,DriverModel $driverModel,JudgeDriverModel $judgeModel,TripModel $tripModel,$score,$trip_id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
+    function judge_driver(UserModel $userModel,DriverModel $driverModel,JudgeDriverModel $judgeModel,TripModel $tripModel,$score,$trip_id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -258,6 +263,9 @@ trait OrderTraits{
         }elseif($trip->type == 3){
 
             $orderWayModel->set(['statuss'=>$trip->statuss])->save($trip->id);
+        }elseif($trip->type == 4){
+
+            $orderKuaiModel->set(['statuss'=>$trip->statuss])->save($trip->id);
             
         }
 
@@ -289,7 +297,7 @@ trait OrderTraits{
      * @param mixed $tripModel 
      * @return mixed 
      */
-    function drivingLog(TripDrivingLogModel $model,$trip_id,$brade,$car_number,$sex,$type,TripModel $tripModel){
+    function drivingLog(TripDrivingLogModel $model,$trip_id,$brade,$car_number = '',$sex,$type,TripModel $tripModel){
         
         !$this->L->id && AJAX::error('未登录');
 
@@ -324,7 +332,7 @@ trait OrderTraits{
      * @param mixed $end_name 
      * @return mixed 
      */
-    function changeEnd($id,$trip_id,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,TripModel $tripModel,$end_latitude,$end_longitude,$end_name){
+    function changeEnd($id,$trip_id,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,TripModel $tripModel,$end_latitude,$end_longitude,$end_name){
 
         // $this->L->id = 16;
         !$this->L->id && AJAX::error('未登录');
@@ -345,6 +353,8 @@ trait OrderTraits{
                 $order = $orderDrivingModel->where(['id'=>$trip->id,'driver_id'=>$this->L->id])->find();
             }elseif($trip->type == 2){
                 $order = $orderTaxiModel->where(['id'=>$trip->id,'driver_id'=>$this->L->id])->find();
+            }elseif($trip->type == 4){
+                $order = $orderKuaiModel->where(['id'=>$trip->id,'driver_id'=>$this->L->id])->find();
             }
         }
         !$order && AJAX::error('订单不存在');
@@ -374,7 +384,7 @@ trait OrderTraits{
      * @param mixed $trip_id 
      * @return mixed 
      */
-    function refleshPrice(TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,$trip_id = 0){
+    function refleshPrice(TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,$trip_id = 0){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -386,6 +396,8 @@ trait OrderTraits{
         }
         elseif($trip->type == 2){
             $model = $orderTaxiModel;
+        }elseif($trip->type == 4){
+            $model = $orderKuaiModel;
         }else{
             AJAX::error('行程不存在M');
         }
@@ -407,7 +419,7 @@ trait OrderTraits{
             $price = $data['total'];
             $start = $data['start'];
 
-        }elseif($trip->type == 2){
+        }elseif($trip->type == 2 || $trip->type == 4){
             
             $time = date('H:i',$trip->in_time);
             if(!$time)$time = date('H:i');

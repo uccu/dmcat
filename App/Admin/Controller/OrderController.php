@@ -15,6 +15,7 @@ use DB;
 # 数据模型
 use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\OrderTaxiModel;
+use App\Car\Model\OrderKuaiModel;
 use App\Car\Model\OrderWayModel;
 use App\Car\Model\UserApplyModel;
 use App\Car\Model\DriverApplyModel;
@@ -53,6 +54,12 @@ class OrderController extends Controller{
     function taxi(){
 
         View::addData(['getList'=>'admin_taxi']);
+        View::hamlReader('home/list','Admin');
+    }
+    /** 快车 */
+    function kuai(){
+
+        View::addData(['getList'=>'admin_kuai']);
         View::hamlReader('home/list','Admin');
     }
     /*  顺风车 */
@@ -350,7 +357,7 @@ class OrderController extends Controller{
         # 允许操作接口
 
         # 设置名字
-        $m->setName('代驾订单');
+        $m->setName('收入');
         
 
         # 设置表头
@@ -394,7 +401,7 @@ class OrderController extends Controller{
         # 允许操作接口
 
         # 设置名字
-        $m->setName('代驾订单');
+        $m->setName('收入');
         
 
         # 设置表头
@@ -436,7 +443,7 @@ class OrderController extends Controller{
         # 允许操作接口
 
         # 设置名字
-        $m->setName('代驾订单');
+        $m->setName('收入');
         
 
         # 设置表头
@@ -755,6 +762,295 @@ class OrderController extends Controller{
         $this->L->adminPermissionCheck(114);
         $del = AdminFunc::del($model,$id);
         TripModel::copyMutiInstance()->where(['id'=>$id,'type'=>2])->remove();
+        $out['del'] = $del;
+        AJAX::success($out);
+    }
+
+
+    # 管理出租车
+    function admin_kuai(OrderKuaiModel $model,TripModel $tripModel,$page = 1,$limit = 10,$search,$status = -1){
+        
+        $this->L->adminPermissionCheck(169);
+
+        $name = '出租车订单';
+        # 允许操作接口
+        $opt = 
+            [
+                'get'   => '../order/admin_kuai_get',
+                'view'  => 'home/upd',
+                'del'   => '../order/admin_kuai_del',
+                'view'  => 'home/upd',
+                'req'   =>[
+                    [
+                        'title'=>'搜索',
+                        'name'=>'search',
+                        'size'=>'3'
+                    ],
+                    [
+                        'title'=>'状态',
+                        'name'=>'status',
+                        'type'=>'select',
+                        'option'=>[
+                            '-1'=>'请选择',
+                            
+                        ],'default'=>'-1'
+                    ],
+                ]
+            ];
+        
+        $opt['req'][1]['option'];
+
+        $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
+
+        $opt['req'][1]['option'] = $statusArr;
+        $opt['req'][1]['option']['-1'] = '请选择';
+
+        # 头部标题设置
+        $thead = 
+            [
+
+                'ID',
+                '用户',
+                '司机',
+                '状态',
+                '起点',
+                '终点',
+                '预估价(元)',
+                '总价(元)',
+                '线路'
+
+            ];
+
+
+        # 列表体设置
+        $tbody = 
+            [
+
+                
+                'id',
+                'user_name',
+                'driver_name',
+                'status_name',
+                'start_name',
+                'end_name',
+                'estimated_price',
+                'total_fee',
+                ['name'=>'route','href'=>true]
+
+            ];
+            
+
+        # 列表内容
+        $where = [];
+        if($status != -1)$where['statuss'] = $status;
+
+        if($this->L->userInfo->type == 2){
+            $where['city.parent_id'] = $this->L->userInfo->province_id;
+        }elseif($this->L->userInfo->type == 1){
+            $where['city_id'] = ['%F IN (%c)','city_id', explode(',', $this->L->userInfo->city_id)];
+        }
+        
+        if($search){
+            $where['search'] = ['start_name LIKE %n OR end_name LIKE %n OR user.name LIKE %n OR driver.name LIKE %n OR user.phone LIKE %n OR driver.phone LIKE %n','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%','%'.$search.'%'];
+        }
+
+        $list = $model->select('*','user.name>user_name','driver.name>driver_name')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
+        foreach($list as &$v){
+            $v->status_name = $statusArr[$v->statuss];
+
+            $trip = $tripModel->where(['id'=>$v->id,'type'=>4])->find();
+
+            $v->route = '查看';
+            $v->route_href = 'order/map?trip_id='.$trip->trip_id;
+
+        }
+
+
+        # 分页内容
+        $page   = $page;
+        $max    = $model->where($where)->select('COUNT(*) AS c','RAW')->find()->c;
+        $limit  = $limit;
+
+        # 输出内容
+        $out = 
+            [
+
+                'opt'   =>  $opt,
+                'thead' =>  $thead,
+                'tbody' =>  $tbody,
+                'list'  =>  $list,
+                'page'  =>  $page,
+                'limit' =>  $limit,
+                'max'   =>  $max,
+                'name'  =>  $name,
+            
+            ];
+
+        AJAX::success($out);
+
+    }
+    function admin_kuai_get(OrderKuaiModel $model,$id){
+
+
+
+        $type = 4;
+        
+
+        $m = Gets::getSingleInstance($model,$id);
+
+        # 权限
+        $m->checkPermission(169);
+
+        # 允许操作接口
+        $m->setOpt('get','../order/admin_kuai_get');
+        $m->setOpt('back','order/kuai');
+        $m->setOpt('upd','../order/admin_kuai_upd');
+        $m->setOpt('view','home/upd');
+
+        # 设置表体
+        $m->setBody(['type'  =>  'hidden','name'  =>  'id']);
+        $m->setBody(['type'  =>  'hidden','name'  =>  'trip_id']);
+        $staC = $m->setBody(['title'=>'状态','name'=>'statuss','type'=>'select','default'=>'0','description'=>'<font style="color:red">（一般情况下，不能修改）</font>']);
+        
+        $m->setBody(['title' =>  '联系人电话（代叫限定）','name'  =>  'phone','size'  =>  '2',]);
+        $m->setBody(['title' =>  '联系人称呼（代叫限定）','name'  =>  'name','size'  =>  '2',]);
+        $m->setBody(['title' =>  '用户','name'  =>  'user_name','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '用户手机号','name'  =>  'user_phone','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '司机','name'  =>  'driver_name','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '司机手机号','name'  =>  'driver_phone','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '开始地址名字','name'  =>  'start_name','size'  =>  '4','disabled'=>true]);
+        $m->setBody(['title' =>  '结束地址名字','name'  =>  'end_name','size'  =>  '4','disabled'=>true]);
+        $m->setBody(['title' =>  '实时里程(公里)','name'  =>  'real_distance','size'  =>  '4','disabled'=>true]);
+        $m->setBody(['title' =>  '预估价(元)','name'  =>  'estimated_price','size'  =>  '4']);
+        $m->setBody(['title' =>  '服务开始时间','name'  =>  'start_time_date','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '服务结束时间','name'  =>  'end_time_date','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '城市','name'  =>  'city_name','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '起步价(元)','name'  =>  'start_fee','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '里程价格(元)','name'  =>  'way_fee','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '等待费用(元)','name'  =>  'lay_fee','size'  =>  '2','disabled'=>true]);
+        $m->setBody(['title' =>  '其他费用(元)','name'  =>  'other_fee_content','size'  =>  '4','type'  =>  'textarea','disabled'=>true]);
+        $m->setBody(['title' =>  '总价格(元)','name'  =>  'total_fee','size'  =>  '2']);
+        
+
+        # 设置名字
+        $m->setName();
+
+        
+        $m->getInfo();
+
+
+        $statusArr = StatusModel::copyMutiInstance()->get_field('msg','id')->toArray();
+        $m->tbody[$staC]['option'] = $statusArr;
+
+        if($m->info){
+            $trip = TripModel::copyMutiInstance()->select('*','cancelType.name>cancel_type_name')->where(['id'=>$id,'type'=>$type])->find();
+        }
+
+        # 司机和用户名字如果有的话
+        if($m->info->user_id){
+            $m->info->user_name = UserModel::copyMutiInstance()->find($m->info->user_id)->name;
+            $m->info->user_phone = UserModel::copyMutiInstance()->find($m->info->user_id)->phone;
+        }
+        if($m->info->driver_id){
+            $m->info->driver_name = DriverModel::copyMutiInstance()->find($m->info->driver_id)->name;
+            $m->info->driver_phone = DriverModel::copyMutiInstance()->find($m->info->driver_id)->phone;
+        }
+        # 服务开始时间、服务结束时间、起步费、真实行程距离、行程id、行程费用
+        $m->info->start_time_date = $trip->in_time ? date('Y-m-d H:i:s',$trip->in_time) : '';
+        $m->info->end_time_date = $trip->out_time ? date('Y-m-d H:i:s',$trip->out_time) : '';
+        $m->info->start_fee = $trip->start_fee;
+        $m->info->real_distance = $trip->real_distance / 1000;
+        $m->info->trip_id = $trip->trip_id;
+        $m->info->way_fee = $m->info->fee != 0?number_format($m->info->fee - $m->info->start_fee,2,'.',''):'0.00';
+
+
+        # 显示其他费用
+        $contents = json_decode($trip->other_fee);
+        if($contents){
+            foreach($contents as $content)
+            $m->info->other_fee_content .= $content->type .'：￥'. $content->price."\n";
+        }
+
+        $city = AreaModel::copyMutiInstance()->find($m->info->city_id);
+        if($city){
+            $province = AreaModel::copyMutiInstance()->find($city->parent_id);
+        }
+        if(!$city || !$province){
+            $m->info->city_name = '';
+        }else{
+            $m->info->city_name = $province->areaName. ' ' .$city->areaName;
+        }
+
+        $m->info->meter_1 = $m->info->meter?'是':'否';
+
+        $m->info->cancelReason = $trip->cancel_type_name.' '.$trip->cancel_reason;
+
+        if($m->info->statuss == 0){
+            $m->setBody(['title' =>  '取消原因','name'  =>  'cancelReason','type'  =>  'textarea','disabled'=>true]);
+        }
+
+        # 输出
+        $m->output();
+
+
+
+    }
+    function admin_kuai_upd(OrderKuaiModel $model,$id,$toDriver,DriverModel $driverModel,$statuss,TripModel $tripModel){
+        $this->L->adminPermissionCheck(169);
+        
+        $app = $model->find($id);
+        !$app && AJAX::error('订单不存在');
+
+        $trip = $tripModel->where(['type'=>2,'id'=>$id])->find();
+        !$trip && AJAX::error('行程不存在');
+
+        DB::start();
+        
+        // Func::push_driver($toDriver,'平台已指定派单，请接乘客。',['type'=>'driving']);
+        $data = Request::getSingleInstance()->request($model->field);
+        $upd = AdminFunc::upd($model,$id,$data);
+
+        if($statuss != $app->statuss){
+            $app->statuss = $statuss;
+            $app->save();
+            $trip->statuss = $statuss;
+            $trip->save();
+        }
+        
+        if($toDriver){
+            $driver = $driverModel->find($toDriver);
+            !$driver && AJAX::error('司机不存在');
+            
+
+            if(!in_array($statuss,[5,10])){
+                AJAX::error('该订单无法派单');
+            }
+
+            
+
+            $app->driver_id = $driver->id;
+            $app->statuss = 20;
+            $app->save();
+            $trip->driver_id = $driver->id;
+            $trip->statuss = 20;
+            $trip->save();
+
+            
+        }
+
+        
+
+        
+
+        DB::commit();
+
+        $out['upd'] = 1;
+        AJAX::success($out);
+    }
+    function admin_kuai_del(OrderKuaiModel $model,$id){
+        $this->L->adminPermissionCheck(169);
+        $del = AdminFunc::del($model,$id);
+        TripModel::copyMutiInstance()->where(['id'=>$id,'type'=>4])->remove();
         $out['del'] = $del;
         AJAX::success($out);
     }
@@ -1241,7 +1537,8 @@ class OrderController extends Controller{
                         'option'=>[
                             '0'=>'请选择',
                             '1'=>'代驾',
-                            '2'=>'出租车'
+                            '2'=>'出租车',
+                            '4'=>'快车'
                         ],'default'=>'0',
                         'size'=>2
                     ],
@@ -1330,7 +1627,8 @@ class OrderController extends Controller{
             $v->type_name =[
                             '0'=>'无',
                             '1'=>'代驾',
-                            '2'=>'出租车'
+                            '2'=>'出租车',
+                            '4'=>'快车',
                         ][$v->type];
         }
 
@@ -1386,7 +1684,8 @@ class OrderController extends Controller{
                 'type'  =>  'select',
                 'option'=>[
                     '1'=>'代驾',
-                    '2'=>'出租车'
+                    '2'=>'出租车',
+                    '4'=>'快车'
                 ],
                 'disabled'=>true,
             ],
@@ -1442,8 +1741,14 @@ class OrderController extends Controller{
             if($type==1){
                 $data2['type_driving'] = 1;
                 $data2['type_taxi'] = 0;
+                $data2['type_kuai'] = 0;
             }elseif($type==2){
                 $data2['type_taxi'] = 1;
+                $data2['type_driving'] = 0;
+                $data2['type_kuai'] = 0;
+            }elseif($type==4){
+                $data2['type_kuai'] = 1;
+                $data2['type_taxi'] = 0;
                 $data2['type_driving'] = 0;
             }
 
@@ -1454,7 +1759,7 @@ class OrderController extends Controller{
             
             DriverModel::copyMutiInstance()->set($data2)->save($id);
         }else{
-            DriverModel::copyMutiInstance()->set(['type_taxi'=>0,'type_driving'=>0,'city_id'=>$app->city_id])->save($id);
+            DriverModel::copyMutiInstance()->set(['type_taxi'=>0,'type_driving'=>0,'type_kuai'=>0,'city_id'=>$app->city_id])->save($id);
         }
 
         $upd = AdminFunc::upd($model,$id,$data);

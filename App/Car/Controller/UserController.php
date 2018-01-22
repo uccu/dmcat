@@ -19,6 +19,7 @@ use App\Car\Model\MessageModel;
 use App\Car\Model\TripModel;
 use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\OrderTaxiModel;
+use App\Car\Model\OrderKuaiModel;
 use App\Car\Model\LocationModel;
 use App\Car\Model\UserApplyModel; 
 use App\Car\Model\OrderWayModel; 
@@ -360,7 +361,7 @@ class UserController extends Controller{
 
 
     /** 获取行程 */
-    function getTripList(UserCouponModel $userCouponModel,$page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
+    function getTripList(UserCouponModel $userCouponModel,$page=1,$limit=10,TripModel $tripModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel){
         // $this->L->id = 43;
         !$this->L->id && AJAX::error('未登录');
         $where['user_id'] = $this->L->id;
@@ -381,6 +382,8 @@ class UserController extends Controller{
                 $v->orderInfo = $orderTaxiModel->select($select,'RAW')->find($v->id);
             }elseif($v->type == 3){
                 $v->orderInfo = $orderWayModel->select($select,'RAW')->find($v->id);
+            }elseif($v->type == 4){
+                $v->orderInfo = $orderKuaiModel->select($select,'RAW')->find($v->id);
             }
 
             
@@ -564,6 +567,7 @@ class UserController extends Controller{
 
         if($type == 1)$model->where(['driver.type_driving'=>1]);
         elseif($type == 2)$model->where(['driver.type_taxi'=>1]);
+        elseif($type == 4)$model->where(['driver.type_kuai'=>1]);
 
         $model->where('latitude BETWEEN %a AND longitude BETWEEN %a',$latitudeRange,$longitudeRange);
         
@@ -586,7 +590,7 @@ class UserController extends Controller{
      * @param mixed $orderWayModel 
      * @return mixed 
      */
-    function judge(UserModel $userModel,DriverModel $driverModel,JudgeModel $judgeModel,TripModel $tripModel,$score,$id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel){
+    function judge(UserModel $userModel,DriverModel $driverModel,JudgeModel $judgeModel,TripModel $tripModel,$score,$id,$comment,$tag,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -630,10 +634,14 @@ class UserController extends Controller{
 
             $orderWayModel->set(['statuss'=>$trip->statuss])->save($trip->id);
             
+        }elseif($trip->type == 4){
+
+            $orderKuaiModel->set(['statuss'=>$trip->statuss])->save($trip->id);
+            
         }
 
         if($trip->type != 3){
-            $score = $judgeModel->select('AVG(score) AS c','RAW')->where(['driver_id'=>$trip->driver_id])->where('type IN (1,2)')->find()->c;
+            $score = $judgeModel->select('AVG(score) AS c','RAW')->where(['driver_id'=>$trip->driver_id])->where('type IN (1,2,4)')->find()->c;
             !$score && $score = 0;
             $driverModel->set(['judge_score'=>$score])->save($trip->driver_id);
         }else{

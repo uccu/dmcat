@@ -16,6 +16,7 @@ use App\Car\Middleware\L2;
 use App\Car\Model\AreaModel;
 use App\Car\Model\OrderDrivingModel;
 use App\Car\Model\OrderTaxiModel;
+use App\Car\Model\OrderKuaiModel;
 use App\Car\Model\OrderWayModel;
 use App\Car\Model\TripModel;
 use App\Car\Model\PaymentModel;
@@ -32,7 +33,7 @@ class PayController extends Controller{
         $this->L2 = L2::getSingleInstance();
 
     }
-    function alipay($trip_id,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
+    function alipay($trip_id,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
 
 
         //登陆验证
@@ -50,6 +51,10 @@ class PayController extends Controller{
             $order = $orderTaxiModel->find($trip->id);
             $type = 'B';
             $name = '出租车';
+        }elseif($trip->type == 4){
+            $order = $orderKuaiModel->find($trip->id);
+            $type = 'D';
+            $name = '快车';
         }elseif($trip->type == 3){
             $order = $orderWayModel->find($trip->id);
             $type = 'C';
@@ -181,7 +186,7 @@ class PayController extends Controller{
 
 
 
-    function wcpay($trip_id,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
+    function wcpay($trip_id,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
 
         //登陆验证
         !$this->L->id && AJAX::error('请登录');
@@ -198,6 +203,10 @@ class PayController extends Controller{
             $order = $orderTaxiModel->find($trip->id);
             $type = 'B';
             $name = '出租车';
+        }elseif($trip->type == 4){
+            $order = $orderKuaiModel->find($trip->id);
+            $type = 'B';
+            $name = '快车';
         }elseif($trip->type == 3){
             $order = $orderWayModel->find($trip->id);
             $type = 'C';
@@ -463,7 +472,7 @@ class PayController extends Controller{
      * @param mixed $trade_status 
      * @return mixed 
      */
-    function alipay_c($out_trade_no,$trade_status,PaymentModel $paymentModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
+    function alipay_c($out_trade_no,$trade_status,PaymentModel $paymentModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
 
         $type = substr($out_trade_no,0,1);
         $order_id = substr($out_trade_no,-6);
@@ -474,6 +483,9 @@ class PayController extends Controller{
         }elseif($type == 'B'){
             $order = $orderTaxiModel->find($order_id);
             $trip = $tripModel->where(['type'=>2,'id'=>$order_id])->find();
+        }elseif($type == 'D'){
+            $order = $orderKuaiModel->find($order_id);
+            $trip = $tripModel->where(['type'=>4,'id'=>$order_id])->find();
         }elseif($type == 'C'){
             $order = $orderWayModel->find($order_id);
             $trip = $tripModel->where(['type'=>3,'id'=>$order_id])->find();
@@ -658,7 +670,7 @@ class PayController extends Controller{
      * wcpay_c
      * @return mixed 
      */
-    function wcpay_c(PaymentModel $paymentModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
+    function wcpay_c(PaymentModel $paymentModel,OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
 
         $postStr = file_get_contents ( 'php://input' );
         $xmlObject =  simplexml_load_string ( $postStr );
@@ -710,6 +722,9 @@ class PayController extends Controller{
         }elseif($type == 'B'){
             $order = $orderTaxiModel->find($order_id);
             $trip = $tripModel->where(['type'=>2,'id'=>$order_id])->find();
+        }elseif($type == 'D'){
+            $order = $orderKuaiModel->find($order_id);
+            $trip = $tripModel->where(['type'=>4,'id'=>$order_id])->find();
         }elseif($type == 'C'){
             $order = $orderWayModel->find($order_id);
             $trip = $tripModel->where(['type'=>3,'id'=>$order_id])->find();
@@ -830,7 +845,7 @@ class PayController extends Controller{
 
     }
 
-    function test(OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
+    function test(OrderDrivingModel $orderDrivingModel,OrderTaxiModel $orderTaxiModel,OrderKuaiModel $orderKuaiModel,OrderWayModel $orderWayModel,TripModel $tripModel){
 
         $order = $orderDrivingModel->find(207);
         $trip = $tripModel->find(219);

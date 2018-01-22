@@ -374,7 +374,8 @@ class StaffController extends Controller{
                         'option'=>[
                             '0'=>'全部',
                             '1'=>'代驾',
-                            '2'=>'出租车'
+                            '2'=>'出租车',
+                            '4'=>'快车'
                         ],'default'=>'0'
                     ],
 
@@ -446,6 +447,7 @@ class StaffController extends Controller{
 
         if($typee == 1)$where['type_driving'] = 1;
         elseif($typee == 2)$where['type_taxi'] = 1;
+        elseif($typee == 4)$where['type_kuai'] = 1;
         
         if($search){
             $where['search'] = ['name LIKE %n OR phone LIKE %n','%'.$search.'%','%'.$search.'%'];
@@ -471,6 +473,8 @@ class StaffController extends Controller{
                 $v->type = '代驾';
             }elseif($v->type_taxi){
                 $v->type = '出租车';
+            }elseif($v->type_kuai){
+                $v->type = '快车';
             }else{
                 $v->type = '无';
             }
@@ -551,7 +555,8 @@ class StaffController extends Controller{
                     'option'=>[
                         '0'=>'请选择',
                         '1'=>'代驾',
-                        '2'=>'出租车'
+                        '2'=>'出租车',
+                        '4'=>'快车',
                     ],'default'=>'0'
                 ],
                 [
@@ -604,7 +609,7 @@ class StaffController extends Controller{
         $info = AdminFunc::get($model,$id);
         $info->province_id = AreaModel::copyMutiInstance()->find($info->city_id)->parent_id;
 
-        $info->typee = $info->type_driving ? 1:($info->type_taxi?2:0);
+        $info->typee = $info->type_driving ? 1:($info->type_taxi?2:($info->type_kuai?4:0));
 
         if(!$info->province_id){
             $info->province_id = '';
@@ -633,14 +638,22 @@ class StaffController extends Controller{
             if(!$typee){
                 $data['type_driving'] = 0;
                 $data['type_taxi'] = 0;
+                $data['type_kuai'] = 0;
             }
             if($typee == 1){
                 $data['type_driving'] = 1;
                 $data['type_taxi'] = 0;
+                $data['type_kuai'] = 0;
             }elseif($typee == 2){
                 $data['type_driving'] = 0;
                 $data['type_taxi'] = 1;
+                $data['type_kuai'] = 0;
+            }elseif($typee == 4){
+                $data['type_driving'] = 0;
+                $data['type_taxi'] = 0;
+                $data['type_kuai'] = 1;
             }
+            
             if(!$data['city_id'])AJAX::error('请选择城市');
         }
         
@@ -1252,7 +1265,7 @@ class StaffController extends Controller{
         $where = [];
 
         $where['driver_id'] = $id;
-        $where['type'] = ['type IN (1,2)'];
+        $where['type'] = ['type IN (1,2,4)'];
 
         $list = $model->select('*','user.name','user.avatar','user.phone')->order('create_time desc')->where($where)->page($page,$limit)->get()->toArray();
         foreach($list as &$v){

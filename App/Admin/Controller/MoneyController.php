@@ -1040,7 +1040,8 @@ class MoneyController extends Controller{
                             '0'=>'全部',
                             '1'=>'代驾',
                             '2'=>'出租车',
-                            '3'=>'顺风车'
+                            '3'=>'顺风车',
+                            '4'=>'快车'
                         ],'default'=>'0',
                         'size'=>'2'
                     ]
@@ -1084,7 +1085,8 @@ class MoneyController extends Controller{
             $v->type_name = [
                 '1'=>'代驾',
                 '2'=>'出租车',
-                '3'=>'顺风车'
+                '3'=>'顺风车',
+                '4'=>'快车',
             ][$v->type];
             $v->end_date = date('Y-m-d H:i:s',$v->end_time);
         }
@@ -1140,7 +1142,8 @@ class MoneyController extends Controller{
                 'option'=>[
                     '1'=>'代驾',
                     '2'=>'出租车',
-                    '3'=>'顺风车'
+                    '3'=>'顺风车',
+                    '4'=>'快车',
                 ],'default'=>'1'
             ],
             [

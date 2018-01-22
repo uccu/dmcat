@@ -80,7 +80,7 @@ class MapController extends Controller{
 
         # 允许操作接口
 
-        $m->setOptReq(['title'=>'类型','name'=>'type','type'=>'select','default'=>'1','option'=>['1'=>'代驾','2'=>'出租车','3'=>'顺风车']]);
+        $m->setOptReq(['title'=>'类型','name'=>'type','type'=>'select','default'=>'1','option'=>['1'=>'代驾','2'=>'出租车','3'=>'顺风车','4'=>'快车']]);
         
         if($this->L->userInfo->type == 2 || $this->L->userInfo->type == 1){
 
@@ -133,6 +133,7 @@ class MapController extends Controller{
         if($type == 1)$m->where['type_driving'] = 1;
         elseif($type == 2)$m->where['type_taxi'] = 1;
         elseif($type == 3)$m->where['type'] = 1;
+        elseif($type == 4)$m->where['type_kuai'] = 1;
         if($city){
             $m->where['city_id'] = $city;
         }else{
@@ -141,7 +142,7 @@ class MapController extends Controller{
             
         
         # 获取列表
-        if(in_array($type,[1,2]))$model->select('id','online.latitude','online.longitude','type_driving','type_taxi');
+        if(in_array($type,[1,2,4]))$model->select('id','online.latitude','online.longitude','type_driving','type_taxi','type_kuai');
         elseif(in_array($type,[3]))$model->select('id','online.latitude','online.longitude');
         $m->getList(1);
 
@@ -152,7 +153,7 @@ class MapController extends Controller{
         $m->each(function(&$v) USE (&$allCount,&$nCount,&$bCount,$type){
 
             $v->type = $type;
-            if(in_array($v->type,[1,2]))$v->busy =  TripModel::copyMutiInstance()->where(['driver_id'=>$v->id])->where('type IN (1,2) AND status IN (%c)',[20,25,30,35])->find() ? '1' : '0';
+            if(in_array($v->type,[1,2,4]))$v->busy =  TripModel::copyMutiInstance()->where(['driver_id'=>$v->id])->where('type IN (1,2,4) AND status IN (%c)',[20,25,30,35])->find() ? '1' : '0';
             else{
                 $v->busy =  TripModel::copyMutiInstance()->where(['driver_id'=>$v->id])->where('type = 3 AND status IN (%c)',[20,25,30,35])->find() ? '1' : '0';
             }
