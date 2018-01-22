@@ -24,7 +24,8 @@
     var pagement = function(page,max,e){
         page = parseInt(page);
         max = parseInt(max);
-        var p = j('<div>').addClass('btn-group page');
+        var g = j('<div class="btn-toolbar page form-inline">')
+        var p = j('<div>').addClass('btn-group fn').appendTo(g);
         var pa = [];
         if(max<5)for(var i=1;i<=max;i++)pa.push(i);
         else if(page<3)for(var i=1;i<=5;i++)pa.push(i);
@@ -37,7 +38,12 @@
             y.text(q).on('click',function(){e(j(this).attr('data-id'))}).appendTo(p);
         }
         j('<div>').addClass('btn btn-white').attr('type','button').append('<i class="fa fa-chevron-right"></i>').on('click',function(){e(max)}).appendTo(p);
-        return p;
+
+        var p2 = j('<div style="margin-left: 5px;">').addClass('input-group').appendTo(j('<div>').addClass('form-group').appendTo(g));
+        j('<input style="width:50px">').addClass('form-control').appendTo(p2);
+        j('<span>').addClass('input-group-btn').append(j('<button style="outline:0">Go!</button>').addClass('btn btn-white').attr('type','button').on('click',function(){var f=j(this).parent().parent().find('input').val();if(f>max||f<1)f=1;e(f||1)})).appendTo(p2);
+        j('<span class="input-group" style="margin-left:10px;color:#ccc"></span>').text('共'+max+'页').appendTo(p2);
+        return g;
     }
     var packFormData = window.packFormData = function(file,v,x){
         
@@ -67,6 +73,22 @@
         this.req = {}
         !i && this.getList(u,d)
         i && this.getInfo(u,d)
+    }
+    var gotoNewTag = window.gotoNewTag = function(addr,name){
+        w.top.$('.gotoTag a').text(name).attr('href',addr).click();
+    }
+    var gotoTag = function(addr,close){
+        var e = w.top.$('iframe[data-id="'+addr+'"]'),that = w.top.$('.J_menuTab.active i');
+        if(e.length){
+            if(e[0].contentWindow.flesh && e[0].contentWindow.flesh instanceof e[0].contentWindow.Function)e[0].contentWindow.flesh()
+            else e[0].contentWindow.location.reload(true)
+        }
+        w.top.$('.J_menuItem[href="'+addr+'"]').click();
+        close && that.click();
+    }
+    
+    var curl_succ = window.curl_succ = function(message){
+        toastr['success'](message);
     }
 
     admin.prototype.getInfo = function(u,d){
@@ -448,42 +470,8 @@
         })
     }
 
-    var pagement = function(page,max,e){
-        page = parseInt(page);
-        max = parseInt(max);
-        var p = j('<div>').addClass('btn-group page');
-        var pa = [];
-        if(max<5)for(var i=1;i<=max;i++)pa.push(i);
-        else if(page<3)for(var i=1;i<=5;i++)pa.push(i);
-        else if(page+2>max)for(var i=max-4;i<=max;i++)pa.push(i);
-        else for(var i=page-2;i<=page+2;i++)pa.push(i);
 
-        j('<div>').addClass('btn btn-white').attr('type','button').append('<i class="fa fa-chevron-left"></i>').on('click',function(){e(1)}).appendTo(p);
-        for(var r in pa){
-            var q = pa[r],y = j('<div>').addClass('btn btn-white').attr('data-id',q);
-            if(q == page)y.addClass('active');
-            y.text(q).on('click',function(){e(j(this).attr('data-id'))}).appendTo(p);
-        }
-        j('<div>').addClass('btn btn-white').attr('type','button').append('<i class="fa fa-chevron-right"></i>').on('click',function(){e(max)}).appendTo(p);
-        return p;
-    }
-
-    var gotoNewTag = window.gotoNewTag = function(addr,name){
-        w.top.$('.gotoTag a').text(name).attr('href',addr).click();
-    }
-    var gotoTag = function(addr,close){
-        var e = w.top.$('iframe[data-id="'+addr+'"]'),that = w.top.$('.J_menuTab.active i');
-        if(e.length){
-            if(e[0].contentWindow.flesh && e[0].contentWindow.flesh instanceof e[0].contentWindow.Function)e[0].contentWindow.flesh()
-            else e[0].contentWindow.location.reload(true)
-        }
-        w.top.$('.J_menuItem[href="'+addr+'"]').click();
-        close && that.click();
-    }
     
-    var curl_succ = window.curl_succ = function(message){
-        toastr['success'](message);
-    }
     admin.prototype.flesh = function(){
         this.getList(this.req.url,this.req.param);
     }

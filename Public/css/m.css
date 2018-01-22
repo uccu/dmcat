@@ -7,7 +7,7 @@
 .t-2,.t-2 *{transition: all 2s;-moz-transition: all 2s;-webkit-transition: all 2s;-o-transition: all 2s}
 .cp{cursor:pointer}.cd{cursor:default}.cm{cursor:move}
 .db{display:block}.dib{display:inline-block}.dt{display:table}.di{display:inline}.dtc{display:table-cell}.dif{display: inline-flex}.dn{display:none}
-.fl{float:left}.fr{float:right}.fn{float:none}
+.fl{float:left}.fr{float:right}.fn{float:none !important}
 .tl{text-align:left}.tc{text-align:center}.tr{text-align:right}
 .pr{position:relative}.pf{position:fixed}.pa{position:absolute}.ps{position:static}
 .ofh{overflow:hidden}
