@@ -98,9 +98,9 @@ trait OrderTraits{
         $order->userInfo = $user;
 
         $startMsg = Func::getArea($order->start_latitude,$order->start_longitude);
-        $order->start_formatted_address = $startMsg->formatted_address;
+        $order->start_formatted_address = $startMsg->formatted_address?$startMsg->formatted_address:'';
         $startMsg = Func::getArea($order->end_latitude,$order->end_longitude);
-        $order->end_formatted_address = $startMsg->formatted_address;
+        $order->end_formatted_address = $startMsg->formatted_address?$startMsg->formatted_address:'';
 
 
         if($trip->statuss == 20){
