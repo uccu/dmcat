@@ -194,7 +194,8 @@ class ParkingController extends Controller{
         $data = Request::getSingleInstance()->request($model->field);
 
         $data['pic'] = Request::getSingleInstance()->request('pic','raw');
-        $data['pic'] = implode(',',$data['pic']);
+        if(!$data['pic'])$data['pic'] = '';
+        else $data['pic'] = implode(',',$data['pic']);
 
         unset($data['id']);
         if(!$id)$data['create_time'] = TIME_NOW;
