@@ -155,5 +155,22 @@ class ParkingController extends Controller{
 
         AJAX::success($ss);
     }
+
+
+    function changeLotCount(ParkingLotModel $parkingLotModel,$num = 0,$lotId){
+
+        $lot = $parkingLotModel->find($lotId);
+
+        if(!$lot){
+
+            echo 'fail';
+        }
+
+        $lot->empty = $num;
+        $lot->save();
+
+        echo 'success';
+
+    }
     
 }

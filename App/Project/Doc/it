@@ -1,27 +1,27 @@
 0.0 说明
 xxxxx
-接口前缀 http://121.199.8.244:3500/
-图片前缀 http://121.199.8.244:3500/pic/
-下载文件 http://121.199.8.244:3500/pic/download/file/+文件id
+接口前缀 http://www.wddparking.com:8080/
+图片前缀 http://www.wddparking.com:8080/pic/
+下载文件 http://www.wddparking.com:8080/pic/download/file/+文件id
 {}
 {}
 
 0.1 上传单张头像
 home/upAvatar
 file 图片文件
-{"data":{"path":"xxx.jpg","fpath":"/pic/xxx.jpg","apath":"http://121.199.8.244:3500/pic/xxx.jpg",},"code":200,"url":"","message":""}
+{"data":{"path":"xxx.jpg","fpath":"/pic/xxx.jpg","apath":"http://www.wddparking.com:8080/pic/xxx.jpg",},"code":200,"url":"","message":""}
 {}
 
 0.2 上传单张图片
 home/uploadPic
 file 图片文件
-{"data":{"path":"xxx.jpg","fpath":"/pic/xxx.jpg","apath":"http://121.199.8.244:3500/pic/xxx.jpg",},"code":200,"url":"","message":""}
+{"data":{"path":"xxx.jpg","fpath":"/pic/xxx.jpg","apath":"http://www.wddparking.com:8080/pic/xxx.jpg",},"code":200,"url":"","message":""}
 {}
 
 0.3 上传单个文件
 home/uploadFile
 file 图片文件
-{"data":{"path":"2","fpath":"/pic/file.jpg","apath":"http://121.199.8.244:3500/pic/file.jpg",},"code":200,"url":"","message":""}
+{"data":{"path":"2","fpath":"/pic/file.jpg","apath":"http://www.wddparking.com:8080/pic/file.jpg",},"code":200,"url":"","message":""}
 {path:文件id}
 
 0.4 下载文件
@@ -171,15 +171,15 @@ longitude 经度
 latitude 纬度
 myLongitude 我的经度
 myLatitude 我的纬度
-{"data":{"list":[{"id":"1","name":"\u6d4b\u8bd5\u505c\u8f66\u573a","group_id":"4525508","address":"\u534e\u5f90\u516c\u8def888\u53f7","count":"20","empty":"0","fee":"100.00","open_time":"10:00 ~ 11:00","free":"0","top_fee":"100.00","com":"0","create_time":"1515986516","latitude":"31.29927816","longitude":"121.41344076","active":"1","thumb":"","group_name":"\u5f90\u6cfe\u5546\u5708","district_name":"\u9752\u6d66\u533a","city_name":"\u4e0a\u6d77\u5e02","province_name":"\u4e0a\u6d77\u5e02","distance":"0.1120"}]},"code":200,"url":"","message":""}
-{id:停车场id,name:名字,fee:标准收费（元/小时）,empty:空闲车位,thumb:图片,distance:距离（单位米）,address:具体地址,count:总车位数,open_time:营业时间,free:免费时长（小时）,top_fee:封顶费用,province_name:省,city_name:市,district_name:区,group_name:商圈}
+{"data":{"list":[{"id":"1","name":"\u6d4b\u8bd5\u505c\u8f66\u573a","group_id":"4525508","address":"\u534e\u5f90\u516c\u8def888\u53f7","count":"20","empty":"0","fee":"100.00","open_time":"10:00 ~ 11:00","free":"0","top_fee":"100.00","com":"0","create_time":"1515986516","latitude":"31.29927816","longitude":"121.41344076","active":"1","thumb":"","group_name":"\u5f90\u6cfe\u5546\u5708","district_name":"\u9752\u6d66\u533a","city_name":"\u4e0a\u6d77\u5e02","province_name":"\u4e0a\u6d77\u5e02","distance":"0.1120","first_hour":"0","first_fee":"0","second_hour":"0","second_fee":"0"}]},"code":200,"url":"","message":""}
+{id:停车场id,name:名字,fee:标准收费（元/小时）,empty:空闲车位,thumb:图片,distance:距离（单位米）,address:具体地址,count:总车位数,open_time:营业时间,free:免费时长（小时）,top_fee:封顶费用,province_name:省,city_name:市,district_name:区,group_name:商圈,first_hour:第一阶段时间(小时),first_fee:第一阶段每小时单价,second_hour:第二阶段时间(小时),second_fee:第二阶段每小时单}
 
 3.2 获取停车场信息
 parking/lotInfo
 id 停车场id
 longitude 经度
 latitude 纬度
-{"data":{"info":{"id":"1","name":"\u6d4b\u8bd5\u505c\u8f66\u573a","group_id":"4525508","address":"\u534e\u5f90\u516c\u8def888\u53f7","count":"20","empty":"0","fee":"100.00","open_time":"10:00 ~ 11:00","free":"0","top_fee":"100.00","com":"0","create_time":"1515986516","latitude":"31.29927816","longitude":"121.41344076","active":"1","thumb":"","group_name":"\u5f90\u6cfe\u5546\u5708","district_name":"\u9752\u6d66\u533a","city_name":"\u4e0a\u6d77\u5e02","province_name":"\u4e0a\u6d77\u5e02","distance":"12962.7230"}},"code":200,"url":"","message":""}
-{id:停车场id,name:名字,fee:标准收费（元/小时）,empty:空闲车位,thumb:图片,distance:距离（单位米）,address:具体地址,count:总车位数,open_time:营业时间,free:免费时长（小时）,top_fee:封顶费用,province_name:省,city_name:市,district_name:区,group_name:商圈}
+{"data":{"info":{"id":"1","name":"\u6d4b\u8bd5\u505c\u8f66\u573a","group_id":"4525508","address":"\u534e\u5f90\u516c\u8def888\u53f7","count":"20","empty":"0","fee":"100.00","open_time":"10:00 ~ 11:00","free":"0","top_fee":"100.00","com":"0","create_time":"1515986516","latitude":"31.29927816","longitude":"121.41344076","active":"1","thumb":"","group_name":"\u5f90\u6cfe\u5546\u5708","district_name":"\u9752\u6d66\u533a","city_name":"\u4e0a\u6d77\u5e02","province_name":"\u4e0a\u6d77\u5e02","distance":"12962.7230","first_hour":"0","first_fee":"0","second_hour":"0","second_fee":"0"}},"code":200,"url":"","message":""}
+{id:停车场id,name:名字,fee:标准收费（元/小时）,empty:空闲车位,thumb:图片,distance:距离（单位米）,address:具体地址,count:总车位数,open_time:营业时间,free:免费时长（小时）,top_fee:封顶费用,province_name:省,city_name:市,district_name:区,group_name:商圈,first_hour:第一阶段时间(小时),first_fee:第一阶段每小时单价,second_hour:第二阶段时间(小时),second_fee:第二阶段每小时单}
 
 
