@@ -14,39 +14,16 @@ use App\Car\Tool\AdminFunc;
 
 # 数据模型
 use App\Car\Model\UserModel;
-use App\Car\Model\DriverOnlineModel;
 use App\Car\Model\MessageModel;
-use App\Car\Model\TripModel;
-use App\Car\Model\OrderDrivingModel;
-use App\Car\Model\OrderTaxiModel;
-use App\Car\Model\LocationModel;
-use App\Car\Model\UserApplyModel; 
-use App\Car\Model\OrderWayModel; 
-use App\Car\Model\DriverModel; 
-use App\Car\Model\JudgeModel; 
-use App\Car\Model\DriverWayModel; 
-use App\Car\Model\TagModel; 
-use App\Car\Model\PaymentModel; 
-use App\Car\Model\AreaModel; 
-use App\Car\Model\UserScoreLogModel; 
-use App\Car\Model\UserMoneyLogModel; 
-use App\Car\Model\UserBankModel; 
-use App\Car\Model\UserCouponModel; 
-use App\Car\Model\IncomeModel; 
 use App\Car\Model\FeedbackModel; 
-use App\Car\Model\UsedCarModel; 
-use App\Car\Model\RoadModel; 
-use App\Car\Model\UserOnlineModel; 
-use App\Car\Model\JudgeDriverModel; 
+use App\Car\Model\CarNumberModel; 
 use Model; 
 
 # Traits
-use App\Car\Traits\User\OrderTraits;
 
 
 class UserController extends Controller{
 
-    use OrderTraits;
 
     function __construct(){
 
@@ -283,7 +260,7 @@ class UserController extends Controller{
 
 
     # 我的信息
-    function getMyInfo(UserModel $userModel){
+    function getMyInfo(UserModel $userModel,CarNumberModel $carNumberModel){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -292,9 +269,13 @@ class UserController extends Controller{
         $info['sex'] = $this->L->userInfo->sex;
         $info['phone'] = $this->L->userInfo->phone;
         $info['id'] = $this->L->userInfo->id;
-        $info['car_number_1'] = $this->L->userInfo->car_number_1;
-        $info['car_number_2'] = $this->L->userInfo->car_number_2;
-        $info['car_number_3'] = $this->L->userInfo->car_number_3;
+
+        $numbers = $carNumberModel->where(['user_id'=>$this->L->id])->order('id')->get()->toArray();
+        $info['car_number_1'] = empty($numbers[0])?'':$numbers[0]->car_number;
+        $info['car_number_2'] = empty($numbers[1])?'':$numbers[0]->car_number;
+        $info['car_number_3'] = empty($numbers[2])?'':$numbers[0]->car_number;
+
+
         $info['birth'] = $this->L->userInfo->birth;
         $info['count'] = '999';
 
@@ -304,15 +285,12 @@ class UserController extends Controller{
     }
 
     # 修改我的信息
-    function changeMyInfo($name,$avatar,$sex,$car_number_1,$car_number_2,$car_number_3,$birth){
+    function changeMyInfo($name,$avatar,$sex,$birth){
 
         !$this->L->id && AJAX::error('未登录');
 
         $name && $this->L->userInfo->name = $name;
         $avatar && $this->L->userInfo->avatar = $avatar;
-        $car_number_1 && $this->L->userInfo->car_number_1 = $car_number_1;
-        $car_number_2 && $this->L->userInfo->car_number_2 = $car_number_2;
-        $car_number_3 && $this->L->userInfo->car_number_3 = $car_number_3;
         $birth && $this->L->userInfo->birth = $birth;
         $sex != NULL && $this->L->userInfo->sex = $sex;
 
@@ -374,13 +352,14 @@ class UserController extends Controller{
      * getMyCarList
      * @return mixed 
      */
-    function getMyCarList(){
+    function getMyCarList(CarNumberModel $carNumberModel){
 
         !$this->L->id && AJAX::error('未登录');
-        $list = [];
-        if($this->L->userInfo->car_number_1)$list[] = $this->L->userInfo->car_number_1;
-        if($this->L->userInfo->car_number_2)$list[] = $this->L->userInfo->car_number_2;
-        if($this->L->userInfo->car_number_3)$list[] = $this->L->userInfo->car_number_3;
+
+        $list = $carNumberModel->where(['user_id'=>$this->L->id])->order('id')->get()->toArray();
+        foreach($list as &$v){
+            $v = $v->car_number;
+        }
 
         $out['list'] = $list;
         $out['count'] = count($list);
@@ -394,29 +373,25 @@ class UserController extends Controller{
      * @param mixed $id 
      * @return mixed 
      */
-    function delMyCar($id){
+    function delMyCar($id,CarNumberModel $carNumberModel){
 
         !$this->L->id && AJAX::error('未登录');
-        $list = [];
-        if($this->L->userInfo->car_number_1)$list[] = $this->L->userInfo->car_number_1;
-        if($this->L->userInfo->car_number_2)$list[] = $this->L->userInfo->car_number_2;
-        if($this->L->userInfo->car_number_3)$list[] = $this->L->userInfo->car_number_3;
+        
+        $list = $carNumberModel->where(['user_id'=>$this->L->id])->order('id')->get()->toArray();
+
+        
+
+        if($list[$id - 1]){
+            $list[$id - 1]->remove();
+        }else{
+            AJAX::error('车牌不存在');
+        }
+
+        foreach($list as &$v){
+            $v = $v->car_number;
+        }
 
         unset($list[$id - 1]);
-
-        $list = array_values($list);
-        $h = 0;
-        foreach($list as $k=>$v){
-            $n = 'car_number_'.($k+1);
-            $this->L->userInfo->$n = $v;
-            $h++;
-        }
-        for($i=$h;$i<3;$i++){
-            $n = 'car_number_'.($i+1);
-            $this->L->userInfo->$n = '';
-        }
-
-        $this->L->userInfo->save();
 
         $out['count'] = count($list);
         $out['list'] = $list;
@@ -425,39 +400,33 @@ class UserController extends Controller{
         AJAX::success($out);
     }
 
-    /** 删除我的车
+    /** 添加我的车
      * delMyCar
      * @param mixed $id 
      * @return mixed 
      */
-    function addMyCar($car_number){
+    function addMyCar($car_number,CarNumberModel $carNumberModel){
 
         !$this->L->id && AJAX::error('未登录');
-        $list = [];
-        if($this->L->userInfo->car_number_1)$list[] = $this->L->userInfo->car_number_1;
-        if($this->L->userInfo->car_number_2)$list[] = $this->L->userInfo->car_number_2;
-        if($this->L->userInfo->car_number_3)$list[] = $this->L->userInfo->car_number_3;
+        $list = $carNumberModel->where(['user_id'=>$this->L->id])->order('id')->get()->toArray();
 
         if(count($list) == 3){
             AJAX::error('无法添加更多的车');
         }
         if(!$car_number)AJAX::error('车牌号错误');
+        
+        $info = [
+            'user_id'=>$this->L->id,
+            'create_time'=>TIME_NOW,
+            'car_number'=>$car_number
+        ];
 
+        $carNumberModel->set($info)->add();
+
+        foreach($list as &$v){
+            $v = $v->car_number;
+        }
         $list[] = $car_number;
-
-        $list = array_values($list);
-        $h = 0;
-        foreach($list as $k=>$v){
-            $n = 'car_number_'.($k+1);
-            $this->L->userInfo->$n = $v;
-            $h++;
-        }
-        for($i=$h;$i<3;$i++){
-            $n = 'car_number_'.($i+1);
-            $this->L->userInfo->$n = '';
-        }
-
-        $this->L->userInfo->save();
 
         $out['count'] = count($list);
         $out['list'] = $list;
@@ -471,19 +440,29 @@ class UserController extends Controller{
      * @param mixed $id 
      * @return mixed 
      */
-    function editMyCar($car_number,$id){
+    function editMyCar($car_number,$id,CarNumberModel $carNumberModel){
 
         !$this->L->id && AJAX::error('未登录');
+        
+        $list = $carNumberModel->where(['user_id'=>$this->L->id])->order('id')->get()->toArray();
 
-        !in_array($id,[1,2,3]) && AJAX::error('id不正确');
-        if(!$car_number)AJAX::error('车牌号错误');
+        if($list[$id - 1]){
+            $list[$id - 1]->car_number = $car_number;
+            $list[$id - 1]->save();
+        }else{
+            AJAX::error('车牌不存在');
+        }
 
-        $n = 'car_number_'.$id;
-        $this->L->userInfo->$n = $car_number;
+        foreach($list as &$v){
+            $v = $v->car_number;
+        }
 
-        $this->L->userInfo->save();
 
-        AJAX::success();
+        $out['count'] = count($list);
+        $out['list'] = $list;
+        // $out['info'] = $this->L->userInfo;
+
+        AJAX::success($out);
 
     }
     

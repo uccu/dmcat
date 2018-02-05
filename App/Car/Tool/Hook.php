@@ -14,6 +14,7 @@ class Hook implements \Lib\Tool\Hook{
             if($code!=200){
                 if(Config::get('ERROR_LOG')){
                     $req = json_encode($_REQUEST);
+                    
                     ErrorApiModel::copyMutiInstance()->set([
                         'request'=>$req,'output'=>$message,'date'=>date('Y-m-d H:i:s'),'path'=>REQUEST_PATH
                     ])->add();
@@ -21,7 +22,12 @@ class Hook implements \Lib\Tool\Hook{
             }elseif(Config::get('SUCCESS_LOG')){
                 $req = json_encode($_REQUEST);
                 $data = json_encode($data);
-                SuccessApiModel::copyMutiInstance()->set([
+                $model = SuccessApiModel::copyMutiInstance();
+                $count = $model->getCount();
+                if($count > 999){
+                    $model->order('id','raw')->where('1=1')->limit($count - 9999)->remove();
+                }
+                $model->set([
                     'request'=>$req,'output'=>$data,'date'=>date('Y-m-d H:i:s'),'path'=>REQUEST_PATH
                 ])->add();
 
@@ -29,9 +35,11 @@ class Hook implements \Lib\Tool\Hook{
             
 
         }catch(\Exception $e){
-
+            // echo $e;
+            // die();
         }catch(\Error $e){
-
+            // echo $e;
+            // die();
         }
 
 
