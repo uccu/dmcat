@@ -163,7 +163,7 @@ class ParkingController extends Controller{
 
         if(!$lot){
 
-            echo 'fail';
+            echo 'fail';die();
         }
 
         $lot->empty = $num;

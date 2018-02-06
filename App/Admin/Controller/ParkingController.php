@@ -173,7 +173,10 @@ class ParkingController extends Controller{
         $m->setBody(['title'  =>  '图片','name'=>'pic','type'=>'picss','default'=>'']);
         $m->setBody(['title'  =>  '车位数量','name'  =>  'count','default'=>'0','size'  =>  '1']);
         $m->setBody(['title'  =>  '空余车位','name'  =>  'empty','disabled'  =>  true,'default'=>'0','size'  =>  '1']);
-        $m->setBody(['title'  =>  '收费标准/小时','name'  =>  'fee','size'  =>  '2','default'=>'0']);
+        $m->setBody(['title'  =>  '第一阶段时长','name'  =>  'first_hour','size'  =>  '2','default'=>'0']);
+        $m->setBody(['title'  =>  '第一阶段收费/每小时','name'  =>  'first_fee','size'  =>  '2','default'=>'0.00']);
+        $m->setBody(['title'  =>  '第二阶段时长','name'  =>  'second_hour','size'  =>  '2','default'=>'0']);
+        $m->setBody(['title'  =>  '第二阶段收费/每小时','name'  =>  'second_fee','size'  =>  '2','default'=>'0.00']);
         $m->setBody(['title'  =>  '营业时长','name'  =>  'open_time','size'  =>  '2','default'=>'全天']);
         $m->setBody(['title'  =>  '免费时长/小时','name'  =>  'free','size'  =>  '2','default'=>'0']);
         $m->setBody(['title'  =>  '封顶费用','name'  =>  'top_fee','size'  =>  '2']);

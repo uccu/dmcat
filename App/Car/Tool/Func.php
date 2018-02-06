@@ -6,23 +6,9 @@ use Uccu\DmcatTool\Tool\AJAX;
 use App\Car\Middleware\L;
 use App\Car\Model\ConfigModel;
 use App\Car\Model\MessageModel;
-use App\Car\Model\DriverMessageModel;
 use App\Car\Model\CaptchaModel;
 use App\Car\Model\UploadModel;
-use App\Car\Model\UserModel;
-use App\Car\Model\AdminModel;
-use App\Car\Model\DriverModel;
-use App\Car\Model\PaymentModel;
-use App\Car\Model\AreaModel;
-use App\Car\Model\IncomeModel;
-use App\Car\Model\UserIncomeModel;
-use App\Car\Model\DriverIncomeModel;
-use App\Car\Model\AdminIncomeModel;
-use App\Car\Model\DriverOnlineModel;
-use App\Car\Model\UserOnlineModel;
-use App\Car\Model\DriverMoneyLogModel;
-use App\Car\Model\AdminMoneyLogModel;
-use App\Car\Model\UserMoneyLogModel;
+use App\Car\Model\ParkingLotModel;
 use Model;
 use stdClass;
 use Uccu\AliyunSms\SendSms;
@@ -586,6 +572,73 @@ class Func {
         if(!$data->status)return false;
 
         return $data->geocodes[0];
+    }
+
+
+    static function duringZcalculate($second = 0){
+
+        $data = new stdClass;
+
+        $data->seconds = 0;
+        $data->hours = 0;
+
+        $rate = L::getSingleInstance()->config->during_zcalculate_rate;
+
+        
+        $data->seconds = ceil( $second / $rate ) * $rate;
+        $data->hours = number_format($data->seconds / 3600 ,1,'.','');
+
+        return $data;
+    }
+
+    static function priceZcalculate($duringObj,$parking_lot_id){
+        
+        $data = new stdClass;
+        $data->total = '0.00';
+        $data->lotExist = '1';
+
+        $model = ParkingLotModel::copyMutiInstance();
+        $lot = $model->find($parking_lot_id);
+
+        if(!$lot){
+            $data->lotExist = '0';
+            return $data;
+        }
+
+        $hours = $duringObj->hours;
+
+        if($hours < $lot->free){
+            return $data;
+        }
+        
+        $hours -= $lot->free;
+        
+        if($hours <= $lot->first_hour || !$lot->first_hour){
+            $data->total = $data->first = number_format( $lot->first_fee * $hours , 2,'.','');
+            $lot->top_fee && $data->total > $lot->top_fee && $data->total = $lot->top_fee;
+            return $data;
+        }
+
+        if($hours > $lot->first_hour){
+
+            $data->total = $data->first = number_format( $lot->first_fee * $lot->first_hour , 2,'.','');
+
+            $hours -= $lot->first_hour;
+
+            if($hours > $lot->second_hour && $lot->second_hour){
+                $hours = $lot->second_hour;
+            }
+            $data->total += $data->second = number_format( $lot->second_fee * $hours , 2,'.','');
+
+
+            $lot->top_fee && $data->total > $lot->top_fee && $data->total = $lot->top_fee;
+            return $data;
+        }
+
+        $data->error = '1';
+
+        return $data;
+
     }
 
 }
