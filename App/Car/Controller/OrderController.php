@@ -95,15 +95,14 @@ class OrderController extends Controller{
         !$this->L->id && AJAX::error('未登录');
 
         $where['car.user_id'] = $this->L->id;
-        $where['status'] = 0;
+        $where['status'] = ['status>-1 AND is_paid = 0'];
 
         $list = $orderModel->select('*','parkingLot.name','parkingLot.address')->page($page,$limit)->where($where)->order('enter_time desc')->get()->toArray();
 
         foreach($list as &$v){
-
-            $v->duringObj = Func::duringZcalculate(TIME_NOW - $v->enter_time);
+            if(!$v->leave_time)$v->leave_time = TIME_NOW;
+            $v->duringObj = Func::duringZcalculate($v->leave_time - $v->enter_time);
             $v->priceObj = Func::priceZcalculate($v->duringObj,$v->parking_lot_id);
-
         }
 
         $out['list'] = $list;
@@ -123,7 +122,7 @@ class OrderController extends Controller{
         !$this->L->id && AJAX::error('未登录');
 
         $where['car.user_id'] = $this->L->id;
-        $where['status'] = 1;
+        $where['is_paid'] = 1;
 
         $list = $orderModel->select('*','parkingLot.name','parkingLot.address')->page($page,$limit)->where($where)->order('enter_time desc')->get()->toArray();
 
@@ -131,11 +130,30 @@ class OrderController extends Controller{
 
             $v->duringObj = Func::duringZcalculate($v->leave_time - $v->enter_time);
             $v->priceObj = Func::priceZcalculate($v->duringObj,$v->parking_lot_id);
-            
         }
 
         $out['list'] = $list;
         AJAX::success($out);
+
+    }
+
+    # 账单申诉
+    function feedback($comment,$order_id,OrderFeedbackModel $orderFeedbackModel,OrderModel $orderModel){
+        
+        !$comment && AJAX::error('申诉内容不能为空');
+        if(!$order_id || $order = $orderModel->select('*','car.user_id')->find($order_id)){
+            AJAX::error('订单不存在');
+        }
+
+        $order->user_id != $this->L->id && AJAX::error('无法操作该订单');
+
+        $data['order_id'] = $order_id;
+        $data['create_time'] = TIME_NOW;
+        $data['comment'] = $comment;
+
+        $orderFeedbackModel->set($data)->add();
+
+        AJAX::success();
 
     }
     

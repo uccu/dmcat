@@ -183,3 +183,27 @@ latitude 纬度
 {id:停车场id,name:名字,fee:标准收费（元/小时）,empty:空闲车位,thumb:图片,distance:距离（单位米）,address:具体地址,count:总车位数,open_time:营业时间,free:免费时长（小时）,top_fee:封顶费用,province_name:省,city_name:市,district_name:区,group_name:商圈,first_hour:第一阶段时间(小时),first_fee:第一阶段每小时单价,second_hour:第二阶段时间(小时),second_fee:第二阶段每小时单}
 
 
+4.1 获取停车进行中的订单
+order/duringList
+page 页数
+limit 每页限制
+{"data":{"list":[{"id":"2","car_number_id":"5","enter_time":"1517886082","leave_time":"0","price":"0.00","during":"0","parking_lot_id":"1","status":"0","is_paid":"0","name":"\u6d4b\u8bd5\u505c\u8f66\u573a","address":"\u534e\u5f90\u516c\u8def888\u53f7","duringObj":{"seconds":100800,"hours":"28.0"},"priceObj":{"total":"3.00","lotExist":"1","first":"10.00","second":"135.00"}}]},"code":200,"url":"","message":""}
+{name:停车场名字,address:详细地址,enter_time:开始时间（进入时间）,leave_time:结束时间（离开时间）,priceObj.total:实时费用,duringObj.hours实时时长(小时),status:0已进停车场(不能付款)，1已出停车场(可以付款)}
+
+
+4.2 获取停车历史的订单
+order/historyList
+page 页数
+limit 每页限制
+{"data":{"list":[{"id":"1","car_number_id":"5","enter_time":"1517886064","leave_time":"1517986064","price":"0.00","during":"0","parking_lot_id":"1","status":"1","is_paid":"1","name":"\u6d4b\u8bd5\u505c\u8f66\u573a","address":"\u534e\u5f90\u516c\u8def888\u53f7","duringObj":{"seconds":100800,"hours":"28.0"},"priceObj":{"total":"3.00","lotExist":"1","first":"10.00","second":"135.00"}}]},"code":200,"url":"","message":""}
+{name:停车场名字,address:详细地址,enter_time:开始时间（进入时间）,leave_time:结束时间（离开时间）,priceObj.total:实时费用,duringObj.hours实时时长(小时),status:0已进停车场(不能付款)，1已出停车场(可以付款)}
+
+
+4.3 账单申诉
+order/feedback
+comment 内容
+order_id 订单id
+{"data":{},"code":200,"url":"","message":""}
+{}
+
+
