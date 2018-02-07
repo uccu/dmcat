@@ -41,6 +41,7 @@ register_shutdown_function(array('Uccu\DmcatTool\Tool\E', 'handleShutdown'));
 // Config设置
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
 use Uccu\DmcatTool\Tool\E;
+use Uccu\DmcatHttp\Route;
 Config::$_CONFIG_ROOT = CONFIG_ROOT;
 E::$_BASE_ROOT = BASE_ROOT;
 E::$_LOG_ROOT = LOG_ROOT;

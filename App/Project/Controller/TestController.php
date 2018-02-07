@@ -6,8 +6,8 @@ use Controller;
 
 use Uccu\DmcatTool\Tool\AJAX;
 
-use Request;
-use Route;
+use Uccu\DmcatHttp\Request;
+use Uccu\DmcatHttp\Route;
 use App\Project\Model\UserModel;
 use App\Project\Model\LessionModel as Lession;
 use Model;
@@ -36,8 +36,7 @@ class TestController extends Controller{
 
     function main($cc){
 
-        $cc = Request::getSingleInstance()->get('cc','s');
-        var_dump($cc);
+        echo 'ok';
  
     }
 
