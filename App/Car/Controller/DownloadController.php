@@ -4,8 +4,8 @@ namespace App\Car\Controller;
 
 
 use Controller;
-use Response;
-use Request;
+use Uccu\DmcatHttp\Response;
+use Uccu\DmcatHttp\Request;
 use View;
 use App\Car\Middleware\L;
 use App\Car\Model\UploadModel;

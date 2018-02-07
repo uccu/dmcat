@@ -5,7 +5,7 @@ namespace App\Admin\Controller;
 use Controller;
 use View;
 use Uccu\DmcatTool\Tool\AJAX;
-use Response;
+use Uccu\DmcatHttp\Response;
 use App\Car\Middleware\L3;
 use App\Car\Model\AdminMenuModel;
 

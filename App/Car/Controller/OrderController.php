@@ -4,9 +4,9 @@ namespace App\Car\Controller;
 
 use Controller;
 use Uccu\DmcatTool\Tool\AJAX;
-use Response;
+use Uccu\DmcatHttp\Response;
 use View;
-use Request;
+use Uccu\DmcatHttp\Request;
 use stdClass;
 use App\Car\Tool\Func;
 use App\Car\Middleware\L;
@@ -68,6 +68,12 @@ class OrderController extends Controller{
 
         if(!$order){
             echo 'fail.创建订单失败';die();
+        }
+
+
+        # 如果用户存在，推送信息
+        if($car->user_id){
+            Func::push($car->user_id,'您的车辆已经进入',['type'=>'enterLot']);
         }
 
         echo 'success';

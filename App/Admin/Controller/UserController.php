@@ -4,7 +4,7 @@ namespace App\Admin\Controller;
 
 use Controller;
 use View;
-use Request;
+use Uccu\DmcatHttp\Request;
 use App\Car\Middleware\L3;
 use App\Car\Tool\Func;
 use App\Car\Tool\AdminFunc;

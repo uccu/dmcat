@@ -5,8 +5,8 @@ namespace App\Car\Controller;
 use Controller;
 use DB;
 use stdClass;
-use Response;
-use Request;
+use Uccu\DmcatHttp\Response;
+use Uccu\DmcatHttp\Request;
 use App\Car\Middleware\L;
 use App\Car\Tool\Func;
 use Uccu\DmcatTool\Tool\AJAX;
@@ -16,7 +16,8 @@ use App\Car\Tool\AdminFunc;
 use App\Car\Model\UserModel;
 use App\Car\Model\MessageModel;
 use App\Car\Model\FeedbackModel; 
-use App\Car\Model\CarNumberModel; 
+use App\Car\Model\CarNumberModel;
+use App\Car\Model\OrderModel;
 use Model; 
 
 # Traits
@@ -260,7 +261,7 @@ class UserController extends Controller{
 
 
     # 我的信息
-    function getMyInfo(UserModel $userModel,CarNumberModel $carNumberModel){
+    function getMyInfo(UserModel $userModel,CarNumberModel $carNumberModel,OrderModel $orderModel){
 
         !$this->L->id && AJAX::error('未登录');
 
@@ -277,7 +278,8 @@ class UserController extends Controller{
 
 
         $info['birth'] = $this->L->userInfo->birth;
-        $info['count'] = '999';
+        $info['count'] = $orderModel->where(['car.user_id'=>$this->L->id])->getCount();
+        $info['carCount'] = count($numbers) . '';
 
         $out['info'] = $info;
 

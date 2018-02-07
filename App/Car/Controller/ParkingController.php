@@ -4,9 +4,9 @@ namespace App\Car\Controller;
 
 use Controller;
 use Uccu\DmcatTool\Tool\AJAX;
-use Response;
+use Uccu\DmcatHttp\Response;
 use View;
-use Request;
+use Uccu\DmcatHttp\Request;
 use stdClass;
 use App\Car\Tool\Func;
 use App\Car\Middleware\L;

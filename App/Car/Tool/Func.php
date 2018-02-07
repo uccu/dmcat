@@ -455,10 +455,10 @@ class Func {
         $app_key = $L->config->push_app_key;
         $master_secret = $L->config->push_master_secret;
 
-        $client = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
+        // $client = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
         $client2 = new \JPush\Client($app_key, $master_secret,LOG_ROOT.'push.log');
 
-        $apns_production = $L->config->apns_production ? true : false;
+        $apns_production = $L->config->push_apns_production ? true : false;
 
         try{
             $z2 = $client2->push()

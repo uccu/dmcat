@@ -1,11 +1,11 @@
 <?php
 namespace App\Car\Middleware;
 use Middleware;
-use Request;
+use Uccu\DmcatHttp\Request;
 use App\Car\Tool\Func;
 use Uccu\DmcatTool\Tool\LocalConfig AS Config;
 use Uccu\DmcatTool\Tool\AJAX;
-use Response;
+use Uccu\DmcatHttp\Response;
 
 use App\Car\Model\ConfigModel;
 use App\Car\Model\AdminModel;
