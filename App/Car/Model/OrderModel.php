@@ -5,6 +5,7 @@ use Model;
 
 class OrderModel extends Model{
 
+    public $field;
     public $table = 'order';
 
     public function parkingLot(){
@@ -15,6 +16,11 @@ class OrderModel extends Model{
     public function car(){
 
         return $this->join(CarNumberModel::class,'id','car_number_id','LEFT');
+    }
+
+    public function feedback(){
+
+        return $this->join(OrderFeedbackModel::class,'order_id','id','LEFT');
     }
 
 }

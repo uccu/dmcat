@@ -133,6 +133,15 @@ class Func {
         if($time < 3600 * 24 )return '约'.(floor(($time-1)/3600) + 1).'小时';
         return (floor(($time-1)/3600/24) + 1).'天';
         
+    }
+    /** 人性化时间转换
+     * @author pzcat
+     * @param number $time 10位数字的时间戳
+     * 
+     * @return string 
+     */
+    static public function time_wcalculate( $time ){
+        return floor($time % 3600) . ':' .self::add_zero( floor(floor($time % 3600)/60),2);
     }  
     
     /* 密码安全性验证 */

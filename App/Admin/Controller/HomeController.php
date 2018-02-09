@@ -34,10 +34,6 @@ class HomeController extends Controller{
 
     }
 
-    function test(){
-
-        View::hamlReader('home','Admin');
-    }
 
     function upd(){
 

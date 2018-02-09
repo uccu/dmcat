@@ -19,7 +19,7 @@ use App\Car\Model\AreaModel;
 use App\Admin\Set\Gets;
 use App\Admin\Set\Lists;
 
-# 活动管理
+# 商圈管理
 class GroupController extends Controller{
 
     function __construct(){
@@ -80,6 +80,7 @@ class GroupController extends Controller{
         $m->output();
 
     }
+    
     function admin_city_get(AreaModel $model,$id){
 
         $m = Gets::getSingleInstance($model,$id);

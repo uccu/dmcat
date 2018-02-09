@@ -3,7 +3,7 @@
 namespace App\Car\Model;
 use Model;
 
-class OrderFeedback extends Model{
+class OrderFeedbackModel extends Model{
 
     public $table = 'order_feedback';
 

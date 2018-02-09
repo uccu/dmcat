@@ -20,7 +20,7 @@ use App\Car\Model\AdminModel;
 use App\Admin\Set\Gets;
 use App\Admin\Set\Lists;
 
-# 活动管理
+# 停车场管理
 class ParkingController extends Controller{
 
     function __construct(){
@@ -32,7 +32,7 @@ class ParkingController extends Controller{
     }
 
 
-    # 活动管理
+    # 停车场管理
     function lot(){
 
         View::addData(['getList'=>'admin_'.__FUNCTION__]);
