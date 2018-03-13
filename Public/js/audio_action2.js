@@ -267,7 +267,7 @@ j(function(){
         opacity:0.2,
     }));
 
-    scene.add(line)
+    // scene.add(line)
 
     /* 设置boxes */
 
