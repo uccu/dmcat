@@ -284,7 +284,7 @@ j(function(){
 
         boxes.add( box );
     }
-    boxes.add(line)
+    // boxes.add(line)
     scene.add(boxes)
     
     
