@@ -471,5 +471,11 @@ class TestController extends Controller{
         
     }
 
+    function t(){
+
+        
+        View::hamlReader('Test/t','App');
+    }
+
 
 }

@@ -1,0 +1,18 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+  %title #{g.title}
+  %meta(name="keywords" content="#{g.keywords}")
+  %meta(name="description" content="#{g.description}")
+
+- block body
+  #example
+    123
+    %script(src="http://127.0.0.1:8080/primus/primus.js")
+    %script(src="/js/primus.js")
+
+  
+
+  

@@ -43,10 +43,12 @@
     i.visible[enabled]{
       background-color:green;
     }
-
+  
   #outting.container.pr
     #contain_back.pa
     #main
+      .row
+        %button.btn.btn-primary.addT(type="button") 创建主题
       .row
         - for theme in list
           .col-sm-12.block(data-id="#{theme.id}")
@@ -67,12 +69,7 @@
             .col-sm-1.tc
               %a.t.cp.sort SO
             .col-sm-1.tc
-              %a.t.cp.sort2 RT
-
-              
-  %button.btn.btn-primary.addT(type="button") 创建主题
-                            
-  
+              %a.t.cp.sort2 RT           
   #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
     .modal-dialog
       .modal-content.animated.fadeInDown
