@@ -92,7 +92,7 @@ function parseData(rawData) {
 }
 
 function parseFile(data1) {
-    downloadFile('字幕.txt', data1.join("\n\r"));
+    downloadFile('字幕.txt', data1.join("\r\n"));
 }
 
 function last(data1) {
