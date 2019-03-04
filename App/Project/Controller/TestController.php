@@ -478,4 +478,11 @@ class TestController extends Controller{
     }
 
 
+    function gal(){
+
+        
+        View::hamlReader('gal','App');
+    }
+
+
 }

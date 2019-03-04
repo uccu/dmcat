@@ -1,0 +1,36 @@
+- extends "base.haml"
+
+
+
+- block siteInfo
+    %title gal~(*-ω-)ﾄﾞｷ
+
+- block body
+    :css
+        h1{
+            padding-top:200px;
+            padding-bottom:100px
+        }
+        h5 span{
+            color: #999
+        }
+    .container
+        %h1 
+        %h5.upd1
+            %input.dn(type="file")
+            %button.a 上传源文件
+            %button.b 解析
+            %span 
+        %h5.upd2
+            %button 下载字幕
+            %span 
+        %h5.upd3
+            %input.dn(type="file")
+            %button.a 上传字幕
+            %button.b 整合
+            %span 
+        %h5.upd4
+            %button 下载文件
+            %span 
+    %script(src="/js/gal.js")
+        
