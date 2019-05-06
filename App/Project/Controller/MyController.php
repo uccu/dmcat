@@ -38,6 +38,13 @@ class MyController extends Controller{
  
     }
 
+    function video2(){
+
+        View::hamlReader('video2','App');
+
+ 
+    }
+
     
 
 }

@@ -1,0 +1,126 @@
+- extends "base.haml"
+
+- block siteInfo
+    %title 伪·直播~(*-ω-)ﾄﾞｷ
+
+- block body
+    %link(rel="stylesheet" href="/css/component.css")
+    :css
+        .dn{display:none !important}
+        body>.back{
+            \width:100%;height:100%;z-index:-10;
+            background-image:url(/pic/pixiv_1039353.jpg);
+            background-size:cover;
+            background-position:center center;
+            filter:blur(10px);
+            -webkit-filter:blur(10px);
+        }
+        .overlay{
+            width:100%;height:100%;z-index:10;
+        }
+        .overlay>.back{
+            width:100%;height:100%;z-index:-1;top:0;left:0;
+            background-color:#000;
+            opacity:0.8;
+        }
+        .overlay>.back.active{opacity:0.5}
+        .overlay>.back.dark{opacity:0.9}
+        .overlay>.back.drag{background-color:#300}
+        .overlay>.main{
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            z-index:2;
+        }
+        .login{
+            width: 250px;
+            background-color: #fff;
+            padding: 25px;
+            padding-top: 50px;
+            box-shadow:3px 10px 30px #333;
+            opacity:0.95;
+            transform:scale(2) rotate(-5deg);
+            opacity:0;
+            filter:blur(1px);
+            height: 500px;
+            overflow: hidden;
+            padding-bottom: 0;
+            
+
+        }
+        .login.active{
+            filter:blur(0px);
+            transform:scale(1) rotate(0deg);opacity:0.95;
+        }
+        .login::before,.login::after{
+            transition: all 1s;-moz-transition: all 1s;-webkit-transition: all 1s;-o-transition: all 1s;
+            content:attr(before-content);position:absolute;
+            top:0;left:0;width:100%;height:50px;
+            background-color: rgba(94, 196, 80, 0.46);
+            text-align:left;font-size: 1.5em;
+            font-family: fantasy;padding: 10px 40px;opacity:1
+        }
+        .login::after{
+            content:attr(after-content);opacity:0
+        }
+        .login.channel::before{opacity:0}
+        .login.channel::after{opacity:1}
+        input{
+            height:57px;
+        }
+        .login_a,.channel_a{
+            background: transparent;
+            border: none;
+            font-size: 0.4em;
+            color: darkred;
+            font-weight: bold;
+            margin-right: 12px;padding:5px 15px;border-radius:3px;
+            outline: 0;
+        }
+        .login_a:active,.channel_a:active{
+            background-color:#ccc;color:#333
+        }
+        video{
+            max-width: 80%;max-height: 70%;
+        }
+    .back.pf
+    .overlay.pf.dt
+        .back.pa.t-1
+        .main.pr
+            .login.tc.center-block.pr.t-1(before-content="Login" after-content="Channel")
+                .tc
+                    %span.input.input--hoshi
+                        %input.input__field.input__field--hoshi(type="text" name="uid" id="uid")
+                        %label.input__label.input__label--hoshi.input__label--hoshi-color-3(for="uid")
+                            %span.input__label-content.input__label-content--hoshi UID
+                .tc
+                    %span.input.input--hoshi
+                        %input.input__field.input__field--hoshi(type="text" name="password" id="password")
+                        %label.input__label.input__label--hoshi.input__label--hoshi-color-3(for="password")
+                            %span.input__label-content.input__label-content--hoshi Password
+                .tc
+                    %span.input.input--hoshi
+                        %input.input__field.input__field--hoshi(type="text" name="nickname" id="nickname")
+                        %label.input__label.input__label--hoshi.input__label--hoshi-color-3(for="nickname")
+                            %span.input__label-content.input__label-content--hoshi Nickname
+                .tc
+                    %span.input.input--hoshi
+                        %input.input__field.input__field--hoshi(type="text" name="avatar" id="avatar")
+                        %label.input__label.input__label--hoshi.input__label--hoshi-color-3(for="avatar")
+                            %span.input__label-content.input__label-content--hoshi Avatar
+                .tr
+                    %button.login_a.t 登录
+                / Channel
+                .tc.dn.channel
+                    %span.input.input--hoshi
+                        %input.input__field.input__field--hoshi(type="text" name="cid" id="cid")
+                        %label.input__label.input__label--hoshi.input__label--hoshi-color-3(for="cid")
+                            %span.input__label-content.input__label-content--hoshi Cid
+                .tr.dn.channel
+                    %button.channel_a.t 进入频道
+            .oob
+                %input.dn.ffff(style="height:20px;width:300px;")
+                %button.dn.ffff play
+            %video.dn
+        %script(src="/js/classie.js")
+        %script(src="/js/chat2.js")
