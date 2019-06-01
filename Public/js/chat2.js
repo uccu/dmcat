@@ -1,5 +1,5 @@
 !function () {
-    var link = 'ws:127.0.0.1:7777/', uid, cid, ws, master;
+    var link = 'wss:yoooo.co:7777/', uid, cid, ws, master;
     var mesCore = {
 
         user_login: function (obj) {
