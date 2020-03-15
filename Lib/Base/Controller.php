@@ -2,8 +2,7 @@
 
 use Uccu\DmcatTool\Traits\InstanceTrait;
 
-class Controller{
-
+class Controller
+{
     use InstanceTrait;
-
 }

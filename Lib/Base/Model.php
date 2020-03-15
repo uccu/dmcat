@@ -1,24 +1,8 @@
 <?php
 
-use Lib\Model\Container;
-use Lib\Model\BaseModel;
+use Uccu\DmcatPdo\Model\BaseModel;
 
-class Model extends BaseModel{
-
-
+class Model extends BaseModel
+{
     public $field;
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
 }

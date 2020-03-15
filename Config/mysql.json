@@ -1,0 +1,14 @@
+{
+    "default": {
+        "host": null,
+        "user": "root",
+        "password": "root",
+        "database": "test",
+        "prefix": "t_",
+        "ATTR_TIMEOUT": 5,
+        "ATTR_AUTOCOMMIT": 1,
+        "ATTR_ERRMODE": 2,
+        "ATTR_CASE": 0,
+        "ATTR_PERSISTENT": false
+    }
+}

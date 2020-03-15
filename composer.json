@@ -16,7 +16,8 @@
         "cebe/markdown": "^1.1",
         "twig/twig": "1.26.1",
         "uccu/dmcat-tool":"^0.2",
-        "uccu/dmcat-http":"^0.2"
+        "uccu/dmcat-http":"^0.2",
+        "uccu/dmcat-pdo":"^0.1"
     },
     "autoload": {
 		"psr-4": {

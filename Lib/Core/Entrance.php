@@ -45,6 +45,7 @@ use Uccu\DmcatHttp\Route;
 Config::$_CONFIG_ROOT = CONFIG_ROOT;
 E::$_BASE_ROOT = BASE_ROOT;
 E::$_LOG_ROOT = LOG_ROOT;
+DB::init(null, CONFIG_ROOT);
 //定义请求路径
 
 if(!isset($argc))

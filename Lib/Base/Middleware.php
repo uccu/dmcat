@@ -1,16 +1,8 @@
 <?php
+
 use Uccu\DmcatTool\Traits\InstanceTrait;
 
-class Middleware{
-
+class Middleware
+{
 	use InstanceTrait;
-
-	
-
-	
-
 }
-
-
-
-?>
