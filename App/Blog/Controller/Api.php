@@ -10,6 +10,12 @@ use App\Blog\Model\ArticleModel;
 class Api extends Controller
 {
 
+    function __construct()
+    {
+        header('Access-Control-Allow-Origin:*');
+        header('Access-Control-Allow-Methods:POST,GET,OPTIONS');
+        header('Access-Control-Allow-Headers:Origin,x-requested-with,content-type,Accept');
+    }
     function menu()
     {
         AJAX::success([
@@ -22,7 +28,7 @@ class Api extends Controller
         if ($categoryId) {
             $model->where(['category_id' => $categoryId]);
         }
-        $data = $model->page($page, 10)->get()->toArray();
+        $data = $model->select('id', 'title', 'description', 'thumb', 'create_time>createTime', 'view', 'reply', 'category.name>categoryName')->page($page, 10)->get()->toArray();
 
         AJAX::success([
             'list' => $data
