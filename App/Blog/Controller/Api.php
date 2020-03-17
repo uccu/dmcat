@@ -5,7 +5,7 @@ namespace App\Blog\Controller;
 use Controller;
 use AJAX;
 
-use App\Blog\Model\BlogModel;
+use App\Blog\Model\ArticleModel;
 
 class Api extends Controller
 {
@@ -17,7 +17,7 @@ class Api extends Controller
         ]);
     }
 
-    function getArticleList($page = 1, BlogModel $model, $categoryId = 0)
+    function getArticleList($page = 1, ArticleModel $model, $categoryId = 0)
     {
         if ($categoryId) {
             $model->where(['category_id' => $categoryId]);
@@ -29,7 +29,7 @@ class Api extends Controller
         ]);
     }
 
-    function getArticleInfo($id = 0, BlogModel $model)
+    function getArticleInfo($id = 0, ArticleModel $model)
     {
         if (!$id) {
             AJAX::error('文章不存在！');
