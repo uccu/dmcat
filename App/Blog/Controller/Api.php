@@ -44,11 +44,14 @@ class Api extends Controller
         if (!$id) {
             AJAX::error('文章不存在！');
         }
-        $info = $model->select('id', 'title', 'description', 'thumb', 'create_time>createTime', 'view', 'reply', 'category.name>categoryName','content')->find($id);
+
+        $info = $model->select('id', 'title', 'description', 'thumb', 'create_time>createTime', 'view', 'reply', 'category.name>categoryName', 'content')->find($id);
 
         if (!$info) {
             AJAX::error('文章不存在！');
         }
+        $model->set('%F = %F + 1', 'view', 'view')->save($id);
+        $info->view++;
 
         AJAX::success([
             'info' => $info
