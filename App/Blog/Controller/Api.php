@@ -23,15 +23,19 @@ class Api extends Controller
         ]);
     }
 
-    function getArticleList($page = 1, ArticleModel $model, $categoryId = 0)
+    function getArticleList($page = 1, ArticleModel $model, $categoryId = 0, $year = 0)
     {
         if ($categoryId) {
             $model->where(['category_id' => $categoryId]);
         }
+        if ($year) {
+            $model->where('%F BETWEEN %n AND %n', 'create_time', $year . '-01-01 00:00:00', $year . '-12-31 23:59:59');
+        }
         $data = $model->select('id', 'title', 'description', 'thumb', 'create_time>createTime', 'view', 'reply', 'category.name>categoryName')->page($page, 10)->get()->toArray();
 
         AJAX::success([
-            'list' => $data
+            'list' => $data,
+            'year' => $year
         ]);
     }
 
@@ -40,7 +44,7 @@ class Api extends Controller
         if (!$id) {
             AJAX::error('文章不存在！');
         }
-        $info = $model->find($id);
+        $info = $model->select('id', 'title', 'description', 'thumb', 'create_time>createTime', 'view', 'reply', 'category.name>categoryName','content')->find($id);
 
         if (!$info) {
             AJAX::error('文章不存在！');
