@@ -471,6 +471,12 @@ class TestController extends Controller{
         
     }
 
+    function blog_pull(){
+
+        system("cd /home/cat/blog && git pull");
+        
+    }
+
     function t(){
 
         
