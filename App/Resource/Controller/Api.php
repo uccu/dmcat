@@ -4,9 +4,9 @@ namespace App\Resource\Controller;
 
 use Controller;
 
-use AJAX;
+use Uccu\DmcatTool\Tool\AJAX;
 
-use Request;
+use Uccu\DmcatHttp\Request;
 use stdClass;
 use App\Resource\Middleware\Token;
 use App\Resource\Model\ResourceModel as Resource;
@@ -26,7 +26,7 @@ class Api extends Controller{
 
     }
 
-    function add(ThemeModel $themeModel,Request $request,Resource $resourceModel,Site $siteModel,Token $login,SiteResource $siteResourceModel,$token = '',$name = '',$hash = '',$additional = '',$outlink = ''){
+    function add(ThemeModel $themeModel,Resource $resourceModel,Site $siteModel,Token $login,SiteResource $siteResourceModel,$token = '',$name = '',$hash = '',$additional = '',$outlink = ''){
 
         
         /** 验证登录 **/
@@ -84,7 +84,7 @@ class Api extends Controller{
             /* 添加新资源 */
             $info->new_number = $rns->number?$rns->number:''; /* 该资源的集数 */
             $themeId && $info->theme_id = $themeId; /* 该资源所属的主题 */
-            $resourceId = $resourceModel->set($info)->add()->getStatus();
+            $resourceId = $resourceModel->set($info)->add()->lastInsertId;
 
             !$resourceId && AJAX::error('资源上传失败');
 
@@ -121,7 +121,7 @@ class Api extends Controller{
             $link['site_id']        = $site_id;
             $link['resource_id']    = $resourceId;
             $link['outlink']        = $outlink;
-            $siteResourceId = $siteResourceModel->set($link)->add(true)->getStatus();
+            $siteResourceId = $siteResourceModel->set($link)->add(true)->lastInsertId;
 
         }
 
@@ -186,9 +186,7 @@ class Api extends Controller{
 
     
 
-    function delete(Request $request,Resource $resource,SiteResource $siteResource){
-        $id = $request->request('id');
-        
+    function delete($id,Resource $resource,SiteResource $siteResource){
 
         if(!$id)AJAX::error('ID错误');
 
@@ -210,7 +208,7 @@ class Api extends Controller{
             $ids = explode(',',$id);
         }
         $siteResource->where('%N IN (%c)','resource_id',$ids)->remove();
-        $data['count'] = $resource->where('%N IN (%c)','id',$ids)->remove()->getStatus();
+        $data['count'] = $resource->where('%N IN (%c)','id',$ids)->remove()->affectedRowCount;
         $data['ids'] = $ids;
 
         AJAX::success($data);
@@ -279,7 +277,7 @@ class Api extends Controller{
             }
             
 
-            $data['affect'][$id] = $resource->set($info)->save($id)->getStatus();
+            $data['affect'][$id] = $resource->set($info)->save($id)->affectedRowCount;
         }
         AJAX::success($data);
 

@@ -3,12 +3,12 @@
 namespace App\Resource\Middleware;
 
 use Middleware;
-use Request;
+use Uccu\DmcatHttp\Request;
 use App\Resource\Tool\Func;
 use Config;
-use AJAX;
+use Uccu\DmcatTool\Tool\AJAX;
 use Model;
-use Response;
+use Uccu\DmcatHttp\Response;
 
 class Token extends Middleware{
 
@@ -16,9 +16,9 @@ class Token extends Middleware{
 
         $salt = Config::get('SITE_SALT');
 
-        $user_token = Request::getInstance()->post('user_token');
+        $user_token = Request::getSingleInstance()->post('user_token');
 
-        if(!$user_token)$user_token = Request::getInstance()->cookie('user_token');
+        if(!$user_token)$user_token = Request::getSingleInstance()->cookie('user_token');
 
         if(!$user_token)return;
 
@@ -29,7 +29,7 @@ class Token extends Middleware{
 
         if(!$hash||!$id||!$time||$time+2600*24<TIME_NOW){
 
-            Response::getInstance()->cookie('user_token','',-3600);
+            Response::getSingleInstance()->cookie('user_token','',-3600);
             return;
         }
 
@@ -38,7 +38,7 @@ class Token extends Middleware{
 
         if(!$info){
 
-            Response::getInstance()->cookie('user_token','',-3600);
+            Response::getSingleInstance()->cookie('user_token','',-3600);
             return;
         }
 
@@ -48,7 +48,7 @@ class Token extends Middleware{
             $this->id = $info->id;
             return;
         }
-        Response::getInstance()->cookie('user_token','',-3600);
+        Response::getSingleInstance()->cookie('user_token','',-3600);
 
     }
 

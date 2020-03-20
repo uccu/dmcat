@@ -7,7 +7,7 @@ class CacheModel extends Model{
 
     public $table = 'cache';
 
-    protected $field = ['id','name','content'];
+    public $field = ['id','name','content'];
 
     function cget($name){
         $this->clean();

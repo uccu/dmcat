@@ -7,7 +7,7 @@ class ResourceModel extends Model{
 
     public $table = 'resource';
 
-    protected $field = ['id','theme_id','subtitle_id',
+    public $field = ['id','theme_id','subtitle_id',
     'name','content','resource_type_id','download','down_type_id',
     'hash','base32','md5','size','password','visible','show_times',
     'down_times','level','ctime','user_id','additional','tags','unftags','new_number'];
@@ -15,7 +15,7 @@ class ResourceModel extends Model{
 
     public function sitelink(){
 
-        return $this->join(SiteResourceModel::class);
+        return $this->join(SiteResourceModel::class,'resource_id','id');
         
     }
 

@@ -157,7 +157,7 @@ class Func{
                 }
                 $model->set($data2)->add();
             }
-            $add = VisitModel::getInstance()->set($data)->add()->getStatus();
+            $add = VisitModel::getInstance()->set($data)->add()->lastInsertId;
             return $add;
         }
         return false;

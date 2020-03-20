@@ -5,6 +5,9 @@ use MtHaml\Support\Twig\Loader;
 use MtHaml\Support\Twig\Extension;
 use Uccu\DmcatTool\Tool\LocalConfig as Config;
 use Uccu\DmcatTool\Traits\InstanceTrait;
+use MtHaml\Filter\Less\LeafoLess;
+use MtHaml\Filter\Markdown\CebeMarkdown;
+use MtHaml\Filter\Php;
 class View{
 
     use InstanceTrait;

@@ -1,10 +1,10 @@
 {
     "default": {
-        "host": null,
-        "user": "root",
-        "password": "root",
-        "database": "test",
-        "prefix": "t_",
+        "host": "127.0.0.1",
+        "user": "rue",
+        "password": "uccu",
+        "database": "rue",
+        "prefix": "su_",
         "ATTR_TIMEOUT": 5,
         "ATTR_AUTOCOMMIT": 1,
         "ATTR_ERRMODE": 2,

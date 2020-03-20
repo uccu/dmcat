@@ -3,7 +3,7 @@
 namespace App\Blog\Controller;
 
 use Controller;
-use AJAX;
+use Uccu\DmcatTool\Tool\AJAX;
 
 use App\Blog\Model\ArticleModel;
 use App\Blog\Model\ReplyModel;

@@ -4,9 +4,9 @@ namespace App\Project\Controller;
 
 use Controller;
 
-use AJAX;
+use Uccu\DmcatTool\Tool\AJAX;
 
-use Request;
+use Uccu\DmcatHttp\Request;
 use stdClass;
 use App\Project\Model\UserModel as User;
 use App\Project\Model\LessionModel as Lession;

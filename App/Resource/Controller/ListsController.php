@@ -4,9 +4,9 @@ namespace App\Resource\Controller;
 
 use Controller;
 
-use AJAX;
+use Uccu\DmcatTool\Tool\AJAX;
 
-use Request;
+use Uccu\DmcatHttp\Request;
 
 use View;
 

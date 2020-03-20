@@ -5,9 +5,9 @@ namespace App\Resource\Controller;
 use App\Resource\Tool\Func;
 use App\Resource\Middleware\Token;
 use Controller;
-use AJAX;
-use Request;
-use Response;
+use Uccu\DmcatTool\Tool\AJAX;
+use Uccu\DmcatHttp\Request;
+use Uccu\DmcatHttp\Response;
 use Model;
 use Config;
 use stdClass;
@@ -25,13 +25,7 @@ class UserApi extends Controller{
 
     }
 
-    function login(Request $request,Model $user){
-
-
-        //获取表单
-        $password   =   $request->request['password'];
-        $email      =   $request->request['email'];
-        $cookie     =   $request->request['cookie'];
+    function login($password,$email,$cookie, Model $user){
 
         //是否储存登录信息到cookie
         if($cookie)$this->cookie = true;
@@ -64,7 +58,7 @@ class UserApi extends Controller{
 
         $user_token = Func::randWord().Func::aes_encode(Func::randWord().base64_encode(sha1($info->password.$this->salt.TIME_NOW,true).'|'.$info->id.'|'.TIME_NOW));
 
-        if($this->cookie)Response::getInstance()->cookie('user_token',$user_token,0);
+        if($this->cookie)Response::getSingleInstance()->cookie('user_token',$user_token,0);
         
         $out = [
             'user_token'=>$user_token,
@@ -102,13 +96,9 @@ class UserApi extends Controller{
 
     }
 
-    function register(Request $request){
+    function register($password,$email,$nickname,$cookie){
         
-        //获取表单
-        $password   =   $request->request['password'];
-        $email      =   $request->request['email'];
-        $nickname   =   $request->request['nickname'];
-        $cookie     =   $request->request['cookie'];
+
 
         //是否储存登录信息到cookie
         if($cookie)$this->cookie = true;

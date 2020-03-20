@@ -4,9 +4,9 @@ namespace App\Resource\Controller;
 
 use Controller;
 
-use AJAX;
+use Uccu\DmcatTool\Tool\AJAX;
 
-use Request;
+use Uccu\DmcatHttp\Request;
 
 use View;
 use App\Resource\Model\ThemeModel;
@@ -40,7 +40,7 @@ class ThemeController extends Controller{
         $data['list'] = $themeModel
                             ->where($condition)
                             ->page($page,$limit)
-                            ->order($sort,$desc?1:0)
+                            ->order([$sort=>$desc?1:0])
                             ->get()->toArray();
 
         $gdata['title'] = '主题列表';
@@ -57,7 +57,7 @@ class ThemeController extends Controller{
 
     function week2(ThemeModel $themeModel){
 
-        $all = $themeModel->where('%F > %d AND visible = 1','change_time',TIME_TODAY-3600*24*7*2)->order('change_time','DESC')->get()->toArray();
+        $all = $themeModel->where('%F > %d AND visible = 1','change_time',TIME_TODAY-3600*24*7*2)->order('change_time DESC')->get()->toArray();
 
         $week = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六',];
         $week2 = ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日',];

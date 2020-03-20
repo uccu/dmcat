@@ -7,7 +7,7 @@ class SiteModel extends Model{
 
     public $table = 'site';
 
-    protected $field = ['id','name','token'];
+    public $field = ['id','name','token'];
 
     public function findToken($token){
 

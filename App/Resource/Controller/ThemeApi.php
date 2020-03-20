@@ -4,9 +4,9 @@ namespace App\Resource\Controller;
 
 use Controller;
 
-use AJAX;
-use Request;
-use StdClass;
+use Uccu\DmcatTool\Tool\AJAX;
+use Uccu\DmcatHttp\Request;
+use DB;
 use App\Resource\Model\ThemeModel as Theme;
 use App\Resource\Model\ResourceModel as Resource;
 use fengqi\Hanzi\Hanzi;
@@ -24,12 +24,12 @@ class ThemeApi extends Controller{
     function add(){
 
 
-        $res = Request::getInstance();
+        $res = Request::getSingleInstance();
         $info = $res->request(['name','tags','matches','level','season','number','last_number','content','visible']);
         !$info['name'] && AJAX::error('名字空');
         $info['ctime'] = $info['change_time'] = TIME_NOW;
         $info['first'] = substr( Hanzi::pinyin($info['name'])['py'],0,1);
-        $data['id'] = Theme::getInstance()->set($info)->add()->getStatus();
+        $data['id'] = Theme::getInstance()->set($info)->add()->lastInsertId;
         if(!$data['id'])AJAX::error('创建失败！');
         AJAX::success($data);
     
@@ -37,10 +37,10 @@ class ThemeApi extends Controller{
 
     function delete(){
         
-        $res = Request::getInstance();
+        $res = Request::getSingleInstance();
         $id = $res->request('id');
 
-        $data['count'] = Theme::getInstance()->remove($id)->getStatus();
+        $data['count'] = Theme::getInstance()->remove($id)->affectedRowCount;
         
         AJAX::success($data);
 
@@ -50,7 +50,7 @@ class ThemeApi extends Controller{
     function update(){
 
         
-        $res = Request::getInstance();
+        $res = Request::getSingleInstance();
         $id = $res->request('id');
         if(!$id)AJAX::error('没有ID');
         $info = $res->request(['name','tags','matches','level','season','number','last_number','content','visible']);
@@ -59,7 +59,7 @@ class ThemeApi extends Controller{
             if(is_null($v))unset($info->$k);
         }
 
-        $data['count'] = Theme::getInstance()->set($info)->save($id)->getStatus();
+        $data['count'] = Theme::getInstance()->set($info)->save($id)->affectedRowCount;
         
         AJAX::success($data);
 
@@ -71,9 +71,9 @@ class ThemeApi extends Controller{
 
         if(!$theme)AJAX::error('主题不存在');
 
-        $data['number'] = $theme->number = Resource::getInstance()->select(['count(%F) as count','sitelink.id'],'RAW')->where(['theme_id'=>$theme->id,'new_number'=>$theme->last_number])->find()->count;
+        $data['number'] = $theme->number = Resource::getInstance()->select('sitelink.id')->select(DB::raw('count(sitelink.id) as count'))->where(['theme_id'=>$theme->id,'new_number'=>$theme->last_number])->find()->count;
         
-        $data['succ'] = $theme->save()->getStatus();
+        $data['succ'] = $theme->save()->affectedRowCount;
 
         AJAX::success($data);
 
