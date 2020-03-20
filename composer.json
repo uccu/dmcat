@@ -4,20 +4,27 @@
     "keywords": ["dmcat"],
     "homepage": "https://github.com/uccu/dmcat",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "pzcat",
-            "email": "cat@4moe.com"
-        }
-    ],
+    "authors": [{
+        "name": "pzcat",
+        "email": "cat@4moe.com"
+    }],
     "require": {
-        "monolog/monolog": "1.22.*",
         "php": ">=5.6.0",
         "mthaml/mthaml": "^1.8",
         "cebe/markdown": "^1.1",
         "twig/twig": "1.26.1",
         "fengqi/hanzi": "^0.1.2",
         "leafo/lessphp": "^0.5.0",
-        "uccu/tanime": "dev-master"
+        "uccu/tanime": "dev-master",
+        "uccu/dmcat-tool": "^0.2",
+        "uccu/dmcat-http": "^0.2",
+        "uccu/dmcat-pdo": "^0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lib\\": "Lib",
+            "App\\": "App"
+        },
+        "classmap": ["Lib/Base/"]
     }
 }

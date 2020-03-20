@@ -1,5 +1,7 @@
 Log/*.log
 Public/Pic/20*
 .vscode
-composer.json
+Log/*.log
+Public/pic
+composer.lock
 vendor

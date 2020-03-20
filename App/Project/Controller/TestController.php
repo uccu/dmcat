@@ -17,8 +17,8 @@ use App\Resource\Model\CacheModel as Cache;
 use View;
 
 
-class TestController extends Controller{
-
+class TestController extends Controller
+{
 
     function __construct(){
 
@@ -45,8 +45,12 @@ class TestController extends Controller{
         
        
 
-        
+    function ec(UserModel $model)
+    {
 
+        $model = UserModel::clone();
+        echo $model->select('id>user','friend.friend_id','name')->get('name');
+        // var_dump($data);
     }
 
 
@@ -59,13 +63,10 @@ class TestController extends Controller{
 
     }
 
-    function haml(){
-
-        View::addData(['g'=>['title'=>'zz','keywords'=>'baka']]);
-
-        View::hamlReader('Test/my','App');
-
-
+    function haml()
+    {
+        View::addData(['g' => ['title' => 'zz', 'keywords' => 'baka']]);
+        View::hamlReader('Test/my', 'App');
     }
 
     private function zCurl($url,$postData = []){

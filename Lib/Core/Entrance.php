@@ -1,10 +1,6 @@
 <?php
 
 
-use Lib\Core\Autoload;
-
-
-
 //error_reporting(0);
 
 //定义常量
@@ -25,39 +21,39 @@ define('OPTION_DEBUG',2);
 
 
 //主自动加载
-
-require_once LIB_ROOT.'Core/Autoload.php';
-spl_autoload_register( array('Lib\\Core\\Autoload', 'load'));
-
-
-
-//错误机制
-
-set_exception_handler(array('E','handleException'));
-set_error_handler(array('E','handleError'));
-register_shutdown_function(array('E', 'handleShutdown'));
-
-
-
 //composer依赖的自动加载
 
 require_once VENDOR_ROOT.'autoload.php';
 
-//验证PHP扩展
 
-Autoload::extension_check();
+//错误机制
+
+set_exception_handler(array('Uccu\DmcatTool\Tool\E','handleException'));
+set_error_handler(array('Uccu\DmcatTool\Tool\E','handleError'));
+register_shutdown_function(array('Uccu\DmcatTool\Tool\E', 'handleShutdown'));
 
 
 
 
-//加载全局函数库
 
-require_once LIB_ROOT.'Function/Core.php';
 
+
+// Config设置
+use Uccu\DmcatTool\Tool\LocalConfig as Config;
+use Uccu\DmcatTool\Tool\E;
+use Uccu\DmcatHttp\Route;
+Config::$_CONFIG_ROOT = CONFIG_ROOT;
+E::$_BASE_ROOT = BASE_ROOT;
+E::$_LOG_ROOT = LOG_ROOT;
+DB::init(null, CONFIG_ROOT);
 //定义请求路径
 
-if(!$argc)define('REQUEST_PATH',$_SERVER['PATH_INFO']?substr($_SERVER['PATH_INFO'],1):($_SERVER['REQUEST_URI']?preg_replace('#\?.*$#','',substr($_SERVER['REQUEST_URI'],1)):''));
+if(!isset($argc))
+    define(
+        'REQUEST_PATH',
+        !empty($_SERVER['PATH_INFO'])?substr($_SERVER['PATH_INFO'],1):($_SERVER['REQUEST_URI']?preg_replace('#\?.*$#','',substr($_SERVER['REQUEST_URI'],1)):''));
 else define('REQUEST_PATH',$argv[1]);
+
 
 
 
@@ -71,6 +67,7 @@ define('TIME_YESTERDAY', TIME_TODAY-3600*24);
 
 
 
+
 //进行压缩处理，在这之前不允许输入任何字符，所以要注意不要使用 UTF-8 with BOM的编码
 
 if(Config::get('OB_GZHANDLER')){
@@ -78,12 +75,11 @@ if(Config::get('OB_GZHANDLER')){
 }
 
 
-
 //处理请求路由
 Route::getSingleInstance()->parse();
 
 //输出内容
-if(Config::get('OB_GZHANDLER')){
+while (0 < ob_get_level()) {
     ob_end_flush();
 }
 

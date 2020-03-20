@@ -1,25 +1,8 @@
 <?php
 
-use Lib\Model\Container;
-use Lib\Model\BaseModel;
-use Lib\Sharp\MultipleInstance;
+use Uccu\DmcatPdo\Model\BaseModel;
 
-class Model extends BaseModel implements MultipleInstance{
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
+class Model extends BaseModel
+{
+    public $field;
 }
