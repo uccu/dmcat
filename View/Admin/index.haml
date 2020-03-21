@@ -220,24 +220,12 @@
             $('#modal_new').modal();
             $('#modal_new .sk-spinner').removeClass('fadeOutDown');
             $('#modal_new form').removeClass('fadeInDown').addClass('dn');
-            $.post('/user/my_info',function(g){
-                if(g.code==400)alert(g.message);
-                g = g.data;
-                $('#modal_new .sk-spinner').addClass('fadeOutDown');
-                $('#modal_new form').removeClass('dn').addClass('fadeInDown');
-                for(h in g.info){
-                    $('#modal_new form').find('[name="'+h+'"]').val(g.info[h]).change();
-                        if(g.info[h]){
-                            $('#modal_new form').find('img[data-name="'+h+'"]').attr('src','/pic/'+g.info[h]);
-                            $('#modal_new form').find('select[name="'+h+'"]').attr('data-value',g.info[h]);
-                        }
-                }
-                $('#modal_new .save').unbind('click').bind('click',function(){
-                    curl('/adminApi/change_password',$('#modal_new form').serialize(),function(b){
-                        location.reload()
-                    })
-                });
-
-            },'json')
+            $('#modal_new .sk-spinner').addClass('fadeOutDown');
+            $('#modal_new form').removeClass('dn').addClass('fadeInDown');
+            $('#modal_new .save').unbind('click').bind('click',function(){
+                curl('/adminApi/change_password',$('#modal_new form').serialize(),function(b){
+                    location.reload()
+                })
+            });
         })
             
