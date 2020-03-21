@@ -20,78 +20,34 @@ use View;
 class TestController extends Controller
 {
 
-    function __construct(){
-
-        
-        
-    }
-
-
-
-    function main(Request $request ,Lession $lession ,$baka = 1){
-
-        // var_dump( $request );
-
-        // var_dump( $lession );
-        echo "123\n";
- 
-    }
-
-    function ec(Model $user){
-
-        $z = $user->where([['%F=%d','id',1]])->get();
-        
-        echo $z;
-        
-       
-
-    function ec(UserModel $model)
+    function __construct()
     {
-
-        $model = UserModel::clone();
-        echo $model->select('id>user','friend.friend_id','name')->get('name');
-        // var_dump($data);
     }
 
-
-    function tt(){
-
-        //ignore_user_abort();
-        //set_time_limit(1);
-
-        echo strtotime('Sun, 19 Mar 2017 00:17:33 +0800');
-
-    }
-
-    function haml()
+    private function zCurl($url, $postData = [])
     {
-        View::addData(['g' => ['title' => 'zz', 'keywords' => 'baka']]);
-        View::hamlReader('Test/my', 'App');
-    }
-
-    private function zCurl($url,$postData = []){
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
-		if($postData){
+        if ($postData) {
             curl_setopt($ch, CURLOPT_POST, 1);
-		    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
         }
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         $json = curl_exec($ch);
         curl_close($ch);
         return $json;
-        
     }
 
 
-    private function push($title,$link = '',$hash = '',$additional = '',$token = ''){
+    private function push($title, $link = '', $hash = '', $additional = '', $token = '')
+    {
 
-        if(!$title)return;
+        if (!$title) return;
 
         $request['name'] = $title;
         $request['outlink'] = $link;
@@ -104,43 +60,45 @@ class TestController extends Controller
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($request));
         $json = curl_exec($ch);
         curl_close($ch);
         return $json;
-        
-
-
     }
 
-    private function _typein_addzero($r,$e,$t=4){
-		$r=(string)$r;
-		$re=strlen($r);
-		for($i=0;$i<$t*$e-$re;$i++)$r='0'.$r;
-		return $r;
-	}
-    private function _hashtobase32($hash){
-        if(!preg_match('/^[a-z0-9]{40}$/i',$hash))return '';
-        $a='abcdefghijklmnopqrstuvwxyz234567';$p='';
-		for($i=0;$i<4;$i++)$p .= $this->_typein_addzero(base_convert(substr($hash,$i*10,10),16,2),10);
-		$base32='';
-		for($i=0;$i+5<=160;$i+=5)$base32.=$a[base_convert(substr($p,$i,5),2,10)];
-		return strtoupper($base32);
+    private function _typein_addzero($r, $e, $t = 4)
+    {
+        $r = (string) $r;
+        $re = strlen($r);
+        for ($i = 0; $i < $t * $e - $re; $i++) $r = '0' . $r;
+        return $r;
     }
-    private function _base32tohash($base32){
-        if(!preg_match('/^[a-z2-7]{32}$/i',$base32))return '';
-        $a='abcdefghijklmnopqrstuvwxyz234567';
-		$str='';
-		for($i=0;$i<32;$i++)$str.=(string)($this->_typein_addzero(decbin(stripos($a,$base32[$i])),1,5));
-		$hash='';
-		for($i=0;$i+4<=40*4;$i+=4)$hash.=base_convert(substr($str,$i,4),2,16);
-		return $hash;
+    private function _hashtobase32($hash)
+    {
+        if (!preg_match('/^[a-z0-9]{40}$/i', $hash)) return '';
+        $a = 'abcdefghijklmnopqrstuvwxyz234567';
+        $p = '';
+        for ($i = 0; $i < 4; $i++) $p .= $this->_typein_addzero(base_convert(substr($hash, $i * 10, 10), 16, 2), 10);
+        $base32 = '';
+        for ($i = 0; $i + 5 <= 160; $i += 5) $base32 .= $a[base_convert(substr($p, $i, 5), 2, 10)];
+        return strtoupper($base32);
+    }
+    private function _base32tohash($base32)
+    {
+        if (!preg_match('/^[a-z2-7]{32}$/i', $base32)) return '';
+        $a = 'abcdefghijklmnopqrstuvwxyz234567';
+        $str = '';
+        for ($i = 0; $i < 32; $i++) $str .= (string) ($this->_typein_addzero(decbin(stripos($a, $base32[$i])), 1, 5));
+        $hash = '';
+        for ($i = 0; $i + 4 <= 40 * 4; $i += 4) $hash .= base_convert(substr($str, $i, 4), 2, 16);
+        return $hash;
     }
 
 
 
-    function img(){
+    function img()
+    {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://i3.pixiv.net/c/1200x1200/img-master/img/2013/09/20/17/53/12/38631998_p0_master1200.jpg");
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -155,20 +113,21 @@ class TestController extends Controller
         $headers[] = 'Referer:http://www.pixiv.net/';
         $headers[] = 'User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36';
 
-        
+
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         $z = curl_exec($ch);
         //$a = curl_getinfo($ch);
-        
+
         header('Content-type: image/jpeg');
-        
+
         curl_close($ch);
         echo $z;
     }
 
-    function moe(){
+    function moe()
+    {
 
         // header('content-type:text/xml; charset=utf-8');
 
@@ -180,21 +139,21 @@ class TestController extends Controller
 
         $it = [];
 
-        $cache = Cache::getInstance();
+        $cache = new Cache;
         $lastPubdate = $cache->cget('last_data_moe_pubdate');
 
         $count = count($objz->channel->item);
 
         $k = 0;
-        foreach($objz->channel->item as $item){
-            if(!$item)break;
+        foreach ($objz->channel->item as $item) {
+            if (!$item) break;
             $obj = new stdClass();
 
-            $obj->title = $item->title.'';
-            $obj->link = $item->link.'';
-            $obj->additional = str_replace('https://bangumi.moe/torrent/','',$obj->link);
+            $obj->title = $item->title . '';
+            $obj->link = $item->link . '';
+            $obj->additional = str_replace('https://bangumi.moe/torrent/', '', $obj->link);
             $obj->time = strtotime($item->pubDate);
-            if($obj->time <= $lastPubdate)break;
+            if ($obj->time <= $lastPubdate) break;
             $it[$k] = $obj;
             $k++;
         }
@@ -202,24 +161,23 @@ class TestController extends Controller
         $it = array_reverse($it);
         echo $length = count($it);
 
-        foreach($it as $k=>$v){
+        foreach ($it as $k => $v) {
 
-            echo $this->push($v->title,$v->link,'',$v->additional,'7811ade5a1dfa34b4d18352070737cc02f191424');
+            echo $this->push($v->title, $v->link, '', $v->additional, '7811ade5a1dfa34b4d18352070737cc02f191424');
 
 
-            $cache->csave('last_data_moe_pubdate',$v->time);
-            
-            if($k+1!=$length){
-                $rand = rand(0,floor(600/$length));
+            $cache->csave('last_data_moe_pubdate', $v->time);
+
+            if ($k + 1 != $length) {
+                $rand = rand(0, floor(600 / $length));
                 sleep($rand);
             }
         }
-
-
     }
 
 
-    function tucao(){
+    function tucao()
+    {
 
         // header('content-type:text/xml; charset=utf-8');
 
@@ -231,20 +189,20 @@ class TestController extends Controller
 
         $it = [];
 
-        $cache = Cache::getInstance();
+        $cache = new  Cache;
         $lastPubdate = $cache->cget('last_data_tucao_pubdate');
 
         $count = count($objz->channel->item);
 
         $k = 0;
-        foreach($objz->channel->item as $item){
-            if(!$item)break;
+        foreach ($objz->channel->item as $item) {
+            if (!$item) break;
             $obj = new stdClass();
 
-            $obj->title = $item->title.'';
-            $obj->link = $item->link.'';
+            $obj->title = $item->title . '';
+            $obj->link = $item->link . '';
             $obj->additional = strtotime($item->pubDate);
-            if($obj->additional <= $lastPubdate)break;
+            if ($obj->additional <= $lastPubdate) break;
             $it[$k] = $obj;
             $k++;
         }
@@ -252,22 +210,21 @@ class TestController extends Controller
         $it = array_reverse($it);
         echo $length = count($it);
 
-        foreach($it as $k=>$v){
+        foreach ($it as $k => $v) {
 
-            echo $this->push($v->title,$v->link,'',$v->additional,'71B27A6E921B7BFABA69040AA3F4A9A3B13E4759');
+            echo $this->push($v->title, $v->link, '', $v->additional, '71B27A6E921B7BFABA69040AA3F4A9A3B13E4759');
 
 
-            $cache->csave('last_data_tucao_pubdate',$v->additional);
-            
-            if($k+1!=$length){
-                $rand = rand(0,floor(600/$length));
+            $cache->csave('last_data_tucao_pubdate', $v->additional);
+
+            if ($k + 1 != $length) {
+                $rand = rand(0, floor(600 / $length));
                 sleep($rand);
             }
         }
-
-
     }
-    function dmhy(){
+    function dmhy()
+    {
 
         // header('content-type:text/xml; charset=utf-8');
 
@@ -279,22 +236,22 @@ class TestController extends Controller
 
         $it = [];
 
-        $cache = Cache::getInstance();
+        $cache = new Cache;
         $lastPubdate = $cache->cget('last_data_dmhy_pubdate');
 
         $count = count($objz->channel->item);
 
         $k = 0;
-        foreach($objz->channel->item as $item){
-            if(!$item)break;
+        foreach ($objz->channel->item as $item) {
+            if (!$item) break;
             $obj = new stdClass();
 
-            $obj->title = $item->title.'';
-            $obj->link = str_ireplace('http://','https://',$item->link.'');
-            $base32 = substr($item->enclosure->attributes()['url'].'',20,32);
+            $obj->title = $item->title . '';
+            $obj->link = str_ireplace('http://', 'https://', $item->link . '');
+            $base32 = substr($item->enclosure->attributes()['url'] . '', 20, 32);
             $obj->hash = $this->_base32tohash($base32);
             $obj->additional = strtotime($item->pubDate);
-            if($obj->additional <= $lastPubdate)break;
+            if ($obj->additional <= $lastPubdate) break;
             $it[$k] = $obj;
             $k++;
         }
@@ -302,29 +259,28 @@ class TestController extends Controller
         $it = array_reverse($it);
         echo $length = count($it);
 
-        foreach($it as $k=>$v){
+        foreach ($it as $k => $v) {
 
-            echo $this->push($v->title,$v->link,$v->hash,$v->additional,'128A39B92199C8B774489D1E4732FEB36C4777A2');
+            echo $this->push($v->title, $v->link, $v->hash, $v->additional, '128A39B92199C8B774489D1E4732FEB36C4777A2');
 
 
-            $cache->csave('last_data_dmhy_pubdate',$v->additional);
-            
-            if($k+1!=$length){
-                $rand = rand(0,floor(600/$length));
+            $cache->csave('last_data_dmhy_pubdate', $v->additional);
+
+            if ($k + 1 != $length) {
+                $rand = rand(0, floor(600 / $length));
                 sleep($rand);
             }
         }
-
-
     }
 
 
-    function bili(Cache $cache){
+    function bili(Cache $cache)
+    {
 
         global $argc;
         global $argv;
-        if(!$argc)AJAX::error('请在shell运行');
-        
+        if (!$argc) AJAX::error('请在shell运行');
+
         ignore_user_abort();
         set_time_limit(600);
 
@@ -339,157 +295,153 @@ class TestController extends Controller
         $json = curl_exec($ch);
         // $json=gzdecode($json);
         curl_close($ch);
-        if($json)$json = json_decode($json);
-        else{
+        if ($json) $json = json_decode($json);
+        else {
             echo 'error';
             return;
         };
-        
-        $json = $json->list;$array = [];
+
+        $json = $json->list;
+        $array = [];
         $lastDataPubdate = $cache->cget('last_data_bili_pubdate');
-        foreach($json as $k=>$v)if($v->pubdate>$lastDataPubdate){
+        foreach ($json as $k => $v) if ($v->pubdate > $lastDataPubdate) {
             $array[] = $v;
-        }else break;
-        
+        } else break;
+
         ksort($array);
         $length = count($array);
-        foreach($array as $k=>$data){
+        foreach ($array as $k => $data) {
 
-            echo $this->push($data->title,'http://www.bilibili.com/video/av'.$data->aid,'',$data->aid,'860F3ABBWEB7F30FAD15EEEF6BA6A07D3386AB8A');
-            $cache->csave('last_data_bili_pubdate',$data->pubdate);
-            if($k+1!=$length){
-                $rand = rand(0,floor(600/$length));
+            echo $this->push($data->title, 'http://www.bilibili.com/video/av' . $data->aid, '', $data->aid, '860F3ABBWEB7F30FAD15EEEF6BA6A07D3386AB8A');
+            $cache->csave('last_data_bili_pubdate', $data->pubdate);
+            if ($k + 1 != $length) {
+                $rand = rand(0, floor(600 / $length));
                 sleep($rand);
                 // die();
             }
-            
         }
-
-        
     }
 
-    function acgnx(Cache $cache){
+    function acgnx(Cache $cache)
+    {
 
         global $argc;
         global $argv;
-        if(!$argc)AJAX::error('请在shell运行');
-        
+        if (!$argc) AJAX::error('请在shell运行');
+
         ignore_user_abort();
         set_time_limit(600);
 
         $json = $this->zCurl('https://open.acgnx.se/json-1-sort-1.json');
-        
 
-        if($json)$json = json_decode($json,true);
-        else{
+
+        if ($json) $json = json_decode($json, true);
+        else {
             echo 'error';
             return;
         };
 
-        $json = $json['item'];$array = [];
+        $json = $json['item'];
+        $array = [];
         $lastDataId = $cache->cget('last_data_id');
-        foreach($json as $k=>$v)if($v['data_id']>$lastDataId)$array[$v['data_id']] = $v;
+        foreach ($json as $k => $v) if ($v['data_id'] > $lastDataId) $array[$v['data_id']] = $v;
 
         ksort($array);
         echo $length = count($array);
         echo ',';
-        foreach($array as $k=>$data){
-            
+        foreach ($array as $k => $data) {
+
 
             echo $json = $this->push(
                 $data['title'],
-                'https://share.acgnx.se/show-'.$data['hash_id'].'.html',
+                'https://share.acgnx.se/show-' . $data['hash_id'] . '.html',
                 $data['hash_id'],
                 $data['data_id'],
                 '860F3ABB7EB7E30FAD15EEEF6BA6A07D3386AB8A'
             );
 
 
-            $cache->csave('last_data_id',$data['data_id']);
-            if($k+1!=$length){
-                $rand = rand(0,floor(600/$length));
+            $cache->csave('last_data_id', $data['data_id']);
+            if ($k + 1 != $length) {
+                $rand = rand(0, floor(600 / $length));
                 sleep($rand);
-
             }
         }
-        
-
     }
 
-    function acgnx_raw(Cache $cache){
+    function acgnx_raw(Cache $cache)
+    {
 
         global $argc;
         global $argv;
-        if(!$argc)AJAX::error('请在shell运行');
-        
+        if (!$argc) AJAX::error('请在shell运行');
+
         ignore_user_abort();
         set_time_limit(600);
 
         $json = $this->zCurl('https://open.acgnx.se/json-1-user-150.json');
-        
 
-        if($json)$json = json_decode($json,true);
-        else{
+
+        if ($json) $json = json_decode($json, true);
+        else {
             echo 'error';
             return;
         };
 
-        $json = $json['item'];$array = [];
+        $json = $json['item'];
+        $array = [];
         $lastDataId = $cache->cget('last_data_id_raw');
-        foreach($json as $k=>$v)if($v['data_id']>$lastDataId)$array[$v['data_id']] = $v;
+        foreach ($json as $k => $v) if ($v['data_id'] > $lastDataId) $array[$v['data_id']] = $v;
 
         ksort($array);
         echo $length = count($array);
         echo ',';
-        foreach($array as $k=>$data){
-            
+        foreach ($array as $k => $data) {
+
 
             echo $json = $this->push(
                 $data['title'],
-                'https://share.acgnx.se/show-'.$data['hash_id'].'.html',
+                'https://share.acgnx.se/show-' . $data['hash_id'] . '.html',
                 $data['hash_id'],
                 $data['data_id'],
                 '860F3ABB7EB7E30FAD15EEEF6BA6A07D3386AB8A'
             );
 
 
-            $cache->csave('last_data_id_raw',$data['data_id']);
-            if($k+1!=$length){
-                $rand = rand(0,floor(600/$length));
+            $cache->csave('last_data_id_raw', $data['data_id']);
+            if ($k + 1 != $length) {
+                $rand = rand(0, floor(600 / $length));
                 sleep($rand);
-
             }
         }
-        
-
     }
 
-    
 
-    function pull(){
 
-        system("cd ".BASE_ROOT." && git pull");
-        
+    function pull()
+    {
+
+        system("cd " . BASE_ROOT . " && git pull");
     }
 
-    function blog_pull(){
+    function blog_pull()
+    {
 
         system("cd /home/cat/blog && git pull");
-        
     }
 
-    function t(){
-
-        
-        View::hamlReader('Test/t','App');
-    }
+    function t()
+    {
 
 
-    function gal(){
-
-        
-        View::hamlReader('gal','App');
+        View::hamlReader('Test/t', 'App');
     }
 
 
+    function gal()
+    {
+
+
+        View::hamlReader('gal', 'App');
+    }
 }
