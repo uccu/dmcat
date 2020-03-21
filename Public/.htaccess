@@ -2,8 +2,8 @@
 
     RewriteEngine On
 
-    # RewriteCond %{SERVER_PORT} !^443$
-    # RewriteRule ^(.*)$ https://yoooo.co/$1 [L,R=301]
+    RewriteCond %{SERVER_PORT} !^443$
+    RewriteRule ^(.*)$ https://yoooo.co/$1 [L,R=301]
 
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)/$ /$1 [L,R=301]
