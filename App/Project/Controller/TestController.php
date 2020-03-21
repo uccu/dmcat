@@ -427,7 +427,7 @@ class TestController extends Controller
     function blog_pull()
     {
 
-        system("cd /home/cat/blog && git pull");
+        system("cd /home/cat/blog-web && git pull && npm run build && mv dist ../blog");
     }
 
     function t()
