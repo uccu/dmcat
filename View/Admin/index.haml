@@ -1,0 +1,243 @@
+!!!
+%html
+    %head
+        %meta(charset="utf-8")
+        %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        %meta(name="renderer" content="webkit")
+        %meta(http-equiv="Cache-Control" content="no-siteapp")
+        %title 后台管理系统
+        %link(href="/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet")
+        %link(href="/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet")
+        %link(href="/css/animate.min.css" rel="stylesheet")
+        %link(href="/css/style.min862f.css?v=4.1.0" rel="stylesheet")
+
+    %body.fixed-sidebar.full-height-layout.gray-bg(style="overflow:hidden")
+        :css
+            .dn{display:none !important}
+        #wrapper(style="overflow:hidden")
+            /左侧导航开始
+            %nav.navbar-default.navbar-static-side(role="navigation")
+                .nav-close 
+                    %i.fa.fa-times-circle
+                .sidebar-collapse
+                    %ul#side-menu.nav
+                        %li.nav-header
+                            .dropdown.profile-element
+                                
+                                %a.dropdown-toggle(data-toggle="dropdown" href="#")
+                                    %span.clear
+                                    %span.block.m-t-xs
+                                        %strong.font-bold
+                                            #{userInfo.name}
+                                    %span.text-muted.text-xs.block
+                                        管理员
+                                        %b.caret
+
+                                %ul.dropdown-menu.animated.fadeInRight.m-t-xs
+                                    -# %li
+                                    -#     %a.J_menuItem(href="form_avatar") 修改头像
+                                    %li
+                                        %a.changeMy(href="#") 修改个人信息
+
+                                    %li.divider
+                                    %li
+                                        %a(href="/adminApi/logout") 退出
+
+                            .logo-element A+
+
+                        %li
+                            %a.J_menuItem(href="home/index")
+                                %i.fa.fa-home
+                                %span.nav-label 主页
+                        - for k,t in menu
+                            %li
+                                %a.J_menuItem(href="#{t.href}" data-index="#{t.id}")
+                                    - if t.fa_ico
+                                        %i(class="fa fa-#{t.fa_ico}")
+                                    %span.nav-label = t.name
+                                    - if t.list
+                                        %span.fa.arrow
+                                - if t.list
+                                    %ul.nav.nav-second-level
+                                        - for k,m in t.list
+                                            %li
+                                                %a.J_menuItem(href="#{m.href}" data-index="#{m.id}")
+                                                    - if m.fa_ico
+                                                        %i(class="fa fa-#{m.fa_ico}")
+                                                    %span.nav-label = m.name
+                                                    - if m.list
+                                                        %span.fa.arrow
+                                                - if m.list
+                                                    %ul.nav.nav-third-level
+                                                        - for k,s in m.list
+                                                            %li
+                                                                %a.J_menuItem(href="#{s.href}" data-index="#{s.id}")
+                                                                    - if s.fa_ico
+                                                                        %i(class="fa fa-#{s.fa_ico}")
+                                                                    %span.nav-label = s.name
+                                    
+                                    
+                        %li.hidden.gotoTag
+                            %a.J_menuItem(href="#")
+                                %span.nav-label
+                            
+
+            /左侧导航结束
+            /右侧部分开始
+            #page-wrapper.gray-bg.dashbard-1
+                .row.border-bottom
+                    %nav.navbar.navbar-static-top(role="navigation" style="margin-bottom: 10px")
+                        .navbar-header
+                            %a.navbar-minimalize.minimalize-styl-2.btn.btn-primary(href="#")
+                                %i.fa.fa-bars
+                            %form.navbar-form-custom(role="search" method="post" action="/search_results")
+                                %div.form-group
+
+                        %ul.nav.navbar-top-links.navbar-right
+                            
+                            %li.dropdown.hidden-xs
+
+
+                .row.content-tabs
+                    %button.roll-nav.roll-left.J_tabLeft
+                        %i.fa.fa-backward
+
+                    %nav.page-tabs.J_menuTabs
+                        .page-tabs-content
+                            %a.active.J_menuTab(href="javascript:;" data-id="home/index") 主页
+
+                    %button.roll-nav.roll-right.J_tabRight
+                        %i.fa.fa-forward
+
+                    .btn-group.roll-nav.roll-right
+                        %button.dropdown.J_tabClose(data-toggle="dropdown")
+                            选项
+                            %span.caret
+
+                        %ul.dropdown-menu.dropdown-menu-right.animated.fadeInRight(role="menu")
+                            %li.J_tabShowActive
+                                %a 定位
+                            %li.divider
+                            %li.J_tabCloseAll
+                                %a 关闭所有
+                            %li.J_tabCloseOther
+                                %a 关闭其他
+
+                    %a.roll-nav.roll-right.J_tabExit(href="/adminApi/logout")
+                        %i.fa.fa-sign-out
+                        退出
+                #content-main.row.J_mainContent
+                    %iframe.J_iframe(name="iframe0" width="100%" height="100%" src="home/index" frameborder="0" data-id="home/index" seamless)
+                .footer
+                    .pull-right
+                        &copy; 2020
+                        %a(href="#")A +
+
+            /右侧部分结束
+
+        #modal_new.modal.inmodal(tabindex="-1" role="dialog" aria-hidden="true")
+            .modal-dialog
+                .modal-content.animated.fadeInDown
+                    .modal-header
+                        %button.close(type="button" data-dismiss="modal" aria-label="Close")
+                            %span(aria-hidden="true") &times;
+                            %span.sr-only Close
+                        %h4.modal-title 修改密码
+                        %small.font-bold
+                    .modal-body
+                        .sk-spinner.sk-spinner-wave.animated.fadeOutDown
+                            .sk-rect1
+                            .sk-rect2
+                            .sk-rect3
+                            .sk-rect4
+                            .sk-rect5
+                        %form.form-horizontal.animated(method="post")
+                            %input.form-control(type="hidden" name="id")
+                            
+                            .form-group
+                                %label.col-sm-3.control-label 修改密码
+                                .col-sm-9
+                                    %input.form-control(name="pwd")
+                            
+                    .modal-footer
+                        %button.btn.btn-default(type="button" data-dismiss="modal") Close
+                        %button.btn.btn-primary.save(type="button") Save
+    %script(src="/js/jquery.min.js?v=2.1.4")
+    %script(src="/js/bootstrap.min.js?v=3.3.6")
+    %script(src="/js/plugins/metisMenu/jquery.metisMenu.js")
+    %script(src="/js/plugins/slimscroll/jquery.slimscroll.min.js")
+    %script(src="/js/plugins/layer/layer.min.js")
+    %script(src="/js/hplus.min.js?v=4.1.0")
+    %script(src="/js/contabs.min.js")
+    %script(src="/js/plugins/pace/pace.min.js")
+    :javascript
+        function curl(url,data,func,raw){
+            var a = {
+                url:url,
+                data:data,
+                type:raw || (data && JSON.stringify(data) !="{}")?'post':'get',
+                dataType:'json',
+                beforeSend:function(xhr){
+                    
+                },success:function(d){
+                    if(d.code != 200)alert(d.message);
+                    else if(typeof func == 'function')func(d.data);
+                    else if(d.url)location=d.url
+                }
+            };
+            if(raw){
+                a.contentType = false;
+                a.processData = false;
+            }
+            $.ajax(a);
+        }
+        function packFormData(file,v,x){
+            var form=new FormData();
+            if(typeof v==="object")
+                for(d in v){
+                    if(typeof v[d]==="object")form.append(v[d].name,v[d].value);
+                    else form.append(d,v[d]);
+                }
+            file=$.prototype.isPrototypeOf(file)?file.get(0).files:$(file).get(0).files;
+            if(file.length)form.append("file",file[0]);
+            else{
+                alert('error image');return
+            }
+            if(!file[0])return;
+            return typeof x==='function'?x(form):form
+        }
+        function upPic(url,f,i,p){
+            $(f).bind('change',function(){
+                curl(url,packFormData(f),function(d){
+                    if(typeof i ==="function")i(d);
+                    else if(i)$(i).val(d.path);
+                    if(p)$(p).attr('src',d.fpath);
+                },1);
+            })
+        }
+        
+        $('.changeMy').click(function(){
+            $('#modal_new').modal();
+            $('#modal_new .sk-spinner').removeClass('fadeOutDown');
+            $('#modal_new form').removeClass('fadeInDown').addClass('dn');
+            $.post('/user/my_info',function(g){
+                if(g.code==400)alert(g.message);
+                g = g.data;
+                $('#modal_new .sk-spinner').addClass('fadeOutDown');
+                $('#modal_new form').removeClass('dn').addClass('fadeInDown');
+                for(h in g.info){
+                    $('#modal_new form').find('[name="'+h+'"]').val(g.info[h]).change();
+                        if(g.info[h]){
+                            $('#modal_new form').find('img[data-name="'+h+'"]').attr('src','/pic/'+g.info[h]);
+                            $('#modal_new form').find('select[name="'+h+'"]').attr('data-value',g.info[h]);
+                        }
+                }
+                $('#modal_new .save').unbind('click').bind('click',function(){
+                    curl('/adminApi/change_password',$('#modal_new form').serialize(),function(b){
+                        location.reload()
+                    })
+                });
+
+            },'json')
+        })
+            

@@ -30,9 +30,11 @@ class Api extends Controller
     function getArticleList($page = 1, ArticleModel $model, $categoryId = 0, $year = 0)
     {
         if ($categoryId) {
-            $model->where(['category_id' => $categoryId]);
+            $model->where(['category_id' => $categoryId, 'active' => 1]);
         }
         if ($year) {
+            $year = floor($year);
+            if (!$year) $year = '2020';
             $model->where('%F BETWEEN %n AND %n', 'create_time', $year . '-01-01 00:00:00', $year . '-12-31 23:59:59');
         }
         $data = $model->select('id', 'title', 'description', 'thumb', 'create_time>createTime', 'view', 'reply', 'category.name>categoryName')->page($page, 10)->order('create_time desc')->get()->toArray();
@@ -49,7 +51,7 @@ class Api extends Controller
             AJAX::error('文章不存在！');
         }
 
-        $info = $model->select('id', 'title', 'description', 'thumb', 'create_time>createTime', 'view', 'reply', 'category.name>categoryName', 'content')->find($id);
+        $info = $model->select('id', 'title', 'description', 'thumb', 'create_time>createTime', 'view', 'reply', 'category.name>categoryName', 'content')->where(['active' => 1])->find($id);
 
         if (!$info) {
             AJAX::error('文章不存在！');
@@ -96,16 +98,24 @@ class Api extends Controller
         if ($data) {
             AJAX::error('请勿重复回复');
         }
+        $replyNames = [];
+        $comment = preg_replace_callback('#@([^ ]+) #', function ($m) use ($rmodel, $id, &$replyNames) {
+            $reply = $rmodel->where(['article_id' => $id, 'name' => $m[1]])->find();
+            if (!$reply) return '';
+            array_push($replyNames, $m[1]);
+            return $m[0];
+        }, $comment);
+
 
         $id = $rmodel->set([
             'name' => $name,
             'email' => $email,
             'article_id' => $id,
-            'comment' => $comment
-        ])->add();
+            'comment' => $comment,
+        ])->set('reply_names=%j', $replyNames)->add();
 
         if ($id) {
-            Smtp::send('418667631@qq.com', '有个用户评论了您发的文章', '<div> ' . strip_tags($name) . ' 回复了您的文章：<a href="http://blog.yoooo.co/article/' . $info->id . '">' . $info->title . '</a></div>');
+            Smtp::send('418667631@qq.com', '有个用户评论了您发的文章', '<div> ' . strip_tags($name) . ' 回复了您的文章：<a href="https://blog.yoooo.co/article/' . $info->id . '">' . $info->title . '</a></div>');
         }
 
         AJAX::success(['id' => $id]);
