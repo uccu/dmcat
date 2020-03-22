@@ -9,6 +9,7 @@ use App\Blog\Model\ArticleModel;
 use App\Blog\Model\ReplyModel;
 use App\Blog\Tool\Smtp;
 use App\Resource\Tool\Func;
+use cebe\markdown\GithubMarkdown;
 
 class Api extends Controller
 {
@@ -58,6 +59,10 @@ class Api extends Controller
         }
         $model->set('%F = %F + 1', 'view', 'view')->save($id);
         $info->view++;
+
+        $parser = new GithubMarkdown;
+        $info->content = $parser->parse($info->content);
+
 
         AJAX::success([
             'info' => $info
