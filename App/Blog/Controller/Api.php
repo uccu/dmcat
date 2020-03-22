@@ -6,6 +6,7 @@ use Controller;
 use Uccu\DmcatTool\Tool\AJAX;
 
 use App\Blog\Model\ArticleModel;
+use App\Blog\Model\ConfigModel;
 use App\Blog\Model\ReplyModel;
 use App\Blog\Tool\Smtp;
 use App\Resource\Tool\Func;
@@ -111,6 +112,8 @@ class Api extends Controller
             return $m[0];
         }, $comment);
 
+        $myEmail = ConfigModel::clone()->getConfigVal('email');
+        if ($email == $myEmail) $email = '';
 
         $rid = $rmodel->set([
             'name' => $name,
@@ -124,7 +127,7 @@ class Api extends Controller
             $count = $rmodel->where(['article_id' => $id])->getCount();
             $model->set('reply=%d', $count)->save($id);
 
-            Smtp::send('418667631@qq.com', '有个用户评论了您发的文章', '<div> ' . strip_tags($name) . ' 回复了您的文章：<a href="https://blog.yoooo.co/article/' . $info->id . '">' . $info->title . '</a></div>');
+            if ($email) Smtp::send($email, '有个用户评论了您发的文章', '<div> ' . strip_tags($name) . ' 回复了您的文章：<a href="https://blog.yoooo.co/article/' . $info->id . '">' . $info->title . '</a></div>');
         }
 
         AJAX::success(['id' => $rid]);

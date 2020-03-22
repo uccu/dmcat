@@ -29,6 +29,7 @@ class ReplyController extends Controller
 
         $this->L = L::getSingleInstance();
         $this->salt = $this->L->config->SITE_SALT;
+        $this->email = $this->L->config->email;
         $this->controller = 'reply';
     }
 
@@ -118,7 +119,7 @@ class ReplyController extends Controller
 
         if ($sendEmail && $active) {
             $info = $model->find($id);
-            if ($info) {
+            if ($info && $email) {
                 Smtp::send($email, '您的评论通过了审核', '<div> 您的评论已通过了审核，您可以查看文章：<a href="https://blog.yoooo.co/article/' . $info->article_id . '">查看</a></div>');
             }
 
@@ -127,7 +128,7 @@ class ReplyController extends Controller
 
                 foreach ($names as $name) {
                     $re = $model->where(['article_id' => $info->article_id, 'name' => $name])->find();
-                    if ($re) {
+                    if ($re && $re->email) {
                         Smtp::send($re->email, '有人回复了您的评论', '<div> ' . strip_tags($data['name']) . ' 回复了您的评论，查看文章：<a href="https://blog.yoooo.co/article/' . $info->article_id . '/comment/' . $id . '">查看</a></div>');
                     }
                 }
