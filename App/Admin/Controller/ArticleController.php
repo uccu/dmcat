@@ -51,7 +51,7 @@ class ArticleController extends Controller
         $m->setOpt('view', 'home/upd');
         $m->setOpt('add', 'home/upd');
         # 设置名字
-        $m->setName('后台菜单');
+        $m->setName('文章');
         # 设置表头
         $m->setHead('编号');
         $m->setHead('标题');
@@ -102,7 +102,7 @@ class ArticleController extends Controller
 
         $m->setBody(['title'  =>  '描述', 'name'  =>  'content', 'type'  =>  'textarea', 'size'  =>  '8']);
         # 设置名字
-        $m->setName('后台菜单管理');
+        $m->setName('文章管理');
         $m->getInfo();
         $m->output();
     }
