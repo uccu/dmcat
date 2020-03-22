@@ -112,18 +112,22 @@ class Api extends Controller
         }, $comment);
 
 
-        $id = $rmodel->set([
+        $rid = $rmodel->set([
             'name' => $name,
             'email' => $email,
             'article_id' => $id,
             'comment' => $comment,
         ])->set('reply_names=%j', $replyNames)->add();
 
-        if ($id) {
+        if ($rid) {
+
+            $count = $rmodel->where(['article_id' => $id])->getCount();
+            $model->set('reply=%d', $count)->save($id);
+
             Smtp::send('418667631@qq.com', '有个用户评论了您发的文章', '<div> ' . strip_tags($name) . ' 回复了您的文章：<a href="https://blog.yoooo.co/article/' . $info->id . '">' . $info->title . '</a></div>');
         }
 
-        AJAX::success(['id' => $id]);
+        AJAX::success(['id' => $rid]);
     }
 
     function getReplyList($id, $page, ReplyModel $model)
