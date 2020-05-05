@@ -39,6 +39,7 @@
 		play:function(){
 			if(!this.isplaying)this.loadAudio()
 			if(!this.audioUrls.length)return false;
+			this.ac.resume();
 			this.ele.play()
 			this.isplaying = 1
 			if(this.onplay)this.onplay()
@@ -50,7 +51,8 @@
 		},stop:function(){
 			this.loadAudio()
 		},replay:function(){
-			this.loadAudio()
+			this.loadAudio();
+			this.ac.resume();
 			this.ele.play()
 			this.isplaying = 1
 		},prev:function(){
