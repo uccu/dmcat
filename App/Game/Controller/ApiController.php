@@ -8,7 +8,7 @@ use App\Game\Model\UserModel;
 
 use App\Resource\Tool\Func;
 
-class Api extends Controller
+class ApiController extends Controller
 {
 
     function __construct()
