@@ -25,7 +25,7 @@ class ApiController extends Controller
             AJAX::error('账号密码不能为空');
         }
         $user = $model->where(['name' => $name])->find();
-        if ($user) {
+        if (!$user) {
             AJAX::error('账号不存在');
         }
 
