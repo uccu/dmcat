@@ -21,7 +21,7 @@ class ApiController extends Controller
 
     function login($name, $password, UserModel $model)
     {
-        if (!$name || $password) {
+        if (!$name || !$password) {
             AJAX::error('账号密码不能为空');
         }
         $user = $model->where(['name' => $name])->find();
@@ -39,7 +39,7 @@ class ApiController extends Controller
 
     function register($name, $password, UserModel $model)
     {
-        if (!$name || $password) {
+        if (!$name || !$password) {
             AJAX::error('账号密码不能为空');
         }
 
