@@ -52,4 +52,12 @@ class ApiController extends Controller
 
         AJAX::success();
     }
+
+    function testParam($name, $password)
+    {
+        AJAX::success([
+            'name' => $name,
+            'password' => $password,
+        ]);
+    }
 }
