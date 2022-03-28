@@ -32,8 +32,9 @@ class Api extends Controller
     function getArticleList($page = 1, ArticleModel $model, $categoryId = 0, $year = 0)
     {
         if ($categoryId) {
-            $model->where(['category_id' => $categoryId, 'active' => 1]);
+            $model->where(['category_id' => $categoryId]);
         }
+        $model->where(['active' => 1]);
         if ($year) {
             $year = floor($year);
             if (!$year) $year = '2020';
