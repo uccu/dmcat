@@ -25,7 +25,7 @@ class Api extends Controller
     function menu()
     {
         AJAX::success([
-            'list' => [2022, 2021, 2020]
+            'list' => [2023, 2022, 2021, 2020]
         ]);
     }
 
